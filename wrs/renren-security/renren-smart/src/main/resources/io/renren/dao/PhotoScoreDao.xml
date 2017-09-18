@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.PhotoScoreDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,subject_id as subjectId ,examination_id as examinationId,subject_name as subjectName ,subject_point as subjectPoint ,front_user_id as frontUserId ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,teacher_comment as teacherComment 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,subject_id ,subject_name ,subject_point,examination_id ,front_user_id ,gmt_modified ,gmt_create ,teacher_comment 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.PhotoScoreEntity" id="photoScoreMap">
+		        <result property="id" column="id"/>
+		        <result property="subjectId" column="subject_id"/>
+		        <result property="subjectName" column="subject_name"/>
+		        <result property="subjectPoint" column="subject_point"/>
+		        <result property="frontUserId" column="front_user_id"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="teacherComment" column="teacher_comment"/>
+		        <result property="examinationId" column="examination_id"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.PhotoScoreEntity">
+		select <include refid="allColumns"></include> from photo_score where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.PhotoScoreEntity">
+		select <include refid="allColumns"></include> from photo_score 
+		<if test="userId != null and  examinationId != null ">
+			where front_user_id = #{userId} and 
+			examination_id = #{examinationId} 
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_score 
+		<if test="userId != null and  examinationId != null ">
+			where front_user_id = #{userId} and 
+			examination_id = #{examinationId} 
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.PhotoScoreEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_score
+		(
+			`subject_id`, 
+			`subject_name`, 
+			`subject_point`, 
+			`front_user_id`, 
+			`gmt_modified`, 
+			`gmt_create`, 
+			`teacher_comment`,
+			`examination_id`
+		)
+		values
+		(
+			#{subjectId}, 
+			#{subjectName}, 
+			#{subjectPoint}, 
+			#{frontUserId}, 
+			#{gmtModified}, 
+			#{gmtCreate}, 
+			#{teacherComment},
+			#{examinationId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.PhotoScoreEntity">
+		update photo_score 
+		<set>
+			<if test="subjectId != null">`subject_id` = #{subjectId}, </if>
+			<if test="subjectName != null">`subject_name` = #{subjectName}, </if>
+			<if test="subjectPoint != null">`subject_point` = #{subjectPoint}, </if>
+			<if test="frontUserId != null">`front_user_id` = #{frontUserId}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="teacherComment != null">`teacher_comment` = #{teacherComment},</if>
+			<if test="examinationId != null">`examination_id` = #{examinationId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_score where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_score where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
