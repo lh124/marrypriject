@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.ProvinceDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,provinceid as provinceid ,province as province 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,provinceid ,province 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.ProvinceEntity" id="provinceMap">
+		        <result property="id" column="id"/>
+		        <result property="provinceid" column="provinceid"/>
+		        <result property="province" column="province"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.ProvinceEntity">
+		select <include refid="allColumns"></include> from province where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.ProvinceEntity">
+		select <include refid="allColumns"></include> from province
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from province 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.ProvinceEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into province
+		(
+			`provinceid`, 
+			`province`
+		)
+		values
+		(
+			#{provinceid}, 
+			#{province}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.ProvinceEntity">
+		update province 
+		<set>
+			<if test="provinceid != null">`provinceid` = #{provinceid}, </if>
+			<if test="province != null">`province` = #{province}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from province where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from province where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
