@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui.css"/>
+<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}video.css">
+<link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+<body ontouchstart style="background-color: #f8f8f8;">
+		<input type="hidden" id="schoolId" value="${request.getParameter('schoolId')}">
+		<div class="slide" id="slide2">
+		    <ul id="slideContainer">
+		    </ul>
+		    <div class="dot" id="myDot">
+		    </div>
+		</div>
+		<div class="weui_article">
+	            <h1 id="shoolName">简介</h1>
+	            <section>
+	                <section id="desc">
+	                 </section>
+	            </section>
+	    </div>
+	    
+	    <div style="display: none;" id="musicContainer">
+		</div>
+		
+		<div class="weui_grids"  >
+	            <a href="javascript:;" class="weui_grid js_grid" onclick="audioplay('mp3');" >
+	                <div class="weui_grid_icon" style="width: 58px;height: 58px;">
+	                    <img src="${rc.contextPath}/statics/images/class/music@3x.png" alt="">
+	                </div>
+	                <p class="weui_grid_label">音乐</p>
+	            </a>
+	            <a href="#theVedio" class="weui_grid js_grid" >
+	                <div class="weui_grid_icon" style="width: 58px;height: 58px;">
+	                    <img src="${rc.contextPath}/statics/images/class/video@3x.png" alt="">
+	                </div>
+	                <p class="weui_grid_label">视频</p>
+	            </a>
+	            <!-- dynamicList.html -->
+	            <a href="javascript:void(0);" class="weui_grid js_grid" >
+	                <div class="weui_grid_icon" style="width: 58px;height: 58px;">
+	                    <img src="${fieldTool.STATIC_SOURCE_CSS}dynamic3x.png" alt="">
+	                </div>
+	                <p class="weui_grid_label">动态</p>
+	            </a>
+	        </div>
+	        <!-- 分割线 -->
+	        <div class="weui-loadmore weui-loadmore-line">
+	            <span class="weui-loadmore-tips" id="schoolTypeText"></span>
+	        </div>
+	        <div class="weui_grids"  id="theContainer">
+	        </div>
+	        
+	     <!-- 分割线 -->
+        <div class="weui-loadmore weui-loadmore-line">
+            <span class="weui-loadmore-tips">学校视频</span>
+        </div>
+	     <div class="zy_media" id="theVedio">
+		    <video poster="http://7xr193.com1.z0.glb.clouddn.com/test.jpg" data-config='{"mediaTitle": "《疯狂动物城》--来自Yoby七牛视频"}' webkit-playsinline>
+		        <source src="http://7xr193.com1.z0.glb.clouddn.com/test.mp4" type="video/mp4" >
+		        您的浏览器不支持HTML5视频
+		    </video>
+		</div>
+		<div class="weui-loadmore weui-loadmore-line">
+            <span class="weui-loadmore-tips"><a href="javascript:void(0);" onclick="$('.weui-share').show().addClass('fadeIn');">分享到微信</a></span>
+        </div>
+		<div class="weui-loadmore weui-loadmore-line">
+            <span class="weui-loadmore-tips"><a href="#slide2">班回到顶部</a></span>
+        </div>
+		<div class="weui-share" onclick="$(this).fadeOut();$(this).removeClass('fadeOut')">
+			<div class="weui-share-box">
+			点击右上角发送给指定朋友或分享到朋友圈 <i></i>
+			</div>
+		</div>
+</body>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script>
+	<script src="${fieldTool.STATIC_SOURCE_JS}swipe.js"></script>
+	<script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_CSS}video.js"></script>
+	<script src="${rc.contextPath}/js/front/school/schoolHomePage.js?_${date.systemTime}"></script>
+</html>
