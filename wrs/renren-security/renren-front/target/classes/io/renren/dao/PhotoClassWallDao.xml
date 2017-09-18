@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoClassWallDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,content as content ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,class_id as classId ,music as music ,vedio as vedio 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,content ,gmt_modified ,gmt_create ,class_id ,music ,vedio 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoClassWallEntity" id="photoClassWallMap">
+		        <result property="id" column="id"/>
+		        <result property="content" column="content"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="classId" column="class_id"/>
+		        <result property="music" column="music"/>
+		        <result property="vedio" column="vedio"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoClassWallEntity">
+		select <include refid="allColumns"></include> from photo_class_wall where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoClassWallEntity">
+		select <include refid="allColumns"></include> from photo_class_wall
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_class_wall 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoClassWallEntity">
+		insert into photo_class_wall
+		(
+			`id`, 
+			`content`, 
+			`gmt_modified`, 
+			`gmt_create`, 
+			`class_id`, 
+			`music`, 
+			`vedio`
+		)
+		values
+		(
+			#{id}, 
+			#{content}, 
+			#{gmtModified}, 
+			#{gmtCreate}, 
+			#{classId}, 
+			#{music}, 
+			#{vedio}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoClassWallEntity">
+		update photo_class_wall 
+		<set>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="classId != null">`class_id` = #{classId}, </if>
+			<if test="music != null">`music` = #{music}, </if>
+			<if test="vedio != null">`vedio` = #{vedio}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_class_wall where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_class_wall where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

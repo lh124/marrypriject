@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoSchoolDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,school_type as schoolType ,music as music ,vedio as vedio ,school_desc as schoolDesc ,creater_id as createrId ,gmt_create as gmtCreate ,gmt_modefied as gmtModefied ,logo as logo ,province_id as provinceId ,city_id as cityId 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,school_type ,music ,vedio ,school_desc ,creater_id ,gmt_create ,gmt_modefied ,logo ,province_id ,city_id 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoSchoolEntity" id="photoSchoolMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="schoolType" column="school_type"/>
+		        <result property="music" column="music"/>
+		        <result property="vedio" column="vedio"/>
+		        <result property="schoolDesc" column="school_desc"/>
+		        <result property="createrId" column="creater_id"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModefied" column="gmt_modefied"/>
+		        <result property="logo" column="logo"/>
+		        <result property="provinceId" column="province_id"/>
+		        <result property="cityId" column="city_id"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoSchoolEntity">
+		select <include refid="allColumns"></include> from photo_school where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoSchoolEntity">
+		select <include refid="allColumns"></include> from photo_school 
+		<if test="schoolName != null and schoolName.trim() != '' ">
+			where name like '%${schoolName}%' 
+		</if>
+		<if test="cityId != null and cityId.trim() != '' ">
+			where city_id = #{cityId}
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc 
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_school 
+		<if test="schoolName != null and schoolName.trim() != '' ">
+			where name like '%${schoolName}%' 
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoSchoolEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_school
+		(
+			`name`, 
+			`school_type`, 
+			`music`, 
+			`vedio`, 
+			`school_desc`, 
+			`creater_id`, 
+			`gmt_create`, 
+			`gmt_modefied`, 
+			`logo`, 
+			`province_id`, 
+			`city_id`
+		)
+		values
+		(
+			#{name}, 
+			#{schoolType}, 
+			#{music}, 
+			#{vedio}, 
+			#{schoolDesc}, 
+			#{createrId}, 
+			#{gmtCreate}, 
+			#{gmtModefied}, 
+			#{logo}, 
+			#{provinceId}, 
+			#{cityId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoSchoolEntity">
+		update photo_school 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="schoolType != null">`school_type` = #{schoolType}, </if>
+			<if test="music != null">`music` = #{music}, </if>
+			<if test="vedio != null">`vedio` = #{vedio}, </if>
+			<if test="schoolDesc != null">`school_desc` = #{schoolDesc}, </if>
+			<if test="createrId != null">`creater_id` = #{createrId}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModefied != null">`gmt_modefied` = #{gmtModefied}, </if>
+			<if test="logo != null">`logo` = #{logo}, </if>
+			<if test="provinceId != null">`province_id` = #{provinceId}, </if>
+			<if test="cityId != null">`city_id` = #{cityId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_school where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_school where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

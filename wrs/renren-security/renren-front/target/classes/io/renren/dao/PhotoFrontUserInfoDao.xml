@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoFrontUserInfoDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,front_user_id as frontUserId ,qq as qq , perm, password,wechat as wechat ,address as address ,motto as motto ,gtm_create as gtmCreate ,gtm_modified as gtmModified 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,front_user_id ,qq ,wechat ,address ,perm ,password ,motto ,gtm_create ,gtm_modified 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoFrontUserInfoEntity" id="photoFrontUserInfoMap">
+		        <result property="id" column="id"/>
+		        <result property="frontUserId" column="front_user_id"/>
+		        <result property="qq" column="qq"/>
+		        <result property="wechat" column="wechat"/>
+		        <result property="address" column="address"/>
+		        <result property="motto" column="motto"/>
+		        <result property="gtmCreate" column="gtm_create"/>
+		        <result property="gtmModified" column="gtm_modified"/>
+		        <result property="perm" column="perm"/>
+		        <result property="password" column="password"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoFrontUserInfoEntity">
+		select <include refid="allColumns"></include> from photo_front_user_info where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoFrontUserInfoEntity">
+		select <include refid="allColumns"></include> from photo_front_user_info
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_front_user_info 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoFrontUserInfoEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_front_user_info
+		(
+			`front_user_id`, 
+			`qq`, 
+			`wechat`, 
+			`address`, 
+			`motto`, 
+			`gtm_create`, 
+			`gtm_modified`,
+			`perm`,
+			`password`
+		)
+		values
+		(
+			#{frontUserId}, 
+			#{qq}, 
+			#{wechat}, 
+			#{address}, 
+			#{motto}, 
+			#{gtmCreate}, 
+			#{gtmModified},
+			#{perm},
+			#{password}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoFrontUserInfoEntity">
+		update photo_front_user_info 
+		<set>
+			<if test="frontUserId != null">`front_user_id` = #{frontUserId}, </if>
+			<if test="qq != null">`qq` = #{qq}, </if>
+			<if test="wechat != null">`wechat` = #{wechat}, </if>
+			<if test="address != null">`address` = #{address}, </if>
+			<if test="motto != null">`motto` = #{motto}, </if>
+			<if test="gtmCreate != null">`gtm_create` = #{gtmCreate}, </if>
+			<if test="gtmModified != null">`gtm_modified` = #{gtmModified}</if>
+			<if test="perm != null">`perm` = #{perm}</if>
+			<if test="password != null">`password` = #{password}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_front_user_info where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_front_user_info where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
