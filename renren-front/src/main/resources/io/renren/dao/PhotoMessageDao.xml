@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoMessageDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,user_id as userId ,user_get_id as userGetId ,msg_type as msgType ,contents as contents ,gmt_create as gmtCreate ,gmt_modefied as gmtModefied 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,user_id ,user_get_id ,msg_type ,contents ,gmt_create ,gmt_modefied 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoMessageEntity" id="photoMessageMap">
+		        <result property="id" column="id"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="userGetId" column="user_get_id"/>
+		        <result property="msgType" column="msg_type"/>
+		        <result property="contents" column="contents"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModefied" column="gmt_modefied"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoMessageEntity">
+		select <include refid="allColumns"></include> from photo_message where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoMessageEntity">
+		select <include refid="allColumns"></include> from photo_message
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_message 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoMessageEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_message
+		(
+			`user_id`, 
+			`user_get_id`, 
+			`msg_type`, 
+			`contents`, 
+			`gmt_create`, 
+			`gmt_modefied`
+		)
+		values
+		(
+			#{userId}, 
+			#{userGetId}, 
+			#{msgType}, 
+			#{contents}, 
+			#{gmtCreate}, 
+			#{gmtModefied}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoMessageEntity">
+		update photo_message 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="userGetId != null">`user_get_id` = #{userGetId}, </if>
+			<if test="msgType != null">`msg_type` = #{msgType}, </if>
+			<if test="contents != null">`contents` = #{contents}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModefied != null">`gmt_modefied` = #{gmtModefied}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_message where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_message where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

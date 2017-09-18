@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoUserFunctionDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,function_modules_id as functionModulesId ,user_id as userId ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,module_name as moduleName 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,function_modules_id ,user_id ,gmt_create ,gmt_modified ,module_name 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoUserFunctionEntity" id="photoUserFunctionMap">
+		        <result property="id" column="id"/>
+		        <result property="functionModulesId" column="function_modules_id"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="moduleName" column="module_name"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoUserFunctionEntity">
+		select <include refid="allColumns"></include> from photo_user_function where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoUserFunctionEntity">
+		select <include refid="allColumns"></include> from photo_user_function
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_user_function 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoUserFunctionEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_user_function
+		(
+			`function_modules_id`, 
+			`user_id`, 
+			`gmt_create`, 
+			`gmt_modified`, 
+			`module_name`
+		)
+		values
+		(
+			#{functionModulesId}, 
+			#{userId}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{moduleName}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoUserFunctionEntity">
+		update photo_user_function 
+		<set>
+			<if test="functionModulesId != null">`function_modules_id` = #{functionModulesId}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="moduleName != null">`module_name` = #{moduleName}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_user_function where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_user_function where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

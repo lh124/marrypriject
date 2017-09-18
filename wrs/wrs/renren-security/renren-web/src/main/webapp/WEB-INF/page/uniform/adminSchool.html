@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+#parse("sys/header.html")
+</head>
+<body>
+<input type="hidden" value="${request.getParameter('adminId')}" id="adminId">
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			#if($shiro.hasPermission("uniform_school:delete"))
+			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			#end
+			<a class="btn btn-primary" @click="manageSchool"><i class="fa fa-plus"></i>&nbsp;添加管理学校</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+</div>
+<!-- modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	 <input type="hidden" id="userId" value="">
+	 <div class="modal-dialog" role="document">
+	  <div class="modal-content">
+	  <div class="modal-header">
+	   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+	   <h4 class="modal-title" id="myModalLabel">添加班级关系</h4>
+	  </div>
+	  <div class="modal-body">
+	 
+	   <div class="form-group">
+	   <label for="txt_departmentname">省</label>
+	   	<select class="form-control" id="province">
+			</select>
+	   </div>
+	   <div class="form-group">
+	   <label for="txt_departmentname">市</label>
+	   	<select class="form-control" id="city">
+		</select>
+	   </div>
+	   <div class="form-group">
+	   <label for="txt_parentdepartment">学校</label>
+		<select class="form-control" id="school">
+		</select>
+	   </div>
+	  </div>
+	  <div class="modal-footer">
+	   <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+	   <button type="button" onclick="doManageSchool()" class="btn btn-primary" ><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+	  </div>
+	  </div>
+	 </div>
+ </div>
+
+<script src="${rc.contextPath}/js/uniform/adminSchool.js?_${date.systemTime}"></script>
+</body>
+</html>

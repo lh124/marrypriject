@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>智能校服系统</title>
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+  <style type="text/css">
+  	.back_img {
+  		height: 180px; 
+  		background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/static-sources/cheerUp.jpg'); 
+  		background-repeat:no-repeat; 
+  		background-size:100% 100%;
+  		-moz-background-size:100% 100%
+  	}
+  </style>   
+</head>
+
+<body ontouchstart style="background-color: #f8f8f8;">
+	<input type="hidden" value="$request.getParameter('classId')" id="classId">
+	<div class="page-hd back_img">
+		<!-- <h1 class="page-hd-title">班级寄语</h1> -->
+	</div>
+	<div class="weui_grids"  >
+        <a href="javascript:void(0)" class="weui_grid js_grid"  >
+            <p class="weui_grid_label">&nbsp;&nbsp;&nbsp;</p>
+        </a>
+        <a href="addClassMessage.html?classId=$request.getParameter('classId')" class="weui_grid js_grid"   >
+            <p class="weui_grid_label">发布信息</p>
+        </a>
+        <a href="javascript:void(0)" class="weui_grid js_grid"   >
+            <p class="weui_grid_label">&nbsp;&nbsp;&nbsp;</p>
+        </a>          
+    </div>
+	<!-- <div class="weui_cells_title">我们的寄语</div> -->
+	<div class="weui_panel weui_panel_access">
+		<div class="weui_panel_bd">
+		</div>
+	</div>
+     <script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.3/zepto.min.js"></script> 
+	 <script src="${fieldTool.STATIC_SOURCE_JS}updown.js"></script>
+	 <script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
+     <script src="${rc.contextPath}/js/front/uniform/classMessageLIst.js"></script>
+</body>
+</html>

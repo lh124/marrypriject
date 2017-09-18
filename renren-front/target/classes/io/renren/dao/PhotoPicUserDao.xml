@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoPicUserDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,pic_path as picPath ,pic_url as picUrl ,pic_type as picType ,info as info ,user_id as userId ,pic_order as picOrder ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,type_id as typeId 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,pic_path ,pic_url ,pic_type ,info ,user_id ,pic_order ,gmt_create ,gmt_modified ,type_id 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoPicUserEntity" id="photoPicUserMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="picPath" column="pic_path"/>
+		        <result property="picUrl" column="pic_url"/>
+		        <result property="picType" column="pic_type"/>
+		        <result property="info" column="info"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="picOrder" column="pic_order"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="typeId" column="type_id"/>
+	</resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoPicUserEntity">
+		select <include refid="allColumns"></include> from photo_pic_user where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoPicUserEntity">
+		select <include refid="allColumns"></include> from photo_pic_user 
+		where  type_id = #{typeId} 
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_pic_user where  type_id = #{typeId}  
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoPicUserEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_pic_user
+		(
+			`name`, 
+			`pic_path`, 
+			`pic_url`, 
+			`pic_type`, 
+			`info`, 
+			`user_id`, 
+			`pic_order`, 
+			`gmt_create`, 
+			`gmt_modified`, 
+			`type_id`
+		)
+		values
+		(
+			#{name}, 
+			#{picPath}, 
+			#{picUrl}, 
+			#{picType}, 
+			#{info}, 
+			#{userId}, 
+			#{picOrder}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{typeId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoPicUserEntity">
+		update photo_pic_user 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="picPath != null">`pic_path` = #{picPath}, </if>
+			<if test="picUrl != null">`pic_url` = #{picUrl}, </if>
+			<if test="picType != null">`pic_type` = #{picType}, </if>
+			<if test="info != null">`info` = #{info}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="picOrder != null">`pic_order` = #{picOrder}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="typeId != null">`type_id` = #{typeId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_pic_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_pic_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

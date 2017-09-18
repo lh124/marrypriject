@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoFamilyUserDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,user_id as userId ,family_id as familyId ,role_type as roleType ,status as status ,gtm_create as gtmCreate ,gtm_modified as gtmModified 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,user_id ,family_id ,role_type ,status ,gtm_create ,gtm_modified 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoFamilyUserEntity" id="photoFamilyUserMap">
+		        <result property="id" column="id"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="familyId" column="family_id"/>
+		        <result property="roleType" column="role_type"/>
+		        <result property="status" column="status"/>
+		        <result property="gtmCreate" column="gtm_create"/>
+		        <result property="gtmModified" column="gtm_modified"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoFamilyUserEntity">
+		select <include refid="allColumns"></include> from photo_family_user where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoFamilyUserEntity">
+		select <include refid="allColumns"></include> from photo_family_user
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_family_user 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoFamilyUserEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_family_user
+		(
+			`user_id`, 
+			`family_id`, 
+			`role_type`, 
+			`status`, 
+			`gtm_create`, 
+			`gtm_modified`
+		)
+		values
+		(
+			#{userId}, 
+			#{familyId}, 
+			#{roleType}, 
+			#{status}, 
+			#{gtmCreate}, 
+			#{gtmModified}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoFamilyUserEntity">
+		update photo_family_user 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="familyId != null">`family_id` = #{familyId}, </if>
+			<if test="roleType != null">`role_type` = #{roleType}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="gtmCreate != null">`gtm_create` = #{gtmCreate}, </if>
+			<if test="gtmModified != null">`gtm_modified` = #{gtmModified}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_family_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_family_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

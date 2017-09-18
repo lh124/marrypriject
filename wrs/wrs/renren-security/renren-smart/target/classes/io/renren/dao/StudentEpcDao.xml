@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.StudentEpcDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,student_id as studentId ,epc as epc 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,student_id ,epc 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.StudentEpcEntity" id="studentEpcMap">
+		        <result property="id" column="id"/>
+		        <result property="studentId" column="student_id"/>
+		        <result property="epc" column="epc"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.StudentEpcEntity">
+		select <include refid="allColumns"></include> from student_epc where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.StudentEpcEntity">
+		select <include refid="allColumns"></include> from student_epc
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from student_epc 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.StudentEpcEntity">
+		insert into student_epc
+		(
+			`id`, 
+			`student_id`, 
+			`epc`
+		)
+		values
+		(
+			#{id}, 
+			#{studentId}, 
+			#{epc}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.StudentEpcEntity">
+		update student_epc 
+		<set>
+			<if test="studentId != null">`student_id` = #{studentId}, </if>
+			<if test="epc != null">`epc` = #{epc}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from student_epc where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from student_epc where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

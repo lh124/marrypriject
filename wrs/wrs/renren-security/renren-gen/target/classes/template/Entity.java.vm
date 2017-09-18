@@ -1,0 +1,53 @@
+package ${package}.entity.sqlserver;
+
+import java.io.Serializable;
+import java.util.Date;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+ @TableName("${tableName}")
+public class ${className}Entity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+	#if($column.columnName != $pk.columnName)
+//$column.comments
+	@TableField(value="${column.columnName}")
+	private $column.attrType $column.attrname;
+	#end
+	#if($column.columnName == $pk.columnName)
+//$column.comments
+	@TableId(value="$pk.columnName",type=IdType.AUTO)
+	private $column.attrType $column.attrname;	
+	#end
+	
+#end
+
+#foreach ($column in $columns)
+	/**
+	 * 设置：${column.comments}
+	 */
+	public void set${column.attrName}($column.attrType $column.attrname) {
+		this.$column.attrname = $column.attrname;
+	}
+	/**
+	 * 获取：${column.comments}
+	 */
+	public $column.attrType get${column.attrName}() {
+		return $column.attrname;
+	}
+#end
+}

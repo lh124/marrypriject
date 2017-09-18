@@ -1,0 +1,16 @@
+package ${package}.dao.sqlserver;
+
+import io.renren.dao.BaseDao;
+import ${package}.entity.sqlserver.${className}Entity;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Dao extends BaseDao<${className}Entity>,BaseMapper<${className}Entity> {
+	
+}

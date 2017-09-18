@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoClassDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,perm as perm ,class_desc as classDesc , status, classify,music as music ,video as video ,logo as logo ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,graduation_time_id as graduationTimeId ,school_id as schoolId ,college_id as collegeId ,password as password 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,perm ,class_desc ,music ,video ,logo , status, classify,gmt_create ,gmt_modified ,graduation_time_id ,school_id ,college_id ,password 		
+	</sql>
+	
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoClassEntity" id="photoClassMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="perm" column="perm"/>
+		        <result property="classDesc" column="class_desc"/>
+		        <result property="music" column="music"/>
+		        <result property="video" column="video"/>
+		        <result property="logo" column="logo"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="graduationTimeId" column="graduation_time_id"/>
+		        <result property="schoolId" column="school_id"/>
+		        <result property="collegeId" column="college_id"/>
+		        <result property="password" column="password"/>
+		        <result property="status" column="status"/>
+		        <result property="classify" column="classify"/>
+	    </resultMap>
+	
+	<!-- 查询用户管理员查询可管理的班级 -->
+	<select id="querAdminClass" resultType="io.renren.entity.PhotoClassEntity">
+		SELECT pc.id, pc.name FROM photo_class pc RIGHT  JOIN photo_user_class puc ON  puc.class_id = pc.id 
+		where puc.front_user_id=#{userId} and puc.class_role_type=#{roleType}
+	</select>
+	
+	<!-- 用于Map测试 -->
+	<select id="queryMapObject" resultType="java.util.HashMap">
+		select <include refid="allColumnsAlias"></include> from photo_class 
+	</select>
+	<select id="queryObject" resultType="io.renren.entity.PhotoClassEntity">
+		select <include refid="allColumns"></include> from photo_class where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoClassEntity">
+		<choose>
+            <when test="userId != null">
+                select pc.id ,pc.name ,pc.perm ,pc.class_desc ,pc.music ,pc.video ,pc.logo , pc.status,
+				pc.classify,pc.gmt_create ,pc.gmt_modified ,pc.graduation_time_id ,
+				pc.school_id ,pc.college_id ,pc.password 
+				from photo_class pc 
+				left join photo_user_class puc on pc.id = puc.class_id where 
+				puc.front_user_id = #{userId} and puc.status = 3 
+            </when>
+			<otherwise>
+                select <include refid="allColumns"></include> from photo_class pc where 1=1
+			</otherwise>
+        </choose>
+		<if test="classify != null"> and classify = #{classify} </if>
+		<if test="status != null"> and pc.status = #{status} </if>
+		<if test="schoolId != null"> and school_id = #{schoolId} </if> 
+		<if test="collegeId != null"> and college_id = #{collegeId} </if> 
+		<if test="graduationTimeId != null"> and graduation_time_id = #{graduationTimeId}</if>  
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_class where 1=1 
+		<if test="classify != null"> and classify = #{classify} </if>
+		<if test="status != null"> and status = #{status} </if>
+		<if test="schoolId != null"> and school_id = #{schoolId} </if> 
+		<if test="collegeId != null"> and college_id = #{collegeId} </if> 
+		<if test="graduationTimeId != null"> and graduation_time_id = #{graduationTimeId}</if>  
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoClassEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_class
+		(
+			`name`, 
+			`perm`, 
+			`class_desc`, 
+			`music`, 
+			`logo`, 
+			`gmt_create`, 
+			`gmt_modified`, 
+			`graduation_time_id`, 
+			`school_id`, 
+			`college_id`, 
+			`password`,
+			`video`,
+			`status`,
+			`classify`
+		)
+		values
+		(
+			#{name}, 
+			#{perm}, 
+			#{classDesc}, 
+			#{music}, 
+			#{logo}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{graduationTimeId}, 
+			#{schoolId}, 
+			#{collegeId}, 
+			#{password},
+			#{video},
+			#{status},
+			#{classify}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoClassEntity">
+		update photo_class 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="perm != null">`perm` = #{perm}, </if>
+			<if test="classDesc != null">`class_desc` = #{classDesc}, </if>
+			<if test="music != null">`music` = #{music}, </if>
+			<if test="logo != null">`logo` = #{logo}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="graduationTimeId != null">`graduation_time_id` = #{graduationTimeId}, </if>
+			<if test="schoolId != null">`school_id` = #{schoolId}, </if>
+			<if test="collegeId != null">`college_id` = #{collegeId}, </if>
+			<if test="password != null">`password` = #{password},</if>
+			<if test="video != null">`video` = #{video},</if>
+			<if test="status != null">`status` = #{status},</if>
+			<if test="classify != null">`classify` = #{classify}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_class where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_class where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>冠宇科技</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+</head>
+<body ontouchstart>
+    <div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+
+    <div class="container" id="container">
+		<div class="page" id="pageContainer" style="opacity:1;" >
+			<div class="page__bd" style="height: 100%;">
+				<div class="weui-tab">
+					<div id="innerContainer" class="weui-tab__panel">
+					
+					</div>
+					<div class="weui-tabbar">
+						#include("front/tabbar/student_photo_tabbar.html")
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<!--BEGIN dialog2-->
+        <div class="js_dialog" id="iosDialog2" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd" id="showPan">微信登录绑定成功！</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:$('#iosDialog2').fadeOut(100);"  class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+        </div>
+   <!--END dialog2-->
+   <!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosDialog1" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示</strong></div>
+                <div class="weui-dialog__bd">确认取消微信绑定吗？</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:void(0);" onclick="$('#iosDialog1').fadeOut(200);" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:void(0);" onclick="cancelWechatBinding();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                </div>
+            </div>
+        </div>
+   <!--END dialog1-->
+   <!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosDialog3" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示</strong></div>
+                <div class="weui-dialog__bd">确认切换账号吗？</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:void(0);" onclick="$('#iosDialog3').fadeOut(200);" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:void(0);" onclick="changAccount();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                </div>
+            </div>
+        </div>
+   <!--END dialog1-->
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script>
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}vipspa.min.js"></script>
+    <!-- <script src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script> -->
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="${rc.contextPath}/statics/plugins/weui/weui.min.js"></script>
+    <script src="${rc.contextPath}/js/front/app_photo.js"></script>
+    
+    <script src="${rc.contextPath}/js/front/common/loadHtml.js?_${date.systemTime}"></script>
+    <!-- <script src="${rc.contextPath}/statics/plugins/weui/examplea.js?a=2423"></script> -->
+	<script type="text/javascript">
+		$(function(){
+			weChatBinding();
+			// 微信配置
+	   		$.ajax({
+	                type: "POST",
+	                url: "./getWeChatSign",
+	                data: {"url":window.location.href},
+	                dataType:'json',
+	                success: function (result) { 
+	                	var shareUrl = 'http://wrs.gykjewm.com/front/classes/classHomePage.html?classId=1';  //分享的URL地址
+						var shareTitle = "微人生相册"; //分享的标题
+						var shareImage = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/static-sources/wrsLogo.jpg"; //分享的图片地址
+						var shareDesc = "不一样的毕业相册,不一样的毕业回忆"; //分享的描述信息
+						
+						wx.config({
+							    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+							    appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
+							    timestamp: result.timestamp, // 必填，生成签名的时间戳
+							    nonceStr: result.nonceStr, // 必填，生成签名的随机串
+							    signature: result.signature,// 必填，签名，见附录1
+							    jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','onMenuShareQZone']  // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+						});
+						//注入成功会执行下面方法
+						wx.ready(function(){
+						//分享到朋友圈
+						     wx.onMenuShareTimeline({
+							    title: shareTitle, // 分享标题
+							    link: shareUrl, // 分享链接
+							    imgUrl: shareImage, // 分享图标
+							    success: function () { 
+							        // 用户确认分享后执行的回调函数
+							    },
+							    cancel: function () { 
+							        // 用户取消分享后执行的回调函数
+							    }
+							});
+							//分享到朋友圈
+							wx.onMenuShareAppMessage({
+							    title: shareTitle, // 分享标题
+							    desc: shareDesc, // 分享描述
+							    link: shareUrl, // 分享链接
+							    imgUrl: shareImage, // 分享图标
+							    type: '', // 分享类型,music、video或link，不填默认为link
+							    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+							    success: function () { 
+							        // 用户确认分享后执行的回调函数
+							    },
+							    cancel: function () { 
+							        // 用户取消分享后执行的回调函数
+							    }
+							});
+							//分享到QQ
+							wx.onMenuShareQQ({
+							    title: shareTitle, // 分享标题
+							    desc: shareDesc, // 分享描述
+							    link: shareUrl, // 分享链接
+							    imgUrl: shareImage, // 分享图标
+							    success: function () { 
+							       // 用户确认分享后执行的回调函数
+							    },
+							    cancel: function () { 
+							       // 用户取消分享后执行的回调函数
+							    }
+							});
+							//分享到腾讯微博
+							wx.onMenuShareWeibo({
+							    title: shareTitle, // 分享标题
+							    desc: shareDesc, // 分享描述
+							    link: shareUrl, // 分享链接
+							    imgUrl: shareImage, // 分享图标
+							    success: function () { 
+							       // 用户确认分享后执行的回调函数
+							    },
+							    cancel: function () { 
+							        // 用户取消分享后执行的回调函数
+							    }
+							});
+							//分享到QQ空间
+							wx.onMenuShareQZone({
+							    title: shareTitle, // 分享标题
+							    desc: shareDesc, // 分享描述
+							    link: shareUrl, // 分享链接
+							    imgUrl: shareImage, // 分享图标
+							    success: function () { 
+							       // 用户确认分享后执行的回调函数
+							    },
+							    cancel: function () { 
+							        // 用户取消分享后执行的回调函数
+							    }
+							});
+							wx.getLocation({
+							    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+							    success: function (res) {
+							        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+							        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+							        var speed = res.speed; // 速度，以米/每秒计
+							        var accuracy = res.accuracy; // 位置精度
+							        //alert(latitude);
+							        $.ajax({
+										type: "POST",
+									    url: "setUserPosition",
+									    data: {"latitude": latitude, "longitude": longitude},
+									    dataType: "json",
+									    success: function(result){
+											if(result.status == 'ok'){//登录成功
+												
+											}else{
+											
+											}
+										}
+									});
+							    }
+							});
+						});
+					//注入失败会执行下面方法
+					wx.error(function(res){
+						//alert(res);
+				  	});
+	                }
+	            });
+		});
+		
+		// 绑定微信
+		function weChatBinding(){
+			var code = GetQueryString("code");
+			if ( code != undefined && code != null && code != "" ) {
+				$.ajax({
+					type: "POST",
+				    url: "weChatBinding",
+				    data: {"code": code},
+				    dataType: "json",
+				    success: function(result){
+						if(result.status == 'ok'){//登录成功
+							$('#showPan').text(result.msg);
+							$('#iosDialog2').fadeIn(100);
+						}else{
+							//错误不通知
+							//$('#showPan').text(result.msg);
+							//$('#iosDialog2').fadeIn(100);
+						}
+					}
+				});
+			}
+		}
+		
+		//  切换账号
+		function changAccount(){
+			$.ajax({
+					type: "GET",
+				    url: "loginOut",
+				    dataType: "json",
+				    success: function(result){
+						if(result.status == 'ok'){//注销成功
+							var permArray = result.permArray;
+							for (perm in permArray) {
+								if (permArray[perm] == 'graduate:all'){
+									window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http%3a%2f%2fwrs.gykjewm.com%2ffront%2flogin.html&response_type=code&scope=snsapi_base&state=1#wechat_redirect";
+									return ;
+								}
+									//window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http%3a%2f%2fwrs.gykjewm.com%2ffront%2flogin.html&response_type=code&scope=snsapi_base&state=1#wechat_redirect";
+							}
+							window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http%3a%2f%2fwrs.gykjewm.com%2ffront%2flogin.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
+							return ;
+						}else{
+							
+						}
+					}
+				});
+		}
+		
+	</script>
+</body>
+</html>

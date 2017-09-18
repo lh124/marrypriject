@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.PhotoPicWorkMsgDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,path_url as pathUrl ,pic_size as picSize ,info as info ,related_id as relatedId ,pic_type as picType ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,pic_order as picOrder 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,path_url ,pic_size ,info ,related_id ,pic_type ,gmt_create ,gmt_modified ,pic_order 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.PhotoPicWorkMsgEntity" id="photoPicWorkMsgMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="pathUrl" column="path_url"/>
+		        <result property="picSize" column="pic_size"/>
+		        <result property="info" column="info"/>
+		        <result property="relatedId" column="related_id"/>
+		        <result property="picType" column="pic_type"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="picOrder" column="pic_order"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.PhotoPicWorkMsgEntity">
+		select <include refid="allColumns"></include> from photo_pic_work_msg where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.PhotoPicWorkMsgEntity">
+		select <include refid="allColumns"></include> from photo_pic_work_msg
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_pic_work_msg 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.PhotoPicWorkMsgEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_pic_work_msg
+		(
+			`name`, 
+			`path_url`, 
+			`pic_size`, 
+			`info`, 
+			`related_id`, 
+			`pic_type`, 
+			`gmt_create`, 
+			`gmt_modified`, 
+			`pic_order`
+		)
+		values
+		(
+			#{name}, 
+			#{pathUrl}, 
+			#{picSize}, 
+			#{info}, 
+			#{relatedId}, 
+			#{picType}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{picOrder}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.PhotoPicWorkMsgEntity">
+		update photo_pic_work_msg 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="pathUrl != null">`path_url` = #{pathUrl}, </if>
+			<if test="picSize != null">`pic_size` = #{picSize}, </if>
+			<if test="info != null">`info` = #{info}, </if>
+			<if test="relatedId != null">`related_id` = #{relatedId}, </if>
+			<if test="picType != null">`pic_type` = #{picType}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="picOrder != null">`pic_order` = #{picOrder}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_pic_work_msg where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_pic_work_msg where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.SysAdminSchoolDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,admin_id as adminId ,shool_id as shoolId ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,status as status 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,admin_id ,shool_id ,gmt_modified ,gmt_create ,status 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.SysAdminSchoolEntity" id="sysAdminSchoolMap">
+		        <result property="id" column="id"/>
+		        <result property="adminId" column="admin_id"/>
+		        <result property="shoolId" column="shool_id"/>
+		        <result property="gmtModified" column="gmt_modified"/>
+		        <result property="gmtCreate" column="gmt_create"/>
+		        <result property="status" column="status"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.SysAdminSchoolEntity">
+		select <include refid="allColumns"></include> from sys_admin_school where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.SysAdminSchoolEntity">
+		select <include refid="allColumns"></include> from sys_admin_school
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_admin_school 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.SysAdminSchoolEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_admin_school
+		(
+			`admin_id`, 
+			`shool_id`, 
+			`gmt_modified`, 
+			`gmt_create`, 
+			`status`
+		)
+		values
+		(
+			#{adminId}, 
+			#{shoolId}, 
+			#{gmtModified}, 
+			#{gmtCreate}, 
+			#{status}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.SysAdminSchoolEntity">
+		update sys_admin_school 
+		<set>
+			<if test="adminId != null">`admin_id` = #{adminId}, </if>
+			<if test="shoolId != null">`shool_id` = #{shoolId}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_admin_school where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_admin_school where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+</head>
+
+<body ontouchstart class="page-bg" style="background-color: #f9efda;">
+	<div class="page-hd">
+        <h1 class="page-hd-title">
+            	学子归来
+        </h1>
+        <p class="page-hd-desc"></p>
+    </div>
+	<div class="page-hd">
+		
+		<img origile="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493810647768&di=aade1fc6e6a443ff64242d1e7071a4a2&imgtype=0&src=http%3A%2F%2Fimg3.3lian.com%2F2014%2Ff1%2F5%2Fd%2F45.jpg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493811621200&di=f9da9368742dc152b2c4eac4ba737d26&imgtype=0&src=http%3A%2F%2Fs3.sinaimg.cn%2Forignal%2F5551f271875d8c7313562" class="img-border img-max img-radius">
+		<br>
+		<img origile="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493810647768&di=aade1fc6e6a443ff64242d1e7071a4a2&imgtype=0&src=http%3A%2F%2Fimg3.3lian.com%2F2014%2Ff1%2F5%2Fd%2F45.jpg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493812553080&di=0b39e611ae033447b9e312687e08f458&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D2969578348%2C248322512%26fm%3D214%26gp%3D0.jpg" class="img-border img-max img-radius">
+		<br>
+		<img origile="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493810647768&di=aade1fc6e6a443ff64242d1e7071a4a2&imgtype=0&src=http%3A%2F%2Fimg3.3lian.com%2F2014%2Ff1%2F5%2Fd%2F45.jpg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493811621200&di=05a8dd273e1165ea7ba7980c923c5f16&imgtype=0&src=http%3A%2F%2Fwww.nankaizzy.com%2Fuploads%2Fallimg%2F140520%2F1-140520100124251.jpg" class="img-border img-max img-radius">
+		<br>
+		<img origile="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493810647768&di=aade1fc6e6a443ff64242d1e7071a4a2&imgtype=0&src=http%3A%2F%2Fimg3.3lian.com%2F2014%2Ff1%2F5%2Fd%2F45.jpg" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493811621198&di=f98d8073eebdb4da54c246058c1033a7&imgtype=0&src=http%3A%2F%2Fs7.sinaimg.cn%2Forignal%2F5551f2715f2ddb8c55946" class="img-border img-max img-radius">
+	</div>
+	
+	
+</body>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
+    <script>
+    function addLoadEvent(func){ 
+      //将函数作为参数，此函数就是 onload 触发时需要执行的某个函数
+          var oldonload=window.onload; 
+          //将原来的 onload 的值赋给临时变量 oldonload。
+          if(typeof window.onload!="function"){
+          //判断 onload 的类型是否是 function。如果已经执行window.onload=function(){...} 赋值，那么此时 onload 的类型就是 function
+          //否，则说明 onload 还没有被赋值，当前任务 func 为第一个加入的任务
+              window.onload=func(); 
+              
+              //作为第一个任务，给 onload 赋值
+          }else{ 
+          //是，则说明 onload 已被赋值，onload 中先前已有任务加入
+              window.onload=function(){
+                  oldonload();
+                  func(); 
+                  //作为后续任务，追加到先前的任务后面
+              };
+          }
+    }
+    var imgs=new Array();
+    var nowImgurl="";
+    function getPicInfo()
+    {
+      var imgObj=document.getElementsByTagName('img');  //获取图文中所有的img标签对象
+      
+      for(var i=0; i<imgObj.length; i++)
+      {
+        imgs.push(imgObj[i].getAttribute("origile")); 
+        nowImgurl = this.src;    //获取当前点击图片url
+        //下面调用微信内置图片浏览组建
+        imgObj[i].onclick=function(){
+          WeixinJSBridge.invoke("imagePreview",{
+            "urls":imgs,
+            "current":this.src
+            });
+        };
+      }
+    }
+    
+    addLoadEvent(getPicInfo);    //监听事件
+    
+</script>
+</html>
+

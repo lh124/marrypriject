@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.PhotoFrontUserDao">
+	
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,account as account ,password as password , latitude, longitude, openid,phone as phone ,status as status ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,head_img as headImg ,nickname as nickname ,sex as sex 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,account ,password ,phone ,status , latitude, longitude,gmt_create, openid,gmt_modified ,head_img ,nickname ,sex 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.PhotoFrontUserEntity" id="photoFrontUserMap">
+        <result property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="headImg" column="head_img"/>
+        <result property="nickname" column="nickname"/>
+        <result property="sex" column="sex"/>
+        <result property="openid" column="openid"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.PhotoFrontUserEntity">
+		select <include refid="allColumns"></include> from photo_front_user where id = #{value}
+	</select>
+	
+	<select id="queryClassUser" resultType="io.renren.entity.PhotoFrontUserEntity">
+		select pfu.id ,pfu.account ,pfu.password , latitude, longitude,pfu.phone ,pfu.status ,pfu.gmt_create ,
+			pfu.gmt_modified ,pfu.head_img ,pfu.nickname ,pfu.sex , puc.class_role_type as roleId 
+			 from photo_front_user  pfu 
+			left join photo_user_class puc on pfu.id = puc.front_user_id where pfu.id = #{userId} and 
+			puc.class_id = #{classId} 
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.PhotoFrontUserEntity">
+		<if test="classId != null ">
+			select pfu.id ,pfu.account ,pfu.password , latitude, longitude,pfu.phone ,pfu.status ,pfu.gmt_create ,
+			pfu.gmt_modified ,pfu.head_img ,pfu.nickname ,pfu.sex , puc.class_role_type as roleId 
+			 from photo_front_user  pfu 
+			left join photo_user_class puc on pfu.id = puc.front_user_id where 
+			puc.class_id = #{classId} 
+		</if>
+		<if test="classId == null ">
+			select pfu.id ,pfu.account ,pfu.password , latitude, longitude,pfu.phone ,pfu.status ,pfu.gmt_create ,
+			pfu.gmt_modified ,pfu.head_img ,pfu.nickname ,pfu.sex 
+			 from photo_front_user  pfu
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from photo_front_user pfu
+		<if test="classId != null ">
+			left join photo_user_class puc on pfu.id = puc.front_user_id where 
+			puc.class_id = #{classId} 
+		</if>
+	</select>
+	
+	<resultMap type="io.renren.entity.PhotoFrontUserEntity" id="queryUserByAccountMap">
+		<id property="id" column="userId"/>
+		<result property="account" column="account"/>
+		<result property="password" column="password"/>
+		<result property="status" column="status"/>
+		<result property="phone" column="phone" />
+		<result property="nickname" column="nickname"/>
+		<result property="sex" column="sex"/>
+		<result property="headImg" column="head_img"/>
+		<result property="openid" column="openid"/>
+		<result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+		<collection property="authList" resultMap="queryUserByAccountParaMap"></collection>
+	</resultMap>
+	<resultMap type="io.renren.entity.PhotoFunctionModulesEntity" id="queryUserByAccountParaMap">
+		<result property="name" column="functionName"/>
+		<result property="url" column="url"/>
+		<result property="functionOrder" column="function_order"/>
+		<result property="perm" column="perm"/>
+		<result property="icon" column="icon"/>
+	</resultMap>
+	
+	<select id="queryUserByAccount" resultMap="queryUserByAccountMap">
+		select fu.id as userId, fu.account, latitude, longitude,openid, fu.password, fu.status, fu.phone, fu.head_img,
+		fu.nickname, sex ,fm.url ,fm.function_order ,fm.icon,fm.perm,fm.name as functionName  from photo_front_user fu 
+		left join photo_user_function uf on fu.id=uf.user_id left 
+		join photo_function_modules fm on fm.id = uf.function_modules_id where fu.account= #{account} or 
+		fu.phone=#{account} 
+	</select>
+	
+	<resultMap type="io.renren.entity.PhotoFrontUserEntity" id="queryUsersByClassIdMap">
+		<id property="id" column="user_id"/>
+		<result property="account" column="account"/>
+		<result property="status" column="user_status"/>
+		<result property="phone" column="phone" />
+		<result property="nickname" column="nickname"/>
+		<result property="sex" column="sex"/>
+		<result property="headImg" column="head_img"/>
+		<result property="openid" column="openid"/>
+		<result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+		<association property="userClass" resultMap="queryUserClass"></association>
+	</resultMap>
+	<resultMap type="io.renren.entity.PhotoUserClassEntity" id="queryUserClass">
+		<id property="id" column="id"/>
+        <result property="classId" column="class_id"/>
+        <result property="frontUserId" column="front_user_id"/>
+        <result property="status" column="puc_status"/>
+        <result property="classRoleType" column="class_role_type"/>
+	</resultMap>
+	
+	<select id="queryUsersByClassId" resultMap="queryUsersByClassIdMap">
+		SELECT pfu.id user_id,pfu.account ,  latitude, longitude, pfu.latitude, pfu.longitude, pfu.phone ,pfu.status as user_status,pfu.gmt_create ,pfu.gmt_modified ,pfu.head_img ,pfu.nickname ,pfu.sex,
+		puc.class_id ,puc.front_user_id ,puc.status as puc_status,class_role_type
+		FROM photo_front_user pfu left JOIN photo_user_class  puc 
+		ON pfu.id = puc.front_user_id WHERE puc.class_id=#{classId} and puc.status=#{status}
+	</select>
+	
+	 
+	<insert id="save" parameterType="io.renren.entity.PhotoFrontUserEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into photo_front_user
+		(
+			`account`, 
+			`password`, 
+			`phone`, 
+			`status`, 
+			`gmt_create`, 
+			`gmt_modified`, 
+			`head_img`,
+			`nickname`,
+			`sex`,
+			`openid`,
+			`latitude`,
+			`longitude`
+		)
+		values
+		(
+			#{account}, 
+			#{password}, 
+			#{phone}, 
+			#{status}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{headImg},
+			#{nickname},
+			#{sex},
+			#{openid},
+			#{latitude},
+			#{longitude}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.PhotoFrontUserEntity">
+		update photo_front_user 
+		<set>
+			<if test="account != null">`account` = #{account}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="headImg != null">`head_img` = #{headImg},</if>
+			<if test="nickname != null">`nickname` = #{nickname},</if>
+			<if test="sex != null">`sex` = #{sex},</if>
+			<if test="openid != null">`openid` = #{openid},</if>
+			<if test="latitude != null">`latitude` = #{latitude},</if>
+			<if test="longitude != null">`longitude` = #{longitude}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from photo_front_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from photo_front_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

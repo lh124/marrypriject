@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<title>班级相册管理</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+	<link rel="stylesheet" href="${fieldTool.WEUI_V_0_4_3}"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}weui2.css"/>
+	</head>
+	<body ontouchstart class="page-bg">
+		<input type="hidden" id="classId" value="$request.getParameter('classId')">
+		<div class="page-hd" style="height: 180px; background-image: url('http://static.gykjewm.com/static-sources/classmate_bg_new.jpg'); background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;">
+		        <img class="circle" style="margin-top:100px;display: block;float:left;height: 70px; width: 70px;" alt="" src="http://static.gykjewm.com/${session.getAttribute('frontUser').headImg}">
+		        <span style="display: block;margin-top:100px;float:left;height: 70px;line-height:70px;margin-left: 20px">$session.getAttribute("frontUser").nickname</span>
+		</div>
+		<div class="weui_grids"  >
+            <a href="./classPhotoTypeManage.html?classId=$request.getParameter('classId')" class="weui_grid js_grid"  >
+               
+                <p class="weui_grid_label">
+                    分类管理
+                </p>
+            </a>
+            <a href="javascript:;" class="weui_grid js_grid"   >
+                <p class="weui_grid_label">
+                &nbsp;&nbsp;&nbsp;
+                </p>
+            </a>
+            <a href="./classUploadPhotos.html?classId=$request.getParameter('classId')" class="weui_grid js_grid"   >
+                
+                <p class="weui_grid_label">
+                    发布照片
+                </p>
+            </a>          
+        </div>
+		<div class="page-hd" style="text-align: center;" id="container">
+		</div>
+		<script src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script>
+		<script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
+		<script src="${rc.contextPath}/js/front/user/classPhotoType.js"></script>
+	</body>
+</html>
