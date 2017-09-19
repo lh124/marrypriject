@@ -76,9 +76,11 @@
     <script src="${rc.contextPath}/statics/plugins/weui/weui.min.js"></script>
     <script src="${rc.contextPath}/js/smart/app_uniform.js"></script>
     <script src="${fieldTool.STATIC_SOURCE_JS}updown.js"></script>
+    <script src="../js/smart/shouye/js/swipe.js"></script>
     
     <script src="${rc.contextPath}/js/smart/common/loadHtml.js?_${date.systemTime}"></script>
     <!-- <script src="${rc.contextPath}/statics/plugins/weui/examplea.js?a=2423"></script> -->
+    
 	<script type="text/javascript">
 		$(function(){
 			weChatBinding();
@@ -89,7 +91,7 @@
 	                data: {"url":window.location.href},
 	                dataType:'json',
 	                success: function (result) { 
-	                	var shareUrl = 'http://wrs.gykjewm.com/front/classes/classHomePage.html?classId=1';  //分享的URL地址
+	                	var shareUrl = 'http://localhost:8080/wrs/front/classes/classHomePage.html?classId=1';  //分享的URL地址
 						var shareTitle = "微人生相册"; //分享的标题
 						var shareImage = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/static-sources/wrsLogo.jpg"; //分享的图片地址
 						var shareDesc = "不一样的毕业相册,不一样的毕业回忆"; //分享的描述信息
