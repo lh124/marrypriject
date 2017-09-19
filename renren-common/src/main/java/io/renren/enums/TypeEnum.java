@@ -20,6 +20,8 @@ public enum TypeEnum {
 	PHOTO_SMART_MSG_PIC(12, "smart_msg_pic_", "智能校服班级信息图片", "智能校服班级信息图片上传成功", "智能校服班级信息图片上传失败", 6, "smart_msg_pic/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic"),
 	PHOTO_SMART_HEAD_PIC(13, "smart_head_pic_", "智能校服头像图片", "智能校服头像图片上传成功", "智能校服头像图片上传失败", 6, "smart_head_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic"),
+	PHOTO_SMART_NOTICE_PIC(14, "smart_notice_pic_", "智能校服头像图片", "智能校服头像图片上传成功", "智能校服头像图片上传失败", 6, "smart_notice_pic/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic");
 
 	private Integer type;
