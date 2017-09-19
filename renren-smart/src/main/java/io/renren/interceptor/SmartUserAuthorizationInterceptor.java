@@ -34,7 +34,8 @@ public class SmartUserAuthorizationInterceptor extends HandlerInterceptorAdapter
 
     
 
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     	
     	//判断是页面请求还是ajax请求
