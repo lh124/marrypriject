@@ -86,7 +86,6 @@ public class SmartUserAuthorizationInterceptor extends HandlerInterceptorAdapter
      */
     public boolean errorTurnHandler(String url, HttpServletRequest request, HttpServletResponse response, String errorMessage) throws Exception{
     	boolean isPage = url.indexOf(".html") >= 0;
-    	
     	if (isPage) {
     		// 如果是页面的话就跳转到登录页面
     		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() + LOGIN_URL;
