@@ -17,6 +17,9 @@
 			#if($shiro.hasPermission("uniform_school:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			#if($shiro.hasPermission("schoolnotice:list"))
+			<a class="btn btn-primary" @click="addSchoolNotice"><i class="fa fa-plus"></i>&nbsp;学校通知</a>
+			#end
 			<a class="btn btn-primary" @click="addClass"><i class="fa fa-plus"></i>&nbsp;班级管理</a>
 		</div>
 	    <table id="jqGrid"></table>
