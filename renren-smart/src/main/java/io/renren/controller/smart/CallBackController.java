@@ -4,10 +4,12 @@ import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoPicWorkMsgEntity;
+import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.enums.TypeEnum;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PhotoPicWorkMsgService;
+import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.OssCallBackUtil;
 import io.renren.utils.dataSource.DBTypeEnum;
@@ -43,6 +45,9 @@ public class CallBackController {
 	
 	@Autowired
 	private StudentService studentService;
+	
+	@Autowired
+	private SchoolNoticeService schoolNoticeService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -80,6 +85,11 @@ public class CallBackController {
 					// 学生头像上传
 					if (type.equals(TypeEnum.PHOTO_SMART_HEAD_PIC.getType())){
 						studentHeadPic(jsona);
+						return json;
+					}
+					// 学校通知上传
+					if (type.equals(TypeEnum.PHOTO_SMART_NOTICE_PIC.getType())){
+						schoolNoticePic(jsona);
 						return json;
 					}
 				}
@@ -145,6 +155,26 @@ public class CallBackController {
     		}
     		
     		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+    	} else {
+    		logger.error("智能校服学生头像图片回调关联数据不存在");
+			logger.error(json.toString());
+    	}
+	}
+	
+	/**
+	 * 学校通知图片上传
+	 * @param json
+	 */
+	private void schoolNoticePic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+    	System.out.println("head : " + id);
+    	if (id != null) {
+    		SchoolNoticeEntity schoolNotice = this.schoolNoticeService.selectById(id);
+    		if(schoolNotice != null){
+    			schoolNotice.setNoticepic(ControllerConstant.CDN_URL + json.getString("filename"));
+    			this.schoolNoticeService.update(schoolNotice);
+    		}
     	} else {
     		logger.error("智能校服学生头像图片回调关联数据不存在");
 			logger.error(json.toString());
