@@ -7,6 +7,10 @@
     vipspa.start({  
         view: '.weui-tab__panel',// 装载视图的dom  
         router: {  
+        	'/shouye': {  
+                templateUrl: 'shouye.html',  
+                controller: '../js/smart/constitute/index.js'  
+            },
             '/home': {  
                 templateUrl: 'indexUserCenter_uniform.html',  
                 controller: '../js/smart/constitute/indexUserCenter_uniform.js'  
@@ -19,7 +23,7 @@
                 templateUrl: 'studentRecordes.html',  
                 controller: '../js/smart/constitute/studentRecordes.js'  
             },
-            'defaults': '/home'// 不符合上述路由时，默认跳至  
+            'defaults': '/shouye'// 不符合上述路由时，默认跳至  
         },  
         errorTemplateId: '#error'  
     });  
