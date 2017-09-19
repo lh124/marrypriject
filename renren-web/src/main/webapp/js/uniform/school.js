@@ -146,6 +146,15 @@ var vm = new Vue({
 			var id = getSelectedRow();
 			window.location.href="class.html?schoolId="+ id;
 		},
+		addSchoolNotice: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="schoolnotice.html?schoolId="+ id;
+		},
 		getInfo: function(id){
 			$.get("../sys/uniform/school/info/"+id, function(r){
                 vm.school = r.school;
