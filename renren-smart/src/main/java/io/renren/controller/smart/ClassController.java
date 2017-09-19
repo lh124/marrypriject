@@ -1,6 +1,13 @@
 package io.renren.controller.smart;
 
-import java.util.List;
+import io.renren.constant.ControllerConstant;
+import io.renren.entity.smart.ClassEntity;
+import io.renren.entity.smart.StudentEntity;
+import io.renren.service.smart.ClassService;
+import io.renren.utils.R;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -12,17 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.renren.constant.ControllerConstant;
-import io.renren.constant.SmartConstant;
-import io.renren.entity.smart.ClassEntity;
-import io.renren.entity.smart.StudentEntity;
-import io.renren.service.smart.ClassService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
 
 
 /**

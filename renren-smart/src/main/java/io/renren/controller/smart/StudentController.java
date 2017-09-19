@@ -1,13 +1,5 @@
 package io.renren.controller.smart;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.service.smart.StudentService;
@@ -15,6 +7,13 @@ import io.renren.utils.R;
 import io.renren.utils.RRException;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**

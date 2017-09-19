@@ -1,20 +1,5 @@
 package io.renren.controller.smart;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
-import io.renren.annotation.CheckAuth;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoPicWorkMsgEntity;
@@ -29,6 +14,20 @@ import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 import io.renren.validator.ValidatorUtils;
 import io.renren.validator.group.AddGroup;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
 /**
