@@ -68,7 +68,7 @@ public class SchoolNoticeController {
 	@RequestMapping("/save")
 	@RequiresPermissions("schoolnotice:save")
 	public R save(@RequestBody SchoolNoticeEntity schoolNotice){
-		schoolNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		schoolNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		schoolNoticeService.save(schoolNotice);
 		return R.ok();
 	}
