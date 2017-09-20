@@ -18,6 +18,7 @@
 			#if($shiro.hasPermission("schoolnotice:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
