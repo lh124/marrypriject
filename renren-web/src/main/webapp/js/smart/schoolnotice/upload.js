@@ -108,7 +108,7 @@ function calculate_object_name(filename)
 }
 
 function getFile(getFile){
-	//showModal();
+	showModal();
 	uploader.addFile(getFile, getFile.value);
 	myFormDate = myFormDateF(getFile);
 	//alert(getFile.value);
