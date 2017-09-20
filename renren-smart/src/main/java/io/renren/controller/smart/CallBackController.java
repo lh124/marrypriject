@@ -114,7 +114,6 @@ public class CallBackController {
 	private void classMessagePic(JSONObject json){
 		//信息图片
     	Long id = json.containsKey("id") ? json.getLong("id") : null;
-    	System.out.println("messageId : " + id);
 		if (id != null) {
 			
 			PhotoClassWorkMsgEntity msg = this.photoClassWorkMsgService.selectById(id);
@@ -141,7 +140,6 @@ public class CallBackController {
 	private void studentHeadPic(JSONObject json){
 		//信息图片
     	Long id = json.containsKey("id") ? json.getLong("id") : null;
-    	System.out.println("head : " + id);
     	if (id != null) {
     		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
     		StudentEntity student = this.studentService.selectById(id);
@@ -168,7 +166,6 @@ public class CallBackController {
 	private void schoolNoticePic(JSONObject json){
 		//信息图片
     	Long id = json.containsKey("id") ? json.getLong("id") : null;
-    	System.out.println("head : " + id);
     	if (id != null) {
     		SchoolNoticeEntity schoolNotice = this.schoolNoticeService.selectById(id);
     		if(schoolNotice != null){
