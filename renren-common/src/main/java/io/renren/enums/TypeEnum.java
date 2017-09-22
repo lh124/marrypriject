@@ -6,7 +6,7 @@ package io.renren.enums;
  *
  */
 public enum TypeEnum {
-
+	
 	PHOTO_USER_HEAD(1, "head_img_", "头像图标","头像上传成功","头像上传失败", 6, "head_img/","http://wrs.gykjewm.com/sys/aliOss/callBack"),
 	PHOTO_SCHOOL(2, "school_", "学校照片", "学校照片上传成功", "学校照片上传失败", 6, "photo/","http://wrs.gykjewm.com/sys/aliOss/callBack"),
 	PHOTO_CLASS(3, "class_", "班级照片", "班级照片上传成功", "班级照片上传失败", 6, "photo/","http://wrs.gykjewm.com/sys/aliOss/callBack"),
@@ -22,8 +22,19 @@ public enum TypeEnum {
 	PHOTO_SMART_HEAD_PIC(13, "smart_head_pic_", "智能校服头像图片", "智能校服头像图片上传成功", "智能校服头像图片上传失败", 6, "smart_head_pic/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic"),
 	PHOTO_SMART_NOTICE_PIC(14, "smart_notice_pic_", "智能校服头像图片", "智能校服头像图片上传成功", "智能校服头像图片上传失败", 6, "smart_notice_pic/",
-			"http://wrs.gykjewm.com/smart/callBack/msgPic");
-
+			"http://wrs.gykjewm.com/smart/callBack/msgPic"),
+	PHOTO_SMART_CLASSNOTICE_PIC(15, "smart_notice_pic_", "智能校服通知图片", "智能校服通知图片上传成功", "智能校服通知图片上传失败", 6, "smart_notice_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic"),
+	PHOTO_SMART_FRESHMANGUIDE_PIC(16, "smart_freshmanguide_pic_", "智能校服新生指南图片", "智能校服新生指南图片上传成功", "智能校服新生指南图片上传失败", 6, "smart_freshmanguide_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_PSYCHOLOGICAL_PIC(17, "smart_psychological_pic_", "智能校服心理咨询图片", "智能校服心理咨询图片上传成功", "智能校服心理咨询图片上传失败", 6, "smart_psychological_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_ACTIVITE_PIC(18, "smart_activity_pic_", "智能校服竞技活动图片", "智能校服竞技活动图片上传成功", "智能校服竞技活动图片上传失败", 6, "smart_activity_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_WORK_PIC(19, "smart_work_pic_", "智能校服作业图片", "智能校服作业图片上传成功", "智能校服作业图片上传失败", 6, "smart_work_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_COURSEWARE_PIC(20, "smart_courseware_pic_", "智能校服随堂课件", "智能校服随堂课件上传成功", "智能校服随堂课件上传失败", 6, "smart_courseware_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
 	private String description;
