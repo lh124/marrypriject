@@ -108,6 +108,42 @@ var vm = new Vue({
                 vm.classe = r.classe;
             });
 		},
+		addClassInfo: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="classinfo.html?classId="+ id;
+		},
+		addCourseware: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="smartcourseware.html?classId="+ id;
+		},
+		addWork: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="smartwork.html?classId="+ id;
+		},
+		addClassNotice: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="classnotice.html?classId="+ id;
+		},
 		addStudent: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){

@@ -146,6 +146,33 @@ var vm = new Vue({
 			var id = getSelectedRow();
 			window.location.href="class.html?schoolId="+ id;
 		},
+		addActivitie: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="smartactivities.html?schoolId="+ id;
+		},
+		addPsychologicalcounseling: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="psychologicalcounseling.html?schoolId="+ id;
+		},
+		addFreshmanGuide: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="freshmanguide.html?schoolId="+ id;
+		},
 		addSchoolNotice: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
