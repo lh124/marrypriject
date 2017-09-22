@@ -171,7 +171,7 @@ var uploader = new plupload.Uploader({
 
     filters: {
         mime_types : [ //只允许上传图片和zip文件
-        { title : "Image files", extensions : "jpg,gif,png,bmp,jpeg" }, 
+        { title : "Image files", extensions : "jpg,gif,png,bmp,jpeg,pptx,ppt,docx,pdf" }, 
         { title : "Zip files", extensions : "zip,rar" },
         { title : "Mp3 files", extensions : "mp3" },
         { title : "Mp4 files", extensions : "mp4" }
