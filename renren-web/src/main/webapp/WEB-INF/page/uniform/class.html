@@ -18,12 +18,23 @@
 			#if($shiro.hasPermission("uniform_class:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
-			
 			#if($shiro.hasPermission("uniform_class:save"))
 			<a class="btn btn-primary" @click="addStudent"><i class="fa fa-plus"></i>&nbsp;学生管理</a>
 			#end
 			#if($shiro.hasPermission("uniform_class:save"))
 			<a class="btn btn-primary" @click="addExaminate"><i class="fa fa-plus"></i>&nbsp;学生成绩管理</a>
+			#end
+			#if($shiro.hasPermission("classnotice:list"))
+			<a class="btn btn-primary" @click="addClassNotice"><i class="fa fa-plus"></i>&nbsp;班级通知</a>
+			#end
+			#if($shiro.hasPermission("smartwork:list"))
+			<a class="btn btn-primary" @click="addWork"><i class="fa fa-plus"></i>&nbsp;作业管理</a>
+			#end
+			#if($shiro.hasPermission("smartcourseware:list"))
+			<a class="btn btn-primary" @click="addCourseware"><i class="fa fa-plus"></i>&nbsp;随堂课件</a>
+			#end
+			#if($shiro.hasPermission("classinfo:list"))
+			<a class="btn btn-primary" @click="addClassInfo"><i class="fa fa-plus"></i>&nbsp;班级信息</a>
 			#end
 			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
