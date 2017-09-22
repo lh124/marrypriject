@@ -1,13 +1,13 @@
 $(function(){
 	$.ajax({
 		type: "GET",
-	    url: "../shouye/shouyeInfo?id=" + $("#id").val() + "&type=6",
+	    url: "../shouye/shouyeInfo?id=" + $("#id").val() + "&type=1",
 	    dataType: "json",
 	    success: function(r){
 			if(r.status == 'ok'){
 				var pic = "";
 				if(r.obj.noticepic == null || r.obj.noticepic == ""){
-					pic = '<div style="text-align: center;"><img src="http://static.gykjewm.com/smart_notice_pic/smart_notice_pic_1505892816000.jpg" width="100%" height="55%"></div>';
+					  pic = '<div style="text-align: center;"><img src="http://static.gykjewm.com/smart_notice_pic/smart_notice_pic_1505892816000.jpg" width="100%" height="55%"></div>';
 	              }else{
 	            	  pic = '<div style="text-align: center;"><img src="'+ r.obj.noticepic + '" width="100%" height="55%"></div>';
 	              }
