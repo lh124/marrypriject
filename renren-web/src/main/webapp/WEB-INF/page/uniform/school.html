@@ -17,10 +17,19 @@
 			#if($shiro.hasPermission("uniform_school:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			<a class="btn btn-primary" @click="addClass"><i class="fa fa-plus"></i>&nbsp;班级管理</a>
 			#if($shiro.hasPermission("schoolnotice:list"))
 			<a class="btn btn-primary" @click="addSchoolNotice"><i class="fa fa-plus"></i>&nbsp;学校通知</a>
 			#end
-			<a class="btn btn-primary" @click="addClass"><i class="fa fa-plus"></i>&nbsp;班级管理</a>
+			#if($shiro.hasPermission("freshmanguide:list"))
+			<a class="btn btn-primary" @click="addFreshmanGuide"><i class="fa fa-plus"></i>&nbsp;新生指南</a>
+			#end
+			#if($shiro.hasPermission("psychologicalcounseling:list"))
+			<a class="btn btn-primary" @click="addPsychologicalcounseling"><i class="fa fa-plus"></i>&nbsp;心理咨询</a>
+			#end
+			#if($shiro.hasPermission("smartactivities:list"))
+			<a class="btn btn-primary" @click="addActivitie"><i class="fa fa-plus"></i>&nbsp;竞技活动</a>
+			#end
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
