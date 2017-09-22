@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.ClassNoticeDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,title as title ,noticePic as noticepic ,classId,content as content ,createTime as createtime 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,title ,noticePic ,content ,createTime,classId 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.ClassNoticeEntity" id="classNoticeMap">
+		        <result property="id" column="id"/>
+		        <result property="title" column="title"/>
+		        <result property="noticepic" column="noticePic"/>
+		        <result property="content" column="content"/>
+		        <result property="createtime" column="createTime"/>
+		        <result property="classId" column="classId"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.ClassNoticeEntity">
+		select <include refid="allColumns"></include> from class_notice where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.ClassNoticeEntity">
+		select <include refid="allColumns"></include> from class_notice where classId = #{classId}
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from class_notice 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.ClassNoticeEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into class_notice
+		(
+			`title`, 
+			`noticePic`, 
+			`content`, 
+			`createTime`
+		)
+		values
+		(
+			#{title}, 
+			#{noticepic}, 
+			#{content}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.ClassNoticeEntity">
+		update class_notice 
+		<set>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="noticepic != null">`noticePic` = #{noticepic}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="createtime != null">`createTime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from class_notice where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from class_notice where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.ClassInfoDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,type as type ,classid as classid ,content		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,type ,classid ,content		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.ClassInfoEntity" id="classInfoMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="type" column="type"/>
+		        <result property="classid" column="classid"/>
+		        <result property="content" column="content"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.ClassInfoEntity">
+		select <include refid="allColumns"></include> from class_info where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.ClassInfoEntity">
+		select <include refid="allColumns"></include> from class_info where classid = #{classid}
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by type asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from class_info 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.ClassInfoEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into class_info
+		(
+			`name`, 
+			`type`, 
+			`content`,
+			`classid`
+		)
+		values
+		(
+			#{name}, 
+			#{type}, 
+			#{content},
+			#{classid}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.ClassInfoEntity">
+		update class_info 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="classid != null">`classid` = #{classid}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from class_info where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from class_info where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
