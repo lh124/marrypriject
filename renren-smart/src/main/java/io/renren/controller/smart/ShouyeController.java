@@ -2,10 +2,25 @@ package io.renren.controller.smart;
 
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.smart.ClassEntity;
+import io.renren.entity.smart.ClassInfoEntity;
+import io.renren.entity.smart.ClassNoticeEntity;
+import io.renren.entity.smart.FreshmanGuideEntity;
+import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
+import io.renren.entity.smart.SmartActivitiesEntity;
+import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
+import io.renren.service.smart.ClassInfoService;
+import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
+import io.renren.service.smart.FreshmanGuideService;
+import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
+import io.renren.service.smart.SmartActivitiesService;
+import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartWorkService;
+import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -37,12 +52,154 @@ public class ShouyeController {
 	private ClassService classService;
 	@Autowired
 	private SchoolNoticeService schoolNoticeService;
+	@Autowired
+	private ClassNoticeService classNoticeService;
+	@Autowired
+	private FreshmanGuideService freshmanGuideService;
+	@Autowired
+	private PsychologicalCounselingService psychologicalCounselingService;
+	@Autowired
+	private SmartActivitiesService smartActivitiesService;
+	@Autowired
+	private SmartWorkService smartWorkService;
+	@Autowired
+	private SmartCoursewareService smartCoursewareService;
+	@Autowired
+	private ClassInfoService classInfoService;
+	@Autowired
+	private StudentService studentService;
+	
+	/**
+	 * 班级信息
+	 */
+	@RequestMapping("/list_4")
+	public R list_4(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("classid", student.getClassId());
+		Query query = new Query(params);
+		List<ClassInfoEntity> classInfoList = classInfoService.queryList(query);
+		int total = classInfoService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(classInfoList, total, query.getLimit(), query.getPage());
+		query.put("classId", student.getClassId());
+		query.put("begin", 0);
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		int studenttotal = this.studentService.queryList(query).size();
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		pageUtil.setTotalCount(studenttotal);
+		return R.ok().put("page", pageUtil);
+	}
+	/**
+	 * 随堂课件列表
+	 */
+	@RequestMapping("/list_8")
+	public R list_8(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("classid", student.getClassId());
+		Query query = new Query(params);
+		List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
+		int total = smartCoursewareService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(smartCoursewareList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
+	/**
+	 * 作业列表
+	 */
+	@RequestMapping("/list_2")
+	public R list_2(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("classid", student.getClassId());
+		Query query = new Query(params);
+		List<SmartWorkEntity> smartWorkList = smartWorkService.queryList(query);
+		int total = smartWorkService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(smartWorkList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 竞技活动列表
+	 */
+	@RequestMapping("/list_5")
+	public R list_5(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+        ClassEntity cla = this.classService.selectById(student.getClassId());
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("schoolid", cla.getSchoolId());
+		Query query = new Query(params);
+		List<SmartActivitiesEntity> smartActivitiesList = smartActivitiesService.queryList(query);
+		int total = smartActivitiesService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(smartActivitiesList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 班级通知列表
+	 */
+	@RequestMapping("/list_1")
+	public R list_1(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("classId", student.getClassId());
+		Query query = new Query(params);
+		List<ClassNoticeEntity> classNoticeList = classNoticeService.queryList(query);
+		int total = schoolNoticeService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(classNoticeList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 心理咨询列表
+	 */
+	@RequestMapping("/list_7")
+	public R list_7(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		ClassEntity cla = this.classService.selectById(student.getClassId());
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("schoolId", cla.getSchoolId());
+		Query query = new Query(params);
+		List<PsychologicalCounselingEntity> psychologicalCounselingList = psychologicalCounselingService.queryList(query);
+		int total = psychologicalCounselingService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(psychologicalCounselingList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 新生指南列表
+	 */
+	@RequestMapping("/list_9")
+	public R list_9(@RequestParam Map<String, Object> params, HttpSession session){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		ClassEntity cla = this.classService.selectById(student.getClassId());
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		params.put("schoolId", cla.getSchoolId());
+		Query query = new Query(params);
+		List<FreshmanGuideEntity> freshmanGuideList = freshmanGuideService.queryList(query);
+		int total = freshmanGuideService.queryTotal(query);
+		PageUtils pageUtil = new PageUtils(freshmanGuideList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
 	
 	/**
 	 * 学校通知列表
 	 */
 	@RequestMapping("/list_6")
-	public R list(@RequestParam Map<String, Object> params, HttpSession session){
+	public R list_6(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
@@ -60,10 +217,22 @@ public class ShouyeController {
 	/**
 	 * 信息
 	 */
-	@RequestMapping("/schoolNoticeInfo")
-	public R info(@RequestParam("id") Integer id){
-		SchoolNoticeEntity schoolnotice = this.schoolNoticeService.selectById(id);
-		return R.ok().put("schoolnotice", schoolnotice);
+	@RequestMapping("/shouyeInfo")
+	public R info(@RequestParam("type") Integer type,@RequestParam("id") Integer id){
+		if(type == 1){
+			ClassNoticeEntity classNoticeEntity = this.classNoticeService.selectById(id);
+			return R.ok().put("obj", classNoticeEntity);
+		}else if(type == 2){
+			SmartWorkEntity smartWork = this.smartWorkService.selectById(id);
+			return R.ok().put("obj", smartWork);
+		}else if(type == 6){
+			SchoolNoticeEntity schoolnotice = this.schoolNoticeService.selectById(id);
+			return R.ok().put("obj", schoolnotice);
+		}else if(type == 8){
+			SmartCoursewareEntity smartCourseware = this.smartCoursewareService.selectById(id);
+			return R.ok().put("obj", smartCourseware);
+		}
+		return null;
 	}
 	
 }

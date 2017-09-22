@@ -2,14 +2,26 @@ package io.renren.controller.smart;
 
 import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
+import io.renren.entity.smart.ClassNoticeEntity;
+import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoPicWorkMsgEntity;
+import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
+import io.renren.entity.smart.SmartActivitiesEntity;
+import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.enums.TypeEnum;
+import io.renren.service.smart.ClassNoticeService;
+import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PhotoPicWorkMsgService;
+import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
+import io.renren.service.smart.SmartActivitiesService;
+import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.OssCallBackUtil;
 import io.renren.utils.dataSource.DBTypeEnum;
@@ -48,6 +60,18 @@ public class CallBackController {
 	
 	@Autowired
 	private SchoolNoticeService schoolNoticeService;
+	@Autowired
+	private ClassNoticeService classNoticeService;
+	@Autowired
+	private FreshmanGuideService freshmanGuideService;
+	@Autowired
+	private PsychologicalCounselingService psychologicalCounselingService;
+	@Autowired
+	private SmartActivitiesService smartActivitiesService;
+	@Autowired
+	private SmartWorkService smartWorkService;
+	@Autowired
+	private SmartCoursewareService smartCoursewareService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -92,6 +116,36 @@ public class CallBackController {
 						schoolNoticePic(jsona);
 						return json;
 					}
+					// 班级通知上传
+					if (type.equals(TypeEnum.PHOTO_SMART_CLASSNOTICE_PIC.getType())){
+						classNoticePic(jsona);
+						return json;
+					}
+					// 新生指南上传
+					if (type.equals(TypeEnum.PHOTO_SMART_FRESHMANGUIDE_PIC.getType())){
+						freshmanGuidePic(jsona);
+						return json;
+					}
+					// 心理咨询上传
+					if (type.equals(TypeEnum.PHOTO_SMART_PSYCHOLOGICAL_PIC.getType())){
+						psychologicalPic(jsona);
+						return json;
+					}
+					// 竞技活动上传
+					if (type.equals(TypeEnum.PHOTO_SMART_ACTIVITE_PIC.getType())){
+						activityPic(jsona);
+						return json;
+					}
+					// 作业上传
+					if (type.equals(TypeEnum.PHOTO_SMART_WORK_PIC.getType())){
+						workPic(jsona);
+						return json;
+					}
+					// 随堂课件上传
+					if (type.equals(TypeEnum.PHOTO_SMART_COURSEWARE_PIC.getType())){
+						coursewarePic(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -107,6 +161,99 @@ public class CallBackController {
 			return json;
 		}
 	}
+	
+	/**
+	 * 随堂课件上传
+	 * @param json
+	 */
+	private void coursewarePic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			SmartCoursewareEntity smartCourseware = this.smartCoursewareService.selectById(id);
+			if (smartCourseware != null) {
+				smartCourseware.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.smartCoursewareService.update(smartCourseware);
+			} else {
+				logger.error("智能校服随堂课件回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	/**
+	 * 作业上传图片上传
+	 * @param json
+	 */
+	private void workPic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			SmartWorkEntity smartWork = this.smartWorkService.selectById(id);
+			if (smartWork != null) {
+				smartWork.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.smartWorkService.update(smartWork);
+			} else {
+				logger.error("智能校服作业图片回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	/**
+	 * 竞技活动图片上传
+	 * @param json
+	 */
+	private void activityPic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			SmartActivitiesEntity smartActivities = this.smartActivitiesService.selectById(id);
+			if (smartActivities != null) {
+				smartActivities.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.smartActivitiesService.update(smartActivities);
+			} else {
+				logger.error("智能校服竞技活动图片回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	/**
+	 * 心理咨询图片上传
+	 * @param json
+	 */
+	private void psychologicalPic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			PsychologicalCounselingEntity psychological = this.psychologicalCounselingService.selectById(id);
+			if (psychological != null) {
+				psychological.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.psychologicalCounselingService.update(psychological);
+			} else {
+				logger.error("智能校服心理咨询图片回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	
+	/**
+	 * 新生指南图片上传
+	 * @param json
+	 */
+	private void freshmanGuidePic(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			FreshmanGuideEntity freshmanGuide = this.freshmanGuideService.selectById(id);
+			if (freshmanGuide != null) {
+				freshmanGuide.setFreshmanpic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.freshmanGuideService.update(freshmanGuide);
+			} else {
+				logger.error("智能校服新生指南图片回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	
 	/**
 	 * 班级消息图片上传
 	 * @param json
@@ -160,7 +307,7 @@ public class CallBackController {
 	}
 	
 	/**
-	 * 学校通知图片上传
+	 * 学校图片上传
 	 * @param json
 	 */
 	private void schoolNoticePic(JSONObject json){
@@ -173,7 +320,25 @@ public class CallBackController {
     			this.schoolNoticeService.update(schoolNotice);
     		}
     	} else {
-    		logger.error("智能校服学生头像图片回调关联数据不存在");
+    		logger.error("智能校服学校通知图片回调关联数据不存在");
+			logger.error(json.toString());
+    	}
+	}
+	
+	/**
+	 * 班级图片上传
+	 * @param json
+	 */
+	private void classNoticePic(JSONObject json){
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+    	if(id !=null){
+			ClassNoticeEntity classNoticeEntity = this.classNoticeService.selectById(id);
+			if(classNoticeEntity != null){
+				classNoticeEntity.setNoticepic(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.classNoticeService.update(classNoticeEntity);
+			}
+		} else {
+    		logger.error("智能校服班级通知图片回调关联数据不存在");
 			logger.error(json.toString());
     	}
 	}
