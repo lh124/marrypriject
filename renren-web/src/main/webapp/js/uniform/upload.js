@@ -56,8 +56,8 @@ function check_object_radio() {
 function get_signature()
 {
     //可以判断当前expire是否超过了当前时间,如果超过了当前时间,就重新取一下.3s 做为缓冲
-    now = timestamp = Date.parse(new Date()) / 1000; 
-    if (expire < now + 3)
+    //now = timestamp = Date.parse(new Date()) / 1000; 
+    if (true/*expire < now + 3*/)
     {
         body = send_request()
         var obj = eval ("(" + body + ")");
@@ -70,7 +70,7 @@ function get_signature()
         key = obj['dir']
         return true;
     }
-    return false;
+    //return false;
 };
 
 function random_string(len) {

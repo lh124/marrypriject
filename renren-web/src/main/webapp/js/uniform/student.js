@@ -8,7 +8,7 @@ $(function () {
 			{ label: '学号', name: 'studentNo', index: 'student_no', width: 80 }, 			
 			{ label: '姓名', name: 'studentName', index: 'student_name', width: 80 }, 			
 			{ label: '性别', name: 'sex', index: 'sex', width: 80 },
-			{ label: '类别(1为学生2为老师)', name: 'type', index: 'sex', width: 80 }, 
+			{ label: '类别(1为学生2为老师)', name: 'userType', index: 'sex', width: 80 }, 
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
