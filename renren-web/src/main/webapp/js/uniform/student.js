@@ -11,7 +11,9 @@ $(function () {
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
-			{ label: '密码', name: 'passwordd', index: 'passwordd', width: 80 }			
+			{ label: '操作', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
+				 return '<button onclick="showimage(' + r +')">头像上传</button>';
+			} }
         ],
 		viewrecords: true,
         height: 385,
@@ -40,6 +42,26 @@ $(function () {
         }
     });
 });
+
+function uplaod(){
+	alert(vm.student.id);
+	var url = vm.student.id == null ? "../sys/uniform/student/save" : "../sys/uniform/student/update";
+	vm.student.classId = $("#classId").val();
+	$.ajax({
+		type: "POST",
+	    url: url,
+	    data: JSON.stringify(vm.student),
+	    success: function(r){
+	    	if(r.code === 0){
+				alert('操作成功', function(index){
+					vm.reload();
+				});
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
 
 var vm = new Vue({
 	el:'#rrapp',
@@ -160,3 +182,27 @@ var vm = new Vue({
 		}
 	}
 });
+document.getElementById("studentimage").style.display = "none";
+function showimage(id){
+	$('#studentimage').modal('show');
+	document.getElementById("myUserId").value = id;
+	vm.getInfo(id);
+}
+function uplaod(){
+	$('#studentimage').modal('hide');
+	var url =  "../sys/uniform/student/update";
+	$.ajax({
+		type: "POST",
+	    url: url,
+	    data: JSON.stringify(vm.student),
+	    success: function(r){
+	    	if(r.code === 0){
+	    		alert('操作成功', function(index){
+					vm.reload();
+				});
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
