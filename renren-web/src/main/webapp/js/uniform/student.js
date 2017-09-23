@@ -7,7 +7,8 @@ $(function () {
 			{ label: '标识', name: 'studentCode', index: 'student_code', width: 80 }, 			
 			{ label: '学号', name: 'studentNo', index: 'student_no', width: 80 }, 			
 			{ label: '姓名', name: 'studentName', index: 'student_name', width: 80 }, 			
-			{ label: '性别', name: 'sex', index: 'sex', width: 80 }, 			
+			{ label: '性别', name: 'sex', index: 'sex', width: 80 },
+			{ label: '类别(1为学生2为老师)', name: 'type', index: 'sex', width: 80 }, 
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
@@ -170,6 +171,9 @@ var vm = new Vue({
 		
 		getInfo: function(id){
 			$.get("../sys/uniform/student/info/"+id, function(r){
+				if(r.student.type == "1"){
+					document.getElementById("studenttype").style.display = "block";
+				}
                 vm.student = r.student;
             });
 		},
@@ -183,6 +187,7 @@ var vm = new Vue({
 	}
 });
 document.getElementById("studentimage").style.display = "none";
+document.getElementById("studenttype").style.display = "none";
 function showimage(id){
 	$('#studentimage').modal('show');
 	document.getElementById("myUserId").value = id;
@@ -205,4 +210,12 @@ function uplaod(){
 			}
 		}
 	});
+}
+function gettype(type){
+	if(type == "1"){
+		document.getElementById("studenttype").style.display = "block";
+	}else{
+		document.getElementById("studenttype").style.display = "none";
+		document.getElementById("studenttype").value = "";
+	}
 }
