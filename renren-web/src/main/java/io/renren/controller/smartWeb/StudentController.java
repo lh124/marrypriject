@@ -143,7 +143,6 @@ public class StudentController {
 	@RequiresPermissions("uniform_student:update")
 	public R update(@RequestBody StudentEntity student){
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-		
 		if (student != null && !student.getPasswordd().equals("")){
 			String newPassword = new Sha256Hash(student.getPasswordd()).toHex();
 			student.setPasswordd(newPassword);
@@ -171,10 +170,9 @@ public class StudentController {
 		StringBuffer repeatName = new StringBuffer("已存在的账号：");
 		if ( studentList != null && studentList.size() > 0) {
 			// 存储有效用户
-			List<StudentEntity> newUserList = new ArrayList<StudentEntity>(studentList.size());
+//			List<StudentEntity> newUserList = new ArrayList<StudentEntity>(studentList.size());
 			// 存储有效用户，同步数据到sqlserver
 			//List<Student> studentList = new ArrayList<Student>(userList.size());
-			
 			for(StudentEntity student : studentList){
 				// 进行账号重复查询
 				StudentEntity stud = new StudentEntity();
@@ -182,25 +180,23 @@ public class StudentController {
 					repeatName.append(student.getStudentName() + " (学号错误); ");
 					continue;
 				}
-					
 				stud.setStudentNo(student.getStudentNo());
 				EntityWrapper<StudentEntity> wrraper = new EntityWrapper<StudentEntity>(stud);
 				StudentEntity st = this.studentService.selectOne(wrraper);
-				
 				if (st != null) {
 					repeatName.append(student.getStudentName() + "(学号重复); ");
 				} else {
 					String newPassword = new Sha256Hash("000000").toHex();
 					student.setPasswordd(newPassword);
-					newUserList.add(student);
+					this.studentService.save(student);
+//					newUserList.add(student);
 				}
 				
-				// 如果所有账号都重复
-				if (newUserList == null || newUserList.size() == 0)
-					return repeatName.toString();
-				
-				this.studentService.insertBatch(newUserList);
 			} 
+//			// 如果所有账号都重复
+//			if (newUserList == null || newUserList.size() == 0)
+//				return repeatName.toString();
+//			this.studentService.insertBatch(newUserList);
 		}
 		return repeatName.toString();
 	}
