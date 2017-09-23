@@ -112,7 +112,6 @@ function calculate_object_name(filename)
 
 function getFile(getFile){
 	showModal();
-	
 	uploader.addFile(getFile, getFile.value);
 	myFormDate = myFormDateF(getFile);
 	//alert(getFile.value);
@@ -122,20 +121,13 @@ function getFile(getFile){
 }
 
 function getCamaralFile(){
-	
 	ret = get_signature();
     g_object_name = key;
     if (filename != '') { suffix = get_suffix(filename)
         calculate_object_name(filename)
     }
-    
-   
-	
-	
 	var pic = document.getElementById("canvas").toDataURL("image/png");
 	//pic = pic.replace(/^data:image\/(png|jpg);base64,/, "")
-	
-	
 	var formData = new FormData();
 	var blob = dataURItoBlob(pic);
 	formData.append("name","headss.png");
@@ -156,7 +148,7 @@ function getCamaralFile(){
 		// 告诉jQuery不要去设置Content-Type请求头
 		contentType : false,
 		beforeSend:function(){
-			console.log("正在进行，请稍候");
+			//console.log("正在进行，请稍候");
 		},
 		success : function(responseStr) { 
 			if(responseStr.Status=='OK'){
