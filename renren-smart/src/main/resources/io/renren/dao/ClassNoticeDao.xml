@@ -50,6 +50,7 @@
 			`title`, 
 			`noticePic`, 
 			`content`, 
+			`classId`,
 			`createTime`
 		)
 		values
@@ -57,6 +58,7 @@
 			#{title}, 
 			#{noticepic}, 
 			#{content}, 
+			#{classId},
 			#{createtime}
 		)
 	</insert>
