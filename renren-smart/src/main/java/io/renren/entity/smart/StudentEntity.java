@@ -69,8 +69,19 @@ public class StudentEntity implements Serializable {
 	 */
 	@TableField(value="latitude")
 	private String latitude;
+	/**
+	 * 类别1学生，2老师
+	 */
+	@TableField(value="user_type")
+	private String userType;
 			
 	
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 	/**
 	 * 设置：
 	 */
