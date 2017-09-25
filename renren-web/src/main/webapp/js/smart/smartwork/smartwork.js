@@ -67,7 +67,6 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
-			alert($("#classId").val());
 			vm.smartWork.classid = $("#classId").val();
 			var url = vm.smartWork.id == null ? "../smartwork/save" : "../smartwork/update";
 			$.ajax({
