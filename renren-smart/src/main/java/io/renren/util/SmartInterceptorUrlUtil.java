@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 public class SmartInterceptorUrlUtil {
 
 	public static boolean authCheck(String url){
-		
 		String[] annos = {".*/smart/userLogin",
 				".*/smart/login.html",
 				".*/smart/captcha.jpg"};
