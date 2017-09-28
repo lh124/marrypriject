@@ -31,7 +31,7 @@ public class MenuManager {
 		ViewButton btn31 = new ViewButton();
 		btn31.setName("智能校服");
 		btn31.setType("view");
-		btn31.setUrl("http://wrs.gykjewm.com/smart/login.html");
+		btn31.setUrl("http://192.168.1.107/wrs/smart/login.html");
 
 		ComplexButton mainBtn2 = new ComplexButton();
 		mainBtn2.setName("相册系统");
