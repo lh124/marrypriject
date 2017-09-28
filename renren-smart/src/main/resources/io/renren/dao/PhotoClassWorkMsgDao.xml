@@ -33,6 +33,7 @@
 		<result property="content" column="content"/>
 		<result property="gmtCreate" column="gmt_create"/>
 		<result property="userId" column="user_id"/>
+		<result property="voice" column="voice"/>
 		<collection property="picList" resultMap="queryPicListMap"></collection>
 	</resultMap>
 	<resultMap type="io.renren.entity.smart.PhotoPicWorkMsgEntity" id="queryPicListMap">
@@ -40,7 +41,7 @@
 	</resultMap>
 	
 	<select id="queryList" resultMap="queryListMap">
-		SELECT pcm.id,pcm.content,pcm.gmt_create,ppwm.name ,pcm.user_id
+		SELECT pcm.id,pcm.content,pcm.gmt_create,ppwm.name ,pcm.voice,pcm.user_id
 		FROM photo_class_work_msg pcm left JOIN photo_pic_work_msg ppwm ON pcm.id = ppwm.related_id  WHERE pcm.class_id=#{classId}
 		 
         <choose>
