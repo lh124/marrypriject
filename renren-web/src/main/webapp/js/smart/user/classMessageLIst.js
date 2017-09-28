@@ -34,12 +34,18 @@ $(function(){
 		           				var img = (data.page.list[i].student.pic == null || data.page.list[i].student.pic == '') ? data.url + 'static-sources/head.jpg' :  data.page.list[i].student.pic;
 		   						
 		           				var imgs = "";
+		           				var content = "";
 		           				for(var j=0; j < data.page.list[i].picList.length; j++){
 		           					imgs += '<div class="thumbnail">'+
 	           		                '<img data-img="http://static.gykjewm.com/'+ data.page.list[i].picList[j].name +'" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" />'+
 		           		              '</div>';
 		           				}
-		           				
+		           				if((data.page.list[i].content == null || data.page.list[i].content == "") && data.page.list[i].voice != null && data.page.list[i].voice != ""){
+		           					content = '<audio src="http://wrs.gykjewm.com/statics/video/'+data.page.list[i].voice+'" controls="controls"></audio>';
+		           				}else{
+		           					content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
+		           		            '</p>';
+		           				}
 		           				result += '<div class="weui_cells moments">'+
 		           		        '<div class="weui_cell moments__post">'+
 		           		         '<div class="weui_cell_hd">'+
@@ -48,9 +54,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].student.studentName + '</span>'+
-		           		            '</a>'+
-		           		            '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
-		           		            '</p>'+
+		           		            '</a>'+content +
 		           		            /*'<a id="paragraphExtender" class="paragraphExtender">显示全文</a>'+*/
 		           		           '<div class="thumbnails">'+
 		           		           	imgs+
@@ -113,12 +117,18 @@ $(function(){
 	                        	var img = (data.page.list[i].student.pic == null || data.page.list[i].student.pic == '') ? data.url + 'static-sources/head.jpg' :  data.page.list[i].student.pic;
 		   						
 	                        	var imgs = "";
+	                        	var content = "";
 		           				for(var j=0; j < data.page.list[i].picList.length; j++){
 		           					imgs += '<div class="thumbnail">'+
 	           		                '<img data-img="http://static.gykjewm.com/'+ data.page.list[i].picList[j].name +'" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII="/>'+
 		           		              '</div>';
 		           				}
-	                        	
+		           				if((data.page.list[i].content == null || data.page.list[i].content == "") && data.page.list[i].voice != null && data.page.list[i].voice != ""){
+		           					content = '<audio src="http://wrs.gykjewm.com/statics/video/'+data.page.list[i].voice+'" controls="controls"></audio>';
+		           				}else{
+		           					content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
+		           		            '</p>';
+		           				}
 		           				result += '<div class="weui_cells moments">'+
 		           		        '<div class="weui_cell moments__post">'+
 		           		         '<div class="weui_cell_hd" >'+
@@ -127,9 +137,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].student.studentName + '</span>'+
-		           		            '</a>'+
-		           		            '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
-		           		            '</p>'+
+		           		            '</a>'+content +
 		           		            /*'<a id="paragraphExtender" class="paragraphExtender">显示全文</a>'+*/
 			           		         '<div class="thumbnails">'+
 			           		         imgs+
