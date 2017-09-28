@@ -18,20 +18,21 @@
   </style>   
 </head>
 
-<body ontouchstart style="background-color: #f8f8f8;">
+<body style="background-color: #f8f8f8;" onload="init()"">
 	<input type="hidden" value="$request.getParameter('classId')" id="classId">
+	<input id="userId" type="hidden" value="$session.getAttribute('user_smart').id" >
 	<div class="page-hd back_img">
 		<!-- <h1 class="page-hd-title">班级寄语</h1> -->
 	</div>
 	<div class="weui_grids"  >
-        <a href="javascript:void(0)" class="weui_grid js_grid"  >
-            <p class="weui_grid_label">&nbsp;&nbsp;&nbsp;</p>
+        <a href="javascript:void(0)" class="weui_grid js_grid"  id="startRecord" >
+            <p class="weui_grid_label" >按住录音</p>
         </a>
         <a href="addClassMessage.html?classId=$request.getParameter('classId')" class="weui_grid js_grid"   >
             <p class="weui_grid_label">发布信息</p>
         </a>
-        <a href="javascript:void(0)" class="weui_grid js_grid"   >
-            <p class="weui_grid_label">&nbsp;&nbsp;&nbsp;</p>
+        <a href="javascript:void(0)" class="weui_grid js_grid"   id="uploadVoice">
+            <p class="weui_grid_label" >上传语音</p>
         </a>          
     </div>
 	<!-- <div class="weui_cells_title">我们的寄语</div> -->
@@ -39,9 +40,132 @@
 		<div class="weui_panel_bd">
 		</div>
 	</div>
+	<div>
+	    <input type="hidden" id="selectfiles">
+	</div>
      <script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.3/zepto.min.js"></script> 
 	 <script src="${fieldTool.STATIC_SOURCE_JS}updown.js"></script>
 	 <script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
      <script src="${rc.contextPath}/js/smart/user/classMessageLIst.js"></script>
+     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/js/smart/user/upload.js?_${date.systemTime}"></script>
+<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>      
+<script type="text/javascript">
+  var localId = "";
+  var serverId = "";
+  var timestamp = "",nonceStr = "",signature="";
+  function init(){
+      $.ajax({ 
+		url : "../shouye/sign?classId="+$('#classId').val(), 
+		type : 'POST', 
+        dataType:"json",  
+		contentType : false,
+		success : function(responseStr) { 
+			if(responseStr.status=='ok'){
+				timestamp = responseStr.signentity.timestamp;
+				nonceStr = responseStr.signentity.noncestr;
+				signature = responseStr.signentity.signature;
+				wx.config({
+			        debug: false,
+			        appId: 'wx948285e688ee8d66',
+			        timestamp: timestamp,
+			        nonceStr: nonceStr,
+			        signature: signature,
+			        jsApiList: [
+			           'startRecord',
+			           'stopRecord',
+			           'onRecordEnd',
+			           'playVoice',
+			           'pauseVoice',
+			           'stopVoice',
+			           'uploadVoice',
+			           'downloadVoice'
+			        ]
+			    });
+			}
+		}, 
+		error : function(responseStr) { 
+			console.log("error");
+		} 
+	});
+  }
+wx.ready(function () {
+  // 4 音频接口
+  // 4.2 开始录音按下按钮时
+   document.querySelector('#startRecord').addEventListener('touchstart', function(event) {
+       event.preventDefault();
+       wx.startRecord({
+         cancel: function () {
+           alert('用户拒绝授权录音');
+         }
+   	   });
+   }, false);
+   //离开按钮时停止录音
+   document.querySelector('#startRecord').addEventListener('touchend', function(event) {
+       wx.stopRecord({
+      success: function (res) {
+        localId = res.localId;
+      },
+      fail: function (res) {
+        alert(JSON.stringify(res));
+      }
+    });
+   }, false);
+  // 4.4 监听录音自动停止
+  wx.onVoiceRecordEnd({
+    complete: function (res) {
+      localId = res.localId;
+      //alert('录音时间已超过一分钟');
+    }
+  });
+ 
+ // 4.8 上传语音
+  document.querySelector('#uploadVoice').onclick = function () {
+    
+    wx.uploadVoice({
+      localId: localId,
+      success: function (res) {
+        serverId = res.serverId;
+        $.ajax({ 
+		url : "../shouye/uploadMedio?serverId="+serverId + "&classId=" + $('#classId').val() + "&userId=" + $('#userId').val(), 
+		type : 'POST', 
+        dataType:"json",  
+		contentType : false,
+		success : function(responseStr) { 
+			if(responseStr.status=='ok'){
+			     //document.GetElementById("filepath").value = responseStr.path;
+			     //getFile(document.getElementById("filepath"));
+			    
+			}
+		}, 
+		error : function(responseStr) { 
+			console.log("error");
+		} 
+	});
+      }
+    });
+  };
+
+  var shareData = {
+    title: '微信JS-SDK Demo',
+    desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
+    link: 'http://demo.open.weixin.qq.com/jssdk/',
+    imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
+  };
+  wx.onMenuShareAppMessage(shareData);
+  wx.onMenuShareTimeline(shareData);
+});
+wx.error(function (res) {
+  alert(res.errMsg);
+});
+
+	function myFormDateF(obj){
+		var mydete = new FormData();
+		mydete.append("type",21);
+		return mydete;
+	}
+</script>
 </body>
 </html>
