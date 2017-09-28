@@ -5,6 +5,7 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
+import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
@@ -15,6 +16,7 @@ import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
 import io.renren.service.smart.FreshmanGuideService;
+import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SmartActivitiesService;
@@ -26,10 +28,17 @@ import io.renren.utils.Query;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
+import io.renren.weixin.main.SignEntity;
+import io.renren.weixin.util.AdvancedUtil;
+import io.renren.weixin.util.CommonUtil;
+import io.renren.weixin.util.Sign;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +77,49 @@ public class ShouyeController {
 	private ClassInfoService classInfoService;
 	@Autowired
 	private StudentService studentService;
+	@Autowired
+	private PhotoClassWorkMsgService photoClassWorkMsgService;
+	
+	/**
+	 * 通过微信服务器id下载语音
+	 */
+	@RequestMapping("/uploadMedio")
+	public R uploadMedio(HttpServletRequest request){
+		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
+		AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/video");
+		PhotoClassWorkMsgEntity photoClassWorkMsg = new PhotoClassWorkMsgEntity();
+		photoClassWorkMsg.setClassId(Long.parseLong(request.getParameter("classId")));
+		photoClassWorkMsg.setUserId(Long.parseLong(request.getParameter("userId")));
+		photoClassWorkMsg.setVoice(request.getParameter("serverId") + ".amr");
+		photoClassWorkMsg.setGmtCreate(new Date());
+		photoClassWorkMsgService.insert(photoClassWorkMsg);
+		return R.ok().put("path", null);
+	}
+	
+	/**
+	 * 获取签名
+	 */
+	@RequestMapping("/sign")
+	public R getSign(HttpServletRequest request){
+		//1、获取AccessToken  
+        String accessToken = Sign.getAccessToken();  
+        //2、获取Ticket  
+        String jsapi_ticket = Sign.getTicket(accessToken);  
+        //3、时间戳和随机字符串  
+        String noncestr = UUID.randomUUID().toString().replace("-", "").substring(0, 16);//随机字符串  
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//时间戳  
+        //4、获取url  
+        String url="http://192.168.1.107/wrs/smart/user/classMessageList.html?classId="+request.getParameter("classId");  
+        //5、将参数排序并拼接字符串  
+        String str = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;  
+        //6、将字符串进行sha1加密  
+        String signature =Sign.SHA1(str);  
+        SignEntity se = new SignEntity();
+        se.setTimestamp(timestamp);
+        se.setNoncestr(noncestr);
+        se.setSignature(signature);
+		return R.ok().put("signentity", se);
+	}
 	
 	/**
 	 * 班级信息
