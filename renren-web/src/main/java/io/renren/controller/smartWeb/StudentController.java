@@ -125,6 +125,11 @@ public class StudentController {
 			student.setStudentName(objList.get(2).toString());
 			student.setSex(objList.get(3).toString());
 			student.setStudentType(objList.get(4).toString());
+			if(objList.size() == 6){
+				student.setUserType(objList.get(5).toString());
+			}else{
+				student.setUserType("1");
+			}
 			student.setClassId(Integer.parseInt(classId));
 			
 			
