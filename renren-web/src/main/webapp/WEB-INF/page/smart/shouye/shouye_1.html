@@ -11,7 +11,10 @@
     <div class="container" id="container">
 		<div class="page slideIn" style="opacity:1;">
 		    <div class="page__hd">
-		        <h1 class="page__title">老师通知</h1>
+		        <h1 class="page__title" style="float: left;">老师通知</h1>
+		        #if($session.getAttribute('user_smart').userType == "2")
+		        	<h1 class="page__title" style="float: right;"><a href="./shouye_1_add.html" style="color: black;">发布通知</a> </h1>
+		        #end
 		    </div>
 		    <div class="page__bd">
 		        <div class="weui-cells__title">&nbsp;</div>
