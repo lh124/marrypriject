@@ -1,12 +1,12 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: '../sysweixin/list',
+        url: '../sysweixinmsg/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '原始id', name: 'origiid', index: 'origiid', width: 50, key: true },
-			{ label: '名称', name: 'name', index: 'name', width: 80 },			
-			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 }			
+			{ label: '关键词', name: 'keyword', index: 'keyword', width: 80 }, 			
+			{ label: '自动回复语句', name: 'content', index: 'content', width: 80 }, 			
+			{ label: '类型1为关注语，2为其他', name: 'sendtype', index: 'sendtype', width: 80 }			
         ],
 		viewrecords: true,
         height: 385,
@@ -28,6 +28,9 @@ $(function () {
             rows:"limit", 
             order: "order"
         },
+        postData:{
+        	"weixinid": $("#weixinid").val()
+        },
         gridComplete:function(){
         	//隐藏grid底部滚动条
         	$("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" }); 
@@ -40,7 +43,7 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		sysWeixin: {}
+		sysWeixinMsg: {}
 	},
 	methods: {
 		query: function () {
@@ -49,7 +52,7 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.sysWeixin = {};
+			vm.sysWeixinMsg = {};
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -62,11 +65,12 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
-			var url = vm.sysWeixin.id == null ? "../sysweixin/save" : "../sysweixin/update";
+			vm.sysWeixinMsg.weixinid = $("#weixinid").val();
+			var url = vm.sysWeixinMsg.id == null ? "../sysweixinmsg/save" : "../sysweixinmsg/update";
 			$.ajax({
 				type: "POST",
 			    url: url,
-			    data: JSON.stringify(vm.sysWeixin),
+			    data: JSON.stringify(vm.sysWeixinMsg),
 			    success: function(r){
 			    	if(r.code === 0){
 						alert('操作成功', function(index){
@@ -87,7 +91,7 @@ var vm = new Vue({
 			confirm('确定要删除选中的记录？', function(){
 				$.ajax({
 					type: "POST",
-				    url: "../sysweixin/delete",
+				    url: "../sysweixinmsg/delete",
 				    data: JSON.stringify(ids),
 				    success: function(r){
 						if(r.code == 0){
@@ -102,27 +106,9 @@ var vm = new Vue({
 			});
 		},
 		getInfo: function(id){
-			$.get("../sysweixin/info/"+id, function(r){
-                vm.sysWeixin = r.sysWeixin;
+			$.get("../sysweixinmsg/info/"+id, function(r){
+                vm.sysWeixinMsg = r.sysWeixinMsg;
             });
-		},
-		addMsg: function(origiid){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="sysweixinmsg.html?weixinid="+ id;
-		},
-		addMenu: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="sysweixinmenu.html?weixinid="+ id;
 		},
 		reload: function (event) {
 			vm.showList = true;
