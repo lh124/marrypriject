@@ -1,7 +1,9 @@
 package io.renren.controller.smart;
 
+import io.renren.entity.smart.SysWeixinEntity;
 import io.renren.entity.smart.SysWeixinMsgEntity;
 import io.renren.service.smart.SysWeixinMsgService;
+import io.renren.service.smart.SysWeixinService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysWeixinMsgController {
 	@Autowired
 	private SysWeixinMsgService sysWeixinMsgService;
+	@Autowired
+	private SysWeixinService sysWeixinService;
 	
 	/**
 	 * 列表
@@ -38,7 +42,9 @@ public class SysWeixinMsgController {
 	@RequiresPermissions("sysweixinmsg:list")
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
-		params.put("weixinid", "where weixinid = '" +params.get("weixinid") + "'");
+		Integer id = Integer.parseInt(params.get("weixinid").toString());
+		SysWeixinEntity sysWeixin = sysWeixinService.selectById(id);
+		params.put("weixinid", "where weixinid = '" +sysWeixin.getOrigiid() + "'");
         Query query = new Query(params);
 		List<SysWeixinMsgEntity> sysWeixinMsgList = sysWeixinMsgService.queryList(query);
 		int total = sysWeixinMsgService.queryTotal(query);
@@ -63,8 +69,10 @@ public class SysWeixinMsgController {
 	@RequestMapping("/save")
 	@RequiresPermissions("sysweixinmsg:save")
 	public R save(@RequestBody SysWeixinMsgEntity sysWeixinMsg){
+		Integer id = Integer.parseInt(sysWeixinMsg.getWeixinid());
+		SysWeixinEntity sysWeixin = sysWeixinService.selectById(id);
+		sysWeixinMsg.setWeixinid(sysWeixin.getOrigiid());
 		sysWeixinMsgService.save(sysWeixinMsg);
-		
 		return R.ok();
 	}
 	
