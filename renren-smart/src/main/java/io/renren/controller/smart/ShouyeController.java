@@ -15,6 +15,7 @@ import io.renren.entity.smart.StudentEntity;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
+import io.renren.service.smart.CoreService;
 import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PsychologicalCounselingService;
@@ -23,6 +24,7 @@ import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
+import io.renren.service.smart.SysWeixinMsgService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -32,18 +34,24 @@ import io.renren.weixin.main.SignEntity;
 import io.renren.weixin.util.AdvancedUtil;
 import io.renren.weixin.util.CommonUtil;
 import io.renren.weixin.util.Sign;
+import io.renren.weixin.util.SignUtil;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -79,6 +87,63 @@ public class ShouyeController {
 	private StudentService studentService;
 	@Autowired
 	private PhotoClassWorkMsgService photoClassWorkMsgService;
+	@Autowired
+	private CoreService coreService;
+	@Autowired
+	private SysWeixinMsgService sysWeixinMsgService;
+	
+	
+	/**
+	 * 请求校验（确认请求来自微信服务器）
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "handler", method = RequestMethod.GET)
+	public @ResponseBody
+	void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// 微信加密签名
+				String signature = request.getParameter("signature");
+				// 时间戳
+				String timestamp = request.getParameter("timestamp");
+				// 随机数
+				String nonce = request.getParameter("nonce");
+				// 随机字符串
+				String echostr = request.getParameter("echostr");
+
+				PrintWriter out = response.getWriter();
+				// 请求校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
+				if (SignUtil.checkSignature(signature, timestamp, nonce)) {
+					out.print(echostr);
+				}
+				out.close();
+				out = null;
+	}
+
+
+	/**
+	 * 处理微信服务器发来的消息
+	 */
+	@RequestMapping(value = "handler", method = RequestMethod.POST)
+	public @ResponseBody
+	void doPost(HttpServletRequest request,HttpServletResponse response, String signature, String timestamp, String nonce) {
+		try {
+			// 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+			request.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			
+			// 调用核心业务类接收消息、处理消息
+			String respXml = null;
+			if (SignUtil.checkSignature(signature, timestamp, nonce)) {
+				respXml = coreService.processRequest(request,sysWeixinMsgService);
+			}
+			// 响应消息
+			PrintWriter out = response.getWriter();
+			out.print(respXml);
+			out.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * 通过微信服务器id下载语音
