@@ -5,24 +5,20 @@
 #parse("sys/header.html")
 </head>
 <body>
+<input type="hidden" id="weixinid" value="${request.getParameter('weixinid')}">
 <div id="rrapp" v-cloak>
 	<div v-show="showList">
 		<div class="grid-btn">
-			#if($shiro.hasPermission("sysweixin:save"))
+			#if($shiro.hasPermission("sysweixinmsg:save"))
 			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			#end
-			#if($shiro.hasPermission("sysweixin:update"))
+			#if($shiro.hasPermission("sysweixinmsg:update"))
 			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
 			#end
-			#if($shiro.hasPermission("sysweixin:delete"))
+			#if($shiro.hasPermission("sysweixinmsg:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
-			#if($shiro.hasPermission("sysweixinmenu:list"))
-			<a class="btn btn-primary" @click="addMenu"><i class="fa fa-plus"></i>&nbsp;添加菜单</a>
-			#end
-			#if($shiro.hasPermission("sysweixinmsg:list"))
-			<a class="btn btn-primary" @click="addMsg"><i class="fa fa-plus"></i>&nbsp;自动回复管理</a>
-			#end
+			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
@@ -32,29 +28,24 @@
 		<div class="panel-heading">{{title}}</div>
 		<form class="form-horizontal">
 											<div class="form-group">
-			   	<div class="col-sm-2 control-label">名称</div>
+			   	<div class="col-sm-2 control-label">关键词</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="sysWeixin.name" placeholder="名称"/>
+			      <input type="text" class="form-control" v-model="sysWeixinMsg.keyword" placeholder="关键词"/>
 			    </div>
 			</div>
 									<div class="form-group">
-			   	<div class="col-sm-2 control-label">微信原始id</div>
+			   	<div class="col-sm-2 control-label">自动回复语句</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="sysWeixin.origiid" placeholder="appid"/>
-			    </div>
-			</div>
-			<div class="form-group">
-			   	<div class="col-sm-2 control-label">微信appId</div>
-			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="sysWeixin.appid" placeholder="appid"/>
+			      <textarea rows="5" class="form-control" v-model="sysWeixinMsg.content" placeholder="自动回复语句"></textarea>
 			    </div>
 			</div>
 									<div class="form-group">
-			   	<div class="col-sm-2 control-label">微信appSecret</div>
+			   	<div class="col-sm-2 control-label">类型</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="sysWeixin.appsecret" placeholder="appsecret"/>
+			      <input type="radio" value="1" name="sendtype" v-model="sysWeixinMsg.sendtype">关注语
+			      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			      <input type="radio" value="2" name="sendtype" v-model="sysWeixinMsg.sendtype">发送消息时自动回复
 			    </div>
-			</div>
 			</div>
 							<div class="form-group">
 				<div class="col-sm-2 control-label"></div> 
@@ -65,6 +56,6 @@
 	</div>
 </div>
 
-<script src="${rc.contextPath}/js/smart/sysweixin/sysweixin.js?_${date.systemTime}"></script>
+<script src="${rc.contextPath}/js/smart/sysweixin/sysweixinmsg.js?_${date.systemTime}"></script>
 </body>
 </html>
