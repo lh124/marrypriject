@@ -85,12 +85,16 @@ public class StudentController {
 	@RequiresPermissions("uniform_student:save")
 	public R save(@RequestBody StudentEntity student){
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		EntityWrapper<StudentEntity> wrraper = new EntityWrapper<StudentEntity>(student);
+		StudentEntity st = this.studentService.selectOne(wrraper);
+		if(st != null){
+			return R.ok().put("fail", "学号：" + st.getStudentNo() + " 重复");
+		}
 		String newPassword = new Sha256Hash("000000").toHex();
-		
 		student.setPasswordd(newPassword);
 		studentService.save(student);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok();
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL); 
+		return R.ok().put("fail", "操作成功");
 	}
 	
 	@ResponseBody
