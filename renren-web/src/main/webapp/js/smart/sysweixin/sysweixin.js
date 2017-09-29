@@ -1,10 +1,10 @@
+var origiid = "";
 $(function () {
     $("#jqGrid").jqGrid({
         url: '../sysweixin/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '原始id', name: 'origiid', index: 'origiid', width: 50, key: true },
 			{ label: '名称', name: 'name', index: 'name', width: 80 },			
 			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 }			
         ],
@@ -58,7 +58,6 @@ var vm = new Vue({
 			}
 			vm.showList = false;
             vm.title = "修改";
-            
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
@@ -104,9 +103,10 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get("../sysweixin/info/"+id, function(r){
                 vm.sysWeixin = r.sysWeixin;
+                origiid = r.sysWeixin.origiid;
             });
 		},
-		addMsg: function(origiid){
+		addMsg: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
 				alert("请勿多选");
