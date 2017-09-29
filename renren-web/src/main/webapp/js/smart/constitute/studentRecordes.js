@@ -105,7 +105,7 @@ $(function(){
 	                    if(arrLen > 0){
 	                    	if (page > 1 ){
 	                    		var sec = $("div .timeline-item-tail").attr("class","timeline-item-tail");
-	                    		alert(sec.length);
+	                    		//alert(sec.length);
 	                    	}
 	                    		
 	                        for(var i=0; i<arrLen; i++){
