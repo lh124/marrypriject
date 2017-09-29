@@ -25,7 +25,7 @@
 			<a class="btn btn-primary" @click="addExaminate"><i class="fa fa-plus"></i>&nbsp;学生成绩管理</a>
 			#end
 			#if($shiro.hasPermission("classnotice:list"))
-			<a class="btn btn-primary" @click="addClassNotice"><i class="fa fa-plus"></i>&nbsp;班级通知</a>
+			<a class="btn btn-primary" @click="addClassNotice"><i class="fa fa-plus"></i>&nbsp;老师通知</a>
 			#end
 			#if($shiro.hasPermission("smartwork:list"))
 			<a class="btn btn-primary" @click="addWork"><i class="fa fa-plus"></i>&nbsp;作业管理</a>
