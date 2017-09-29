@@ -99,7 +99,7 @@ var vm = new Vue({
 			    data: JSON.stringify(vm.student),
 			    success: function(r){
 			    	if(r.code === 0){
-						alert('操作成功', function(index){
+			    		alert(r.fail, function(index){
 							vm.reload();
 						});
 					}else{
