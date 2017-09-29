@@ -62,7 +62,7 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from student 
+		select count(*) from student where class_id=${classId}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEntity">
