@@ -38,6 +38,7 @@ import io.renren.weixin.util.SignUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,20 @@ public class ShouyeController {
 	private CoreService coreService;
 	@Autowired
 	private SysWeixinMsgService sysWeixinMsgService;
+	
+	/**
+	 * 添加班级通知
+	 */
+	@RequestMapping("/saveclassnotice")
+	public R saveclassnotice(HttpServletRequest request){
+		ClassNoticeEntity classNotice = new ClassNoticeEntity();
+		classNotice.setClassId(request.getParameter("classId"));
+		classNotice.setContent(request.getParameter("content"));
+		classNotice.setTitle(request.getParameter("title"));
+		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		classNoticeService.save(classNotice);
+		return R.ok().put("path", null);
+	}
 	
 	
 	/**
@@ -150,7 +165,7 @@ public class ShouyeController {
 	 */
 	@RequestMapping("/uploadMedio")
 	public R uploadMedio(HttpServletRequest request){
-		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
+		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
 		AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/video");
 		PhotoClassWorkMsgEntity photoClassWorkMsg = new PhotoClassWorkMsgEntity();
 		photoClassWorkMsg.setClassId(Long.parseLong(request.getParameter("classId")));
