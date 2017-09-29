@@ -5,17 +5,18 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name ,appid as appid ,appsecret as appsecret ,createtime as createtime 		
+		id as id ,name as name ,appid as appid ,appsecret as appsecret ,origiid,createtime as createtime 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,appid ,appsecret ,createtime 		
+		id ,name ,appid ,appsecret ,createtime,origiid 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SysWeixinEntity" id="sysWeixinMap">
 		        <result property="id" column="id"/>
 		        <result property="name" column="name"/>
 		        <result property="appid" column="appid"/>
+		        <result property="origiid" column="origiid"/>
 		        <result property="appsecret" column="appsecret"/>
 		        <result property="createtime" column="createtime"/>
 	    </resultMap>
@@ -48,6 +49,7 @@
 		(
 			`name`, 
 			`appid`, 
+			`origiid`, 
 			`appsecret`, 
 			`createtime`
 		)
@@ -55,6 +57,7 @@
 		(
 			#{name}, 
 			#{appid}, 
+			#{origiid}, 
 			#{appsecret}, 
 			#{createtime}
 		)
