@@ -1,5 +1,6 @@
 package io.renren.weixin.service;
 
+import io.renren.service.smart.SysWeixinMsgService;
 import io.renren.weixin.message.resp.TextMessage;
 import io.renren.weixin.util.MessageUtil;
 
@@ -8,6 +9,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * 核心服务类
  * 
@@ -15,6 +18,10 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2013-10-17
  */
 public class CoreService {
+	
+	@Autowired
+	private static SysWeixinMsgService sysWeixinMsgService;
+	
 	/**
 	 * 处理微信发来的请求
 	 * 
@@ -57,6 +64,7 @@ public class CoreService {
 			}// 当用户发消息时
 			else {
 				if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)){
+					System.out.println(sysWeixinMsgService + "------------------------------");
 					textMessage.setContent(getContent(requestMap.get("Content")));
 					respXml = MessageUtil.messageToXml(textMessage);
 				}else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)){
