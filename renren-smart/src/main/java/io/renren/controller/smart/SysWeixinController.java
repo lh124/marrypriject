@@ -58,7 +58,6 @@ public class SysWeixinController {
 	@RequiresPermissions("sysweixin:info")
 	public R info(@PathVariable("id") Integer id){
 		SysWeixinEntity sysWeixin = sysWeixinService.queryObject(id);
-		
 		return R.ok().put("sysWeixin", sysWeixin);
 	}
 	
