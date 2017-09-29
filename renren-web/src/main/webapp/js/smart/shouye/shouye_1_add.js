@@ -23,7 +23,6 @@ function forSubmit(){
 		type: "POST",
 	    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + document.getElementById("title").value,
 	    success: function(r){
-	    	alert('操作成功');
 	    	window.location.href="./shouye_1.html?class="+classId;
 		}
 	});
