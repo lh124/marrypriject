@@ -33,12 +33,21 @@ public class SysWeixinEntity implements Serializable {
 	//
 	@TableField(value="appsecret")
 	private String appsecret;
+	
+	@TableField(value="origiid")
+	private String origiid;
 			
 	//时间
 	@TableField(value="createtime")
 	private String createtime;
 			
 
+	public String getOrigiid() {
+		return origiid;
+	}
+	public void setOrigiid(String origiid) {
+		this.origiid = origiid;
+	}
 	/**
 	 * 设置：主键id
 	 */
