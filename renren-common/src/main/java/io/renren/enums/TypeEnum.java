@@ -34,6 +34,10 @@ public enum TypeEnum {
 	PHOTO_SMART_WORK_PIC(19, "smart_work_pic_", "智能校服作业图片", "智能校服作业图片上传成功", "智能校服作业图片上传失败", 6, "smart_work_pic/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
 	PHOTO_SMART_COURSEWARE_PIC(20, "smart_courseware_pic_", "智能校服随堂课件", "智能校服随堂课件上传成功", "智能校服随堂课件上传失败", 6, "smart_courseware_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_VIDEO_PIC(21, "smart_vodeo_pic_", "智能校服语音", "智能校服语音上传成功", "智能校服语音上传失败", 6, "smart_vodeo_pic/",
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	PHOTO_SMART_PHONE_NOTICE_PIC(22, "smart_notice_pic_", "智能校服班级通知", "智能校服班级通知上传成功", "智能校服班级通知上传失败", 6, "smart_notice_pic/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
