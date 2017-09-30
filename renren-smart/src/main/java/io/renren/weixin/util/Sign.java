@@ -103,7 +103,7 @@ public class Sign {
         String noncestr = UUID.randomUUID().toString().replace("-", "").substring(0, 16);//随机字符串  
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//时间戳  
         //4、获取url  
-        String url="http://192.168.1.107/wrs/smart/demo.html";  
+        String url="http://192.168.1.107/wrs/smart/test.html";  
         //5、将参数排序并拼接字符串  
         String str = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;  
         //6、将字符串进行sha1加密  
