@@ -27,6 +27,7 @@ import io.renren.utils.OssCallBackUtil;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,12 +78,14 @@ public class CallBackController {
 	@RequestMapping(value="/msgPic")
 	@IgnoreAuth
 	public JSONObject callBace(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		
-		System.out.println("i getaaa");
 		JSONObject jsona = OssCallBackUtil.analyzeCallBackData(request);
+		try {
+			jsona = JSONObject.fromObject(new String(jsona.toString().getBytes("GBK"),"UTF-8"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(jsona + "--------------------------");
 		JSONObject json = new JSONObject();
-		
-		System.out.println("i get");
 		if (jsona.getBoolean(OssCallBackUtil.VERIFY))
 		{
 			
@@ -97,7 +100,6 @@ public class CallBackController {
 			String size = jsona.containsKey("size") ? jsona.getString("size") : null;
 			Integer type = jsona.containsKey("type") && jsona.getString("type") != null ? 
 					jsona.getInt("type") : null;
-			System.out.println("infor : " + fileName + " " + type);
 			// 异常捕获
 			try{
 				if (type != null && fileName != null && size != null){
@@ -119,6 +121,11 @@ public class CallBackController {
 					// 班级通知上传
 					if (type.equals(TypeEnum.PHOTO_SMART_CLASSNOTICE_PIC.getType())){
 						classNoticePic(jsona);
+						return json;
+					}
+					// 班级通知上传（微信端上传）
+					if (type.equals(TypeEnum.PHOTO_SMART_PHONE_NOTICE_PIC.getType())){
+						classNoticePicweixin(jsona);
 						return json;
 					}
 					// 新生指南上传
@@ -341,5 +348,23 @@ public class CallBackController {
     		logger.error("智能校服班级通知图片回调关联数据不存在");
 			logger.error(json.toString());
     	}
+	}
+	
+	/**classNoticePicweixin
+	 * 班级图片上传
+	 * @param json
+	 */
+	private void classNoticePicweixin(JSONObject json){
+    	try {
+    		ClassNoticeEntity classNoticeEntity = new ClassNoticeEntity();
+    		classNoticeEntity.setNoticepic(ControllerConstant.CDN_URL + json.getString("filename"));
+    		classNoticeEntity.setClassId(json.getString("classId"));
+    		classNoticeEntity.setContent(json.getString("content"));
+    		classNoticeEntity.setTitle(json.getString("title"));
+    		classNoticeEntity.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    		this.classNoticeService.save(classNoticeEntity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
