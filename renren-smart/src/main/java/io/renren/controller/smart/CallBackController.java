@@ -79,12 +79,6 @@ public class CallBackController {
 	@IgnoreAuth
 	public JSONObject callBace(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		JSONObject jsona = OssCallBackUtil.analyzeCallBackData(request);
-		try {
-			jsona = JSONObject.fromObject(new String(jsona.toString().getBytes("GBK"),"UTF-8"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(jsona + "--------------------------");
 		JSONObject json = new JSONObject();
 		if (jsona.getBoolean(OssCallBackUtil.VERIFY))
 		{
