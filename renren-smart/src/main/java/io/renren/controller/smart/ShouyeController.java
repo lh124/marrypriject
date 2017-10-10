@@ -94,12 +94,33 @@ public class ShouyeController {
 	private SysWeixinMsgService sysWeixinMsgService;
 	
 	/**
+	 * 添加学校通知
+	 */
+	@RequestMapping("/saveschoolnotice")
+	public R saveschoolnotice(HttpServletRequest request,HttpSession session){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+        ClassEntity classEntity = classService.queryObject(student.getClassId());
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		SchoolNoticeEntity classNotice = new SchoolNoticeEntity();
+		classNotice.setSchoolid(classEntity.getSchoolId());
+		classNotice.setContent(request.getParameter("content"));
+		classNotice.setTitle(request.getParameter("title"));
+		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		schoolNoticeService.save(classNotice);
+		return R.ok().put("path", null);
+	}
+	
+	/**
 	 * 添加班级通知
 	 */
 	@RequestMapping("/saveclassnotice")
-	public R saveclassnotice(HttpServletRequest request){
+	public R saveclassnotice(HttpServletRequest request,HttpSession session){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		ClassNoticeEntity classNotice = new ClassNoticeEntity();
-		classNotice.setClassId(request.getParameter("classId"));
+		classNotice.setClassId(student.getClassId() + "");
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setTitle(request.getParameter("title"));
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -190,7 +211,7 @@ public class ShouyeController {
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);//时间戳  
         //4、获取url  
         String url="http://wrs.gykjewm.com/smart/user/classMessageList.html?classId="+request.getParameter("classId");  
-        //5、将参数排序并拼接字符串  
+        //5、将参数排序并拼接字符串
         String str = "jsapi_ticket="+jsapi_ticket+"&noncestr="+noncestr+"&timestamp="+timestamp+"&url="+url;  
         //6、将字符串进行sha1加密  
         String signature =Sign.SHA1(str);  
