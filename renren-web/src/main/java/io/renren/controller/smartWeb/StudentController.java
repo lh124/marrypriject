@@ -1,8 +1,23 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.smart.StudentEntity;
+import io.renren.entity.smart.Tongji;
+import io.renren.model.json.ResponseDTJson;
+import io.renren.service.smart.StudentService;
+import io.renren.utils.POIMvcUtil;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -18,16 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
-import io.renren.entity.smart.StudentEntity;
-import io.renren.model.json.ResponseDTJson;
-import io.renren.service.smart.StudentService;
-import io.renren.utils.POIMvcUtil;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
-
 
 /**
  * 
@@ -41,6 +46,43 @@ import io.renren.utils.dataSource.DbContextHolder;
 public class StudentController {
 	@Autowired
 	private StudentService studentService;
+	
+	//老师
+	public final static String USER_TYPE_TEACHER = "2";
+	//学生
+	public final static String USER_TYPE_STUDENT = "1";
+	
+	/**
+	 * 微信绑定统计列表
+	 */
+	@RequestMapping("/list_tongji")
+	public R list_tongji(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("classId", null);
+		map.put("schoolId", request.getParameter("schoolId"));
+		Tongji tongji = new Tongji();
+		String data1 = "";
+		String data2 = "";
+		String name = "";
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		List<StudentEntity> classList = studentService.queryListtongji(map);
+		for (Iterator iterator = classList.iterator(); iterator.hasNext();) {
+			StudentEntity studentEntity = (StudentEntity) iterator.next();
+			name += studentEntity.getStudentName() + ",";
+			map.put("classId", studentEntity.getId());
+			List<StudentEntity> studentList = studentService.queryListtongji(map);
+			for (Iterator iterator2 = studentList.iterator(); iterator2.hasNext();) {
+				StudentEntity student = (StudentEntity) iterator2.next();
+				data1 +=  studentEntity.getStudentName() + ","+student.getStudentCode()+",";
+				data2 += studentEntity.getStudentName() + ","+(Integer.parseInt(student.getStudentNo()) - Integer.parseInt(student.getStudentCode()))+",";
+			}
+		}
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		tongji.setData1(data1.substring(0, data1.length() - 1));
+		tongji.setData2(data2.substring(0, data2.length() - 1));
+		tongji.setName(name.substring(0, name.length() - 1));
+		return R.ok().put("tongji", tongji);
+	}
 	
 	/**
 	 * 列表
@@ -129,10 +171,16 @@ public class StudentController {
 			student.setStudentName(objList.get(2).toString());
 			student.setSex(objList.get(3).toString());
 			student.setStudentType(objList.get(4).toString());
+			//判断是否存在用户类型
 			if(objList.size() == 6){
-				student.setUserType(objList.get(5).toString());
+				//判断是否是乱填
+				if(!objList.get(5).toString().equals(USER_TYPE_STUDENT) && !objList.get(5).toString().equals(USER_TYPE_TEACHER)){
+					student.setUserType(USER_TYPE_STUDENT);
+				}else{
+					student.setUserType(objList.get(5).toString());
+				}
 			}else{
-				student.setUserType("1");
+				student.setUserType(USER_TYPE_STUDENT);
 			}
 			student.setClassId(Integer.parseInt(classId));
 			
