@@ -3,36 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>发布班级通知</title>
+    <title>老师发布通知</title>
     <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
     <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <script type="text/javascript"> 
        function upload(){
-             if(document.getElementById("fil").value == null || document.getElementById("fil").value == ""){
-                 forSubmit();
-             }else{
-                 getFile(document.getElementById("fil"));
-             }
+            forSubmit();
         }  
-       $(function(){  
-         	var fil=$("#fil");  
-         	$("<img>").insertAfter("input");  
-         	fil.bind('change',function(){  
-             	var fordate=new FormData();  
-             	var fils=$("#fil").get(0).files[0];  
-             	fordate.append('pic',fils);  
-             	var srcc=window.URL.createObjectURL(fils);     
-             	$("#images").attr({'src':srcc,'width':100+'px','heigth':100+'px'});  
-         	});  
-        });  
 </script>  
 <body ontouchstart>
     <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
 	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 	<input id="userId" value="$session.getAttribute('user_smart').id" >
-	<input id="classId" value="$request.getParameter('classId')" >
+	<input type="hidden" value="$request.getParameter('classId')" id="classId">
 	<div class="container" >
 		<div class="page" style="opacity:1">
 		    <div class="">
@@ -48,12 +33,6 @@
 		                    <div class="weui-textarea-counter"><span>0</span>/500</div>
 		                </div>
 		            </div>
-		        </div>
-		        
-		        <div style="height: 150px;">
-		            <input type="file" id="fil" accept="image/*"> 
-       				<input type="hidden" id="selectfiles"><br>
-       				<img alt="" src="" id = "images">
 		        </div>
 		        
 		        <div class="weui-gallery" id="gallery">
