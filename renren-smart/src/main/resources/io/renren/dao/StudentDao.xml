@@ -35,7 +35,7 @@
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEntity">
 		select <include refid="allColumns"></include> from student where id = #{value}
 	</select>
-
+	
 	<select id="queryList" resultType="io.renren.entity.smart.StudentEntity">
 		select top ${limit} <include refid="allColumns"></include>
 		from student
@@ -58,6 +58,18 @@
 				<otherwise>
 				             order by id desc
 				</otherwise>
+		</choose>
+	</select>
+
+	<select id="queryListtongji" resultType="io.renren.entity.smart.StudentEntity">
+		<choose>
+		      <when test="classId != null">
+		           SELECT (select  COUNT(*) from student where class_id = ${classId} and open_id != '') as student_code,
+                       (select  COUNT(*) from student where class_id = ${classId} ) as student_no  from student where id = (select max(id) from student)
+		      </when>
+			  <otherwise>
+		           select id,class_name as student_name from class where school_id = ${schoolId} order by id ASC
+			  </otherwise>
 		</choose>
 	</select>
 	
