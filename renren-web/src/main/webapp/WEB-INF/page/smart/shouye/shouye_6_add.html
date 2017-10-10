@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>学校通知</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<script type="text/javascript"> 
+       function upload(){
+            forSubmit();
+        }  
+</script>  
+<body ontouchstart>
+    <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
+	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+	<input id="userId" value="$session.getAttribute('user_smart').id" >
+	<input type="hidden" value="$request.getParameter('schoolId')" id="schoolId">
+	<div class="container" >
+		<div class="page" style="opacity:1">
+		    <div class="">
+		        <h1 class="page__title">&nbsp;</h1>
+		    </div>
+		    <div class="page__bd" id="container">
+		        <!-- <div class="weui-cells__title">单选列表项</div> -->
+		        <div class="weui-cells weui-cells_form">
+		        <input class="weui-textarea weui-cell__bd weui-cell" id ="title" placeholder="请输入通知标题" >
+		            <div class="weui-cell">
+		                <div class="weui-cell__bd">
+		                    <textarea oninput="counts(this)" id="contentNotice" class="weui-textarea" placeholder="请输入需要通知的内容" rows="3"></textarea>
+		                    <div class="weui-textarea-counter"><span>0</span>/500</div>
+		                </div>
+		            </div>
+		        </div>
+		        
+		        <div class="weui-gallery" id="gallery">
+		            <span class="weui-gallery__img" id="galleryImg"></span>
+		            <div class="weui-gallery__opr">
+		                <a href="javascript:forRemvePic();" class="weui-gallery__del">
+		                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+		                </a>
+		            </div>
+		        </div>
+		        <div class="weui-btn-area">
+		            <a class="weui-btn weui-btn_primary" href="javascript:upload()" id="postfiles">确定</a>
+		        </div>
+		    </div>
+		</div>
+	</div>
+	
+	<div id="toast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+            <p class="weui-toast__content">添加成功</p>
+        </div>
+    </div>
+</body>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
+	<script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
+	<script src="${rc.contextPath}/js/smart/shouye/shouye_6_add.js?"></script><!-- _${date.systemTime} -->
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+	<script type="text/javascript" src="${rc.contextPath}/js/smart/shouye/upload.js?_${date.systemTime}"></script>
+	<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+	<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
+	<script type="text/javascript">
+	    function myFormDateF(obj){
+		   var mydete = new FormData();
+		   mydete.append("type",22);
+		   mydete.append("classId", document.getElementById("classId").value);
+		   mydete.append("content", document.getElementById("contentNotice").value);
+		   mydete.append("title", document.getElementById("title").value);
+		   return mydete;
+	    }
+	</script>
+</html>
