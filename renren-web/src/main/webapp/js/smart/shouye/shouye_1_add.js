@@ -23,7 +23,6 @@ function forSubmit(){
 		title = "未填写标题";
 	}
 	var classId = document.getElementById("classId").value;
-	alert(classId);
 	$.ajax({
 		type: "POST",
 	    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + title,
