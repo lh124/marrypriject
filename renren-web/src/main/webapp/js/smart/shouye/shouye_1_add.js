@@ -18,10 +18,15 @@ function forSubmit(){
 	if(contentNotice == null || contentNotice == ""){
 		contentNotice = "未编写任何内容就已发布了。";
 	}
+	var title = document.getElementById("title").value;
+	if(title == null || title == ""){
+		title = "未填写标题";
+	}
 	var classId = document.getElementById("classId").value;
+	alert(classId);
 	$.ajax({
 		type: "POST",
-	    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + document.getElementById("title").value,
+	    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + title,
 	    success: function(r){
 	    	window.location.href="./shouye_1.html?class="+classId;
 		}
