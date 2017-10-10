@@ -153,7 +153,7 @@ var vm = new Vue({
 				return ;
 			}
 			var id = getSelectedRow();
-			window.location.href="index1.html?schoolId="+ id;
+			window.location.href="tongji.html?schoolId="+ id;
 		},
 		addActivitie: function(id){
 			var ids = getSelectedRows();
