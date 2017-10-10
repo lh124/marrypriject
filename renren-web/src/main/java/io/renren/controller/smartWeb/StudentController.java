@@ -55,6 +55,7 @@ public class StudentController {
 	/**
 	 * 微信绑定统计列表
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/list_tongji")
 	public R list_tongji(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String, Object>();
