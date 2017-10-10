@@ -131,6 +131,7 @@ public class OssCallBackUtil {
 	public static JSONObject analyzeCallBackData(HttpServletRequest request) throws Exception{
 		
 		String ossCallbackBody =OssCallBackUtil.GetPostBody(request.getInputStream(), Integer.parseInt(request.getHeader("content-length")));
+		ossCallbackBody = new String(ossCallbackBody.getBytes("GBK"),"UTF-8");
 		boolean ret = OssCallBackUtil.VerifyOSSCallbackRequest(request, ossCallbackBody);
 		System.out.println("verify result:" + ret);
 		System.out.println("OSS Callback Body:" + ossCallbackBody);
