@@ -2,10 +2,10 @@ package io.renren.service.smart;
 
 import io.renren.entity.smart.StudentEntity;
 
-import com.baomidou.mybatisplus.service.IService;
-
 import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.service.IService;
 
 
 /**
@@ -20,6 +20,8 @@ public interface StudentService extends IService<StudentEntity>{
 	StudentEntity queryObject(Integer id);
 	
 	List<StudentEntity> queryList(Map<String, Object> map);
+	
+	List<StudentEntity> queryListtongji(Map<String, Object> map);
 	
 	int queryTotal(Map<String, Object> map);
 	

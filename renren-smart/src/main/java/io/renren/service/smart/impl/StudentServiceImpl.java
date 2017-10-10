@@ -1,14 +1,14 @@
 package io.renren.service.smart.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import io.renren.dao.smart.StudentDao;
+import io.renren.entity.smart.StudentEntity;
+import io.renren.service.smart.StudentService;
 
 import java.util.List;
 import java.util.Map;
 
-import io.renren.dao.smart.StudentDao;
-import io.renren.entity.smart.StudentEntity;
-import io.renren.service.smart.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
@@ -55,8 +55,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentDao, StudentEntity>  
 
 	@Override
 	public void updateOpenId(Long id) {
-		// TODO Auto-generated method stub
 		studentDao.updateOpenId(id);
+	}
+
+	@Override
+	public List<StudentEntity> queryListtongji(Map<String, Object> map) {
+		return studentDao.queryListtongji(map);
 	}
 	
 }
