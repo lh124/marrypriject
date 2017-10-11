@@ -1,4 +1,9 @@
 $(function(){
+	var frontUser = $("#frontUser").val();
+	if(frontUser ){
+		window.location.href="../login.html";
+	}
+	
 	//页数 
 	    var page = 0;
 	    // 每页展示10个
