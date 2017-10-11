@@ -1,7 +1,9 @@
 $(function(){
 	var frontUser = $("#frontUser").val();
 	if(frontUser ){
-		window.location.href="../login.html";
+		//window.location.href="../login.html";
+		var $iosDialog1 = $('#iosDialog1');
+		$iosDialog1.fadeIn(200);
 	}
 	
 	//页数 
