@@ -7,7 +7,7 @@ public class SmartInterceptorUrlUtil {
 	public static boolean authCheck(String url){
 		String[] annos = {".*/smart/userLogin",
 				".*/smart/login.html",
-				".*/smart/test.html",
+				".*/smart/demo1.html",
 				".*/smart/shouye/handler",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
