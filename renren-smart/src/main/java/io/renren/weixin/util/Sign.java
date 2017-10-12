@@ -14,8 +14,8 @@ public class Sign {
     public static String getAccessToken() {  
         String access_token = "";  
         String grant_type = "client_credential";//获取access_token填写client_credential   
-        String AppId="wx948285e688ee8d66";//第三方用户唯一凭证  
-        String secret="5c6f611bf5db5df293ead71e802a4896";//第三方用户唯一凭证密钥，即appsecret   
+        String AppId="wxb9072ff1ebcf745c";//第三方用户唯一凭证  
+        String secret="b298e38e02eb3d45ca5cc22c68e9bae5";//第三方用户唯一凭证密钥，即appsecret   
         //这个url链接地址和参数皆不能变  
         String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type="+grant_type+"&appid="+AppId+"&secret="+secret;  
            
