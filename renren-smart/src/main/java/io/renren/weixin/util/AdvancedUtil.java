@@ -25,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -683,6 +684,7 @@ public class AdvancedUtil {
 	 */
 	public static String getMedia(String accessToken, String mediaId, String savePath) {
 		String filePath = null;
+		String path = null;
 		// 拼接请求地址
 		String requestUrl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("MEDIA_ID", mediaId);
@@ -695,9 +697,10 @@ public class AdvancedUtil {
 			if (!savePath.endsWith("/")) {
 				savePath += "/";
 			}
+			String fileExt = CommonUtil.getFileExt(conn.getHeaderField("Content-Type"));
 			// 将mediaId作为文件名
-			filePath = savePath + mediaId + ".amr";
-
+			filePath = savePath + mediaId + fileExt;
+			path = mediaId + fileExt;
 			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
 			FileOutputStream fos = new FileOutputStream(new File(filePath));
 			byte[] buf = new byte[8096];
@@ -708,12 +711,12 @@ public class AdvancedUtil {
 			bis.close();
 
 			conn.disconnect();
-			log.info("下载媒体文件成功，filePath=" + filePath);
+			log.info("下载媒体文件成功，path=" + path);
 		} catch (Exception e) {
 			filePath = null;
 			log.error("下载媒体文件失败：{}", e);
 		}
-		return filePath;
+		return path;
 	}
 
 	/**
@@ -1001,27 +1004,55 @@ public class AdvancedUtil {
 
 	public static void main(String[] args) {
 		// 获取接口访问凭证
-		// String accessToken = CommonUtil.getToken("wx9fd67526e31e66bb", "00a006174946dde8775c9247d3f509cf").getAccessToken();
+		String accessToken = CommonUtil.getToken("wx137b6eaa28b917e5", "af0d93dff20726be2a2dd042d62a8fb0").getAccessToken();
 		// 合其家公众号
 		// String accessToken = CommonUtil.getToken("wxb714c7b2b1fff48c", "10fd5a921bc151ab8dafb6228de4511a").getAccessToken();
-
-//		String accessToken = "t_PRB3mzmo39WMF7gDiw3swniKrDmJqhOXnrHxN4a00RonTFEU8JLtAjXMoI53XbtsIdA9uI65Bmb7Ye9vzpyHS-QCK2puaBXurRO9JkjnA";
+		List<String> list = getWeixinServerIPList(accessToken);
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			System.out.println(string);
+		}
 		/**
-		 * 发送模板消息
+		 * 查询分组
 		 */
-		List<TemplateParam> templateParamList = new ArrayList<TemplateParam>();
-		templateParamList.add(new TemplateParam("first", "您好，您已成功预订门票。", "#173177"));
-		templateParamList.add(new TemplateParam("OrderID", "20141205160701001", "#173177"));
-		templateParamList.add(new TemplateParam("PkgName", "刘德华演唱会门票1张", "#173177"));
-		templateParamList.add(new TemplateParam("TakeOffDate", "2014-12-05", "#173177"));
-		templateParamList.add(new TemplateParam("remark", "如有疑问，请致电***联系我们。", "#173177"));
-		Template template = new Template();
-		template.setToUser("ogv3ajphV_pQj-vfmSDr7msAKZbc");
-		template.setTemplateId("DhDMDVBhIgE_LCd1mLXuplRvXdJT6W5nzLQUCxL0MRM");
-		template.setUrl("");
-		template.setTopColor("#00FF00");
-		template.setTemplateParamList(templateParamList);
-		System.out.println(template.toJSON());
+//		List<WeixinGroup> groupList = getGroups(accessToken);
+//		// 循环输出各分组信息
+//		for (WeixinGroup group : groupList) {
+//			System.out.println(String.format("ID：%d 名称：%s 用户数：%d", group.getId(), group.getName(), group.getCount()));
+//		}
+
+		/**
+		 * 创建分组
+		 */
+//		WeixinGroup group = createGroup(accessToken, "公司员工");
+//		System.out.println(String.format("成功创建分组：%s id：%d", group.getName(), group.getId()));
+
+		/**
+		 * 修改分组名
+		 */
+//		updateGroup(accessToken, 100, "同事");
+
+		/**
+		 * 移动用户分组
+		 */
+//		updateMemberGroup(accessToken, "oEdzejiHCDqafJbz4WNJtWTMbDcE", 100);
+		//String accessToken = "t_PRB3mzmo39WMF7gDiw3swniKrDmJqhOXnrHxN4a00RonTFEU8JLtAjXMoI53XbtsIdA9uI65Bmb7Ye9vzpyHS-QCK2puaBXurRO9JkjnA";
+//		/**
+//		 * 发送模板消息
+//		 */
+//		List<TemplateParam> templateParamList = new ArrayList<TemplateParam>();
+//		templateParamList.add(new TemplateParam("first", "您好，您已成功预订门票。", "#173177"));
+//		templateParamList.add(new TemplateParam("OrderID", "20141205160701001", "#173177"));
+//		templateParamList.add(new TemplateParam("PkgName", "刘德华演唱会门票1张", "#173177"));
+//		templateParamList.add(new TemplateParam("TakeOffDate", "2014-12-05", "#173177"));
+//		templateParamList.add(new TemplateParam("remark", "如有疑问，请致电***联系我们。", "#173177"));
+//		Template template = new Template();
+//		template.setToUser("ogv3ajphV_pQj-vfmSDr7msAKZbc");
+//		template.setTemplateId("DhDMDVBhIgE_LCd1mLXuplRvXdJT6W5nzLQUCxL0MRM");
+//		template.setUrl("");
+//		template.setTopColor("#00FF00");
+//		template.setTemplateParamList(templateParamList);
+//		System.out.println(template.toJSON());
 		//sendTemplateMessage(accessToken, template);
 	}
 
@@ -1040,55 +1071,55 @@ public class AdvancedUtil {
 		/**
 		 * 发送客服消息（图文消息）
 		 */
-		Article article1 = new Article();
-		article1.setTitle("微信上也能斗地主");
-		article1.setDescription("");
-		article1.setPicUrl("http://www.egouji.com/xiaoq/game/doudizhu_big.png");
-		article1.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Doudizhu/doudizhu.htm");
-		Article article2 = new Article();
-		article2.setTitle("傲气雄鹰\n80后不得不玩的经典游戏");
-		article2.setDescription("");
-		article2.setPicUrl("http://www.egouji.com/xiaoq/game/aoqixiongying.png");
-		article2.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Plane/aoqixiongying.html");
-		List<Article> list = new ArrayList<Article>();
-		list.add(article1);
-		list.add(article2);
-		// 组装图文客服消息
-		String jsonNewsMsg = makeNewsCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", list);
-		// 发送客服消息
-		sendCustomMessage(accessToken, jsonNewsMsg);
+//		Article article1 = new Article();
+//		article1.setTitle("微信上也能斗地主");
+//		article1.setDescription("");
+//		article1.setPicUrl("http://www.egouji.com/xiaoq/game/doudizhu_big.png");
+//		article1.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Doudizhu/doudizhu.htm");
+//		Article article2 = new Article();
+//		article2.setTitle("傲气雄鹰\n80后不得不玩的经典游戏");
+//		article2.setDescription("");
+//		article2.setPicUrl("http://www.egouji.com/xiaoq/game/aoqixiongying.png");
+//		article2.setUrl("http://resource.duopao.com/duopao/games/small_games/weixingame/Plane/aoqixiongying.html");
+//		List<Article> list = new ArrayList<Article>();
+//		list.add(article1);
+//		list.add(article2);
+//		// 组装图文客服消息
+//		String jsonNewsMsg = makeNewsCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", list);
+//		// 发送客服消息
+//		sendCustomMessage(accessToken, jsonNewsMsg);
 
 		/**
 		 * 创建临时二维码
 		 */
-		WeixinQRCode weixinQRCode = createTemporaryQRCode(accessToken, 900, 111111);
-		// 临时二维码的ticket
-		System.out.println(weixinQRCode.getTicket());
-		// 临时二维码的有效时间
-		System.out.println(weixinQRCode.getExpireSeconds());
+//		WeixinQRCode weixinQRCode = createTemporaryQRCode(accessToken, 900, 111111);
+//		// 临时二维码的ticket
+//		System.out.println(weixinQRCode.getTicket());
+//		// 临时二维码的有效时间
+//		System.out.println(weixinQRCode.getExpireSeconds());
 
 		/**
 		 * 根据ticket换取二维码
 		 */
-		String ticket = "gQEg7zoAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL2lIVVJ3VmJsTzFsQ0ZuQ0Y1bG5WAAIEW35+UgMEAAAAAA==";
-		String savePath = "G:/download";
+//		String ticket = "gQEg7zoAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL2lIVVJ3VmJsTzFsQ0ZuQ0Y1bG5WAAIEW35+UgMEAAAAAA==";
+//		String savePath = "G:/download";
 		// 根据ticket换取二维码
-		getQRCode(ticket, savePath);
+//		getQRCode(ticket, savePath);
 
 		/**
 		 * 获取用户信息
 		 */
-		WeixinUserInfo user = getUserInfo(accessToken, "oEdzejiHCDqafJbz4WNJtWTMbDcE");
-		System.out.println("OpenID：" + user.getOpenId());
-		System.out.println("关注状态：" + user.getSubscribe());
-		System.out.println("关注时间：" + user.getSubscribeTime());
-		System.out.println("昵称：" + user.getNickname());
-		System.out.println("性别：" + user.getSex());
-		System.out.println("国家：" + user.getCountry());
-		System.out.println("省份：" + user.getProvince());
-		System.out.println("城市：" + user.getCity());
-		System.out.println("语言：" + user.getLanguage());
-		System.out.println("头像：" + user.getHeadImgUrl());
+//		WeixinUserInfo user = getUserInfo(accessToken, "oEdzejiHCDqafJbz4WNJtWTMbDcE");
+//		System.out.println("OpenID：" + user.getOpenId());
+//		System.out.println("关注状态：" + user.getSubscribe());
+//		System.out.println("关注时间：" + user.getSubscribeTime());
+//		System.out.println("昵称：" + user.getNickname());
+//		System.out.println("性别：" + user.getSex());
+//		System.out.println("国家：" + user.getCountry());
+//		System.out.println("省份：" + user.getProvince());
+//		System.out.println("城市：" + user.getCity());
+//		System.out.println("语言：" + user.getLanguage());
+//		System.out.println("头像：" + user.getHeadImgUrl());
 
 		/**
 		 * 获取关注者列表
@@ -1098,31 +1129,6 @@ public class AdvancedUtil {
 		System.out.println("本次获取用户数：" + weixinUserList.getCount());
 		System.out.println("OpenID列表：" + weixinUserList.getOpenIdList().toString());
 		System.out.println("next_openid：" + weixinUserList.getNextOpenId());
-
-		/**
-		 * 查询分组
-		 */
-		List<WeixinGroup> groupList = getGroups(accessToken);
-		// 循环输出各分组信息
-		for (WeixinGroup group : groupList) {
-			System.out.println(String.format("ID：%d 名称：%s 用户数：%d", group.getId(), group.getName(), group.getCount()));
-		}
-
-		/**
-		 * 创建分组
-		 */
-		WeixinGroup group = createGroup(accessToken, "公司员工");
-		System.out.println(String.format("成功创建分组：%s id：%d", group.getName(), group.getId()));
-
-		/**
-		 * 修改分组名
-		 */
-		updateGroup(accessToken, 100, "同事");
-
-		/**
-		 * 移动用户分组
-		 */
-		updateMemberGroup(accessToken, "oEdzejiHCDqafJbz4WNJtWTMbDcE", 100);
 
 		/**
 		 * 上传多媒体文件
