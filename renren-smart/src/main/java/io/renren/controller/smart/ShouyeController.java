@@ -187,14 +187,9 @@ public class ShouyeController {
 	@RequestMapping("/uploadMedio")
 	public R uploadMedio(HttpServletRequest request){
 		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
-		AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/video");
-		PhotoClassWorkMsgEntity photoClassWorkMsg = new PhotoClassWorkMsgEntity();
-		photoClassWorkMsg.setClassId(Long.parseLong(request.getParameter("classId")));
-		photoClassWorkMsg.setUserId(Long.parseLong(request.getParameter("userId")));
-		photoClassWorkMsg.setVoice(request.getParameter("serverId") + ".amr");
-		photoClassWorkMsg.setGmtCreate(new Date());
-		photoClassWorkMsgService.insert(photoClassWorkMsg);
-		return R.ok().put("path", null);
+		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/video");
+		System.out.println(path + "----------------------------");
+		return R.ok().put("path", path);
 	}
 	
 	/**
