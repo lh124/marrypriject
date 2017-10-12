@@ -31,7 +31,7 @@ public class MenuManager {
 		ViewButton btn31 = new ViewButton();
 		btn31.setName("智能校服");
 		btn31.setType("view");
-		btn31.setUrl("http://192.168.1.107/wrs/smart/login.html");
+		btn31.setUrl("http://192.168.1.107:8080/wrs/smart/login.html");
 
 		ComplexButton mainBtn2 = new ComplexButton();
 		mainBtn2.setName("相册系统");
@@ -49,9 +49,9 @@ public class MenuManager {
 
 	public static void main(String[] args) {
 		// 第三方用户唯一凭证
-		String appId = "wx948285e688ee8d66";//公司wxb9072ff1ebcf745c  b298e38e02eb3d45ca5cc22c68e9bae5
+		String appId = "wx137b6eaa28b917e5";//公司wxb9072ff1ebcf745c  b298e38e02eb3d45ca5cc22c68e9bae5
 		// 第三方用户唯一凭证密钥
-		String appSecret = "5c6f611bf5db5df293ead71e802a4896";// 个人wx948285e688ee8d66  5c6f611bf5db5df293ead71e802a4896
+		String appSecret = "ddb99e0397eb5c4565c666bcc5771bdc";// 个人wx948285e688ee8d66  5c6f611bf5db5df293ead71e802a4896
 
 		// 调用接口获取凭证
 		Token token = CommonUtil.getToken(appId, appSecret);
