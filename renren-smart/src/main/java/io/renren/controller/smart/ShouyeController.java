@@ -5,7 +5,6 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
-import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
