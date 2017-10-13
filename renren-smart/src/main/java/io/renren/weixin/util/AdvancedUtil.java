@@ -1008,7 +1008,7 @@ public class AdvancedUtil {
 		// 合其家公众号
 		// String accessToken = CommonUtil.getToken("wxb714c7b2b1fff48c", "10fd5a921bc151ab8dafb6228de4511a").getAccessToken();
 		List<String> list = getWeixinServerIPList(accessToken);
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
 			String string = (String) iterator.next();
 			System.out.println(string);
 		}
