@@ -52,9 +52,11 @@ public class POIMvcUtil {
                 //if(row==null||row.getFirstCellNum()==j){continue;}  
                 //遍历所有的列  
                 List<Object> li = new ArrayList<Object>();  
-                for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {  
-                    cell = row.getCell(y);  
-                    li.add(this.getCellValue(cell));  
+                if(row != null){
+                	for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {  
+                        cell = row.getCell(y);  
+                        li.add(this.getCellValue(cell));  
+                    }
                 }  
                 list.add(li);  
             }  
