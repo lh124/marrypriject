@@ -1,5 +1,12 @@
 package io.renren.controller.publicModule;
 
+import io.renren.annotation.CheckAuth;
+import io.renren.entity.CityEntity;
+import io.renren.service.CityService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import io.renren.annotation.CheckAuth;
-import io.renren.annotation.JSONFilter;
-import io.renren.entity.CityEntity;
-import io.renren.service.CityService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
 
 
 /**

@@ -44,6 +44,7 @@ import com.google.code.kaptcha.Producer;
 public class CommonConroller {
 	
 	// 日志操作
+	@SuppressWarnings("unused")
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public static String endpoint = "oss-cn-hangzhou.aliyuncs.com";
