@@ -3,14 +3,9 @@ package io.renren.service.smart.impl;
 import io.renren.dao.smart.SysWeixinMsgDao;
 import io.renren.entity.smart.SysWeixinMsgEntity;
 import io.renren.service.smart.SysWeixinMsgService;
-import io.renren.weixin.message.resp.TextMessage;
-import io.renren.weixin.util.MessageUtil;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
