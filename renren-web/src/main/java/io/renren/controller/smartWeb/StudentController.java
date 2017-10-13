@@ -166,27 +166,26 @@ public class StudentController {
 		for(int i=1; i<list.size(); i++){
 			student = new StudentEntity();
 			List<Object> objList = list.get(i);
-			
-			student.setStudentCode(objList.get(0).toString());
-			student.setStudentNo(objList.get(1).toString());
-			student.setStudentName(objList.get(2).toString());
-			student.setSex(objList.get(3).toString());
-			student.setStudentType(objList.get(4).toString());
-			//判断是否存在用户类型
-			if(objList.size() == 6){
-				//判断是否是乱填
-				if(!objList.get(5).toString().equals(USER_TYPE_STUDENT) && !objList.get(5).toString().equals(USER_TYPE_TEACHER)){
-					student.setUserType(USER_TYPE_STUDENT);
+			if(objList != null && objList.size() > 2){
+				student.setStudentCode(objList.get(0).toString());
+				student.setStudentNo(objList.get(1).toString());
+				student.setStudentName(objList.get(2).toString());
+				student.setSex(objList.get(3).toString());
+				student.setStudentType(objList.get(4).toString());
+				//判断是否存在用户类型
+				if(objList.size() == 6){
+					//判断是否是乱填
+					if(!objList.get(5).toString().equals(USER_TYPE_STUDENT) && !objList.get(5).toString().equals(USER_TYPE_TEACHER)){
+						student.setUserType(USER_TYPE_STUDENT);
+					}else{
+						student.setUserType(objList.get(5).toString());
+					}
 				}else{
-					student.setUserType(objList.get(5).toString());
+					student.setUserType(USER_TYPE_STUDENT);
 				}
-			}else{
-				student.setUserType(USER_TYPE_STUDENT);
+				student.setClassId(Integer.parseInt(classId));
+				studentList.add(student);
 			}
-			student.setClassId(Integer.parseInt(classId));
-			
-			
-			studentList.add(student);
 		}
 		
 		String backe = this.batchSaveUsers(studentList);
@@ -247,6 +246,7 @@ public class StudentController {
 					String newPassword = new Sha256Hash("000000").toHex();
 					student.setPasswordd(newPassword);
 					this.studentService.save(student);
+					return "上传成功"; 
 //					newUserList.add(student);
 				}
 				
