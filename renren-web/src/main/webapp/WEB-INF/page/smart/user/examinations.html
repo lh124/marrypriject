@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>智能校服系统</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+ <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+ <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+ <script src="${rc.contextPath}/statics/plugins/weui/zepto.min.js"></script>
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
 </head>
 <body ontouchstart>
-	<input type="hidden" id="classId" value="$request.getParameter('classId')">
+<input type="hidden" id="classId" value="$request.getParameter('classId')">
+        
+        <div class="js_dialog" id="iosDialog2" style="opacity: 0; display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd">暂无任何考试信息</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:history.go(-1);" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+        </div>
+
     <div class="container" id="container">
 		<div class="page slideIn" style="opacity:1;">
 		    <div class="page__hd">
@@ -23,6 +37,7 @@
 		
 	</div>   
 </body>
-<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="${rc.contextPath}/js/smart/user/examinations.js"></script>
+<script src="${fieldTool.STATIC_SOURCE_JS}updown.js"></script>
+ <script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
 </html>
