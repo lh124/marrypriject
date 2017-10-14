@@ -9,6 +9,7 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/login.html",
 				".*/smart/demo1.html",
 				".*/smart/shouye/handler",
+				".*/smart/datainpution/getData",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
 		boolean isMatch = false;
@@ -17,7 +18,7 @@ public class SmartInterceptorUrlUtil {
 			
 			isMatch = Pattern.matches(annos[i], url);
 			if (isMatch) return true;
-			
+			 
 		}
 		
 		return false;
