@@ -40,6 +40,10 @@
  	<select id="queryTotal" resultType="int">
 		select count(*) from student_epc 
 	</select>
+	
+	<select id="queryObjectIdEpc" resultType="io.renren.entity.smart.StudentEpcEntity">
+		select * from student_epc where student_id = #{student_id} and epc = #{epc}
+	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEpcEntity">
 		insert into student_epc
