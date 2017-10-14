@@ -48,60 +48,65 @@ public class SmartDataInpution {
 		String key = request.getParameter("key");
 		JSONObject json = JSONObject.fromObject(key);
 		String type = json.getString("type");
-		if(type.equals("getallclass")){
-			String schoolName = json.getString("schoolName");
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("schoolId", schoolEntity.getId());
-			map.put("order", "");
-			map.put("sidx", "");
-			map.put("begin", 0);
-			map.put("limit", 100);
-			List<ClassEntity> list = classService.queryList(map);
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			return R.ok().put("data", list);
-		}else if(type.equals("getallstudent")){
-			String classId = json.getString("classId");
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("classId", classId);
-			map.put("order", "");
-			map.put("sidx", "");
-			map.put("begin", 0);
-			map.put("limit", 150);
-			List<StudentEntity> list = studentService.queryList(map);
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			return R.ok().put("data", list);
-		}else if(type.equals("deleteepc")){
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			studentEpcService.deleteEpc(json.getString("epc"));
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		}else if(type.equals("saveepc")){
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			JSONArray array = json.getJSONArray("epclist");
-			List<StudentEntity> list = new ArrayList<StudentEntity>();
-			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
-				JSONObject object = (JSONObject) iterator.next();
+		String token = json.getString("token");
+		if(token.equals("bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a")){
+			if(type.equals("getallclass")){
+				String schoolName = json.getString("schoolName");
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("student_id", json.getString("student_id"));
-				map.put("epc", object.getString("epc"));
-				StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
-				if(se != null){
-					list.add(studentService.queryObject(Integer.parseInt(json.getString("student_id"))));
-				}else{
-					StudentEpcEntity see = new StudentEpcEntity();
-					see.setStudentId(Integer.parseInt(json.getString("student_id")));
-					see.setEpc(object.getString("epc"));
-					studentEpcService.save(see);
+				map.put("schoolId", schoolEntity.getId());
+				map.put("order", "");
+				map.put("sidx", "");
+				map.put("begin", 0);
+				map.put("limit", 100);
+				List<ClassEntity> list = classService.queryList(map);
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				return R.ok().put("data", list);
+			}else if(type.equals("getallstudent")){
+				String classId = json.getString("classId");
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("classId", classId);
+				map.put("order", "");
+				map.put("sidx", "");
+				map.put("begin", 0);
+				map.put("limit", 150);
+				List<StudentEntity> list = studentService.queryList(map);
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				return R.ok().put("data", list);
+			}else if(type.equals("deleteepc")){
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				studentEpcService.deleteEpc(json.getString("epc"));
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+			}else if(type.equals("saveepc")){
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				JSONArray array = json.getJSONArray("epclist");
+				List<StudentEntity> list = new ArrayList<StudentEntity>();
+				for (Iterator iterator = array.iterator(); iterator.hasNext();) {
+					JSONObject object = (JSONObject) iterator.next();
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("student_id", json.getString("student_id"));
+					map.put("epc", object.getString("epc"));
+					StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
+					if(se != null){
+						list.add(studentService.queryObject(Integer.parseInt(json.getString("student_id"))));
+					}else{
+						StudentEpcEntity see = new StudentEpcEntity();
+						see.setStudentId(Integer.parseInt(json.getString("student_id")));
+						see.setEpc(object.getString("epc"));
+						studentEpcService.save(see);
+					}
+				}
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				if(list != null){
+					return R.ok().put("data", list);
 				}
 			}
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			if(list != null){
-				return R.ok().put("data", list);
-			}
+			return R.ok().put("data", null);
+		}else{
+			return R.error("token错误");
 		}
-		return R.ok();
 	}
 
 }
