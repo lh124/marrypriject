@@ -19,7 +19,7 @@ public interface StudentEpcService extends IService<StudentEpcEntity>{
 	StudentEpcEntity queryObject(Integer id);
 	
 	List<StudentEpcEntity> queryList(Map<String, Object> map);
-	
+	 
 	int queryTotal(Map<String, Object> map);
 	
 	void save(StudentEpcEntity studentEpc);
@@ -27,6 +27,8 @@ public interface StudentEpcService extends IService<StudentEpcEntity>{
 	void update(StudentEpcEntity studentEpc);
 	
 	void delete(Integer id);
+	
+	void deleteEpc(String epc);
 	
 	void deleteBatch(Integer[] ids);
 }

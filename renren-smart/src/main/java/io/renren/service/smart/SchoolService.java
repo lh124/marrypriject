@@ -18,6 +18,8 @@ public interface SchoolService extends IService<SchoolEntity>{
 	
 	SchoolEntity queryObject(Integer id);
 	
+	SchoolEntity queryObjectName(String schoolName);
+	 
 	List<SchoolEntity> queryList(Map<String, Object> map);
 	
 	int queryTotal(Map<String, Object> map);
