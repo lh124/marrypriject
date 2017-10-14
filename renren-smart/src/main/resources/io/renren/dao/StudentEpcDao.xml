@@ -16,7 +16,7 @@
 		        <result property="id" column="id"/>
 		        <result property="studentId" column="student_id"/>
 		        <result property="epc" column="epc"/>
-	    </resultMap>
+	    </resultMap> 
 
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEpcEntity">
 		select <include refid="allColumns"></include> from student_epc where id = #{value}
@@ -44,13 +44,11 @@
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEpcEntity">
 		insert into student_epc
 		(
-			`id`, 
-			`student_id`, 
-			`epc`
+			student_id, 
+			epc
 		)
 		values
 		(
-			#{id}, 
 			#{studentId}, 
 			#{epc}
 		)
@@ -67,6 +65,9 @@
 	
 	<delete id="delete">
 		delete from student_epc where id = #{value}
+	</delete>
+	<delete id="deleteEpc">
+		delete from student_epc where epc = #{value}
 	</delete>
 	
 	<delete id="deleteBatch">
