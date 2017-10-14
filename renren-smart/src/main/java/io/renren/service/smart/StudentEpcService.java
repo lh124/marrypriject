@@ -18,6 +18,8 @@ public interface StudentEpcService extends IService<StudentEpcEntity>{
 	
 	StudentEpcEntity queryObject(Integer id);
 	
+	StudentEpcEntity queryObjectIdEpc(Map<String, Object> map);
+	
 	List<StudentEpcEntity> queryList(Map<String, Object> map);
 	 
 	int queryTotal(Map<String, Object> map);

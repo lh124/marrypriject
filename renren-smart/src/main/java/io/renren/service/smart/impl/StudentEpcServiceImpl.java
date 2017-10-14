@@ -58,5 +58,10 @@ public class StudentEpcServiceImpl extends ServiceImpl<StudentEpcDao, StudentEpc
 		studentEpcDao.deleteEpc(epc);
 		
 	}
+
+	@Override
+	public StudentEpcEntity queryObjectIdEpc(Map<String, Object> map) {
+		return studentEpcDao.queryObjectIdEpc(map);
+	}
 	
 }
