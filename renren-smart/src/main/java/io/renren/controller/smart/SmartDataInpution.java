@@ -12,6 +12,7 @@ import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -78,15 +79,27 @@ public class SmartDataInpution {
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		}else if(type.equals("saveepc")){
 			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			JSONArray array = json.getJSONArray("epc");
+			JSONArray array = json.getJSONArray("epclist");
+			List<StudentEntity> list = new ArrayList<StudentEntity>();
 			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
-				String object = (String) iterator.next();
-				StudentEpcEntity see = new StudentEpcEntity();
-				see.setStudentId(Integer.parseInt(json.getString("student_id")));
-				see.setEpc(object);
-				studentEpcService.save(see);
+				JSONObject object = (JSONObject) iterator.next();
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("student_id", json.getString("student_id"));
+				map.put("epc", object.getString("epc"));
+				StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
+				if(se != null){
+					list.add(studentService.queryObject(Integer.parseInt(json.getString("student_id"))));
+				}else{
+					StudentEpcEntity see = new StudentEpcEntity();
+					see.setStudentId(Integer.parseInt(json.getString("student_id")));
+					see.setEpc(object.getString("epc"));
+					studentEpcService.save(see);
+				}
 			}
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+			if(list != null){
+				return R.ok().put("data", list);
+			}
 		}
 		return R.ok();
 	}
