@@ -13,7 +13,7 @@ import java.util.Map;
 public interface BaseDao<T> {
 	
 	void save(T t);
-	
+	 
 	void save(Map<String, Object> map);
 	
 	void saveBatch(List<T> list);
@@ -24,11 +24,15 @@ public interface BaseDao<T> {
 	
 	int delete(Object id);
 	
+	int deleteEpc(String epc);
+	
 	int delete(Map<String, Object> map);
 	
 	int deleteBatch(Object[] id);
 
 	T queryObject(Object id);
+	
+	T queryObjectName(Object name);
 	
 	List<T> queryList(Map<String, Object> map);
 	
