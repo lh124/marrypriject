@@ -23,7 +23,7 @@ public class StudentEpcServiceImpl extends ServiceImpl<StudentEpcDao, StudentEpc
 		return studentEpcDao.queryObject(id);
 	}
 	
-	@Override
+	@Override 
 	public List<StudentEpcEntity> queryList(Map<String, Object> map){
 		return studentEpcDao.queryList(map);
 	}
@@ -51,6 +51,12 @@ public class StudentEpcServiceImpl extends ServiceImpl<StudentEpcDao, StudentEpc
 	@Override
 	public void deleteBatch(Integer[] ids){
 		studentEpcDao.deleteBatch(ids);
+	}
+
+	@Override
+	public void deleteEpc(String epc) {
+		studentEpcDao.deleteEpc(epc);
+		
 	}
 	
 }

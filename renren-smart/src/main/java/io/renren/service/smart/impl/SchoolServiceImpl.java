@@ -22,7 +22,7 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolDao, SchoolEntity>  imp
 	public SchoolEntity queryObject(Integer id){
 		return schoolDao.queryObject(id);
 	}
-	
+	 
 	@Override
 	public List<SchoolEntity> queryList(Map<String, Object> map){
 		return schoolDao.queryList(map);
@@ -51,6 +51,11 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolDao, SchoolEntity>  imp
 	@Override
 	public void deleteBatch(Integer[] ids){
 		schoolDao.deleteBatch(ids);
+	}
+
+	@Override
+	public SchoolEntity queryObjectName(String schoolName) {
+		return schoolDao.queryObjectName(schoolName);
 	}
 	
 }
