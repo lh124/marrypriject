@@ -32,6 +32,8 @@ public interface BaseDao<T> {
 
 	T queryObject(Object id);
 	
+	T queryObjectIdEpc(Map<String, Object> map);
+	
 	T queryObjectName(Object name);
 	
 	List<T> queryList(Map<String, Object> map);
