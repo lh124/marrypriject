@@ -41,7 +41,7 @@ public class UserAuthorizationInterceptor extends HandlerInterceptorAdapter {
     	
     	//判断是页面请求还是ajax请求
     	String url = request.getRequestURI();
-    	
+    	System.out.println("url=="+url);
     	RRException  e = null;
     	HttpSession session = request.getSession();
     	
