@@ -186,7 +186,7 @@ public class ShouyeController {
 	@RequestMapping("/uploadMedio")
 	public R uploadMedio(HttpServletRequest request){
 		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
-		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/video");
+		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "E:/web/webroot/wrs/statics/video");
 		System.out.println(path + "----------------------------");
 		return R.ok().put("path", path);
 	}
@@ -249,6 +249,7 @@ public class ShouyeController {
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		params.put("classid", student.getClassId());
 		Query query = new Query(params);
+		query.put("type", 1);
 		List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
 		int total = smartCoursewareService.queryTotal(query);
 		PageUtils pageUtil = new PageUtils(smartCoursewareList, total, query.getLimit(), query.getPage());
