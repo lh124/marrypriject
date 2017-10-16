@@ -9,6 +9,7 @@ public class InterceptorUrlUtil {
 		String[] annos = {".*/front/classes/.*", 
 				".*/front/school/.*", 
 				".*/front/userLogin",
+				".*/smart/shouye/uploadMedio",
 				".*/front/login.html",
 				".*/front/captcha.jpg"};
 		boolean isMatch = false;
