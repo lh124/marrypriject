@@ -28,6 +28,9 @@
 	<select id="queryList" resultType="io.renren.entity.smart.SmartCoursewareEntity">
 		select <include refid="allColumns"></include> from smart_courseware where classid = #{classid}
         <choose>
+            <when test="type != null">
+                or type = 1
+            </when>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
