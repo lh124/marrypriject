@@ -9,6 +9,7 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/login.html",
 				".*/smart/demo1.html",
 				".*/smart/shouye/handler",
+				".*/smart/shouye/uploadMedio",
 				".*/smart/datainpution/getData",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
