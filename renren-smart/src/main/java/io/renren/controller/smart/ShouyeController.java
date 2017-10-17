@@ -93,6 +93,24 @@ public class ShouyeController {
 	private SysWeixinMsgService sysWeixinMsgService;
 	
 	/**
+	 * 添加作业
+	 */
+	@RequestMapping("/savesmartword")
+	public R savesmartword(HttpServletRequest request,HttpSession session){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		SmartWorkEntity classNotice = new SmartWorkEntity();
+		classNotice.setClassid(student.getClassId());
+		classNotice.setContent(request.getParameter("content"));
+		classNotice.setName(request.getParameter("title"));
+		classNotice.setType(1);
+		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		smartWorkService.save(classNotice);
+		return R.ok().put("path", null);
+	}
+	
+	/**
 	 * 添加学校通知
 	 */
 	@RequestMapping("/saveschoolnotice")
