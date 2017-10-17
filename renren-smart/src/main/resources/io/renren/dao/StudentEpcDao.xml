@@ -22,6 +22,10 @@
 		select <include refid="allColumns"></include> from student_epc where id = #{value}
 	</select>
 
+	<select id="queryListtongji" resultType="io.renren.entity.smart.StudentEpcEntity">
+		select <include refid="allColumns"></include> from student_epc where student_id = ${student_id}
+	</select>
+	
 	<select id="queryList" resultType="io.renren.entity.smart.StudentEpcEntity">
 		select <include refid="allColumns"></include> from student_epc
         <choose>
@@ -42,7 +46,7 @@
 	</select>
 	
 	<select id="queryObjectIdEpc" resultType="io.renren.entity.smart.StudentEpcEntity">
-		select * from student_epc where student_id = #{student_id} and epc = #{epc}
+		select * from student_epc where epc = #{epc}  
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEpcEntity">
