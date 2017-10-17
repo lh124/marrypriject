@@ -49,6 +49,7 @@ public class SmartDataInpution {
 		JSONObject json = JSONObject.fromObject(key);
 		String type = json.getString("type");
 		String token = json.getString("token");
+		Object obj = null;
 		if(token.equals("bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a")){
 			if(type.equals("getallclass")){
 				String schoolName = json.getString("schoolName");
@@ -62,7 +63,7 @@ public class SmartDataInpution {
 				map.put("limit", 100);
 				List<ClassEntity> list = classService.queryList(map);
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-				return R.ok().put("data", list);
+				obj = R.ok().put("data", list);
 			}else if(type.equals("getallstudent")){
 				String classId = json.getString("classId");
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
@@ -74,11 +75,12 @@ public class SmartDataInpution {
 				map.put("limit", 150);
 				List<StudentEntity> list = studentService.queryList(map);
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-				return R.ok().put("data", list);
+				obj = R.ok().put("data", list);
 			}else if(type.equals("deleteepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 				studentEpcService.deleteEpc(json.getString("epc"));
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				obj = R.ok();
 			}else if(type.equals("saveepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 				JSONArray array = json.getJSONArray("epclist");
@@ -86,11 +88,13 @@ public class SmartDataInpution {
 				for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 					JSONObject object = (JSONObject) iterator.next();
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("student_id", json.getString("student_id"));
 					map.put("epc", object.getString("epc"));
 					StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
 					if(se != null){
-						list.add(se.getEpc());
+						StudentEntity studnet = studentService.queryObject(se.getStudentId());
+						ClassEntity classentity = classService.queryObject(studnet.getClassId());
+						SchoolEntity school = schoolService.queryObject(classentity.getSchoolId());
+						list.add("【EPC："+se.getEpc() + "已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定】"); 
 					}else{
 						StudentEpcEntity see = new StudentEpcEntity();
 						see.setStudentId(Integer.parseInt(json.getString("student_id")));
@@ -100,10 +104,10 @@ public class SmartDataInpution {
 				}
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				if(list != null){
-					return R.ok().put("data", list);
+					obj = R.ok().put("data", list);
 				}
 			}
-			return R.ok();
+			return (R)obj ;
 		}else{
 			return R.error("token错误");
 		}
