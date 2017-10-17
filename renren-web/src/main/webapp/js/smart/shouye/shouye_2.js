@@ -33,7 +33,7 @@ $(function(){
 		           				var img; 
 		           				var imgs = "";
 		           				var content = "";
-		           				
+		           				var type = "【" + data.page.list[i].createtime.substring(0,10)+"】";
 		           				content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 	           		            '</p>';
 		           				result += '<div class="weui_cells moments">'+
@@ -41,7 +41,7 @@ $(function(){
 		           		        
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="#">'+
-		           		              '<span>' + data.page.list[i].name + '</span>'+
+		           		              '<span>' + data.page.list[i].name + type +'</span>'+
 		           		            '</a>'+content +
 		           		          
 		           		          '</div>'+
@@ -95,11 +95,10 @@ $(function(){
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
-	           			
 	                    if(arrLen > 0){
 	                        for(var i = 0; i < arrLen; i++){
 	                        	var img;
-		   						
+	                        	var type = "【" + data.page.list[i].createtime.substring(0,10)+"】";
 	                        	var imgs = "";
 	                        	var content = "";
 	                        	content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
@@ -108,7 +107,7 @@ $(function(){
 		           		        '<div class="weui_cell moments__post">'+
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
-		           		              '<span>' + data.page.list[i].name + '</span>'+
+		           		              '<span>' + data.page.list[i].name + type +'</span>'+
 		           		            '</a>'+content +
 		           		       
 		           		          '</div>'+
