@@ -82,7 +82,7 @@ public class SmartDataInpution {
 			}else if(type.equals("saveepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 				JSONArray array = json.getJSONArray("epclist");
-				List<StudentEntity> list = new ArrayList<StudentEntity>();
+				List<String> list = new ArrayList<String>();
 				for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 					JSONObject object = (JSONObject) iterator.next();
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -90,7 +90,7 @@ public class SmartDataInpution {
 					map.put("epc", object.getString("epc"));
 					StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
 					if(se != null){
-						list.add(studentService.queryObject(Integer.parseInt(json.getString("student_id"))));
+						list.add(se.getEpc());
 					}else{
 						StudentEpcEntity see = new StudentEpcEntity();
 						see.setStudentId(Integer.parseInt(json.getString("student_id")));
@@ -103,7 +103,7 @@ public class SmartDataInpution {
 					return R.ok().put("data", list);
 				}
 			}
-			return R.ok().put("data", null);
+			return R.ok();
 		}else{
 			return R.error("token错误");
 		}
