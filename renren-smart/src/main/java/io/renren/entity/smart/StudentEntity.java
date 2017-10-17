@@ -74,7 +74,7 @@ public class StudentEntity implements Serializable {
 	 */
 	@TableField(value="user_type")
 	private String userType;
-			
+	
 	
 	public String getUserType() {
 		return userType;
