@@ -12,6 +12,9 @@ $(function () {
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
+			{ label: 'EPC', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
+				 return '<button onclick="bindEpc(' + r +')">EPC绑定</button>';
+			} },
 			{ label: '操作', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
 				 return '<button onclick="showimage(' + r +')">头像上传</button>';
 			} }
@@ -186,12 +189,32 @@ var vm = new Vue({
 		}
 	}
 });
+document.getElementById("studentEpc").style.display = "none";
 document.getElementById("studentimage").style.display = "none";
 document.getElementById("studenttype").style.display = "none";
 function showimage(id){
 	$('#studentimage').modal('show');
 	document.getElementById("myUserId").value = id;
 	vm.getInfo(id);
+}
+function bindEpc(id){
+	$('#studentEpc').modal('show');
+	document.getElementById("studentEpcuse").value = "";
+	document.getElementById("epcuserid").value = id;
+	var url =  "../sys/uniform/student/getstudentepc?id="+id;
+	$.ajax({
+		type: "POST",
+	    url: url,
+	    success: function(r){
+	    	if(r.code === 0){
+	    		if(r.epc != null){
+	    			document.getElementById("studentEpcuse").value = r.epc;
+	    		}
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
 }
 function uplaod(){
 	$('#studentimage').modal('hide');
@@ -217,5 +240,34 @@ function gettype(type){
 	}else{
 		document.getElementById("studenttype").style.display = "none";
 		document.getElementById("studenttype").value = "";
+	}
+}
+function saveEpc(){
+	var epc = document.getElementById("studentEpcuse").value;
+	if(epc == null || epc == ""){
+		alert("EPC不能为空");
+		return;
+	}else{
+		var id = document.getElementById("epcuserid").value;
+		$('#studentimage').modal('hide');
+		var url =  "../sys/uniform/student/saveepc?epc="+epc+"&id="+document.getElementById("epcuserid").value;
+		$.ajax({
+			type: "POST",
+		    url: url,
+		    success: function(r){
+		    	if(r.code === 0){
+		    		if(r.faile != null){
+		    			alert(r.faile);
+		    		}else{
+		    			alert('操作成功', function(index){
+		    				document.getElementById("studentEpcuse").value = "";
+							vm.reload();
+						});
+		    		}
+				}else{
+					alert(r.msg);
+				}
+			}
+		});
 	}
 }
