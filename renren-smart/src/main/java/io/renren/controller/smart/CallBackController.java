@@ -147,6 +147,11 @@ public class CallBackController {
 						coursewarePic(jsona);
 						return json;
 					}
+					// 语音上传
+					if (type.equals(TypeEnum.PHOTO_SMART_VIDEO_PIC.getType())){
+						uploadvoideo(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -161,6 +166,19 @@ public class CallBackController {
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
 		}
+	}
+	
+	/**
+	 * 语音上传
+	 * @param json
+	 */
+	private void uploadvoideo(JSONObject json){
+		PhotoClassWorkMsgEntity photoClassWorkMsg = new PhotoClassWorkMsgEntity();
+		photoClassWorkMsg.setClassId(Long.parseLong(json.getString("classId")));
+		photoClassWorkMsg.setUserId(Long.parseLong(json.getString("userId")));
+		photoClassWorkMsg.setVoice(ControllerConstant.CDN_URL + json.getString("filename"));
+		photoClassWorkMsg.setGmtCreate(new Date());
+		photoClassWorkMsgService.insert(photoClassWorkMsg);
 	}
 	
 	/**
