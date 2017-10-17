@@ -9,6 +9,15 @@
  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
  <script src="${rc.contextPath}/statics/plugins/weui/zepto.min.js"></script>
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <style type="text/css">
+  	.back_img {
+  		height: 150px; 
+  		background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_notice_pic/2_3_1.jpg'); 
+  		background-repeat:no-repeat; 
+  		background-size:100% 100%;
+  		-moz-background-size:100% 100%
+  	}
+  </style>
 </head>
 <body ontouchstart>
 <input type="hidden" id="classId" value="$request.getParameter('classId')">
@@ -25,11 +34,10 @@
 
     <div class="container" id="container">
 		<div class="page slideIn" style="opacity:1;">
-		    <div class="page__hd">
-		        <h1 class="page__title">考试主题</h1>
-		    </div>
+		    <div class="page-hd back_img">
+				<!-- <h1 class="page-hd-title">班级寄语</h1> -->
+			</div>
 		    <div class="page__bd">
-		        <div class="weui-cells__title">&nbsp;</div>
 		        <div class="weui-cells">
 		        </div>
 		    </div>
