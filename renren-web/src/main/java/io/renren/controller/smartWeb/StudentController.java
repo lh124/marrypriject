@@ -1,8 +1,14 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.smart.ClassEntity;
+import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.StudentEntity;
+import io.renren.entity.smart.StudentEpcEntity;
 import io.renren.entity.smart.Tongji;
 import io.renren.model.json.ResponseDTJson;
+import io.renren.service.smart.ClassService;
+import io.renren.service.smart.SchoolService;
+import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.POIMvcUtil;
 import io.renren.utils.PageUtils;
@@ -46,11 +52,72 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 public class StudentController {
 	@Autowired
 	private StudentService studentService;
+	@Autowired
+	private StudentEpcService studentEpcService;
+	@Autowired
+	private ClassService classService;
+	@Autowired
+	private SchoolService schoolService;
 	
 	//老师
 	public final static String USER_TYPE_TEACHER = "2";
 	//学生
 	public final static String USER_TYPE_STUDENT = "1";
+	
+	
+	/**
+	 * 通过学生id保存epc
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getstudentepc")
+	public R getstudentepc(HttpServletRequest request){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("student_id", Integer.parseInt(request.getParameter("id")));
+		List<StudentEpcEntity> list = studentEpcService.queryListtongji(map);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		StringBuffer sb = new StringBuffer();
+		if(list.size() > 0){
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				StudentEpcEntity studentEpcEntity = (StudentEpcEntity) iterator.next();
+				sb.append(studentEpcEntity.getEpc()+", ");
+			}
+			return R.ok().put("epc", sb.toString().substring(0, sb.toString().length()-1));
+		}else{
+			return R.ok().put("epc", null);
+		}
+	}
+	/**
+	 * 通过学生id保存epc
+	 */
+	@RequestMapping("/saveepc")
+	public R saveEPC(HttpServletRequest request){
+		String[] epclist = request.getParameter("epc").split(",");
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < epclist.length; i++) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("epc", epclist[i].replace(" ", ""));
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
+			if(se != null){
+				StudentEntity studnet = studentService.queryObject(se.getStudentId());
+				ClassEntity classentity = classService.queryObject(studnet.getClassId());
+				SchoolEntity school = schoolService.queryObject(classentity.getSchoolId());
+				sb.append("【EPC："+se.getEpc() + "已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定】"); 
+			}else{
+				StudentEpcEntity see = new StudentEpcEntity();
+				see.setStudentId(Integer.parseInt(request.getParameter("id")));
+				see.setEpc(epclist[i]);
+				studentEpcService.save(see);
+			}
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		}
+		if(sb.toString() != null && !sb.toString().equals("")){
+			return R.ok().put("faile", sb.toString());
+		}else{
+			return R.ok().put("faile", null);
+		}
+	}
 	
 	/**
 	 * 微信绑定统计列表
@@ -127,6 +194,7 @@ public class StudentController {
 	@RequestMapping("/save")
 	@RequiresPermissions("uniform_student:save")
 	public R save(@RequestBody StudentEntity student){
+		
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		EntityWrapper<StudentEntity> wrraper = new EntityWrapper<StudentEntity>(student);
 		StudentEntity st = this.studentService.selectOne(wrraper);
@@ -155,6 +223,7 @@ public class StudentController {
 		
 		try{
 			list = poi.getBankListByExcel(file.getInputStream(), fileName);
+			System.out.println(list.size() + "---------------------"+file.getInputStream());
 		}catch(Exception e){
 			e.printStackTrace();
 			return R.error("读取Excel发生异常").put("status", ResponseDTJson.FAIL);
@@ -163,10 +232,12 @@ public class StudentController {
 		StudentEntity student = null;
 		// 数字格式化
 		List<StudentEntity> studentList = new ArrayList<StudentEntity>(list.size());
+		System.out.println(list.size() + "-----------------------");
 		for(int i=1; i<list.size(); i++){
 			student = new StudentEntity();
 			List<Object> objList = list.get(i);
 			if(objList != null && objList.size() > 2){
+				
 				student.setStudentCode(objList.get(0).toString());
 				student.setStudentNo(objList.get(1).toString());
 				student.setStudentName(objList.get(2).toString());
@@ -187,7 +258,6 @@ public class StudentController {
 				studentList.add(student);
 			}
 		}
-		
 		String backe = this.batchSaveUsers(studentList);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		return R.ok(backe).put("status", ResponseDTJson.SUCCESS);
@@ -246,7 +316,6 @@ public class StudentController {
 					String newPassword = new Sha256Hash("000000").toHex();
 					student.setPasswordd(newPassword);
 					this.studentService.save(student);
-					return "上传成功"; 
 //					newUserList.add(student);
 				}
 				
@@ -256,6 +325,10 @@ public class StudentController {
 //				return repeatName.toString();
 //			this.studentService.insertBatch(newUserList);
 		}
-		return repeatName.toString();
+		if(repeatName.toString().length() == 7){
+			return "上传成功";
+		}else{
+			return repeatName.toString();
+		}
 	}
 }
