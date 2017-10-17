@@ -63,5 +63,10 @@ public class StudentEpcServiceImpl extends ServiceImpl<StudentEpcDao, StudentEpc
 	public StudentEpcEntity queryObjectIdEpc(Map<String, Object> map) {
 		return studentEpcDao.queryObjectIdEpc(map);
 	}
+
+	@Override
+	public List<StudentEpcEntity> queryListtongji(Map<String, Object> map) {
+		return studentEpcDao.queryListtongji(map);
+	}
 	
 }

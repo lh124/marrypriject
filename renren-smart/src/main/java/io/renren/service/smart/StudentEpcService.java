@@ -21,6 +21,8 @@ public interface StudentEpcService extends IService<StudentEpcEntity>{
 	StudentEpcEntity queryObjectIdEpc(Map<String, Object> map);
 	
 	List<StudentEpcEntity> queryList(Map<String, Object> map);
+	
+	List<StudentEpcEntity> queryListtongji(Map<String, Object> map);
 	 
 	int queryTotal(Map<String, Object> map);
 	
