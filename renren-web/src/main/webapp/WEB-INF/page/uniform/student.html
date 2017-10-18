@@ -133,14 +133,19 @@
 
 <div class="modal fade" id="studentEpc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	 <div class="modal-dialog" role="document">
-	  <div class="modal-content" style="width: 400px;height: 280px;">
+	  <div class="modal-content" style="width: 540px;height: 400px;">
 	  <div class="modal-header">
 	   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 	   <h4 class="modal-title" id="myModalLabel">EPC绑定</h4>
 	   <input type="hidden" id="epcuserid" />
 	  </div>
 	  <div class="modal-body" >
-	   		<div class="form-group" style="height: 60px;">
+	        <div class="form-group" style="height: 60px;" id="yinchangepc">
+			   	<div class="col-sm-2 control-label">已绑定的EPC</div>
+			   	<div class="col-sm-10" id="bindepc">
+			    </div>
+			</div>
+	   		<div class="form-group" style="height: 120px;">
 			   	<div class="col-sm-2 control-label">EPC</div>
 			   	<div class="col-sm-10">
 			      <textarea id="studentEpcuse" class="form-control" v-model="" placeholder="多个EPC用英文逗号隔开"></textarea>
