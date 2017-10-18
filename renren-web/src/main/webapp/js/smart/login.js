@@ -1,5 +1,7 @@
 		// 获取传递参数,1标识智能校服,2表示相册
 		//var code = GetQueryString("state");
+        var i = 0;
+        document.getElementById("yanzhengma").style.display = "none";
 		var state = GetQueryString("state");
 		if (state == null|| state == undefined || state == '')
 			state = 2;
@@ -22,7 +24,6 @@
 		}
 		// 登录提交
 		function login(){
-		
 			var userName = $("#userName").val();
 			var password = $("#password").val();
 			var code = $("#code").val();
@@ -46,15 +47,7 @@
 				return ;
 			}
 			
-			if(userName === null || userName === ""){
-		
-				//$("#account").parent().parent().addClass("weui-cell_warn");
-				//var $acc = $("#userName").parent().parent();
-				forWarm(null, '请输入验证码');
-				return ;
-			}
-			
-			var data = "mobile="+userName+"&password="+password+"&checkCode="+code+"&state="+state;
+			var data = "mobile="+userName+"&password="+password+"&checkCode="+code+"&state="+state+"&type="+i;
 			$.ajax({
 				type: "POST",
 			    url: "userLogin",
@@ -65,6 +58,12 @@
 						//parent.location.href ='index.html';
 						iosDialog1.fadeIn(200);
 					}else{
+						if(result.msg == "密码错误"){
+							i++;
+							if(i >= 3){
+								document.getElementById("yanzhengma").style.display = "";
+							}
+						}
 						forWarm(null,result.msg);
 						reflushCode();
 					}
