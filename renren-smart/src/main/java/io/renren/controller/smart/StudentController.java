@@ -8,6 +8,7 @@ import io.renren.utils.RRException;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -30,7 +31,7 @@ public class StudentController {
 	private StudentService studentService;
 	
 	/**
-	 * 修改
+	 * 修改密码
 	 */
 	@RequestMapping("/update")
 	public R update(StudentEntity student, HttpSession session){
@@ -64,4 +65,28 @@ public class StudentController {
 		}
 	}
 	
+	
+	/**
+	 * 修改姓名
+	 */
+	@RequestMapping("/updatenicename")
+	public R updatenicename(HttpServletRequest request, HttpSession session){
+		StudentEntity studentS = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		
+		// 修改密码
+		if (request.getParameter("nickname") != null && !request.getParameter("nickname").equals("")){
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			studentS = this.studentService.selectById(studentS.getId());
+			StudentEntity newStu = new StudentEntity();
+			newStu.setId(studentS.getId());
+			newStu.setStudentName(request.getParameter("nickname"));
+			studentService.update(newStu);
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+			
+			return R.ok();
+		} else {
+			RRException e = new RRException("请输入姓名");
+			throw e;
+		}
+	}
 }
