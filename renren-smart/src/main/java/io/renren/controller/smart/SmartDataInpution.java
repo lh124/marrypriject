@@ -78,7 +78,10 @@ public class SmartDataInpution {
 				obj = R.ok().put("data", list);
 			}else if(type.equals("deleteepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-				studentEpcService.deleteEpc(json.getString("epc"));
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("epc", json.getString("epc").replace(" ", ""));
+				StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
+				studentEpcService.delete(se.getId());
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				obj = R.ok();
 			}else if(type.equals("saveepc")){
