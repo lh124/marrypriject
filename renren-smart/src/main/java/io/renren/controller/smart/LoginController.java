@@ -93,26 +93,27 @@ public class LoginController{
      */
     @IgnoreAuth
     @RequestMapping("/userLogin")
-    public R login(HttpServletRequest request,String mobile, String password, String checkCode, String state){
-    	Assert.isBlank(checkCode, "验证码不能为空");
+    public R login(HttpServletRequest request,String mobile, String password, String checkCode, String state, String type){
         Assert.isBlank(mobile, "账号能为空");
         Assert.isBlank(password, "密码不能为空");
         
         // 验证验证码
         Map<String, Object> map = new HashMap<String, Object>();
-        String code = (String) request.getSession().getAttribute(ControllerConstant.CHECK_CODE_SESSION_KEY);
-        
-        if (!StringUtils.isBlank(checkCode) && !StringUtils.isBlank(code)) {
-        	if (!code.equals(checkCode)) {
-        		map.put("status", ResponseDTJson.FAIL);
+        if(Integer.parseInt(type) >= 3){
+        	String code = (String) request.getSession().getAttribute(ControllerConstant.CHECK_CODE_SESSION_KEY);
+        	Assert.isBlank(checkCode, "验证码不能为空");
+            if (!StringUtils.isBlank(checkCode) && !StringUtils.isBlank(code)) {
+            	if (!code.equals(checkCode)) {
+            		map.put("status", ResponseDTJson.FAIL);
+                	map.put("msg","验证码错误");
+                	return R.ok(map);
+            	}
+            	
+            } else {
+            	map.put("status", ResponseDTJson.FAIL);
             	map.put("msg","验证码错误");
             	return R.ok(map);
-        	}
-        	
-        } else {
-        	map.put("status", ResponseDTJson.FAIL);
-        	map.put("msg","验证码错误");
-        	return R.ok(map);
+            }
         }
         
         //进行用户验证
