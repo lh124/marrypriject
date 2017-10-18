@@ -28,7 +28,7 @@
 					</a>
 					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterNickname">
 						<div class="weui-cell__bd">
-							<p>昵称</p>
+							<p>姓名</p>
 						</div>
 						<div class="weui-cell__ft" id="nickname"></div>
 					</a>
@@ -174,7 +174,7 @@
 		var nickname = $('#newNickname').val();
 		$.ajax({
 		  type: 'POST',
-		  url: '../student/update',
+		  url: '../student/updatenicename',
 		  data: {'nickname': nickname},
 		  dataType: "json",
 		  beforeSend: function(){
