@@ -52,6 +52,7 @@
      <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
      <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
 <script type="text/javascript" src="${rc.contextPath}/js/smart/user/upload.js?_${date.systemTime}"></script>
+<script src="${rc.contextPath}/js/smart/user/classvoide.js?"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>     
 <script type="text/javascript">
@@ -116,19 +117,21 @@ wx.ready(function () {
       success: function (res) {
         serverId = res.serverId;
         $.ajax({ 
-		url : "../shouye/uploadMedio?serverId="+serverId + "&classId=" + $('#classId').val() + "&userId=" + $('#userId').val(), 
-		type : 'POST', 
-        dataType:"json",  
-		contentType : false,
-		success : function(responseStr) { 
-			if(responseStr.status=='ok'){
-			    
+			url : "../shouye/uploadMedio?serverId="+res.serverId, 
+			type : 'POST', 
+	        dataType:"json",  
+			contentType : false,
+			success : function(responseStr) { 
+				var imgSrc = "http://wrs.gykjewm.com/statics/video/"+responseStr.path;
+				var file = imgSrc;
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                      alert(reader.result);
+                      set_upload_param(reader.result);
+                };
 			}
-		}, 
-		error : function(responseStr) { 
-			console.log("error");
-		} 
-	});
+		});
       }
     });
   };
