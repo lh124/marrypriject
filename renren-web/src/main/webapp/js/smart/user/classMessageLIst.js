@@ -41,7 +41,7 @@ $(function(){
 		           		              '</div>';
 		           				}
 		           				if((data.page.list[i].content == null || data.page.list[i].content == "") && data.page.list[i].voice != null && data.page.list[i].voice != ""){
-		           					content = '<audio src="http://wrs.gykjewm.com/statics/video/'+data.page.list[i].voice+'" controls="controls"></audio>';
+		           					content = '<audio src="'+data.page.list[i].voice+'" controls="controls"></audio>';
 		           				}else{
 		           					content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 		           		            '</p>';
