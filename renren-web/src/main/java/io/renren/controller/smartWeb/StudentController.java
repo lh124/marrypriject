@@ -107,7 +107,7 @@ public class StudentController {
 			}else{
 				StudentEpcEntity see = new StudentEpcEntity();
 				see.setStudentId(Integer.parseInt(request.getParameter("id")));
-				see.setEpc(epclist[i]);
+				see.setEpc(epclist[i].replace(" ", ""));
 				studentEpcService.save(see);
 			}
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
