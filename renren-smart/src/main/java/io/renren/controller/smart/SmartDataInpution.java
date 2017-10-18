@@ -88,7 +88,7 @@ public class SmartDataInpution {
 				for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 					JSONObject object = (JSONObject) iterator.next();
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("epc", object.getString("epc"));
+					map.put("epc", object.getString("epc").replace(" ", ""));
 					StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
 					if(se != null){
 						StudentEntity studnet = studentService.queryObject(se.getStudentId());
@@ -98,7 +98,7 @@ public class SmartDataInpution {
 					}else{
 						StudentEpcEntity see = new StudentEpcEntity();
 						see.setStudentId(Integer.parseInt(json.getString("student_id")));
-						see.setEpc(object.getString("epc"));
+						see.setEpc(object.getString("epc").replace(" ", ""));
 						studentEpcService.save(see);
 					}
 				}
