@@ -208,7 +208,19 @@ function bindEpc(id){
 	    success: function(r){
 	    	if(r.code === 0){
 	    		if(r.epc != null){
-	    			document.getElementById("studentEpcuse").value = r.epc;
+	    			document.getElementById("yinchangepc").style.display = "block";
+	    			var epc = r.epc.split(",");
+	    			var content = "";
+	    			$('#bindepc').html(content);
+	    			for(var i = 0; i < epc.length; i++){
+	    				if(epc[i] != null && epc[i] != ""){
+	    					content += epc[i] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="deleteepc(\''+epc[i]+ '\',' + id +')">删除</a><br/>';
+	    				}
+	    			}
+	    			console.log(content);
+	    			$('#bindepc').html(content);
+	    		}else{
+	    			document.getElementById("yinchangepc").style.display = "none";
 	    		}
 			}else{
 				alert(r.msg);
@@ -216,6 +228,25 @@ function bindEpc(id){
 		}
 	});
 }
+
+function deleteepc(epc,id){
+	var url = "http://wrs.gykjewm.com/smart/datainpution/getData?key={type:'deleteepc',epc:'" + epc +"',token:'bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a'}";
+	$.ajax({
+		type: "POST",
+	    url: url,
+	    success: function(r){
+	    	if(r.code === 0){
+	    		alert('删除成功', function(index){
+	    			bindEpc(id);
+					vm.reload();
+				});
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
+
 function uplaod(){
 	$('#studentimage').modal('hide');
 	var url =  "../sys/uniform/student/update";
