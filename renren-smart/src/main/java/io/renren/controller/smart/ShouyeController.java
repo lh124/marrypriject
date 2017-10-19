@@ -29,6 +29,8 @@ import io.renren.utils.Query;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
+import io.renren.validator.ValidatorUtils;
+import io.renren.validator.group.AddGroup;
 import io.renren.weixin.main.SignEntity;
 import io.renren.weixin.util.AdvancedUtil;
 import io.renren.weixin.util.CommonUtil;
@@ -91,6 +93,22 @@ public class ShouyeController {
 	private CoreService coreService;
 	@Autowired
 	private SysWeixinMsgService sysWeixinMsgService;
+	
+	/**
+	 * 保存随堂课件
+	 */
+	@RequestMapping("/savesmartcourse")
+	public R weixsave(HttpServletRequest request,HttpSession session){
+		SmartCoursewareEntity smartCourseware = new SmartCoursewareEntity();
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		ValidatorUtils.validateEntity(smartCourseware, AddGroup.class);
+		smartCourseware.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		smartCourseware.setClassid(student.getClassId());
+		smartCourseware.setName(request.getParameter("title"));
+		smartCourseware.setType(Integer.parseInt(request.getParameter("type")));
+		smartCoursewareService.insert(smartCourseware);
+		return R.ok().put("id", smartCourseware.getId());
+	}
 	
 	/**
 	 * 添加作业
