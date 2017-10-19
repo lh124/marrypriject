@@ -38,7 +38,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="#">'+
 		           		              '<span>' + data.page.list[i].name + '</span>'+
-		           		            '</a><div onclick="clickpic(\'' + path + '\')">单击打开【'+data.page.list[i].createtime.substring(0,10)+'】</div>'+
+		           		            '</a><div onclick="clickpic(\'' + path + '\')">查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>'+
 		           		          
 		           		          '</div>'+
 		           		        '</div>'+
@@ -102,7 +102,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].name + '</span>'+
-		           		            '</a><div onclick="clickpic(\'' + path + '\')">单击打开【'+data.page.list[i].createtime.substring(0,10)+'】</div>' +
+		           		            '</a><div onclick="clickpic(\'' + path + '\')">查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>' +
 		           		       
 		           		          '</div>'+
 		           		        '</div>'+
