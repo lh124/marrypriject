@@ -38,7 +38,7 @@ public class SmartCoursewareEntity implements Serializable {
 	@TableField(value="classid")
 	private Integer classid;
 	
-	//班级id
+	//是否共享
 	@TableField(value="type")
 	private Integer type;
 			
