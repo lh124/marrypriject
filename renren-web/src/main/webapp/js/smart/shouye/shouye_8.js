@@ -226,6 +226,6 @@ function afterDo(){
 
 
 function clickpic(path){
-	window.open(path);  
+	XDoc.run(path, "html", {}, "_blank");
     
 }
