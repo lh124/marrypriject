@@ -226,6 +226,11 @@ function afterDo(){
 
 
 function clickpic(path){
-	XDoc.run(path, "html", {}, "_blank");
-    
+	var index1=path.lastIndexOf(".");  
+	var postf=path.substring(index1,path.length);//后缀名  
+	if(postf == ".pdf"){
+		XDoc.to(path, "html", {}, "_blank");
+	}else{
+		XDoc.run(path, "html", {}, "_blank");
+	}
 }
