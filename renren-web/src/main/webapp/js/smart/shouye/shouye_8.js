@@ -32,13 +32,14 @@ $(function(){
 	                        for(var i = 0; i < arrLen; i++){
 		           				var img; 
 		           				var imgs = "";
+		           				var path = data.page.list[i].pic + "";
 		           				result += '<div class="weui_cells moments">'+
-		           		        '<div class="weui_cell moments__post">'+
+		           		        '<div class="weui_cell moments__post" onclick="clickpic(\'' + path + '\')">'+
 		           		        
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="#">'+
 		           		              '<span>' + data.page.list[i].name + '</span>'+
-		           		            '</a><div onclick="clickpic(\'' + path + '\')">查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>'+
+		           		            '</a><div>查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>'+
 		           		          
 		           		          '</div>'+
 		           		        '</div>'+
@@ -98,11 +99,11 @@ $(function(){
 		   						var path = data.page.list[i].pic + "";
 	                        	var imgs = "";
 		           				result += '<div class="weui_cells moments">'+
-		           		        '<div class="weui_cell moments__post">'+
+		           		        '<div class="weui_cell moments__post" onclick="clickpic(\'' + path + '\')">'+
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].name + '</span>'+
-		           		            '</a><div onclick="clickpic(\'' + path + '\')">查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>' +
+		           		            '</a><div>查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>' +
 		           		       
 		           		          '</div>'+
 		           		        '</div>'+
