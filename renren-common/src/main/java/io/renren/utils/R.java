@@ -3,8 +3,6 @@ package io.renren.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.protocol.ResponseDate;
-
 /**
  * 返回数据
  * 
