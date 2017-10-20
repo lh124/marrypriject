@@ -97,7 +97,7 @@ public class SmartDataInpution {
 						StudentEntity studnet = studentService.queryObject(se.getStudentId());
 						ClassEntity classentity = classService.queryObject(studnet.getClassId());
 						SchoolEntity school = schoolService.queryObject(classentity.getSchoolId());
-						list.add("【EPC："+se.getEpc() + "已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定】"); 
+						list.add("已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定"); 
 					}else{
 						StudentEpcEntity see = new StudentEpcEntity();
 						see.setStudentId(Integer.parseInt(json.getString("student_id")));
@@ -108,6 +108,24 @@ public class SmartDataInpution {
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				if(list != null){
 					obj = R.ok().put("data", list);
+				}
+			}else if(type.equals("queryEpc")){
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("epc", json.getString("epc").replace(" ", ""));
+				StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
+				String data = "";
+				if(se != null){
+					StudentEntity studnet = studentService.queryObject(se.getStudentId());
+					ClassEntity classentity = classService.queryObject(studnet.getClassId());
+					SchoolEntity school = schoolService.queryObject(classentity.getSchoolId());
+					data = "已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定"; 
+				}
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				if(data != null && !data.equals("")){
+					obj = R.error("").put("data", data);
+				}else{
+					obj = R.ok();
 				}
 			}
 			return (R)obj ;
