@@ -31,7 +31,8 @@ $(function () {
             order: "order"
         },
         postData:{
-        	"userid": "userid="+$("#userid").val() + " and parentid = 0"
+        	"userid": $("#userid").val() ,
+        	"type":"1"
         },
         gridComplete:function(){
         	//隐藏grid底部滚动条
@@ -76,10 +77,10 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
+			var url = vm.tombstoneDead.id == null ? "../tombstonedead/save" : "../tombstonedead/update";
 			vm.tombstoneDead.userid =$("#userid").val();
 			vm.tombstoneDead.parentid = 0;
 			vm.tombstoneDead.usertype = -1;
-			var url = vm.tombstoneDead.id == null ? "../tombstonedead/save" : "../tombstonedead/update";
 			$.ajax({
 				type: "POST",
 			    url: url,

@@ -30,7 +30,8 @@ $(function () {
             order: "order"
         },
         postData:{
-        	"userid": "parentid="+$("#parentid").val()
+        	"parentid": $("#parentid").val(),
+        	"type":"0"
         },
         gridComplete:function(){
         	//隐藏grid底部滚动条
