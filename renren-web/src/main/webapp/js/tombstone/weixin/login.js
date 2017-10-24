@@ -44,8 +44,8 @@
 			    dataType: "json",
 			    success: function(result){
 					if(result.status == 'ok'){//登录成功
-						//parent.location.href ='index.html';
-						iosDialog1.fadeIn(200);
+						parent.location.href ='index.html';
+						//iosDialog1.fadeIn(200);
 					}else{
 						forWarm(null,result.msg);
 						reflushCode();
@@ -97,8 +97,18 @@
 		});
 		// 绑定微信
 		function weChatBinding(){
-			window.location.href = 
-			'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http%3a%2f%2fwrs.gykjewm.com%2fsmart%2findex.html&response_type=code&scope=snsapi_base&state=' + state+ '#wechat_redirect';
+			var code = GetQueryString("code");
+			alert(code);
+			$.ajax({
+				type: "POST",
+			    url: "../user/weChatBinding?code="+code,
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+						$('#iosDialog2').fadeIn(200);
+					}
+				}
+			});
 		}
 		
 		function cancelBinding(){
