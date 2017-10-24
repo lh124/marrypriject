@@ -79,4 +79,15 @@ public class SysPageController {
 	public String smart(@PathVariable("url") String url){
 		return "smart/" + url + ".html";
 	}
+	
+	// -----------------------墓碑二维码--------------------------
+	@RequestMapping("tombstone/{module}/{url}.html")
+	public String tombstonePage(@PathVariable("url") String url, @PathVariable("module") String module){
+		return "tombstone/" + module + "/" + url + ".html";
+	}
+		
+	@RequestMapping("/tombstone/{url}.html")
+	public String tombstone(@PathVariable("url") String url){
+		return "tombstone/" + url + ".html";
+	}
 }
