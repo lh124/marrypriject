@@ -42,6 +42,8 @@ public enum TypeEnum {
 	TOMBSTONE_USER_PIC(23, "tombstone_user_pic_", "墓碑二维码用户头像", "墓碑二维码用户头像上传成功", "墓碑二维码用户头像上传失败", 6, "tombstone_user_pic/",
 			"http://wrs.gykjewm.com/tombstone/callBack/msgPic" ),
 	TOMBSTONE_DEAD_PIC(24, "tombstone_dead_pic_", "墓碑二维码家谱图片", "墓碑二维码家谱图片上传成功", "墓碑二维码家谱图片上传失败", 6, "tombstone_dead_pic/",
+			"http://wrs.gykjewm.com/tombstone/callBack/msgPic" ),
+	TOMBSTONE_DEADUSER_PIC(25, "tombstone_deaduser_pic_", "墓碑二维码个人图片", "墓碑二维码个人图片上传成功", "墓碑二维码个人图片上传失败", 6, "tombstone_deaduser_pic/",
 			"http://wrs.gykjewm.com/tombstone/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
