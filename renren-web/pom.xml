@@ -42,6 +42,11 @@
         </dependency>
         <dependency>
             <groupId>io.renren</groupId>
+            <artifactId>renren-tombstone</artifactId>
+            <version>${renren-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.renren</groupId>
             <artifactId>renren-smart</artifactId>
             <version>${renren-version}</version>
         </dependency>
