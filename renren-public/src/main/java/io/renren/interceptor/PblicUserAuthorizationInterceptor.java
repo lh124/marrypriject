@@ -66,6 +66,9 @@ public class PblicUserAuthorizationInterceptor extends HandlerInterceptorAdapter
     	// 登录智能校服
     	if (session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY) != null)
     		return true;
+    	// 登录墓碑二维码
+    	if (session.getAttribute(ControllerConstant.SESSION_TOMBSTONE_USER_KEY) != null)
+    		return true;
     	// 学生相册系统
     	if (session.getAttribute(ControllerConstant.USER_SESSION_KEY) != null)
     		return true;
