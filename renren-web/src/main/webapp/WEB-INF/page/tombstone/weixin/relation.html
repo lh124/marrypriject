@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable"><!-- 这meta的作用就是删除默认的苹果工具栏和菜单栏允许全屏模式浏览-->
+    <meta name="apple-touch-fullscreen" content="yes"><!-- 开启对web app程序的支持  -->
+    <meta content="telephone=no,email=no" name="format-detection"><!-- iPhone会自动把你这个文字加链接样式、并且点击这个数字还会自动拨号！telephone=no就忽略页面中的数字识别为电话号码 ,email=no 忽略识别邮箱 -->
+    <!--base css-->
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+    <title>家族族谱</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
+    <script src="${rc.contextPath}/js/tombstone/weixin/relation.js?_${date.systemTime}"></script>
+</head>
+<body ontouchstart onload="init()">
+    <div class="container" >
+        <div class="page" style="opacity:1">
+            <div class="page__hd">
+                <h1 class="page__title">添加家族成员</h1>
+                <!-- <p class="page__desc">表单输入</p> -->
+            </div>
+            <div class="page__bd" id="container">
+                <!-- <div class="weui-cells__title">单选列表项</div> -->
+                <div class="weui-cells">
+                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">上一代：</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <select class="weui-select" name="parentid" id="parentid">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">与逝者关系：</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <select class="weui-select" name="relation" id="relation">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">成员姓名：</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" type="text" id="name" name="name" placeholder="请输入姓名"/>
+                        </div>
+                    </div>
+                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">夫妻关系：</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <select class="weui-select" name="usertype" id="usertype">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-gallery" id="gallery">
+                    <span class="weui-gallery__img" id="galleryImg"></span>
+                    <div class="weui-gallery__opr">
+                        <a href="javascript:forRemvePic();" class="weui-gallery__del">
+                            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="weui-cells weui-cells_form" >
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <div class="weui-uploader">
+                                <div class="weui-uploader__hd">
+                                    <p class="weui-uploader__title" id="typeName">成员头像</p>
+                                    <div class="weui-uploader__info" id="picSize">0/1</div>
+                                </div>
+                                <div class="weui-uploader__bd">
+                                    <div class="weui-uploader__input-box"  id="selectfiles"></div>
+                                    <ul class="weui-uploader__files" id="uploaderFiles">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-btn-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:forSubmit()" id="postfiles">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+            <p class="weui-toast__content">添加成功</p>
+        </div>
+    </div>
+</body>
+</html>

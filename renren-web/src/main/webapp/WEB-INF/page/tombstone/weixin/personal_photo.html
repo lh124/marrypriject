@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>冠宇科技</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="${rc.contextPath}/statics/tombstone/css/style.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/tombstone/css/reset.css"/>
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/reset.js"></script>
+</head>
+<body ontouchstart onload="init()">
+    <div class="container" >
+        <div class="page" style="opacity:1">
+            <div class="page__bd" id="container">
+                <div class="weui-gallery" id="gallery">
+                    <span class="weui-gallery__img" id="galleryImg"></span>
+                    <div class="weui-gallery__opr">
+                        <a href="javascript:forRemvePic();" class="weui-gallery__del">
+                            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="weui-cells weui-cells_form" >
+		            <div class="weui-cell">
+		                <div class="weui-cell__bd">
+		                    <div class="weui-uploader">
+		                        <div class="weui-uploader__hd">
+		                            <p class="weui-uploader__title" id="typeName">图片上传</p>
+		                            <div class="weui-uploader__info" id="picSize">0/7</div>
+		                        </div>
+		                        <div class="weui-uploader__bd">
+		                        	<div class="weui-uploader__input-box"  id="selectfiles1"></div>
+		                            <ul class="weui-uploader__files" id="uploaderFiles">
+		                            </ul>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		        <input type="hidden" id="selectfiles">
+                <div class="weui-btn-area">
+                    <a class="weui-btn weui-btn_primary" href="javascript:forSubmit()" id="postfiles">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
+    <script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
+    <script src="${rc.contextPath}/js/smart/index.js?_${date.systemTime}"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>    
+    <script type="text/javascript">   
+        function getMyFormDate(){
+            var formData = new FormData();
+            formData.append('type', 12); 
+            return   formData;
+        }
+        function init(){
+		      $.ajax({ 
+				type: "POST",
+			    url: "../../publicModule/common/getWeChatSign",
+			    data: {"url":window.location.href},
+			    dataType:'json',
+			    success: function (result) {
+						wx.config({
+							debug: false, //
+							appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
+							timestamp: result.timestamp, // 必填，生成签名的时间戳
+							nonceStr: result.nonceStr, // 必填，生成签名的随机串
+							signature: result.signature,// 必填，签名，见附录1
+					        jsApiList: [
+					           'chooseImage',
+		        				'previewImage',
+		        				'uploadImage',
+		        				'downloadImage'
+					        ]
+					    });
+				} 
+			});
+		  }
+		  wx.ready(function () {
+  // 5 图片接口
+  // 5.1 拍照、本地选图
+  var images = {
+    localId: [],
+    serverId: []
+  };
+  var length = 0;
+  //图片选择
+  document.querySelector('#selectfiles1').onclick = function () {
+    wx.chooseImage({
+      count: 7, 
+      success: function (res) {
+        localId = res.localIds;
+        length = localId.length
+        addNewContent(localId);
+      }
+    });
+  };
+  document.querySelector('#postfiless').onclick = function () {
+      $.ajax({ 
+		type: "POST",
+	    url: "../photoclassworkmsg/save",
+	    data: {"classId":$('#classId').val(),"userId":$('#userId').val(),"content":$('.weui-textarea').val()},
+	    dataType:'json',
+	    success: function (result) {
+	        if(length > 0){
+	            var k = 0;
+		        for(var i = 0; i < length; i++){
+		             k = i;
+			         wx.uploadImage({
+			        	localId: localId[i],
+			        	success: function (res) {
+			        		$.ajax({ 
+								url : "../shouye/uploadMedio?serverId="+res.serverId, 
+								type : 'POST', 
+	        					dataType:"json",  
+								contentType : false,
+								success : function(responseStr) { 
+								     var imgSrc = "http://wrs.gykjewm.com/statics/video/"+responseStr.path;
+								     function getBase64(img){//传入图片路径，返回base64
+				        			    function getBase64Image(img,width,height) {//width、height调用时传入具体像素值，控制大小 ,不传则默认图像大小
+				          				   var canvas = document.createElement("canvas");
+								            canvas.width = width ? width : img.width;
+								            canvas.height = height ? height : img.height;
+								            var ctx = canvas.getContext("2d");
+								            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+								            var dataURL = canvas.toDataURL();
+								            return dataURL;
+								         }
+								        var image = new Image();
+								        image.crossOrigin = '';
+								        image.src = img;
+								        var deferred=$.Deferred();
+								        if(img){
+								          image.onload =function (){
+								            deferred.resolve(getBase64Image(image));//将base64传给done上传处理
+								          }
+								          return deferred.promise();//问题要让onload完成后再return sessionStorage['imgTest']
+								        }
+								      }
+								      getBase64(imgSrc).then(function(base64){
+								          set_upload_param(base64,result.id);
+								      });
+									}
+							});
+						}
+					});
+			     }
+			     alert("上传成功");
+	        }else{
+	            alert("上传成功");
+	        }
+		}
+      });
+	      // set_upload_param(localId);
+  };
+
+  var shareData = {
+    title: '微信JS-SDK Demo',
+    desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
+    link: 'http://demo.open.weixin.qq.com/jssdk/',
+    imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
+  };
+  wx.onMenuShareAppMessage(shareData);
+  wx.onMenuShareTimeline(shareData);
+});
+    </script>
+</html>

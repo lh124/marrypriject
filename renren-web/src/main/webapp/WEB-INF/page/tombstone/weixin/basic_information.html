@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>冠宇科技</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<body ontouchstart>
+	<div class="container" >
+		<div class="page" style="opacity:1">
+		    <div class="">
+		        <h1 class="page__title">&nbsp;</h1>
+		    </div>
+		    <div class="page__bd" id="container">
+		        <!-- <div class="weui-cells__title">单选列表项</div> -->
+		        <div class="weui-cells weui-cells_form">
+		            <div class="weui-cell">
+		                <div class="weui-cell__bd">
+		                    <textarea  id="content" class="weui-textarea" placeholder="请输入基本信息" rows="10"></textarea>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="weui-btn-area">
+		            <a class="weui-btn weui-btn_primary" href="javascript:upload()" id="postfiles">确定</a>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</body>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
+	<script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+	<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+	<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
+	<script type="text/javascript">
+	     $(function () {
+			$.ajax({
+				type: "POST",
+			    url: "../getloginuser",
+			    dataType: "json",
+			    success: function(result){
+			    	if(result.status == 'ok'){
+			    		$("#content").val(result.user.content);
+					}
+				}
+			});
+		});
+		function upload(){
+            var data = "content="+$("#content").val();
+			$.ajax({
+				type: "POST",
+			    url: "../updatacontent",
+			    data: data,
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+					    alert("操作成功");
+					    window.location.href="./index.html";
+					}
+				}
+			});
+        }
+	</script>
+</html>
