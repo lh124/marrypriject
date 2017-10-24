@@ -51,6 +51,7 @@ public class CoreService {
 			Map<String, String> requestMap = MessageUtil.parseXml(request);
 			// 发送方帐号
 			String fromUserName = requestMap.get("FromUserName");
+			request.getSession().setAttribute("fromUserName", fromUserName);
 			// 开发者微信号
 			String toUserName = requestMap.get("ToUserName");
 			// 消息类型
