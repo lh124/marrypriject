@@ -1,4 +1,26 @@
 function init(){
+	$.ajax({ 
+		type: "POST",
+	    url: "../../publicModule/common/getWeChatSign",
+	    data: {"url":window.location.href},
+	    dataType:'json',
+	    success: function (result) {
+				wx.config({
+					debug: false, //
+					appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
+					timestamp: result.timestamp, // 必填，生成签名的时间戳
+					nonceStr: result.nonceStr, // 必填，生成签名的随机串
+					signature: result.signature,// 必填，签名，见附录1
+			        jsApiList: [
+			           'chooseImage',
+        				'previewImage',
+        				'uploadImage',
+        				'downloadImage'
+			        ]
+			    });
+		} 
+	});
+	
     $.ajax({
 		type: "POST",
 	    url: "../../tombstone/getrelationship",
