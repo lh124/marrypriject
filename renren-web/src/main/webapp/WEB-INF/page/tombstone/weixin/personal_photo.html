@@ -11,6 +11,7 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/reset.js"></script>
 </head>
 <body ontouchstart onload="init()">
+    <input id="userId" value="$session.getAttribute('user_tombstone').id" >
     <div class="container" >
         <div class="page" style="opacity:1">
             <div class="page__bd" id="container">
@@ -41,7 +42,7 @@
 		        </div>
 		        <input type="hidden" id="selectfiles">
                 <div class="weui-btn-area">
-                    <a class="weui-btn weui-btn_primary" href="javascript:forSubmit()" id="postfiles">确定</a>
+                    <a class="weui-btn weui-btn_primary" href="javascript:void(0)" id="postfiless">确定</a>
                 </div>
             </div>
         </div>
@@ -50,14 +51,27 @@
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
     <script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
-    <script src="${rc.contextPath}/js/smart/index.js?_${date.systemTime}"></script>
+    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>    
+    <script src="${rc.contextPath}/js/tombstone/weixin/demo1.js?_${date.systemTime}"></script>
     <script type="text/javascript">   
-        function getMyFormDate(){
-            var formData = new FormData();
-            formData.append('type', 12); 
-            return   formData;
-        }
+        function addNewContent(obj) {
+		$("#uploaderFiles").html("");
+		var oldBox = "";
+		for(var a = 0; a < obj.length; a++) {
+			oldBox += "<li class='weui-uploader__file'><img class='weui-uploader__file weiImg' name='msgpic' src='"+obj[a]+"' /></li>";
+		}
+		$("#picSize").text(obj.length + "/7");
+		$("#uploaderFiles").html(oldBox);
+		$(".weiImg").on("click",function(){
+		 var index = $(this).prevAll().length;
+		 var src=$(this).attr("src"); 
+	  	 wx.previewImage({
+	      urls:obj
+	    });
+	  });
+	}
+        
         function init(){
 		      $.ajax({ 
 				type: "POST",
@@ -81,7 +95,7 @@
 				} 
 			});
 		  }
-		  wx.ready(function () {
+wx.ready(function () {
   // 5 图片接口
   // 5.1 拍照、本地选图
   var images = {
@@ -101,13 +115,7 @@
     });
   };
   document.querySelector('#postfiless').onclick = function () {
-      $.ajax({ 
-		type: "POST",
-	    url: "../photoclassworkmsg/save",
-	    data: {"classId":$('#classId').val(),"userId":$('#userId').val(),"content":$('.weui-textarea').val()},
-	    dataType:'json',
-	    success: function (result) {
-	        if(length > 0){
+      if(length > 0){
 	            var k = 0;
 		        for(var i = 0; i < length; i++){
 		             k = i;
@@ -115,7 +123,7 @@
 			        	localId: localId[i],
 			        	success: function (res) {
 			        		$.ajax({ 
-								url : "../shouye/uploadMedio?serverId="+res.serverId, 
+								url : "../../smart/shouye/uploadMedio?serverId="+res.serverId, 
 								type : 'POST', 
 	        					dataType:"json",  
 								contentType : false,
@@ -143,20 +151,17 @@
 								        }
 								      }
 								      getBase64(imgSrc).then(function(base64){
-								          set_upload_param(base64,result.id);
+								          var id = document.getElementById("userId").value;
+								          set_upload_param(base64,id,25);
 								      });
 									}
 							});
 						}
 					});
 			     }
-			     alert("上传成功");
 	        }else{
-	            alert("上传成功");
+	            alert("请选择需要上传的图片");
 	        }
-		}
-      });
-	      // set_upload_param(localId);
   };
 
   var shareData = {

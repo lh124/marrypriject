@@ -178,29 +178,7 @@
 							        // 用户取消分享后执行的回调函数
 							    }
 							});
-							wx.getLocation({
-							    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-							    success: function (res) {
-							        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-							        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-							        var speed = res.speed; // 速度，以米/每秒计
-							        var accuracy = res.accuracy; // 位置精度
-							        //alert(latitude);
-							        $.ajax({
-										type: "POST",
-									    url: "./user/setUserPosition",
-									    data: {"latitude": latitude, "longitude": longitude},
-									    dataType: "json",
-									    success: function(result){
-											if(result.status == 'ok'){//登录成功
-												
-											}else{
-											
-											}
-										}
-									});
-							    }
-							});
+							
 						});
 					//注入失败会执行下面方法
 					wx.error(function(res){
