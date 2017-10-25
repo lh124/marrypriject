@@ -123,10 +123,7 @@
 .hh{
 	display: flex;
 }
-.hhs{
-	display: flex;
-}
-.hh div{
+.hh .fl{
 	flex: 1;
 	text-align: center;
 	position: relative;
@@ -134,31 +131,55 @@
 .hh img{
 	cursor: pointer;
 }
-.hhs img{
-	cursor: pointer;
+.one,.two,.three{
+	width: 20%;
+	height: 100%;
 }
-.hhs div{
+
+.hhs{
+	display: flex;
+	margin-top: 0.4rem;
+	padding:0 0.2rem;
+}
+.hhs .fl{
 	flex: 1;
 	text-align: center;
 	position: relative;
 }
+.hhs img{
+	cursor: pointer;
+}
+.ones,.twos,.threes{
+	width: 20%;
+	height: 100%;
+}
+
 .aa{
 	width: 100%;
+	overflow: hidden;
+	border:1px solid red;
+}
+.img2{
+	position: absolute;
+	margin-top: 0.1rem;
+}
+.img3{
+	position: absolute;
+}
+.aa img{
 	display: block;
+	width: 100%;
 	height: 2.2rem;
+}
+.aa p{
+	width: 100%;
+	line-height: 0.4rem;
+	font-size: 0.35rem;
 }
 .img1{
 	position: absolute;
 	top:50%;
-	margin-top: -1.1rem;
-}
-.img2{
-	position: absolute;
-	margin-top: -1.1rem;
-}
-.img3{
-	position: absolute;
-	margin-top: 0.15rem;
+	margin-top: -1.15rem;
 }
 .btn{
 	color: #fff;
