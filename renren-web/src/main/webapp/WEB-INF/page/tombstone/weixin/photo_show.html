@@ -13,12 +13,24 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/reset.js"></script>
     <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
     <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+    <style>
+    	.top{width:100%;height:100%;position:fixed;padding:5%;background:black;top:0;display:none;}
+    	.bigImg{width:90%;height:90%;z-index:10;}
+    	.bigImg img{display:block;width:100%;height:auto;}
+    </style>
 </head>
 <body onload="init()" style="width: 98%;">
     <input type="hidden" id="userid" value="${request.getParameter('id')}">
 	<div class="m-t-10 person_img" id="userimage" style="padding-left: 2%;width: 100%;">
 	</div>
+	<div class="top">
+		<div class="bigImg"></div>
+	</div>
 </body>
+
+
+
    <script type="text/javascript">
        function init(){
            var id = document.getElementById("userid").value;
@@ -32,9 +44,22 @@
 						$("#userimage").html(content);
 						var length = result.list.img.length;
 						for(var i = 0; i < length; i++){
-							content += '<img class="m-r-2p" style="width:31%;" src="'+ result.list.img[i].pic +'"/>';
+							content += '<img class="m-r-2p previewImage"  style="width:31%;margin-top:5px;" src="'+ result.list.img[i].pic +'"/>';
 						}
 						$("#userimage").html(content);
+						$(".previewImage").on("click",function(){
+							var path = $(this).attr('src');
+							$('.top').show();
+							$('.bigImg').append('<img src="'+path+'"/>');
+							$('.bigImg').find('img').on("click",function(){
+								$('.bigImg').html('');
+								$('.top').hide();
+							});
+							$('.top').on("click",function(){
+								$('.bigImg').html('');
+								$('.top').hide();
+							});
+						});
 					}
 				}
 			});
