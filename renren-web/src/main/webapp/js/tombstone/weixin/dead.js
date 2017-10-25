@@ -159,7 +159,7 @@ function getcanvas(){
 				var b=parseFloat($('.hh .img2').eq(i).css('height').substring(0,$('.hh .img2').eq(i).css('height').length-2)*0.5);
 				var c=parseFloat(a+b);
 				var ctx1_hh=parseFloat($('.hh .img3').eq(j).css('top').substring(0,$('.hh .img3').eq(j).css('top').length-2));
-				var ctx1_hei=parseFloat($('.hh .img3').eq(i).css('height').substring(0,$('.hh .img3').eq(i).css('height').length-2)*0.5);
+				var ctx1_hei=parseFloat($('.hh .img3').eq(j).css('height').substring(0,$('.hh .img3').eq(j).css('height').length-2)*0.5);
 				var ctx1_hh1=parseFloat($('.hh .img3').eq(j).css('margin-top').substring(0,$('.hh .img3').eq(j).css('margin-top').length-2));
 				var ss=parseFloat(ctx1_hh+ctx1_hh1+ctx1_hei);
 				ctx1.moveTo(0,c);
@@ -230,7 +230,7 @@ function getcanvas(){
 									var b=parseFloat($('.hhs .img2').eq(i).css('height').substring(0,$('.hhs .img2').eq(i).css('height').length-2)*0.5);
 									var c=parseFloat(a+b);
 									var ctx1_hh=parseFloat($('.hhs .img3').eq(j).css('top').substring(0,$('.hhs .img3').eq(j).css('top').length-2));
-									var ctx1_hei=parseFloat($('.hhs .img3').eq(i).css('height').substring(0,$('.hhs .img3').eq(i).css('height').length-2)*0.5);
+									var ctx1_hei=parseFloat($('.hhs .img3').eq(j).css('height').substring(0,$('.hhs .img3').eq(j).css('height').length-2)*0.5);
 									var ctx1_hh1=parseFloat($('.hhs .img3').eq(j).css('margin-top').substring(0,$('.hhs .img3').eq(j).css('margin-top').length-2));
 									var ss=parseFloat(ctx1_hh+ctx1_hh1+ctx1_hei);
 									ctx4.moveTo(0,c);
