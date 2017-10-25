@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable"><!-- 这meta的作用就是删除默认的苹果工具栏和菜单栏允许全屏模式浏览-->
+    <meta name="apple-touch-fullscreen" content="yes"><!-- 开启对web app程序的支持  -->
+    <meta content="telephone=no,email=no" name="format-detection"><!-- iPhone会自动把你这个文字加链接样式、并且点击这个数字还会自动拨号！telephone=no就忽略页面中的数字识别为电话号码 ,email=no 忽略识别邮箱 -->
+    <!--base css-->
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+    <title>照片展示</title>
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/tombstone/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/tombstone/css/style.css">
+    <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/reset.js"></script>
+    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+</head>
+<body onload="init()" style="width: 98%;">
+    <input type="hidden" id="userid" value="${request.getParameter('id')}">
+	<div class="m-t-10 person_img" id="userimage" style="padding-left: 2%;width: 100%;">
+	</div>
+	<div class="weui-btn-area" style="position:fixed;bottom:0;width: 93%;">
+         <a class="weui-btn weui-btn_primary" href="javascript:history.go(-1)" id="postfiless">返回</a>
+    </div>
+</body>
+   <script type="text/javascript">
+       function init(){
+           var id = document.getElementById("userid").value;
+           $.ajax({
+				type: "POST",
+			    url: "../geterweima?id="+id,
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+						var content = "";
+						$("#userimage").html(content);
+						var length = result.list.img.length;
+						for(var i = 0; i < length; i++){
+							content += '<img class="m-r-2p" style="width:31%;" src="'+ result.list.img[i].pic +'"/>';
+						}
+						$("#userimage").html(content);
+					}
+				}
+			});
+       }
+   </script>
+</html>

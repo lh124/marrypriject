@@ -44,9 +44,40 @@
                 <div class="weui-btn-area">
                     <a class="weui-btn weui-btn_primary" href="javascript:void(0)" id="postfiless">确定</a>
                 </div>
+                <div class="m-t-10 person_img" id="userimage" style="padding-left: 2%;width: 100%;">
+	            </div>
             </div>
         </div>
     </div>
+    
+    
+    <!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosDialog1" style="display: none;">
+            <input type="hidden" id="imageid" />
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">图片删除</strong></div>
+                <div class="weui-dialog__bd">是否需要删除该图片了？</div>
+                <div class="weui-dialog__ft">
+                    <a href="./personal_photo.html" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:deletepic();" class="weui-dialog__btn weui-dialog__btn_primary">删除</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
+        <!--BEGIN dialog2-->
+        <div class="js_dialog" id="iosDialog2" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd">删除成功！</div>
+                <div class="weui-dialog__ft">
+                    <a href="./personal_photo.html" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog2-->
+    
+    
 </body>
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
@@ -72,7 +103,7 @@
 	  });
 	}
         
-        function init(){
+   function init(){
 		      $.ajax({ 
 				type: "POST",
 			    url: "../../publicModule/common/getWeChatSign",
@@ -94,7 +125,44 @@
 					    });
 				} 
 			});
+			getimage();
 		  }
+   function deleteimage(id){
+       document.getElementById("imageid").value = id;
+       $("#iosDialog1").fadeIn(200);
+   }
+   function deletepic(){
+       var id = document.getElementById("imageid").value;
+       $.ajax({
+				type: "POST",
+			    url: "../deleteimage?id="+id,
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+						$("#iosDialog2").fadeIn(200);
+					}
+				}
+		});
+   }
+   function getimage(){
+       var id = document.getElementById("userId").value;
+           $.ajax({
+				type: "POST",
+			    url: "../geterweima?id="+id,
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+						var content = "";
+						$("#userimage").html(content);
+						var length = result.list.img.length;
+						for(var i = 0; i < length; i++){
+							content += '<img class="m-r-2p" onclick="deleteimage('+ result.list.img[i].id +')" style="width:31%;" src="'+ result.list.img[i].pic +'"/>';
+						}
+						$("#userimage").html(content);
+					}
+				}
+			});
+   }
 wx.ready(function () {
   // 5 图片接口
   // 5.1 拍照、本地选图
