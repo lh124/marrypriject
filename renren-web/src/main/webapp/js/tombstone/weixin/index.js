@@ -11,7 +11,7 @@ $(function(){
 					length = 3;
 				}
 				for(var i = 0; i < length; i++){
-					content += '<img class="m-r-2p" src="'+ result.list.img[i].pic +'"/>';
+					content += '<img class="m-r-2p" style="width:25%;" src="'+ result.list.img[i].pic +'"/>';
 				}
 				$("#content").html(result.list.user.content);
 				$("#experience").html(result.list.user.experience);
