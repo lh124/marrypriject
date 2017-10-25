@@ -59,7 +59,7 @@
                 <div class="weui-dialog__hd"><strong class="weui-dialog__title">图片删除</strong></div>
                 <div class="weui-dialog__bd">是否需要删除该图片了？</div>
                 <div class="weui-dialog__ft">
-                    <a href="./personal_photo.html" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:fadeouts()" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
                     <a href="javascript:deletepic();" class="weui-dialog__btn weui-dialog__btn_primary">删除</a>
                 </div>
             </div>
@@ -85,7 +85,10 @@
     <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>    
     <script src="${rc.contextPath}/js/tombstone/weixin/demo1.js?_${date.systemTime}"></script>
-    <script type="text/javascript">   
+    <script type="text/javascript"> 
+        function fadeouts(){
+	         $("#iosDialog1").fadeOut(200);
+		 }  
         function addNewContent(obj) {
 		$("#uploaderFiles").html("");
 		var oldBox = "";

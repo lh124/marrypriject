@@ -10,12 +10,21 @@
     <title>家族族谱</title>
     <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
+    <style type="text/css">
+  	.back_img {
+  		height: 60px; 
+  		background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_head_pic/4_1.jpg'); 
+  		background-repeat:no-repeat; 
+  		background-size:100% 100%;
+  		-moz-background-size:100% 100%
+  	}
+  </style> 
 </head>
 <body ontouchstart onload="init()">
     <div class="container" >
         <div class="page" style="opacity:1">
-            <div class="page__hd" style="height: 200px;padding-top: -100px;">
-                <h1 class="page__title">添加家族成员</h1>
+            <div class="page__hd back_img">
+                <h1 class="page__title" style="color:#335e32;text-indent:30px;line-height: 60px;">添加家族成员</h1>
             </div>
             <div class="page__bd" id="container">
                 <!-- <div class="weui-cells__title">单选列表项</div> -->

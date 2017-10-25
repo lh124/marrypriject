@@ -11,15 +11,12 @@
 <body ontouchstart>
 	<div class="container" >
 		<div class="page" style="opacity:1">
-		    <div class="">
-		        <h1 class="page__title">&nbsp;</h1>
-		    </div>
 		    <div class="page__bd" id="container">
 		        <!-- <div class="weui-cells__title">单选列表项</div> -->
 		        <div class="weui-cells weui-cells_form">
 		            <div class="weui-cell">
 		                <div class="weui-cell__bd">
-		                    <textarea  id="content" class="weui-textarea" placeholder="请输入基本信息" rows="10"></textarea>
+		                    <textarea  id="content" class="weui-textarea" placeholder="请输入基本信息" rows="12"></textarea>
 		                </div>
 		            </div>
 		        </div>
@@ -44,6 +41,7 @@
 			    dataType: "json",
 			    success: function(result){
 			    	if(result.status == 'ok'){
+			    	    $("#content").css("height",document.body.offsetHeight*83/100);
 			    		$("#content").val(result.user.content);
 					}
 				}

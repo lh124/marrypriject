@@ -24,15 +24,7 @@
 					
 					</div>
 					<div class="weui-tabbar">
-						#if($!request.getParameter('state') ==  1)  
-							#include("front/tabbar/student_photo_tabbar.html")
-                        #elseif($!request.getParameter('state') == 2)  
-                        	#include("front/tabbar/smart_uniform_tabbar.html")
-                        #elseif($!request.getParameter('state') == 3)  
-                        	#include("front/tabbar/tombstone_uniform_tabbar.html")
-                        #else  
-                            #include("front/tabbar/tombstone_uniform_tabbar.html")  
-                        #end
+						#include("front/tabbar/tombstone_uniform_tabbar.html")
 					</div>
 				</div>
 			</div>
