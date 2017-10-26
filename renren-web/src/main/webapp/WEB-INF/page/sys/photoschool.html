@@ -33,6 +33,9 @@
 			#if($shiro.hasPermission("phototype:list"))
 			<a class="btn btn-primary" @click="addClassPhotoType"><i class="fa fa-trash-o"></i>&nbsp;学校相册分类</a>
 			#end
+			#if($shiro.hasPermission("photoclass:list"))
+			<a class="btn btn-primary" @click="addClassPhotomanage"><i class="fa fa-plus"></i>&nbsp;班级管理</a>
+			#end
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
