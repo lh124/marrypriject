@@ -23,6 +23,7 @@ import io.renren.xss.SQLFilter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,6 @@ public class PhotoSchoolController extends AbstractController{
 	@RequestMapping("/listAdminSchoolphoto")
 	@RequiresPermissions("photoschool:listAdminSchoolPhoto")
 	public R listAdminSchoolphoto(@RequestParam Map<String, Object> params){
-		
 		//查询列表数据
 		Integer adminId = null;
 		if (params.containsKey(ADMIN_ID) && params.get(ADMIN_ID) != null) {
@@ -113,14 +113,17 @@ public class PhotoSchoolController extends AbstractController{
 			adminId = Integer.parseInt( params.get(ADMIN_ID).toString());
 		} else {
 			// 表示管理员查询自己管理的学校
-//			adminId = this.getUserId();
+			adminId = Integer.parseInt(this.getUserId().toString());
 		}
         
 		//  查询管理学校
 		SysPhotoAdminSchoolEntity sase = new SysPhotoAdminSchoolEntity();
 		sase.setAdminId(adminId);
+		params.put("adminId", adminId);
+		params.put("offset", Integer.parseInt(params.get("limit").toString())*(Integer.parseInt(params.get("page").toString()) - 1));
+		params.put("limit", Integer.parseInt(params.get("limit").toString()));
 		EntityWrapper<SysPhotoAdminSchoolEntity> wrapper = new EntityWrapper<SysPhotoAdminSchoolEntity>(sase);
-		List<SysPhotoAdminSchoolEntity> saseaList = this.sysPhotoAdminSchoolService.selectList(wrapper);
+		List<SysPhotoAdminSchoolEntity> saseaList = this.sysPhotoAdminSchoolService.queryList(params);
 		PhotoSchoolEntity se = null;
 		for(int i=0; i<(saseaList.size()); i++){
 			se = this.photoSchoolService.selectById(saseaList.get(i).getSchoolId());
@@ -189,14 +192,8 @@ public class PhotoSchoolController extends AbstractController{
 	@RequestMapping("/save")
 	@RequiresPermissions("photoschool:save")
 	public R save(@RequestBody SchoolDto photoSchool, HttpServletRequest request){
-		
 		ValidatorUtils.validateEntity(photoSchool, AddGroup.class);
-		
 		PhotoSchoolEntity school = new PhotoSchoolEntity();
-		
-		//System.out.println(photoSchool);
-		
-		
 		try{
 			// 拷贝属性值
 			BeanUtils.copyProperties(school, photoSchool);
@@ -207,11 +204,12 @@ public class PhotoSchoolController extends AbstractController{
 			RRException ee = new RRException("参数异常");
 			throw ee;
 		}
-		
-		//PhotoFrontUserEntity user = request.getSession().getAttribute(ControllerConstant.USER_SESSION_KEY);
-		
 		photoSchoolService.save(school);
-		
+		SysPhotoAdminSchoolEntity sysAdminSchool = new SysPhotoAdminSchoolEntity();
+		sysAdminSchool.setAdminId(Integer.parseInt(this.getUserId().toString()));
+		sysAdminSchool.setSchoolId(Integer.parseInt(school.getId().toString()));
+		sysAdminSchool.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		sysPhotoAdminSchoolService.save(sysAdminSchool);
 		return R.ok().put("schoolId", school.getId());
 	}
 	
