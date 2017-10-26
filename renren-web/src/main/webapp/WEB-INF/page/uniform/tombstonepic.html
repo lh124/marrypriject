@@ -4,23 +4,19 @@
 <title></title>
 #parse("sys/header.html")
 </head>
-<body onload="init()">
-<input type="hidden" id="parentid" value="${request.getParameter('parentid')}">
-<input type="hidden" id="userid" value="${request.getParameter('userid')}">
+<body>
 <div id="rrapp" v-cloak>
+    <input type="hidden" id="userid" value="${request.getParameter('userid')}">
 	<div v-show="showList">
 		<div class="grid-btn">
-			#if($shiro.hasPermission("tombstonedead:save"))
+			#if($shiro.hasPermission("bombstonepic:save"))
 			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			#end
-			#if($shiro.hasPermission("tombstonedead:update"))
+			#if($shiro.hasPermission("bombstonepic:update"))
 			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
 			#end
-			#if($shiro.hasPermission("tombstonedead:delete"))
-			<a class="btn btn-primary" @click="del"><i class="fa fa-plus"></i>&nbsp;删除</a>
-			#end
-			#if($shiro.hasPermission("tombstonedead:list"))
-			<a class="btn btn-primary" @click="adddead"><i class="fa fa-trash-o"></i>&nbsp;添加下一代</a>
+			#if($shiro.hasPermission("bombstonepic:delete"))
+			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
 			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
@@ -32,30 +28,9 @@
 		<div class="panel-heading">{{title}}</div>
 		<form class="form-horizontal">
 											<div class="form-group">
-			   	<div class="col-sm-2 control-label">姓名</div>
+			   	<div class="col-sm-2 control-label">个人图片</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="tombstoneDead.name" placeholder="姓名"/>
-			    </div>
-			</div>
-									<div class="form-group">
-			   	<div class="col-sm-2 control-label">关系</div>
-			   	<div class="col-sm-10">
-			   	  <select id="relation" class="form-control" v-model="tombstoneDead.relation" >
-			   	  </select>
-			    </div>
-			</div>
-			<div class="form-group">
-			   	<div class="col-sm-2 control-label">夫妻关系</div>
-			   	<div class="col-sm-10">
-			   	  <select id="fuqirelation" class="form-control" v-model="tombstoneDead.usertype" >
-			   	  </select>
-			    </div>
-			</div>
-									<div class="form-group">
-			   	<div class="col-sm-2 control-label">头像</div>
-			   	<input type="hidden" id="myUserId" v-model="tombstoneDead.id"/>
-			   	<div class="col-sm-10">
-			   	  <input type="file" dataType="1" id="fileimg">
+			   	  <input type="file" dataType="1" id="fileimg1" >
 			    </div>
 			</div>
 							<div class="form-group">
@@ -74,7 +49,7 @@
       <span  id="progressShow"></span>
   </div><!-- /.modal-dialog -->  
 </div><!-- /.modal -->
-<script src="${rc.contextPath}/js/tombstone/houtai/tombstonedead2.js?_${date.systemTime}"></script>
+<script src="${rc.contextPath}/js/tombstone/houtai/tombstonepic.js?_${date.systemTime}"></script>
 <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
 <script type="text/javascript" src="${rc.contextPath}/js/tombstone/houtai/upload.js?_${date.systemTime}"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
@@ -82,8 +57,8 @@
 <script type="text/javascript">
     function myFormDateF(obj){
 		var mydete = new FormData();
-		mydete.append("type",24);
-		mydete.append("id", $("#myUserId").val());
+		mydete.append("type",25);
+		mydete.append("id", $("#userid").val());
 		return mydete;
 	}
 </script>

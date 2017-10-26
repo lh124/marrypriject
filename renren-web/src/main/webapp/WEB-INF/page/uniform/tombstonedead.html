@@ -18,8 +18,11 @@
 			#if($shiro.hasPermission("tombstonedead:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			#if($shiro.hasPermission("bombstonepic:list"))
+			<a class="btn btn-primary" @click="addpersonimage"><i class="fa fa-plus"></i>&nbsp;上传个人照片</a>
+			#end
 			#if($shiro.hasPermission("tombstonedead:list"))
-			<a class="btn btn-primary" @click="adddead"><i class="fa fa-trash-o"></i>&nbsp;添加下一代</a>
+			<a class="btn btn-primary" @click="adddead"><i class="fa fa-plus"></i>&nbsp;添加下一代</a>
 			#end
 			<a class="btn btn-primary"  href="./tombstoneuser.html">返回上一级</a>
 		</div>
