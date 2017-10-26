@@ -22,7 +22,10 @@
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
 			#if($shiro.hasPermission("sysadminschool:update"))
-			<a class="btn btn-primary" @click="manageSchool"><i class="fa fa-trash-o"></i>&nbsp;管理学校</a>
+			<a class="btn btn-primary" @click="manageSchool"><i class="fa fa-trash-o"></i>&nbsp;智能校服学校管理</a>
+			#end
+			#if($shiro.hasPermission("sysadminschool:update"))
+			<a class="btn btn-primary" @click="manageSchoolxcxt"><i class="fa fa-trash-o"></i>&nbsp;相册系统学校管理</a>
 			#end
 		</div>
 	    <table id="jqGrid"></table>
