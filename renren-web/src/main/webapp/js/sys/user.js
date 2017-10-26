@@ -104,6 +104,16 @@ var vm = new Vue({
 				});
 			});
 		},
+		manageSchoolxcxt: function (event) {
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="../uniform/adminSchoolxcxt.html?adminId="+ id;
+			
+		},
 		manageSchool: function (event) {
 			var ids = getSelectedRows();
 			if(ids.length >1){
