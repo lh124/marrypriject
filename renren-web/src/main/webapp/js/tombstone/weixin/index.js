@@ -186,7 +186,7 @@ $(function(){
 				    url: "../getdeaddata?id="+id,
 				    dataType: "json",
 				    success: function(result){
-				    	if(result.list != null && result.list != ""){
+				    	if(result.list.children != null && result.list.children != ""){
 				    		tupian(result.list);
 				    		var w1=document.getElementById("ones").offsetWidth;
 							var h1=document.getElementById("ones").offsetHeight;
@@ -306,7 +306,7 @@ $(function(){
 		function tupian(data){
 			/*获取后代*/
 			var t=0,t1=0,_top=0,lena=0,len1=0,lena1=0,mt=0,mt1=0,grandson=0;
-			$(".ones").append('<div class="aa img1"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
+			$(".ones").append('<div class="aa img1" title="'+data.id+'" align="'+data.parentid+'"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
 			var a=data.children;
 			for(var j=0;j<a.length;j++){
 				var b=a[j].zn;

@@ -185,7 +185,7 @@ function getcanvas(){
 			    url: "../getdeaddata?id="+id,
 			    dataType: "json",
 			    success: function(result){
-			    	if(result.list != null && result.list != ""){
+			    	if(result.list.children != null && result.list.children != ""){
 			    		tupian(result.list);
 			    		var w1=document.getElementById("ones").offsetWidth;
 						var h1=document.getElementById("ones").offsetHeight;
