@@ -1,24 +1,24 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: 'photoschool/list',
+        url: 'photoschool/listAdminSchoolphoto',
         mtype : "get",
         datatype: "json",
         colModel: [			
-			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '学校名', name: 'name', index: 'name', width: 80 },
-			{ label: '下载学校二维码', name: 'id', index: 'name', width: 80, formatter: function(value, options, row){
+			{ label: 'id', name: 'school.id', index: 'id', width: 50, key: true },
+			{ label: '学校名', name: 'school.name', index: 'name', width: 80 },
+			{ label: '下载学校二维码', name: 'school.id', index: 'name', width: 80, formatter: function(value, options, row){
 				return '<a href="./photoschool/dowloadSchoolQrCode?schoolId='+ value+'">下载二维码</a>'; } 
 			},
-			{ label: '学校类型，1为中学，2为大学', name: 'schoolType', index: 'school_type', width: 80 }, 			
-			{ label: '背景音乐', name: 'music', index: 'music', width: 80 }, 			
-			{ label: '视频', name: 'vedio', index: 'vedio', width: 80 }, 			
+			{ label: '学校类型，1为中学，2为大学', name: 'school.schoolType', index: 'school_type', width: 80 }, 			
+			{ label: '背景音乐', name: 'school.music', index: 'music', width: 80 }, 			
+			{ label: '视频', name: 'school.vedio', index: 'vedio', width: 80 }, 			
 			//{ label: '学校描述', name: 'schoolDesc', index: 'school_desc', width: 80 }, 			
-			{ label: '', name: 'createrId', index: 'creater_id', width: 80 }, 			
-			{ label: '', name: 'gmtCreate', index: 'gmt_create', width: 80 }, 			
-			{ label: '', name: 'gmtModefied', index: 'gmt_modefied', width: 80 }, 			
-			{ label: 'logo', name: 'logo', index: 'logo', width: 80 }, 			
-			{ label: '省份', name: 'provinceId', index: 'province_id', width: 80 }, 			
-			{ label: '城市', name: 'cityId', index: 'city_id', width: 80 }
+			{ label: '', name: 'school.createrId', index: 'creater_id', width: 80 }, 			
+			{ label: '', name: 'school.gmtCreate', index: 'gmt_create', width: 80 }, 			
+			{ label: '', name: 'school.gmtModefied', index: 'gmt_modefied', width: 80 }, 			
+			{ label: 'logo', name: 'school.logo', index: 'logo', width: 80 }, 			
+			{ label: '省份', name: 'school.provinceId', index: 'province_id', width: 80 }, 			
+			{ label: '城市', name: 'school.cityId', index: 'city_id', width: 80 }
         ],
 		viewrecords: true,
         height: 385,
@@ -186,6 +186,18 @@ var vm = new Vue({
 				alert("只有大学才能添加学院");
 				return ;
 			}
+		},
+		addClassPhotomanage: function(){
+			var ids = getSelectedRows();
+			if (ids.length >1) {
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			
+			window.location.href = "photoclass.html?id=" + id + "&type=4";
+			return ;
+			
 		},
 		addClassPhotoType: function(){
 			var ids = getSelectedRows();
