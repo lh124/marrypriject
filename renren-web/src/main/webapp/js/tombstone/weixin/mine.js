@@ -16,6 +16,9 @@ $(function () {
 	});
 });
 
+function updateimage(){
+	window.location.href = "updatephoto.html?id="+$("#userId").val();
+}
 
 function alterUserPassword(){
 	var oripassword = $("#oldPassword").val();
