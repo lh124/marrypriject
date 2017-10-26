@@ -56,6 +56,8 @@ var vm = new Vue({
 			vm.reload();
 		},
 		add: function(){
+			$("#experience").val("");
+			$("#content").val("");
 			vm.showList = false;
 			vm.title = "新增";
 			vm.tombstoneDead = {};
@@ -79,6 +81,19 @@ var vm = new Vue({
 			window.location.href="tombstonedead2.html?parentid="+ id + "&userid="+$("#userid").val();
 		},
 		update: function (event) {
+			$("#experience").val("");
+			$("#content").val("");
+			$.ajax({
+				type: "POST",
+			    url: "../tombstonedead/getperson?userid="+$("#userid").val(),
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
+						$("#experience").val(result.tbuser.experience);
+						$("#content").val(result.tbuser.content);
+					}
+				}
+			});
 			var id = getSelectedRow();
 			if(id == null){
 				return ;
@@ -111,6 +126,15 @@ var vm = new Vue({
 			    		vm.reload();
 					}else{
 						alert(r.msg);
+					}
+				}
+			});
+			$.ajax({
+				type: "POST",
+			    url: "../tombstonedead/saveorupdate?experience="+$("#experience").val()+"&userid="+$("#userid").val()+"&content="+$("#content").val(),
+			    dataType: "json",
+			    success: function(result){
+					if(result.status == 'ok'){
 					}
 				}
 			});
