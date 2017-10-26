@@ -76,7 +76,7 @@ $(function(){
 				grandson+=lena;
 				var fm='',node='';
 				for(var k = 0;k<a[j].fm.length;k++){
-					fm+='<img src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
+					fm+='<img title="'+a[j].fm[k].id+'" src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
 				}
 				if(fm){
 					node='<div style="top:'+t+'rem;margin-top:-'+mt+'rem;" class="aa img2" title="'+a[j].id+'" align="'+a[j].parentid+'">'+fm+'</div>';
@@ -96,7 +96,7 @@ $(function(){
 						t1=t1+aa*3.2;
 					}
 					for(var k = 0;k<b[i].fm.length;k++){
-						zn+='<img src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
+						zn+='<img title="'+b[i].fm[k].id+'" src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
 					}
 					if(zn){
 						node1='<div class="aa img3" title="'+b[i].id+'" align="'+b[i].parentid+'"style="top:'+t1+'rem;margin-top:-'+mt1+'rem;">'+zn+'</div></div>';
@@ -174,8 +174,6 @@ $(function(){
 		/*点击事件  弹框*/
 		$(".hh").find('.aa').on("click",function(){
 			var id=$(this).attr('title');
-			$(".zhezao").show();
-			$('#relation').show();
 			replay(id);
 			function replay(id){
 				var node='<h3 style="border-bottom:1px solid #d0cece;height:1.0rem;"><button type="button" class="floatRight btn">关闭</button></h3><div class="hhs"><div id="ones" class="ones fl"></div><div class="fl"><canvas id="canvas3" style="width:100%;height:100%;"></canvas></div><div class="twos fl"></div><div class="fl"><canvas id="canvas4" style="width:100%;height:100%;"></canvas></div><div class="threes fl"></div></div>';
@@ -187,6 +185,8 @@ $(function(){
 				    dataType: "json",
 				    success: function(result){
 				    	if(result.list.children != null && result.list.children != ""){
+				    		$(".zhezao").show();
+				    		$('#relation').show();
 				    		tupian(result.list);
 				    		var w1=document.getElementById("ones").offsetWidth;
 							var h1=document.getElementById("ones").offsetHeight;
@@ -343,7 +343,7 @@ $(function(){
 				grandson+=lena;
 				var fm='',node='';
 				for(var k = 0;k<a[j].fm.length;k++){
-					fm+='<img src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
+					fm+='<img title="'+a[j].fm[k].id+'" src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
 				}
 				if(fm){
 					node='<div style="top:'+t+'rem;margin-top:-'+mt+'rem;" class="aa img2" title="'+a[j].id+'" align="'+a[j].parentid+'">'+fm+'</div>';
@@ -363,7 +363,7 @@ $(function(){
 						t1=t1+aa*3.2;
 					}
 					for(var k = 0;k<b[i].fm.length;k++){
-						zn+='<img src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
+						zn+='<img title="'+b[i].fm[k].id+'" src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
 					}
 					if(zn){
 						node1='<div class="aa img3" title="'+b[i].id+'" align="'+b[i].parentid+'"style="top:'+t1+'rem;margin-top:-'+mt1+'rem;">'+zn+'</div></div>';
