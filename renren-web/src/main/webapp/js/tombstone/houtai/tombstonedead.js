@@ -60,6 +60,15 @@ var vm = new Vue({
 			vm.title = "新增";
 			vm.tombstoneDead = {};
 		},
+		addpersonimage: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="tombstonepic.html?userid="+$("#userid").val();
+		},
 		adddead: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
