@@ -1,25 +1,25 @@
 package io.renren.controller.smartWeb;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import io.renren.entity.PhotoSchoolEntity;
 import io.renren.entity.smart.SchoolEntity;
+import io.renren.service.PhotoSchoolService;
 import io.renren.service.smart.SchoolService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -34,6 +34,28 @@ import io.renren.utils.dataSource.DbContextHolder;
 public class SchoolController {
 	@Autowired
 	private SchoolService schoolService;
+	@Autowired
+	private PhotoSchoolService photoSchoolService;
+	
+	/**
+	 * 列表
+	 */
+	@RequestMapping("/photolist")
+	@RequiresPermissions("uniform_school:photolist")
+	public R photolist(@RequestParam Map<String, Object> params){
+		//查询列表数据
+        Query query = new Query(params);
+        
+        int page = Integer.parseInt(params.get("page").toString());
+        int limit = Integer.parseInt(params.get("limit").toString());
+        query.put("begin", (page-1)*limit);
+
+		List<PhotoSchoolEntity> schoolList = photoSchoolService.queryList(query);
+		int total = photoSchoolService.queryTotal(query);
+		
+		PageUtils pageUtil = new PageUtils(schoolList, total, query.getLimit(), query.getPage());
+		return R.ok().put("page", pageUtil);
+	}
 	
 	/**
 	 * 列表

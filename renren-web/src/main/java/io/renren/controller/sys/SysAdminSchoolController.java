@@ -1,5 +1,25 @@
 package io.renren.controller.sys;
 
+import io.renren.entity.PhotoSchoolEntity;
+import io.renren.entity.SysAdminSchoolEntity;
+import io.renren.entity.SysPhotoAdminSchoolEntity;
+import io.renren.entity.SysUserEntity;
+import io.renren.entity.smart.SchoolEntity;
+import io.renren.model.json.ResponseDTJson;
+import io.renren.service.PhotoSchoolService;
+import io.renren.service.SysAdminSchoolService;
+import io.renren.service.SysPhotoAdminSchoolService;
+import io.renren.service.SysUserService;
+import io.renren.service.smart.SchoolService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
+import io.renren.validator.ValidatorUtils;
+import io.renren.validator.group.AddGroup;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,23 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
-import io.renren.entity.PhotoSchoolEntity;
-import io.renren.entity.SysAdminSchoolEntity;
-import io.renren.entity.SysUserEntity;
-import io.renren.entity.smart.SchoolEntity;
-import io.renren.model.json.ResponseDTJson;
-import io.renren.service.PhotoSchoolService;
-import io.renren.service.SysAdminSchoolService;
-import io.renren.service.SysUserService;
-import io.renren.service.smart.SchoolService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
-import io.renren.validator.ValidatorUtils;
-import io.renren.validator.group.AddGroup;
 
 
 /**
@@ -47,6 +50,9 @@ public class SysAdminSchoolController {
 	
 	@Autowired
 	private SysUserService sysUserService;
+	
+	@Autowired
+	private SysPhotoAdminSchoolService sysPhotoAdminSchoolService;
 	
 	@Autowired
 	private PhotoSchoolService photoSchoolService;
@@ -81,6 +87,31 @@ public class SysAdminSchoolController {
 		SysAdminSchoolEntity sysAdminSchool = sysAdminSchoolService.queryObject(id);
 		
 		return R.ok().put("sysAdminSchool", sysAdminSchool);
+	}
+	
+	/**
+	 * 保存相册系统
+	 */
+	@RequestMapping("/savephoto")
+	@RequiresPermissions("sysadminschool:save")
+	public R savephoto(SysPhotoAdminSchoolEntity sysAdminSchool){
+		ValidatorUtils.validateEntity(sysAdminSchool, AddGroup.class);
+		System.out.println(sysAdminSchool.getSchoolId() + "---------------------");
+		EntityWrapper<SysPhotoAdminSchoolEntity> wrapper = new EntityWrapper<SysPhotoAdminSchoolEntity>(sysAdminSchool);
+		SysPhotoAdminSchoolEntity sas = this.sysPhotoAdminSchoolService.selectOne(wrapper);
+		if (sas != null)
+			return R.error("此学校已添加").put("status", ResponseDTJson.FAIL);
+		
+		SysUserEntity user = this.sysUserService.queryObject(Long.parseLong(sysAdminSchool.getAdminId().toString()));
+		if (user == null) 
+			return R.error("管理员不存在").put("status", ResponseDTJson.FAIL);
+		PhotoSchoolEntity school = this.photoSchoolService.selectById(sysAdminSchool.getSchoolId());
+		if (school == null) 
+			return R.error("学校不存在").put("status", ResponseDTJson.FAIL);
+		sysAdminSchool.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		sysPhotoAdminSchoolService.save(sysAdminSchool);
+		
+		return R.ok();
 	}
 	
 	/**

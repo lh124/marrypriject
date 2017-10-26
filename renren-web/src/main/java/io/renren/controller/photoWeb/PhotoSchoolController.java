@@ -1,8 +1,28 @@
 package io.renren.controller.photoWeb;
 
+import io.renren.controller.AbstractController;
+import io.renren.entity.PhotoSchoolEntity;
+import io.renren.entity.SysAdminSchoolEntity;
+import io.renren.entity.SysPhotoAdminSchoolEntity;
+import io.renren.entity.smart.SchoolEntity;
+import io.renren.model.dto.SchoolDto;
+import io.renren.service.PhotoSchoolService;
+import io.renren.service.SysAdminSchoolService;
+import io.renren.service.SysPhotoAdminSchoolService;
+import io.renren.service.smart.SchoolService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.utils.RRException;
+import io.renren.utils.ZXingCodeUtil;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
+import io.renren.validator.ValidatorUtils;
+import io.renren.validator.group.AddGroup;
+import io.renren.xss.SQLFilter;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,26 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-
-import io.renren.controller.AbstractController;
-import io.renren.entity.PhotoSchoolEntity;
-import io.renren.entity.SysAdminSchoolEntity;
-import io.renren.entity.smart.SchoolEntity;
-import io.renren.model.dto.SchoolDto;
-import io.renren.service.PhotoSchoolService;
-import io.renren.service.SysAdminSchoolService;
-import io.renren.service.smart.SchoolService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.RRException;
-import io.renren.utils.ZXingCodeUtil;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
-import io.renren.validator.ValidatorUtils;
-import io.renren.validator.group.AddGroup;
-import io.renren.xss.SQLFilter;
 
 
 /**
@@ -69,6 +69,9 @@ public class PhotoSchoolController extends AbstractController{
 	@Autowired
 	private SchoolService schoolService;
 	
+	@Autowired
+	private SysPhotoAdminSchoolService sysPhotoAdminSchoolService;
+	
 	/**
 	 * 列表
 	 */
@@ -93,6 +96,38 @@ public class PhotoSchoolController extends AbstractController{
 		
 		PageUtils pageUtil = new PageUtils(photoSchoolList, total, query.getLimit(), query.getPage());
 		
+		return R.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 列表
+	 */
+	@RequestMapping("/listAdminSchoolphoto")
+	@RequiresPermissions("photoschool:listAdminSchoolPhoto")
+	public R listAdminSchoolphoto(@RequestParam Map<String, Object> params){
+		
+		//查询列表数据
+		Integer adminId = null;
+		if (params.containsKey(ADMIN_ID) && params.get(ADMIN_ID) != null) {
+			// 表示超级管理员查询管理员管理的学校
+			adminId = Integer.parseInt( params.get(ADMIN_ID).toString());
+		} else {
+			// 表示管理员查询自己管理的学校
+//			adminId = this.getUserId();
+		}
+        
+		//  查询管理学校
+		SysPhotoAdminSchoolEntity sase = new SysPhotoAdminSchoolEntity();
+		sase.setAdminId(adminId);
+		EntityWrapper<SysPhotoAdminSchoolEntity> wrapper = new EntityWrapper<SysPhotoAdminSchoolEntity>(sase);
+		List<SysPhotoAdminSchoolEntity> saseaList = this.sysPhotoAdminSchoolService.selectList(wrapper);
+		PhotoSchoolEntity se = null;
+		for(int i=0; i<(saseaList.size()); i++){
+			se = this.photoSchoolService.selectById(saseaList.get(i).getSchoolId());
+			saseaList.get(i).setSchool(se);
+		}
+		int total = this.sysPhotoAdminSchoolService.selectCount(wrapper);
+		PageUtils pageUtil = new PageUtils(saseaList, total, Integer.parseInt(params.get("limit").toString()), Integer.parseInt(params.get("page").toString()));
 		return R.ok().put("page", pageUtil);
 	}
 	
