@@ -4,13 +4,15 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '个人图片', name: 'pic', index: 'userid', width: 80 }, 			
+			{ label: '个人图片', name: 'pic', index: 'pic', width: 80,formatter :function(r){
+				 return '<img src="'+r+'" style="width:100px;height:100px;" />';
+			} },
 			{ label: '上传时间', name: 'createtime', index: 'createtime', width: 80 }			
         ],
 		viewrecords: true,
-        height: 385,
-        rowNum: 10,
-		rowList : [10,30,50],
+        height: 600,
+        rowNum: 5,
+		rowList : [5,10,20],
         rownumbers: true, 
         rownumWidth: 25, 
         autowidth:true,
