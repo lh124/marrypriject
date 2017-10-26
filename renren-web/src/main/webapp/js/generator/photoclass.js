@@ -36,6 +36,9 @@
 	            total: "page.totalPage",
 	            records: "page.totalCount"
 	        },
+	        postData:{
+	        	"schoolId": $("#id").val() ,
+	        },
 	        prmNames : {
 	            page:"page", 
 	            rows:"limit", 
