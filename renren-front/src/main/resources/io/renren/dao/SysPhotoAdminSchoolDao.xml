@@ -24,7 +24,7 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.SysPhotoAdminSchoolEntity">
-		select <include refid="allColumns"></include> from sys_photo_admin_school
+		select <include refid="allColumns"></include> from sys_photo_admin_school where admin_id = #{adminId}
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
