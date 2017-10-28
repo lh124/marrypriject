@@ -4,11 +4,11 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 40, key: true },
-			{ label: '标识', name: 'studentCode', index: 'student_code', width: 80 }, 			
-			{ label: '学号', name: 'studentNo', index: 'student_no', width: 80 }, 			
-			{ label: '姓名', name: 'studentName', index: 'student_name', width: 40 }, 			
+			{ label: '标识', name: 'studentCode', index: 'student_code', width: 120 }, 			
+			{ label: '学号', name: 'studentNo', index: 'student_no', width: 120 }, 			
+			{ label: '姓名', name: 'studentName', index: 'student_name', width: 80 }, 			
 			{ label: '性别', name: 'sex', index: 'sex', width: 80 },
-			{ label: '类别', name: 'userType', index: 'sex', width: 40,formatter :function(r){
+			{ label: '类别', name: 'userType', index: 'sex', width: 80,formatter :function(r){
 				 if(r == 1 ){
 					 return '学生';
 				 }else{
@@ -18,17 +18,14 @@ $(function () {
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
 				 if(r != null && r != ""){
-					 return '<img src="' + r + '" style="width:100px;height:100px;" />';
+					 return '<img src="' + r + '" style="width:80px;height:80px;" />';
 				 }else{
 					 return '';
 				 }
 			} }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
-			{ label: 'EPC', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
-				 return '<button onclick="bindEpc(' + r +')">EPC绑定</button>';
-			} },
-			{ label: '操作', name: 'id', index: 'passwordd', width: 150,formatter :function(r){
-				 return '<button onclick="showimage(' + r +')">头像上传</button><button onclick="getallclass(' + r + ')">班级修改</button>';
+			{ label: '操作', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
+				 return '<button onclick="showimage(' + r +')">头像上传</button><br><button onclick="bindEpc(' + r +')">EPC绑定</button><br><button onclick="getallclass(' + r + ')">班级修改</button>';
 			} }
         ],
 		viewrecords: true,
@@ -72,7 +69,11 @@ function getallclass(id){
 				var content = "";
 				$('#classidupdates').html(content);
 				for(var i = 0; i < r.classList.length; i++){
-					content += '<option value="'+r.classList[i].id+'">'+r.classList[i].className+'</option>';
+					if( r.classList[i].id == $('#classId').val()){
+						content += '<option value="'+r.classList[i].id+'" selected="selected">'+r.classList[i].className+'</option>';
+					}else{
+						content += '<option value="'+r.classList[i].id+'">'+r.classList[i].className+'</option>';
+					}
 				}
 				$('#classidupdates').html(content);
 			}else{
