@@ -129,8 +129,6 @@
 	 </div>
  </div>
 
-
-
 <div class="modal fade" id="studentEpc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	 <div class="modal-dialog" role="document">
 	  <div class="modal-content" style="width: 540px;height: 400px;">
@@ -155,6 +153,30 @@
 	  <div class="modal-footer" >
 	   <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
 	   <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveEpc()"><span  aria-hidden="true"></span>保存</button>
+	  </div>
+	  </div>
+	 </div>
+ </div>
+
+<div class="modal fade" id="updateclassId" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	 <div class="modal-dialog" role="document">
+	  <div class="modal-content" style="width: 540px;height: 400px;">
+	  <div class="modal-header">
+	   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+	   <h4 class="modal-title" id="myModalLabel">修改所在班级</h4>
+	   <input type="hidden" id="epcuserid" />
+	  </div>
+	  <div class="modal-body" >
+	        <input type="hidden" id="studentidupdate">
+	   		<div class="form-group" style="height: 150px;">
+			   	<div class="col-sm-2 control-label">班级</div>
+			   	<select id="classidupdates">
+			   	</select>
+			</div>
+	  </div>
+	  <div class="modal-footer" >
+	   <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+	   <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="uplaodclassidsd()"><span  aria-hidden="true"></span>保存</button>
 	  </div>
 	  </div>
 	 </div>
