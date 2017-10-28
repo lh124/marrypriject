@@ -266,6 +266,20 @@ public class StudentController {
 	/**
 	 * 修改
 	 */
+	@RequestMapping("/updateclassid")
+	public R updateclassid(HttpServletRequest request){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		StudentEntity student = new StudentEntity();
+		student.setId(Integer.parseInt(request.getParameter("id")));
+		student.setClassId(Integer.parseInt(request.getParameter("classid")));
+		studentService.update(student);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok();
+	}
+	
+	/**
+	 * 修改
+	 */
 	@RequestMapping("/update")
 	@RequiresPermissions("uniform_student:update")
 	public R update(@RequestBody StudentEntity student){

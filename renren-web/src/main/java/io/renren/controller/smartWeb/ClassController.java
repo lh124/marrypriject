@@ -1,7 +1,10 @@
 package io.renren.controller.smartWeb;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,24 @@ public class ClassController {
 	
 	@Autowired
 	private SysAdminSchoolService sysAdminSchoolService;
+	
+	/**
+	 * 获取当前学校下面的所有班级
+	 */
+	@RequestMapping("/getschoolallclass")
+	public R getschoolallclass(HttpServletRequest request){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		ClassEntity classe = classService.queryObject(Integer.parseInt(request.getParameter("id")));
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("limit", 100);
+		params.put("schoolId", classe.getSchoolId());
+		params.put("sidx", null);
+		params.put("begin", 0);
+		List<ClassEntity> classList = classService.queryList(params);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("classList", classList);
+	}
+	
 	/**
 	 * 列表
 	 */
