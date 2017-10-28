@@ -3,24 +3,36 @@ $(function () {
         url: '../sys/uniform/student/list',
         datatype: "json",
         colModel: [			
-			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
+			{ label: 'id', name: 'id', index: 'id', width: 40, key: true },
 			{ label: '标识', name: 'studentCode', index: 'student_code', width: 80 }, 			
 			{ label: '学号', name: 'studentNo', index: 'student_no', width: 80 }, 			
-			{ label: '姓名', name: 'studentName', index: 'student_name', width: 80 }, 			
+			{ label: '姓名', name: 'studentName', index: 'student_name', width: 40 }, 			
 			{ label: '性别', name: 'sex', index: 'sex', width: 80 },
-			{ label: '类别(1为学生2为老师)', name: 'userType', index: 'sex', width: 80 }, 
+			{ label: '类别', name: 'userType', index: 'sex', width: 40,formatter :function(r){
+				 if(r == 1 ){
+					 return '学生';
+				 }else{
+					 return '老师';
+				 }
+			} }, 
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
-			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
+			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
+				 if(r != null && r != ""){
+					 return '<img src="' + r + '" style="width:100px;height:100px;" />';
+				 }else{
+					 return '';
+				 }
+			} }, 			
 			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }, 			
 			{ label: 'EPC', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
 				 return '<button onclick="bindEpc(' + r +')">EPC绑定</button>';
 			} },
-			{ label: '操作', name: 'id', index: 'passwordd', width: 80,formatter :function(r){
-				 return '<button onclick="showimage(' + r +')">头像上传</button>';
+			{ label: '操作', name: 'id', index: 'passwordd', width: 150,formatter :function(r){
+				 return '<button onclick="showimage(' + r +')">头像上传</button><button onclick="getallclass(' + r + ')">班级修改</button>';
 			} }
         ],
 		viewrecords: true,
-        height: 385,
+        height: 600,
         rowNum: 10,
 		rowList : [10,30,50],
         rownumbers: true, 
@@ -47,8 +59,47 @@ $(function () {
     });
 });
 
+function getallclass(id){
+	$('#studentidupdate').val(id);
+	$('#updateclassId').modal('show');
+	var classid = $("#classId").val();
+	$.ajax({
+		type: "POST",
+	    url: "../sys/uniform/class/getschoolallclass?id="+classid,
+	    data: JSON.stringify(vm.student),
+	    success: function(r){
+	    	if(r.code === 0){
+				var content = "";
+				$('#classidupdates').html(content);
+				for(var i = 0; i < r.classList.length; i++){
+					content += '<option value="'+r.classList[i].id+'">'+r.classList[i].className+'</option>';
+				}
+				$('#classidupdates').html(content);
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
+
+function uplaodclassidsd(){
+	var url =  "../sys/uniform/student/updateclassid?id="+$('#studentidupdate').val()+"&classid="+$('#classidupdates').val();
+	$.ajax({
+		type: "POST",
+	    url: url,
+	    success: function(r){
+	    	if(r.code === 0){
+				alert('操作成功', function(index){
+					vm.reload();
+				});
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
+
 function uplaod(){
-	alert(vm.student.id);
 	var url = vm.student.id == null ? "../sys/uniform/student/save" : "../sys/uniform/student/update";
 	vm.student.classId = $("#classId").val();
 	$.ajax({
@@ -192,6 +243,7 @@ var vm = new Vue({
 document.getElementById("studentEpc").style.display = "none";
 document.getElementById("studentimage").style.display = "none";
 document.getElementById("studenttype").style.display = "none";
+document.getElementById("updateclassId").style.display = "none";
 function showimage(id){
 	$('#studentimage').modal('show');
 	document.getElementById("myUserId").value = id;

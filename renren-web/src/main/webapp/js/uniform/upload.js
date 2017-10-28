@@ -121,6 +121,7 @@ function getFile(getFile){
 }
 
 function getCamaralFile(){
+	$('#studentimage').modal('hide');
 	ret = get_signature();
     g_object_name = key;
     if (filename != '') { suffix = get_suffix(filename)
@@ -152,6 +153,7 @@ function getCamaralFile(){
 		},
 		success : function(responseStr) { 
 			if(responseStr.Status=='OK'){
+				vm.reload();
 				alert("上传成功");
 			}else{
 				alert(responseStr);
