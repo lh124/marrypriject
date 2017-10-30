@@ -20,7 +20,7 @@
 			#if($shiro.hasPermission("photopicclass:list"))
 			<a class="btn btn-primary" @click="listClassPic"><i class="fa fa-trash-o"></i>&nbsp;图片管理</a>
 			#end
-			
+			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>

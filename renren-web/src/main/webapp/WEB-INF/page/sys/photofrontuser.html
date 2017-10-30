@@ -25,6 +25,7 @@
 			#if($shiro.hasPermission("photofrontuser:saveMoreRelation"))
 			<a class="btn btn-primary" @click="relatedClass"><i class="fa fa-trash-o"></i>&nbsp;关联班级</a>
 			#end
+			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
