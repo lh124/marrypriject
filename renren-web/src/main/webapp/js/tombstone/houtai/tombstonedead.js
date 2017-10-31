@@ -5,7 +5,7 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '二维码下载', name: 'userid', index: 'userid', width: 80,formatter: function(value, options, row){
-				return '<a href="../tombstonedead/dowloadClassQrCode?classId='+ value+'">下载二维码</a>'; } 
+				return '<a href="../tombstonedead/dowloadClassQrCodemb?classId='+ value+'">下载二维码</a>'; } 
 			},
 			{ label: '死者姓名(第一代)', name: 'name', index: 'name', width: 80 }, 			
 			{ label: '头像', name: 'image', index: 'image', width: 80 }, 			
