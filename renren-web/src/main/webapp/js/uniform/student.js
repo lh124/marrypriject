@@ -56,6 +56,26 @@ $(function () {
     });
 });
 
+function updatepassword(){
+	confirm('确定要初始化密码？', function(){
+		var url =  "../sys/uniform/student/update";
+		$.ajax({
+			type: "POST",
+		    url: url,
+		    data: JSON.stringify(vm.student),
+		    success: function(r){
+		    	if(r.code === 0){
+		    		alert("密码初始化成功", function(index){
+						vm.reload();
+					});
+				}else{
+					alert(r.msg);
+				}
+			}
+		});
+	});
+}
+
 function getallclass(id){
 	$('#studentidupdate').val(id);
 	$('#updateclassId').modal('show');
@@ -134,6 +154,15 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.student = {};
+		},
+		updatepw:function (event) {
+			var id = getSelectedRow();
+			if(id == null){
+				return ;
+			}
+            vm.student.id = id;
+            vm.student.passwordd = "000000";
+            updatepassword();
 		},
 		update: function (event) {
 			var id = getSelectedRow();
