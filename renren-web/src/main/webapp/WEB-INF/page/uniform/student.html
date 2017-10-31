@@ -23,6 +23,7 @@
 			#if($shiro.hasPermission("uniform_student:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			<a class="btn btn-primary" @click="updatepw"><i class="fa fa-pencil-square-o"></i>&nbsp;密码初始化</a>
 			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
@@ -88,7 +89,19 @@
 	</div>
 </div>
 
-
+<!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosDialog1" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">提示</strong></div>
+                <div class="weui-dialog__bd">确认取消微信绑定吗？</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:void(0);" onclick="$('#iosDialog1').fadeOut(200);" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+                    <a href="javascript:void(0);" onclick="cancelWechatBinding();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+                </div>
+            </div>
+        </div>
+   <!--END dialog1-->
 
 <!-- modal -->
 <div class="modal fade" id="studentimage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
