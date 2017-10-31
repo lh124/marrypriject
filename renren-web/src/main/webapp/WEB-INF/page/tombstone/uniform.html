@@ -53,7 +53,7 @@
 								$('.bigImg').html('');
 								$('.tops').hide();
 							});
-							$('.top').on("click",function(){
+							$('.tops').on("click",function(){
 								$('.bigImg').html('');
 								$('.tops').hide();
 							});
@@ -64,11 +64,9 @@
 		    dataType: "json",
 		    success: function(result){
 				if(result.status == 'ok'){
-					var content = "";
 					if(result.businessCard != null){
 					    $("#photouser").attr("src",result.businessCard.pic);
-					    $("#nameuser").html(result.businessCard.name);
-					    $("#position").html(result.businessCard.position);
+					    $("#nameuser").html(result.businessCard.name + '<span>'+result.businessCard.position+'</span>');
 					    $("#userphone").html(result.businessCard.phone);
 					    $("#personqq").html(result.businessCard.personqq);
 					    $("#bodaphoto").attr("href","tel:"+result.businessCard.phone); 
@@ -87,12 +85,8 @@
         <div class="content-con">
             <div class="top">
                 <img class="photo" id="photouser" >
-                <div class="save">
-                    <img src="${rc.contextPath}/statics/mingpian/image/save.png"/>
-                    <p>收藏</p>
-                </div>
                 <div class="name">
-                    <p class="name-con" id="nameuser">慕容芳<span id="position">销售经理</span></p>
+                    <p class="name-con" id="nameuser"></p>
                     <p class="eg">Sale&nbsp;Manager</p>
                 </div>
             </div>
@@ -118,7 +112,7 @@
                     <dd>公司官网</dd>
                 </dl>
                 <dl>
-                    <dt><img src="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/upload/erweima/1509418563.png" class="previewImage"></dt>
+                    <dt><img src="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/upload/erweima/1509426280.png" class="previewImage"></dt>
                     <dd>宣传视频</dd>
                 </dl>
                 <dl>
