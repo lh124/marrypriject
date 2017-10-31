@@ -1,10 +1,11 @@
 $(function () {
+	document.getElementById("weixinpic").style.display = "none";
     $("#jqGrid").jqGrid({
         url: '../businesscard/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '二维码下载', name: 'userid', index: 'userid', width: 80,formatter: function(value, options, row){
+			{ label: '二维码下载', name: 'id', index: 'id', width: 80,formatter: function(value, options, row){
 				return '<a href="../businesscard/dowloadClassQrCodemp?classId='+ value+'">下载二维码</a>'; } 
 			},
 			{ label: '姓名', name: 'name', index: 'name', width: 80 }, 			
@@ -13,7 +14,19 @@ $(function () {
 			} }, 			
 			{ label: '职务', name: 'position', index: 'position', width: 80 }, 			
 			{ label: '电话号码', name: 'phone', index: 'phone', width: 80 }, 			
-			{ label: '个人QQ号', name: 'personqq', index: 'personqq', width: 80 }			
+			{ label: '个人QQ号', name: 'personqq', index: 'personqq', width: 80 },
+			{ label: '个人微信二维码', name: 'weixinpic', index: 'weixinpic', width: 80,formatter: function(r){
+					if(r != null && r!=""){
+						return '<img src="'+r+'" style="width:100px;height:100px;" />';
+					}else{
+						return '暂无';
+					}
+			    } 
+			 },
+			{ label: '操作', name: 'id', index: 'id', width: 80,formatter: function(value, options, row){
+					return '<button onclick="updateweixinpic(' + value +')">个人微信二维码上传</button>';
+				} 
+			}
         ],
 		viewrecords: true,
         height: 600,
@@ -41,6 +54,12 @@ $(function () {
         }
     });
 });
+
+function updateweixinpic(id){
+	document.getElementById("myUserId").value = id;
+	document.getElementById("pictype").value = 2;
+	$('#weixinpic').modal('show');
+}
 
 var vm = new Vue({
 	el:'#rrapp',
@@ -77,6 +96,7 @@ var vm = new Vue({
 			    success: function(r){
 			    	if(r.code === 0){
 			    		document.getElementById("myUserId").value = r.id;
+			    		document.getElementById("pictype").value = 1;
 			    		if(document.getElementById("fileimg").value != null && document.getElementById("fileimg").value != ""){
 			    			getFile(document.getElementById("fileimg"));
 			    			vm.reload();
