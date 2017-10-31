@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>名片</title>
+    <title id="title">个人名片</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/mingpian/css/reset.css">
     <script type="text/javascript" src="${rc.contextPath}/statics/mingpian/js/reset.js"></script>
     <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
@@ -69,6 +69,7 @@
 					    $("#nameuser").html(result.businessCard.name + '<span>'+result.businessCard.position+'</span>');
 					    $("#userphone").html(result.businessCard.phone);
 					    $("#personqq").html(result.businessCard.personqq);
+					    $("#title").html(result.businessCard.name + "个人名片");
 					    $("#bodaphoto").attr("href","tel:"+result.businessCard.phone); 
 					    $("#weixinpic").attr("src",result.businessCard.weixinpic);
 					}
@@ -116,7 +117,7 @@
                     <dd>宣传视频</dd>
                 </dl>
                 <dl>
-                    <dt><img src="${rc.contextPath}/statics/mingpian/image/phone.png" id="weixinpic" class="previewImage"></dt>
+                    <dt><img src="${rc.contextPath}/statics/mingpian/image/phone.png" id="weixinpic" class="previewImage"  style="height: 100%;width: 100%;"></dt>
                     <dd>个人微信</dd>
                 </dl>
             </div>
