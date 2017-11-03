@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+#parse("sys/header.html")
+</head>
+<script type="text/javascript">
+    function init(){
+         var calssId = document.getElementById("classId").value;
+         document.getElementById("totals0").style.display = "none";
+         document.getElementById("totals1").style.display = "none";
+         document.getElementById("totals2").style.display = "none";
+         document.getElementById("totals3").style.display = "none";
+         document.getElementById("totals4").style.display = "none";
+         document.getElementById("totals5").style.display = "none";
+         document.getElementById("totals6").style.display = "none";
+         $.ajax({
+			type: "POST",
+			url: "../sys/uniform/student/getimageandxiaofutongji?id="+calssId,
+			success: function(r){
+				if(r.code == 0){
+				    $("#classname").html(r.tongji.classname+"(共"+r.tongji.total + "人)");
+					if(r.tongji.noimage.length == 0){
+					    $("#noimage").html(0);
+					}else{
+					    $("#noimage").html(r.tongji.noimage.length);
+					    var noimageperson = "";
+					    $("#noimageperson").html(noimageperson);
+					    for(var i = 0; i < r.tongji.noimage.length; i++){
+					         noimageperson += r.tongji.noimage[i].studentName;
+					         if(i%12==0 && i > 0){
+					             noimageperson += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					         }
+					    }
+					    $("#noimageperson").html(noimageperson);
+					}
+					var total0 = "",total1 = "",total2 = "",total3 = "",total4 = "",total5 = "",total6 = "";
+					$("#total0").html(total0);
+					$("#total1").html(total1);
+					$("#total2").html(total2);
+					$("#total3").html(total3);
+					$("#total4").html(total4);
+					$("#total5").html(total5);
+					$("#total6").html(total6);
+					var a=0,b=0,c=0,d=0;e=0,f=0,g=0;
+					for(var i = 0; i < r.tongji.xiaofutotal.length; i++){
+					      if(r.tongji.xiaofutotal[i].total == 0){
+					          total0 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          a++;
+					          if(a%12 == 0){
+					             total0 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 1){
+					          total1 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          b++;
+					          if(b%12 == 0){
+					             total1 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 2){
+					          total2 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          c++;
+					          if(c%12 == 0){
+					             total2 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 3){
+					          total3 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          d++;
+					          if(d%12 == 0){
+					             total3 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 4){
+					          total4 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          e++;
+					          if(e%12 == 0){
+					             total4 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 5){
+					          total5 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          f++;
+					          if(f%12 == 0){
+					             total5 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }else if(r.tongji.xiaofutotal[i].total == 6){
+					          total6 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
+					          g++;
+					          if(g%12 == 0){
+					             total6 += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					          }
+					      }
+					}
+					if(a != 0){
+					   document.getElementById("totals0").style.display = "";
+					   $("#total0").html(total0 + "(" + a + "人)");
+					}
+					if(b != 0){
+					   document.getElementById("totals1").style.display = "";
+					   $("#total1").html(total1 + "(" + b + "人)");
+					}
+					if(c != 0){
+					   $("#total2").html(total2 + "(" + c + "人)");
+					   document.getElementById("totals2").style.display = "";
+					}
+					if(d != 0){
+					   $("#total3").html(total3 + "(" + d + "人)");
+					   document.getElementById("totals3").style.display = "";
+					}
+					if(e != 0){
+					   $("#total4").html(total4 + "(" + e + "人)");
+					   document.getElementById("totals4").style.display = "";
+					}
+					if(f != 0){
+					   $("#total5").html(total5 + "(" + f + "人)");
+					   document.getElementById("totals5").style.display = "";
+					}
+					if(g != 0){
+					   $("#total6").html(total6 + "(" + g + "人)");
+					   document.getElementById("totals6").style.display = "";
+					}
+				}
+			}
+		});
+    }
+</script>
+<body onload="init()">
+<input type="hidden" id="classId" value="${request.getParameter('classId')}">
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn" style="padding-left: 50px;">
+			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
+		</div>
+	    <table id="jqGrid"></table>
+    </div>
+</div>
+<div style="padding-left: 100px;padding-top: 30px;">
+     <div>
+          班级：<b id="classname"></b>
+     </div>
+     <div>
+          未上传头像人数：<b id="noimage">0</b>人<br>
+          <div style="padding-left: 115px;" id="noimageperson">
+          </div>
+     </div>
+     <div>
+          校服绑定情况：
+          <div style="padding-left: 35px;" id="totals0">绑定0件：<b id="total0"></b></div>
+          <div style="padding-left: 35px;" id="totals1">绑定1件：<b id="total1"></b></div>
+          <div style="padding-left: 35px;" id="totals2">绑定2件：<b id="total2"></b></div>
+          <div style="padding-left: 35px;" id="totals3">绑定3件：<b id="total3"></b></div>
+          <div style="padding-left: 35px;" id="totals4">绑定4件：<b id="total4"></b></div>
+          <div style="padding-left: 35px;" id="totals5">绑定5件：<b id="total5"></b></div>
+          <div style="padding-left: 35px;" id="totals6">绑定6件：<b id="total6"></b></div>
+     </div>
+</div>
+<script src="${rc.contextPath}/js/uniform/datatongji.js?_${date.systemTime}"></script>
+</body>
+</html>
