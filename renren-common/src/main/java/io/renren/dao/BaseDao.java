@@ -40,6 +40,8 @@ public interface BaseDao<T> {
 	
 	List<T> queryListtongji(Map<String, Object> map);
 	
+	List<T> queryListtongjiimgxf(Map<String, Object> map);
+	
 	List<T> queryList(Object id);
 	
 	int queryTotal(Map<String, Object> map);
