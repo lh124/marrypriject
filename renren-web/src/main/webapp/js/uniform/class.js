@@ -108,6 +108,15 @@ var vm = new Vue({
                 vm.classe = r.classe;
             });
 		},
+		datatongji: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="datatongji.html?classId="+ id;
+		},
 		addClassInfo: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
