@@ -62,5 +62,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentDao, StudentEntity>  
 	public List<StudentEntity> queryListtongji(Map<String, Object> map) {
 		return studentDao.queryListtongji(map);
 	}
+
+	@Override
+	public List<StudentEntity> queryListtongjiimgxf(Map<String, Object> map) {
+		return studentDao.queryListtongjiimgxf(map);
+	}
 	
 }
