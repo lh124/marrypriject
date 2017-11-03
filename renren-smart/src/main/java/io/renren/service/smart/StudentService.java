@@ -23,6 +23,8 @@ public interface StudentService extends IService<StudentEntity>{
 	
 	List<StudentEntity> queryListtongji(Map<String, Object> map);
 	
+	List<StudentEntity> queryListtongjiimgxf(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(StudentEntity student);
