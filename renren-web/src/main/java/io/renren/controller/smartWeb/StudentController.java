@@ -4,6 +4,7 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
+import io.renren.entity.smart.Studenttongji;
 import io.renren.entity.smart.Tongji;
 import io.renren.model.json.ResponseDTJson;
 import io.renren.service.smart.ClassService;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -63,6 +66,41 @@ public class StudentController {
 	public final static String USER_TYPE_TEACHER = "2";
 	//学生
 	public final static String USER_TYPE_STUDENT = "1";
+	
+	/**
+	 * 头像上传与校服绑定情况统计
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getimageandxiaofutongji")
+	public R getimageandxiaofutongji(HttpServletRequest request){
+		//查询列表数据
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("classname", classService.queryObject(Integer.parseInt(request.getParameter("id"))).getClassName());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("begin", 0);
+		map.put("page", 1);
+		map.put("limit", 1000);
+		map.put("classId", Integer.parseInt(request.getParameter("id")));
+		List<StudentEntity> student = studentService.queryList(map);
+		m.put("total", student.size());
+		map.put("classId", " class_id = " +request.getParameter("id")+" and (pic = null or pic = '')");
+		m.put("noimage", studentService.queryListtongjiimgxf(map));
+		List<Studenttongji> liststudenttongji = new ArrayList<Studenttongji>();
+		for (Iterator iterator = student.iterator(); iterator.hasNext();) {
+			StudentEntity studentEntity = (StudentEntity) iterator.next();
+			map.put("student_id", studentEntity.getId());
+			Studenttongji stj = new Studenttongji();
+			stj.setTotal(studentEpcService.queryListtongji(map).size());
+			stj.setId(studentEntity.getId());
+			stj.setStudentName(studentEntity.getStudentName());
+			liststudenttongji.add(stj);
+		}
+		m.put("xiaofutotal", liststudenttongji);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("tongji", JSONObject.fromObject(m));
+	}
 	
 	
 	/**
