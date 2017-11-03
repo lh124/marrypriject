@@ -73,7 +73,15 @@
 		</choose>
 	</select>
 	
+	<select id="queryListtongjiimgxf" resultType="io.renren.entity.smart.StudentEntity">
+		select * from student where ${classId}
+	</select>
+	
  	<select id="queryTotal" resultType="int">
+		select count(*) from student where class_id=${classId}
+	</select>
+	
+	<select id="queryTotal" resultType="int">
 		select count(*) from student where class_id=${classId}
 	</select>
 	 
