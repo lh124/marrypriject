@@ -41,6 +41,8 @@ public class SmartDataInpution {
 	@Autowired
 	private StudentEpcService studentEpcService;
 	
+	private static final String DATA = "data";
+	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/getData")
 	@ResponseBody
@@ -63,7 +65,7 @@ public class SmartDataInpution {
 				map.put("limit", 100);
 				List<ClassEntity> list = classService.queryList(map);
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-				obj = R.ok().put("data", list);
+				obj = R.ok().put(DATA, list);
 			}else if(type.equals("getallstudent")){
 				String classId = json.getString("classId");
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
@@ -75,7 +77,7 @@ public class SmartDataInpution {
 				map.put("limit", 150);
 				List<StudentEntity> list = studentService.queryList(map);
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-				obj = R.ok().put("data", list);
+				obj = R.ok().put(DATA, list);
 			}else if(type.equals("deleteepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 				Map<String, Object> map = new HashMap<String, Object>();
@@ -84,6 +86,27 @@ public class SmartDataInpution {
 				studentEpcService.delete(se.getId());
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				obj = R.ok();
+			}else if(type.equals("findallepcclassid")){//通过班级id查询所有的epc
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("begin", 0);
+				map.put("page", 1);
+				map.put("limit", 1000);
+				map.put("classId", Integer.parseInt(json.getString("classId")));
+				List<StudentEntity> studentlist = studentService.queryList(map);
+				List<StudentEpcEntity> epclist = new ArrayList<StudentEpcEntity>();
+				for (Iterator iterator = studentlist.iterator(); iterator.hasNext();) {
+					StudentEntity studentEntity = (StudentEntity) iterator.next();
+					map.put("student_id", studentEntity.getId());
+					List<StudentEpcEntity> list = studentEpcService.queryListtongji(map);
+					for (Iterator iterator2 = list.iterator(); iterator2
+							.hasNext();) {
+						StudentEpcEntity studentEpcEntity = (StudentEpcEntity) iterator2.next();
+						epclist.add(studentEpcEntity);
+					}
+				}
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+				obj = R.ok().put(DATA, epclist);
 			}else if(type.equals("saveepc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 				JSONArray array = json.getJSONArray("epclist");
@@ -107,7 +130,7 @@ public class SmartDataInpution {
 				}
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				if(list != null){
-					obj = R.ok().put("data", list);
+					obj = R.ok().put(DATA, list);
 				}
 			}else if(type.equals("queryEpc")){
 				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
@@ -123,7 +146,7 @@ public class SmartDataInpution {
 				}
 				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				if(data != null && !data.equals("")){
-					obj = R.error("").put("data", data);
+					obj = R.error("").put(DATA, data);
 				}else{
 					obj = R.ok();
 				}
