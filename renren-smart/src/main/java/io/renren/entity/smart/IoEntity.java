@@ -38,8 +38,17 @@ public class IoEntity implements Serializable {
 	//
 	@TableField(value="rfid_id")
 	private String rfidId;
+	
+	@TableField(value="student_id")
+	private Integer studentId;
 			
 
+	public Integer getStudentId() {
+		return studentId;
+	}
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
+	}
 	/**
 	 * 设置：
 	 */
