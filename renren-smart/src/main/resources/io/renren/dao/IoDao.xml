@@ -5,11 +5,11 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,epc as epc ,io_type as ioType ,io_date as ioDate ,rfid_id as rfidId 		
+		id as id ,epc as epc ,io_type as ioType ,io_date as ioDate ,rfid_id as rfidId,student_id as studentId 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,epc ,io_type ,io_date ,rfid_id 		
+		id ,epc ,io_type ,io_date ,rfid_id,student_id 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.IoEntity" id="ioMap">
@@ -18,6 +18,7 @@
 		        <result property="ioType" column="io_type"/>
 		        <result property="ioDate" column="io_date"/>
 		        <result property="rfidId" column="rfid_id"/>
+		        <result property="studentId" column="student_id"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.IoEntity">
@@ -53,6 +54,7 @@
 			`epc`, 
 			`io_type`, 
 			`io_date`, 
+			`student_id`,
 			`rfid_id`
 		)
 		values
@@ -61,6 +63,7 @@
 			#{epc}, 
 			#{ioType}, 
 			#{ioDate}, 
+			#{studentId},
 			#{rfidId}
 		)
 	</insert>
@@ -71,6 +74,7 @@
 			<if test="epc != null">`epc` = #{epc}, </if>
 			<if test="ioType != null">`io_type` = #{ioType}, </if>
 			<if test="ioDate != null">`io_date` = #{ioDate}, </if>
+			<if test="studentId != null">`student_id` = #{studentId}, </if>
 			<if test="rfidId != null">`rfid_id` = #{rfidId}</if>
 		</set>
 		where id = #{id}
