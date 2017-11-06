@@ -50,16 +50,14 @@
 	<insert id="save" parameterType="io.renren.entity.smart.IoEntity">
 		insert into io
 		(
-			`id`, 
-			`epc`, 
-			`io_type`, 
-			`io_date`, 
-			`student_id`,
-			`rfid_id`
+			epc,
+			io_type,
+			io_date,
+			student_id,
+			rfid_id
 		)
 		values
 		(
-			#{id}, 
 			#{epc}, 
 			#{ioType}, 
 			#{ioDate}, 
@@ -71,11 +69,11 @@
 	<update id="update" parameterType="io.renren.entity.smart.IoEntity">
 		update io 
 		<set>
-			<if test="epc != null">`epc` = #{epc}, </if>
-			<if test="ioType != null">`io_type` = #{ioType}, </if>
-			<if test="ioDate != null">`io_date` = #{ioDate}, </if>
-			<if test="studentId != null">`student_id` = #{studentId}, </if>
-			<if test="rfidId != null">`rfid_id` = #{rfidId}</if>
+			<if test="epc != null">epc = #{epc}, </if>
+			<if test="ioType != null">io_type = #{ioType}, </if>
+			<if test="ioDate != null">io_date = #{ioDate}, </if>
+			<if test="studentId != null">student_id = #{studentId}, </if>
+			<if test="rfidId != null">rfid_id = #{rfidId}</if>
 		</set>
 		where id = #{id}
 	</update>
