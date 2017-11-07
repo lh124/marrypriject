@@ -14,11 +14,11 @@
 			success: function(r){
 				if(r.code == 0){
 				    var content = "";
-				    content +=  "<tr><td >班级名称及人数</td><td style=\"text-align: left;padding-left: 5%;\">"+r.tongji.classname+"(共"+r.tongji.total + "人)"+"</td></tr>";
+				    content +=  "<tr><td style=\"width:130px;\">班级名称及人数</td><td style=\"text-align: left;padding-left: 2%;\">"+r.tongji.classname+"(共"+r.tongji.total + "人)"+"</td></tr>";
 					if(r.tongji.noimage.length == 0){
-					    content += "<tr><td>未上传头像人数</td><td style=\"text-align: left;padding-left: 5%;\">共0人未上传头像</td></tr>"
+					    content += "<tr><td style=\"width:130px;\">未上传头像人数</td><td style=\"text-align: left;padding-left: 2%;\">共0人未上传头像</td></tr>"
 					}else{
-					    content += "<tr><td>未上传头像人数</td><td style=\"text-align: left;padding-left: 5%;\">共" + r.tongji.noimage.length + "人未上传头像</td></tr><tr><td>未上传头像名单</td><td style=\"text-align: left;padding-left: 5%;\">";
+					    content += "<tr><td style=\"width:130px;\">未上传头像人数</td><td style=\"text-align: left;padding-left: 2%;\">共" + r.tongji.noimage.length + "人未上传头像</td></tr><tr><td style=\"width:130px;\">未上传头像名单</td><td style=\"text-align: left;padding-left: 2%;\">";
 					    var noimageperson = "";
 					    $("#noimageperson").html(noimageperson);
 					    for(var i = 0; i < r.tongji.noimage.length; i++){
@@ -29,51 +29,30 @@
 					    }
 					    content += noimageperson;
 					}
-					content += "</td></tr><tr><td>校服绑定情况</td><td style=\"text-align: left;padding-left: 5%;\">";
+					content += "</td></tr><tr><td style=\"width:130px;\">校服绑定情况</td><td style=\"text-align: left;padding-left: 2%;\">";
 					var a=0,b=0,c=0,d=0;e=0,f=0,g=0,total0="",total1="",total2="",total3="",total4="",total5="",total6="";
 					for(var i = 0; i < r.tongji.xiaofutotal.length; i++){
 					      if(r.tongji.xiaofutotal[i].total == 0){
 					          total0 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          a++;
-					          if(a%12 == 0){
-					             total0 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 1){
 					          total1 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          b++;
-					          if(b%12 == 0){
-					             total1 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 2){
 					          total2 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          c++;
-					          if(c%12 == 0){
-					             total2 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 3){
 					          total3 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          d++;
-					          if(d%12 == 0){
-					             total3 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 4){
 					          total4 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          e++;
-					          if(e%12 == 0){
-					             total4 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 5){
 					          total5 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          f++;
-					          if(f%12 == 0){
-					             total5 += "<br>";
-					          }
 					      }else if(r.tongji.xiaofutotal[i].total == 6){
 					          total6 += r.tongji.xiaofutotal[i].studentName + "&nbsp;&nbsp;&nbsp;&nbsp;";
 					          g++;
-					          if(g%12 == 0){
-					             total6 += "<br>";
-					          }
 					      }
 					}
 					if(a != 0){
