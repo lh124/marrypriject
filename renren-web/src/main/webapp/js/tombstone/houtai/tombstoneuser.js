@@ -1,3 +1,9 @@
+function shipin(id){
+	$('#shipin').modal('show');
+	document.getElementById("myUserId").value = id;
+	document.getElementById("type2").value = 2;
+}
+
 $(function () {
     $("#jqGrid").jqGrid({
         url: '../tombstoneuser/list',
@@ -7,7 +13,11 @@ $(function () {
 			{ label: '登录账号', name: 'name', index: 'name', width: 80 }, 			
 			{ label: '昵称', name: 'nickname', index: 'nickname', width: 80 },
 			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
-			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 }			
+			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 },
+			{ label: '操作', name: 'id', index: 'id', width: 80,formatter :function(r){
+				 return '<button onclick="shipin(' + r +')">视频上传</button>';
+			    }
+			}
         ],
 		viewrecords: true,
         height: 385,
