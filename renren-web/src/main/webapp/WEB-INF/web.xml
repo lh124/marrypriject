@@ -127,8 +127,6 @@
 	
 	
 	
-	
-	
 	<servlet>
 		<servlet-name>coreServlet</servlet-name>
 		<servlet-class>
