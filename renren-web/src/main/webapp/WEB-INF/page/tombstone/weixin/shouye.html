@@ -1,3 +1,17 @@
+<style type="text/css">
+         .footelin{
+				    border-top: 1px solid #707070;
+				    text-align: center;
+				    padding: 0.390625rem 0;
+				    color: #000000;
+		}
+		.footelin p{
+			line-height: 0.46875rem;
+		}
+		.m{ position: fixed;top:2rem;width: 7rem;height: 4rem;left:50%;margin-left: -3.5rem;display: none;}
+		.m h3{height: 20%;z-index: 20;margin:0;padding:0;}
+		#my-video{width:100%;height: 100%;}
+    </style>
 <div class="header">
 		<div class="header-img" id="deadimg">
 			<img src="${rc.contextPath}/statics/tombstone/img/a.png">
@@ -8,8 +22,9 @@
 			<p id="deadcontent">人生若只如初见，何事秋风悲画扇。等闲变却故人心，却道故人心易变。</p>
 		</div>
 	</div>
-	<div class="music">
-		<audio controls="controls" src="${rc.contextPath}/statics/tombstone/1.mp3">
+	<div class="music_con">
+		<audio id="mp" style="visibility:hidden;">
+			<source src="${rc.contextPath}/statics/tombstone/1.mp3">
 		</audio>
 	</div>
 	<div class="content">
@@ -48,6 +63,11 @@
 			<p class="m-t-10" id="experience">
 			</p>
 		</div>
+		<div class="basic m-t-20 p-b-20 p-l-15 p-r-15">
+			<h3><img src="${rc.contextPath}/statics/tombstone/img/5.png"></h3>
+			<div style="border:1px solid #f0f0f0;font-size: 0.3733rem;" id="liuyan" >
+			</div>
+		</div>
 	</div>
 	<!--遮罩-->
 	<div class="zhezao"></div>
@@ -64,10 +84,63 @@
         </div>
         <!--END dialog2-->
 	<!--悬浮-->
-	<div class="right">
+	<div class="right" style="padding-bottom: 25px;">
 		<div>
 			<a class="mine" href="${rc.contextPath}/tombstone/weixin/index.html#/home"></a>
 		</div>
+		<div class="music"></div>
 		<div class="video"></div>
-		<div class="top m-t-10"></div>
+		<div class="top m-t-10" onclick="totop()"></div>
 	</div>
+	<script>
+		var key=true;
+		$('.music').on("click",function(){
+			var audio=document.getElementById("mp");
+			if(key){
+				audio.play();
+				key=false;
+			}else{
+				audio.pause();
+				key=true;
+			}
+
+		});
+	</script>
+	
+	
+	<!-- 视频 -->
+	<div class="m">
+		<h3><button type="button" class="floatRight btn">关闭</button></h3>
+		<video id="my-video" class="video-js" controls preload="auto" 
+		  poster="" >
+			<source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4" id="videomp4">
+			<source src="http://vjs.zencdn.net/v/oceans.webm" type="video/webm" id="videowebm">
+			<source src="http://vjs.zencdn.net/v/oceans.ogv" type="video/ogg" id="videoogv">
+		  </video>
+	</div>
+		  <script type="text/javascript">
+		  	$('.video').on('click',function(){
+		  		$('.m').show();
+		  		var myPlayer = videojs('my-video');
+				videojs("my-video").ready(function(){
+					var myPlayer = this;
+					myPlayer.play();
+				});
+			})
+			$('.btn').on('click',function(){
+				$('.m').hide();
+				var myPlayer = videojs('my-video');
+				videojs("my-video").ready(function(){
+					var myPlayer = this;
+					myPlayer.play();
+				});
+			});
+		</script>
+	
+	
+	<div class="footelin" style="background:#606060; color:#FFF;padding-bottom: 20px;">
+        <p>
+            贵州冠宇科技有限公司 © 版权所有<br>
+        	<a href="http://www.guanyukj.com">黔ICP备10215295号</a>
+        </p>
+    </div>
