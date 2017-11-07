@@ -75,7 +75,6 @@ public class StudentController {
 	public R getimageandxiaofutongji(HttpServletRequest request){
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("classname", classService.queryObject(Integer.parseInt(request.getParameter("id"))).getClassName());
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -85,7 +84,7 @@ public class StudentController {
 		map.put("classId", Integer.parseInt(request.getParameter("id")));
 		List<StudentEntity> student = studentService.queryList(map);
 		m.put("total", student.size());
-		map.put("classId", " class_id = " +request.getParameter("id")+" and (pic = null or pic = '')");
+		map.put("classId", " class_id = " +request.getParameter("id")+" and  pic is null ");
 		m.put("noimage", studentService.queryListtongjiimgxf(map));
 		List<Studenttongji> liststudenttongji = new ArrayList<Studenttongji>();
 		for (Iterator iterator = student.iterator(); iterator.hasNext();) {
