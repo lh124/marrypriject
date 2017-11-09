@@ -338,18 +338,25 @@ public class ShouyeController {
 			params.put("classid", student.getClassId());
 		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		Query query = null;
+		Query query = new Query(params);
 		String[] ids = params.get("classid").toString().split(",");
 		List<SmartCoursewareEntity> list = new ArrayList<SmartCoursewareEntity>();
 		for (int i = 0; i < ids.length; i++) {
-			params.put("classid",ids[i] );
-			query = new Query(params);
-			List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
-			for (Iterator iterator = smartCoursewareList.iterator(); iterator
-					.hasNext();) {
-				SmartCoursewareEntity smartCoursewareEntity = (SmartCoursewareEntity) iterator
-						.next();
-				list.add(smartCoursewareEntity);
+			if(!ids[i].equals("")){
+				params.put("classid",ids[i] );
+				if(Integer.parseInt(ids[i]) == student.getClassId()){
+					params.put("type", null);
+				}else{
+					params.put("type", 1);
+				}
+				query = new Query(params);
+				List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
+				for (Iterator iterator = smartCoursewareList.iterator(); iterator
+						.hasNext();) {
+					SmartCoursewareEntity smartCoursewareEntity = (SmartCoursewareEntity) iterator
+							.next();
+					list.add(smartCoursewareEntity);
+				}
 			}
 		}
 		PageUtils pageUtil = new PageUtils(list, 0, query.getLimit(), query.getPage());
