@@ -42,11 +42,24 @@
 			</div>
 			
 									<div class="form-group">
-			   	<div class="col-sm-2 control-label">职务</div>
+			   	<div class="col-sm-2 control-label">职务(中文)</div>
 			   	<div class="col-sm-10">
-			      <input type="text" class="form-control" v-model="businessCard.position" placeholder="职务"/>
+			      <input type="text" class="form-control" v-model="businessCard.position" placeholder="职务(中文)"/>
 			    </div>
 			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">职务(英文)</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="businessCard.positionenglish" placeholder="职务(英文)"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">排序</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="businessCard.ordercard" placeholder="数字越小越靠前"/>
+			    </div>
+			</div>
+			
 									<div class="form-group">
 			   	<div class="col-sm-2 control-label">电话号码</div>
 			   	<div class="col-sm-10">
