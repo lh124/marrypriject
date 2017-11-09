@@ -1,17 +1,13 @@
-$(function(){
+function init(){
+	$('.weui_panel_bd').html("");
+	//$('.weui_panel').html("");
 	//页数 
-	    var page = 0;
+	var page = 0;
 	    // 每页展示10个
 	    var size =10;
 	    $('.weui_panel').dropload({
 	        scrollArea : window,
 	        autoLoad : true,//自动加载
-	  domDown : {//上拉
-	            domClass   : 'dropload-down',
-	            domRefresh : '<div class="dropload-refresh f15 "><i class="icon icon-20"></i>上拉加载更多</div>',
-	            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>',
-	            domNoData  : '<div class="dropload-noData">没有更多数据了</div>'
-	        },
 	        domUp : {//下拉
 	            domClass   : 'dropload-up',
 	            domRefresh : '<div class="dropload-refresh"><i class="icon icon-114"></i>上拉加载更多</div>',
@@ -23,7 +19,7 @@ $(function(){
 	            var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val(),
+	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val() + "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
@@ -54,7 +50,8 @@ $(function(){
 	                    }
 						
 	                    // 为了测试，延迟1秒加载
-	                    $('.weui_panel_bd').html(result);  
+	                    $('.weui_panel_bd').append(result);  
+	                    //$('.weui_panel').append(result);
 	                        var lazyloadImg = new LazyloadImg({
 					            el: '.weui_panel_bd [data-img]', //匹配元素
 					            top: 50, //元素在顶部伸出长度触发加载机制
@@ -88,7 +85,7 @@ $(function(){
 	         var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val(),
+	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val()+ "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
@@ -119,6 +116,7 @@ $(function(){
 	
 	                    // 为了测试，延迟1秒加载
 	                    $('.weui_panel_bd').append(result);  
+	                    //$('.weui_panel').append(result);
 	                        var lazyloadImg = new LazyloadImg({
 					            el: '.weui_panel_bd [data-img]', //匹配元素
 					            top: 50, //元素在顶部伸出长度触发加载机制
@@ -145,8 +143,88 @@ $(function(){
 	            });
 	        }
 	    });
-	});
+	};
 	
+   function getschool(){
+	   $("#schoolid").val("");
+	   document.getElementById("iosDialog1").style.display='block';
+	   $.ajax({
+			type: "POST",
+		    url: "../shouye/getallschool",
+		    dataType: "json",
+		    success: function(result){
+				if(result.status == 'ok'){
+					var options = "";
+					options += '<option value="-1">请选择学校</option>';
+					for(var i = 0; i < result.page.length;i++){
+						options += '<option value="'+result.page[i].id+'">' +result.page[i].schoolName+ '</option>';
+					}
+					$("#allschool").html(options);
+				}
+		    }
+		});
+   }
+   
+   function getclass(){
+	   $("#schoolid").val("");
+	   $("#kjnames").val(null)
+	   document.getElementById("iosDialog2").style.display='block';
+   }
+   
+   function closediv(){
+	   document.getElementById("iosDialog1").style.display='none';
+	   document.getElementById("iosDialog2").style.display='none';
+   }
+   
+   function getxqschool(){
+	   $("#schoolid").val($("#allschool").val());
+   }
+   
+   function chaxunkj(){
+	   if($("#kjnames").val() != null && $("#kjnames").val() != ""){
+		   $("#kjname").val($("#kjnames").val());
+	   }
+	   init();
+//	   $('.weui_panel_bd').html("");
+//	   page = 1;
+//       $.ajax({
+//           type: 'GET',
+//           url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val() + "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
+//           dataType: 'json',
+//           success: function(data){
+//      			var arrLen = data.page.list.length;
+//      			var result = "";
+//               if(arrLen > 0){
+//                   for(var i = 0; i < arrLen; i++){
+//          				var img; 
+//          				var imgs = "";
+//          				var path = data.page.list[i].pic + "";
+//          				result += '<div class="weui_cells moments">'+
+//          		        '<div class="weui_cell moments__post" onclick="clickpic(\'' + path + '\')">'+
+//          		        
+//          		          '<div class="weui_cell_bd" style="width:100%;">'+
+//          		            '<a class="title" href="#">'+
+//          		              '<span>' + data.page.list[i].name + '</span>'+
+//          		            '</a><div>查看课件【'+data.page.list[i].createtime.substring(0,10)+'】</div>'+
+//          		          
+//          		          '</div>'+
+//          		        '</div>'+
+//          		      '</div>';
+//                   }
+//               }
+//               $('.weui_panel_bd').append(result);  
+//           }
+//       });
+	  closediv();
+	  var ss = $('.dropload-down');
+	   if(ss.length>1){
+		  $('.footers').html(ss[0]);
+		  for(var i = 1; ss.length; i++){
+			  ss[i].remove();
+		  }
+	   }
+   }
+
 	var GetLength = function (str) {
 	    ///<summary>获得字符串实际长度，中文2，英文1</summary>
 	    ///<param name="str">要获得长度的字符串</param>
