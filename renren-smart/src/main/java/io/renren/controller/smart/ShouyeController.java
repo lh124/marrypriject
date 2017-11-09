@@ -6,6 +6,7 @@ import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
+import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
@@ -19,6 +20,7 @@ import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
+import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
@@ -40,7 +42,10 @@ import io.renren.weixin.util.SignUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -70,6 +75,8 @@ public class ShouyeController {
 	@Autowired
 	private ClassService classService;
 	@Autowired
+	private SchoolService schoolService;
+	@Autowired
 	private SchoolNoticeService schoolNoticeService;
 	@Autowired
 	private ClassNoticeService classNoticeService;
@@ -93,6 +100,35 @@ public class ShouyeController {
 	private CoreService coreService;
 	@Autowired
 	private SysWeixinMsgService sysWeixinMsgService;
+	
+	/**
+	 * 查询所有学校
+	 */
+	@RequestMapping("/getallschool")
+	public R getallschool(){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("limit", 10);
+		map.put("begin", 0);
+		List<SchoolEntity> list = schoolService.queryList(map);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("page", list);
+	}
+	
+//	/**
+//	 * 阅读文件
+//	 */
+//	@RequestMapping("/yuedu")
+//	public R yuedu(HttpServletRequest request,HttpSession session){
+//		XDocService service = new XDocService();
+//		String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".html";
+//		try {
+//			service.to(request.getParameter("path"), new File("D:\\tool\\apache-tomcat-8.0.46\\webapps\\wrs\\statics\\yuedu\\" + path));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return R.ok().put("path", path);
+//	}
 	
 	/**
 	 * 保存随堂课件
@@ -277,18 +313,46 @@ public class ShouyeController {
 	/**
 	 * 随堂课件列表
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/list_8")
 	public R list_8(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        if(params.get("name").equals("")){
+        	params.put("name", null);
+        }else{
+        	params.put("name", params.get("name"));
+        }
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		if(params.get("schoolId") != null && !params.get("schoolId").equals("")){
+			params.put("begin", 0);
+			List<ClassEntity> classlist = classService.queryList(params);
+			String classid = "";
+			for (Iterator iterator = classlist.iterator(); iterator.hasNext();) {
+				ClassEntity classEntity = (ClassEntity) iterator.next();
+				classid += classEntity.getId() + ",";
+			}
+			params.put("classid", classid);
+			params.put("type", 1);
+		}else{
+			params.put("classid", student.getClassId());
+		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("classid", student.getClassId());
-		Query query = new Query(params);
-		query.put("type", 1);
-		List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
-		int total = smartCoursewareService.queryTotal(query);
-		PageUtils pageUtil = new PageUtils(smartCoursewareList, total, query.getLimit(), query.getPage());
+		Query query = null;
+		String[] ids = params.get("classid").toString().split(",");
+		List<SmartCoursewareEntity> list = new ArrayList<SmartCoursewareEntity>();
+		for (int i = 0; i < ids.length; i++) {
+			params.put("classid",ids[i] );
+			query = new Query(params);
+			List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
+			for (Iterator iterator = smartCoursewareList.iterator(); iterator
+					.hasNext();) {
+				SmartCoursewareEntity smartCoursewareEntity = (SmartCoursewareEntity) iterator
+						.next();
+				list.add(smartCoursewareEntity);
+			}
+		}
+		PageUtils pageUtil = new PageUtils(list, 0, query.getLimit(), query.getPage());
 		return R.ok().put("page", pageUtil);
 	}
 	/**
