@@ -29,7 +29,12 @@
 		select <include refid="allColumns"></include> from smart_courseware where classid = #{classid}
         <choose>
             <when test="type != null">
-                or type = 1
+                and type = 1
+            </when>
+        </choose>
+        <choose>
+            <when test="name != null">
+                and name = #{name}
             </when>
         </choose>
 		<if test="offset != null and limit != null">
@@ -38,7 +43,7 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from smart_courseware 
+		select count(*) from smart_courseware where classid =#{classid}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.SmartCoursewareEntity" useGeneratedKeys="true" keyProperty="id">
