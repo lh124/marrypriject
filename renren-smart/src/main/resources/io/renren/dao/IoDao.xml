@@ -35,7 +35,7 @@
 			<otherwise> order by id desc </otherwise>
         </choose>) as rownumber,
 		<include refid="allColumns"></include> 
-		from(SELECT theio.id , theio.epc, theio.io_type, theio.io_date, theio.rfid_id FROM 
+		from(SELECT theio.id , theio.epc, theio.io_type, theio.io_date, theio.rfid_id,theio.student_id FROM 
 		io as theio left join student_epc se on theio.epc=se.epc left join student as stu on stu.id=se.student_id where stu.id= #{studentId}) as harry) as marry where rownumber > 
 		<choose>
             <when test="offset != null"> ${offset} </when>
