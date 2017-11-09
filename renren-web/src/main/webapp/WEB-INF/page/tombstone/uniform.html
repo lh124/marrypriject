@@ -68,6 +68,7 @@
 					    $("#photouser").attr("src",result.businessCard.pic);
 					    $("#nameuser").html(result.businessCard.name + '<span>'+result.businessCard.position+'</span>');
 					    $("#userphone").html(result.businessCard.phone);
+					    $("#salemanage").html(result.businessCard.positionenglish);
 					    $("#personqq").html(result.businessCard.personqq);
 					    $("#title").html(result.businessCard.name + "个人名片");
 					    $("#bodaphoto").attr("href","tel:"+result.businessCard.phone); 
@@ -88,7 +89,7 @@
                 <img class="photo" id="photouser" >
                 <div class="name">
                     <p class="name-con" id="nameuser"></p>
-                    <p class="eg">Sale&nbsp;Manager</p>
+                    <p class="eg" id="salemanage"></p>
                 </div>
             </div>
             <div class="empty"></div>
