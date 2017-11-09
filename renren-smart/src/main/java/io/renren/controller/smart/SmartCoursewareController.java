@@ -41,7 +41,6 @@ public class SmartCoursewareController {
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
         Query query = new Query(params);
-
 		List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
 		int total = smartCoursewareService.queryTotal(query);
 		
