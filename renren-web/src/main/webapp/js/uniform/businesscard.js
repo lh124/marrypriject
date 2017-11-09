@@ -12,7 +12,8 @@ $(function () {
 			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
 				 return '<img src="'+r+'" style="width:100px;height:100px;" />';
 			} }, 			
-			{ label: '职务', name: 'position', index: 'position', width: 80 }, 			
+			{ label: '职务(中文)', name: 'position', index: 'position', width: 80 }, 
+			{ label: '职务(英文)', name: 'positionenglish', index: 'positionenglish', width: 80 },
 			{ label: '电话号码', name: 'phone', index: 'phone', width: 80 }, 			
 			{ label: '个人QQ号', name: 'personqq', index: 'personqq', width: 80 },
 			{ label: '个人微信二维码', name: 'weixinpic', index: 'weixinpic', width: 80,formatter: function(r){
@@ -23,6 +24,7 @@ $(function () {
 					}
 			    } 
 			 },
+			 { label: '排序', name: 'ordercard', index: 'ordercard', width: 80 },
 			{ label: '操作', name: 'id', index: 'id', width: 80,formatter: function(value, options, row){
 					return '<button onclick="updateweixinpic(' + value +')">个人微信二维码上传</button>';
 				} 
