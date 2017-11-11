@@ -107,7 +107,6 @@
 						
 						
 					}
-					
 					// 设置视频
 					if ( r.photoSchool.vedio != null && r.photoSchool.vedio != '') {
 						var container = $('#theVedio');
@@ -117,6 +116,9 @@
 										        '您的浏览器不支持HTML5视频'+
 										    '</video>';
 						container.append(videoContent);
+					}else{
+						$('#theVedio').css("display","none");
+					    $('#schoolvoideid').css("display","none");
 					}
 					
 					//视频样式设置
