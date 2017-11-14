@@ -8,7 +8,7 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/mingpian/js/reset.js"></script>
     <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
     <style type="text/css">
-        .header{height: 2.8rem;width: 100%;background: url(${rc.contextPath}/statics/mingpian/image/head.png) no-repeat center;background-size: cover;}
+        .header{height: 2.8rem;width: 100%;background: url(http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/head.jpg) no-repeat center;background-size: cover;}
         .content{padding:0 0.83rem;margin-top: 0rem;margin-bottom: 0.8rem;}
         .content-con{width:100%;height: 12.52rem;background: #eeeeee;border:2px solid #e3e3e3; }
         .top{height: 5.8rem;width: 100%;background: white;position: relative;border-bottom:2px solid #e3e3e3;}
@@ -31,7 +31,7 @@
         .middle_top{height: 1.47rem;border-bottom: 2px solid #dedede;}
         .middle_bot{height: 1.47rem;width: 100%;}
         .middle_bot img{display: block;width: 0.75rem;height: 0.75rem;float: left;margin-top: 0.34rem;margin-left: 0.83rem;}
-        .middle_bot p{float: left;margin-top: 0.34rem;margin-left: 0.63rem;line-height: 0.8rem;font-size: 0.5rem;color:#515151;}
+        .middle_bot a{float: left;margin-top: 0.34rem;margin-left: 0.63rem;line-height: 0.8rem;font-size: 0.5rem;color:#515151;}
         .bottom{height: 2.9rem;width: 100%;background: white;font-size: 0.4rem;padding-top:0.53rem;border-top: 2px solid #dbdbdb;}
         .bottom dl{width: 2.08rem;margin-left: 0.37rem;float: left;}
         .bottom dt{width: 2.08rem;height: 2.08;}
@@ -65,11 +65,18 @@
 		    success: function(result){
 				if(result.status == 'ok'){
 					if(result.businessCard != null){
-					    $("#photouser").attr("src",result.businessCard.pic);
+					    var pic = "";
+					    if (result.businessCard.pic == null || result.businessCard.pic == "") {
+					        pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png";
+					    } else {
+					        pic = result.businessCard.pic;
+					    }
+					    $("#photouser").attr("src",pic);
 					    $("#nameuser").html(result.businessCard.name + '<span>'+result.businessCard.position+'</span>');
 					    $("#userphone").html(result.businessCard.phone);
 					    $("#salemanage").html(result.businessCard.positionenglish);
 					    $("#personqq").html(result.businessCard.personqq);
+					    $("#personqq").attr("href","tel:"+result.businessCard.personqq); 
 					    $("#title").html(result.businessCard.name + "个人名片");
 					    $("#bodaphoto").attr("href","tel:"+result.businessCard.phone); 
 					    $("#weixinpic").attr("src",result.businessCard.weixinpic);
@@ -79,7 +86,7 @@
 	});
     }
 </script>
-<body ontouchstart onload="init()" style="background:url(${rc.contextPath}/statics/mingpian/image/bg.jpg) no-repeat;width:100%;height:100%;background-size:100%;">
+<body ontouchstart onload="init()" style="background:url(http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/beijin.jpg) no-repeat;width:100%;height:100%;background-size:100%;">
     <input type="hidden" id="userid" value="${request.getParameter('id')}">
     <div class="header">
     </div>
@@ -96,7 +103,7 @@
             <div class="middle">
                 <div class="middle_top">
                     <div class="left">
-                        <p class="left_top" id="userphone">+18285009743</p>
+                        <p class="left_top" id="userphone"></p>
                         <p class="left_bot"> Mobil&nbsp;Phone</p>
                     </div>
                     <div class="mid"></div>
@@ -104,7 +111,7 @@
                 </div>
                 <div class="middle_bot">
                     <img src="${rc.contextPath}/statics/mingpian/image/qq.png" />
-                    <p id="personqq">609979831</p>
+                    <a id="personqq" href="#"></a>
                 </div>
             </div>
             <div class="empty"></div>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>贵州冠宇科技有限公司</title>
+    <meta content="yes" name="apple-mobile-web-app-capable"><!-- 这meta的作用就是删除默认的苹果工具栏和菜单栏允许全屏模式浏览-->
+    <meta name="apple-touch-fullscreen" content="yes"><!-- 开启对web app程序的支持  -->
+    <meta content="telephone=no,email=no" name="format-detection"><!-- iPhone会自动把你这个文字加链接样式、并且点击这个数字还会自动拨号！telephone=no就忽略页面中的数字识别为电话号码 ,email=no 忽略识别邮箱 -->
+    <!--base css-->
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+    <link rel="stylesheet" href="${rc.contextPath}/statics/mingpian/css/reset.css">
+    <script type="text/javascript" src="${rc.contextPath}/statics/mingpian/js/reset.js"></script>
+    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
+    <!--base css end-->
+    <!--base js-->
+    <!--<meta content="yes" name="apple-mobile-web-app-capable">-->
+    <script>
+        window.scrollTo(0, 0);
+    </script>
+    <!--<meta content="yes" name="apple-mobile-web-app-capable"> end-->
+    <style>
+        html{
+        background-color: #fff;
+    }
+    body
+    {
+        background-color: #fff;
+        position: relative;
+    }
+    body *
+    {
+        text-shadow: none;
+    }
+    nav:not(.mm-menu)
+    {
+        display: none;
+    }
+    .header{
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 100%;
+        height: 4.62rem;
+        background: url(http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/top.png) no-repeat center;
+        background-size: cover;
+        box-shadow: 0px 5px 5px gray; 
+    }
+    /*footer*/
+    .footer{
+        background-color: #3c3b39;
+    }
+    .chlicontwo{
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -o-box;
+        display: box;
+        padding-top: 0.546875rem;
+        padding-bottom:0.390625rem;
+    }
+    .chlisp{
+        display: inline-block;
+        text-align: center;
+        overflow: hidden;
+        width: 2.65625rem;
+        height: 2.609375rem;
+        margin-right: 0.546875rem;
+    }
+    .crimg{
+        width: 2.65625rem;
+        height: 2.609375rem;
+    }
+    .chliscontp{
+        -webkit-box-flex: 1;
+        -moz-box-flex: 1;
+        -ms-flex: 1;
+        -o-box-flex: 1;
+        box-flex: 1;
+    }
+    .chlih3{
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        word-break: break-all;
+        color: #fff;
+        line-height: 0.5625rem;
+        text-align: center;
+    }
+    .chlih4{
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-all;
+        padding: 0.7rem 0 0 4.5rem;
+        color: #fff;
+        line-height: 0.5625rem;
+        text-align: left;
+    }
+    .chliconpt{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.3525rem;
+        color: #fff;
+        line-height: 0.5625rem;
+    }
+    .chliconpt a{
+        float: left;
+        width: 50%;
+        display: block;
+        text-align: center;
+    }
+    .footelin{
+        border-top: 1px solid #707070;
+        text-align: center;
+        padding: 0.390625rem 0;
+        color: #fff;
+    }
+    .footelin p{
+        line-height: 0.46875rem;
+    }
+
+    .banner{
+        text-align: center;
+        font-size: 0.4rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0.4rem;
+        padding:0 0.8rem;
+    }
+    .member{
+        margin-left:-1%;
+        height: 4.7rem;
+    }
+    .member dl{
+        padding-top: 0.3rem;
+        width:31%;
+        margin-left: 2%;
+        box-sizing: border-box;
+        height: 4.6rem;
+        float: left;
+        box-shadow: -1px 0 4px #bdbebf, 
+          0 -1px 4px #bdbebf, 
+          0 1px 4px #bdbebf, 
+          1px 0 4px #bdbebf; 
+
+    }
+    .member dl dt{
+        border-radius: 50%;
+        height: 2.5rem;
+        width: 2.5rem;
+        background: gray;
+        margin:0 auto;
+    }
+    .member dl img{
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+    .member h3{
+        margin-top: 0.2rem;
+        font-size: 0.4rem;
+        text-align: center;
+    }
+    .member dl p{
+        text-align:center;
+        font-size: 0.35rem;
+        line-height: 0.5rem;
+    }
+    .empty{
+        height: 0.2rem;
+    }
+    </style>
+</head>
+<script type="text/javascript">
+    function init(){
+          $.ajax({
+			type: "POST",
+		    url: "../tombstone/getallbusinessCard",
+		    dataType: "json",
+		    success: function(result){
+				if(result.status == 'ok'){
+					if(result.list.length > 0){
+					     var content = "";
+					     var pic = "";
+					     for(var i = 0; i < result.list.length;i++){
+					         if(result.list[i].pic == null || result.list[i].pic == ""){
+					             pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png";
+					         } else {
+					             pic = result.list[i].pic;
+					         }
+					         if(i == 0){
+					            content += '<div class="member p-l-15 p-r-15 m-t-15">';
+					            content += '<dl onclick="getperson(' + result.list[i].id +')"><dt><img src="'+pic+'" /></dt>'+
+					                    '<dd><h3>'+result.list[i].name+'</h3>'+
+                                        '<p>'+result.list[i].position+'</p>'+
+                                        '<p>'+result.list[i].phone+'</p></dd></dl>';
+					         }else{
+					             if(i%3 == 0){
+					                 content += '</div><div class="member p-l-15 p-r-15 m-t-15">';
+					                 content += '<dl onclick="getperson(' + result.list[i].id +')"><dt><img src="'+pic+'" /></dt>'+
+					                    '<dd><h3>'+result.list[i].name+'</h3>'+
+                                        '<p>'+result.list[i].position+'</p>'+
+                                        '<p>'+result.list[i].phone+'</p></dd></dl>';
+					             }else{
+					                content += '<dl onclick="getperson(' + result.list[i].id +')"><dt><img src="'+pic+'" /></dt>'+
+					                    '<dd><h3>'+result.list[i].name+'</h3>'+
+                                        '<p>'+result.list[i].position+'</p>'+
+                                        '<p>'+result.list[i].phone+'</p></dd></dl>';
+                                     if(i == result.list.length -1){
+                                         content += '</div>';
+                                     }
+					             }
+					         }
+					         
+					     }
+					     $("#listmp").html(content);
+					}
+				}
+			}
+	   });
+    }
+    
+    function getperson(id){
+        window.location.href="uniform.html?id="+id; 
+    }
+</script>
+<body onload="init()">
+<!--wapper-->
+<div class="wapper">
+    <!--page-->
+    <div id="page">
+        <!--头部-->
+        <div class="header">
+            
+        </div>
+        <!--content-->
+        <div class="content" style="margin-top:5px;">
+            <div class="banner" style="text-align: left;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                贵州冠宇科技有限公司作为一家民营独资企业，顺应时代发展趋势，自主创新，于2015年1月隆重成立上市。我们秉承“天道酬勤，厚德载物”的精神，“客户第一”的原则。集研发、生产、销售及服务为一体的高科技技术企业。公司成立之初，从国内外引进数十名IT行业的精英人才，自主研发了众多产品，并通过国家专利局审核，颁发了专利证书。
+            </div>
+            <div id="listmp">
+                
+            </div>
+        </div>
+        <div class="empty"></div>
+        <!--content end-->
+        <!--footer-->
+        <div class="footer">
+            <div class="footelin">
+                <p>
+                    贵州冠宇科技有限公司 © 版权所有<br>
+                    <a>黔ICP备10215295号</a>
+                </p>
+            </div>
+
+        </div>
+        <!--footer end-->
+    </div>
+    <!--page end-->
+</div>
+<!--wapper end-->
+
+</body>
+</html>
