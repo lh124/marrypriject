@@ -2,7 +2,34 @@ var data="";
 var data1= "";
 function fadeouts(){
 	$("#iosDialog2").fadeOut(200);
+	$("#iosDialog22").fadeOut(200);
 }
+
+function saveliuyan(){
+	document.getElementById("messagecontent").value = "";
+	$("#iosDialog1").fadeIn(200);
+}
+
+function save(){
+	var content = document.getElementById("messagecontent").value;
+	if(content == null || content == ""){
+		$("#iosDialog1").fadeOut(200);
+		$("#iosDialog22").fadeIn(200);
+	}else{
+		$.ajax({
+			type: "POST",
+		    url: "../savemessage?id="+document.getElementById("userid").value+"&content="+document.getElementById("messagecontent").value,
+		    dataType: "json",
+		    success: function(result){
+				if(result.status == 'ok'){
+					init();
+					$("#iosDialog1").fadeOut(200);
+				}
+		    }
+		});
+	}
+}
+
 function init(){
 	$.ajax({
 		type: "POST",
@@ -11,28 +38,48 @@ function init(){
 	    success: function(result){
 			if(result.status == 'ok'){
 				var content = "";
+				var messages = "";
 				var length = result.list.img.length;
 				if(length > 3){
 					length = 3;
 				}
 				for(var i = 0; i < length; i++){
-					content += '<img class="m-r-2p" style="width:30%;" src="'+ result.list.img[i].pic +'"/>';
+					content += '<img style="flex:1;margin-left:0.1rem;" src="'+ result.list.img[i].pic +'"/>';
 				}
 				$("#content").html(result.list.user.content);
 				$("#experience").html(result.list.user.experience);
 				$("#userimage").html(content);
+				if(result.list.user.shipin == null || result.list.user.shipin == ""){
+				}else{
+					var filename = result.list.user.shipin;
+					$('#videomp4').prop('src',filename);
+					$('#videowebm').prop('src',filename);
+					$('#videoogv').prop('src',filename);
+					document.getElementById("my-video").load();
+					$('#pathfile').val(filename);
+				}
 				if(result.list.deaduser != null){
 					$("#deadname").html(result.list.deaduser.name);
 					$("#deadbirdth").html(result.list.deaduser.birthdayanddeath);
 					$("#deadcontent").html(result.list.deaduser.content);
 					$("#deadimg").html('<img src="'+ result.list.deaduser.image +'"/>');
 				}
+				$("#liuyan").html(messages);
+				for(var i = 0; i < result.list.messagelist.length; i++){
+					messages += '<div>'+result.list.messagelist[i].createtime +'<br><p class="m-t-10">'+result.list.messagelist[i].content+'</p></div><br>';
+				}
+				$("#liuyan").html(messages);
 				data = result.list.dead;
 				data1 = result.list.dead;
 				getdeaddata();
 			}
 		}
 	});
+}
+
+function totop(){
+	var speed=200;//滑动的速度
+    $('body,html').animate({ scrollTop: 0 }, speed);
 }
 
 function getdeaddata(){
@@ -45,8 +92,10 @@ function getdeaddata(){
 			data1 = result.list;
 			/*获取后代*/
 			var t=0,t1=0,_top=0,lena=0,len1=0,lena1=0,mt=0,mt1=0,grandson=0;
-			$(".one").append('<div class="aa img1" title="'+data.id+'" align="'+data.parentid+'"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
 			var a=data.children;
+			if(a.length > 0){
+				$(".one").append('<div class="aa img1" title="'+data.id+'" align="'+data.parentid+'"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
+			}
 			for(var j=0;j< a.length;j++){
 				var b=a[j].zn;
 				var len2=0,len3=0,len2a=0,len3a=0;
@@ -82,7 +131,13 @@ function getdeaddata(){
 				grandson+=lena;
 				var fm='',node='';
 				for(var k = 0;k<a[j].fm.length;k++){
-					fm+='<img title="'+a[j].fm[k].id+'" src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
+					var pic = "";
+					if(a[j].fm[k].image == null || a[j].fm[k].image == ""){
+						pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstone_dead_pic/1.png";
+					}else{
+						pic = a[j].fm[k].image;
+					}
+					fm+='<img title="'+a[j].fm[k].id+'" src="'+pic+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
 				}
 				if(fm){
 					node='<div style="top:'+t+'rem;margin-top:-'+mt+'rem;" class="aa img2" title="'+a[j].id+'" align="'+a[j].parentid+'">'+fm+'</div>';
@@ -102,7 +157,13 @@ function getdeaddata(){
 						t1=t1+aa*3.2;
 					}
 					for(var k = 0;k<b[i].fm.length;k++){
-						zn+='<img title="'+b[i].fm[k].id+'" src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
+						var pic = "";
+						if(b[i].fm[k].image == null || b[i].fm[k].image == ""){
+							pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstone_dead_pic/1.png";
+						}else{
+							pic = b[i].fm[k].image;
+						}
+						zn+='<img title="'+b[i].fm[k].id+'" src="'+pic+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
 					}
 					if(zn){
 						node1='<div class="aa img3" title="'+b[i].id+'" align="'+b[i].parentid+'"style="top:'+t1+'rem;margin-top:-'+mt1+'rem;">'+zn+'</div></div>';
@@ -305,8 +366,10 @@ function getcanvas(){
 	function tupian(data){
 		/*获取后代*/
 		var t=0,t1=0,_top=0,lena=0,len1=0,lena1=0,mt=0,mt1=0,grandson=0;
-		$(".ones").append('<div class="aa img1" title="'+data.id+'" align="'+data.parentid+'"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
 		var a=data.children;
+		if(a.length > 0){
+			$(".ones").append('<div class="aa img1" title="'+data.id+'" align="'+data.parentid+'"><img src="'+data.image+'"/><p>'+data.name+'</p></div>');
+		}
 		for(var j=0;j<a.length;j++){
 			var b=a[j].zn;
 			var len2=0,len3=0,len2a=0,len3a=0;
@@ -342,7 +405,13 @@ function getcanvas(){
 			grandson+=lena;
 			var fm='',node='';
 			for(var k = 0;k<a[j].fm.length;k++){
-				fm+='<img title="'+a[j].fm[k].id+'" src="'+a[j].fm[k].image+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
+				var pic = "";
+				if(a[j].fm[k].image == null || a[j].fm[k].image == ""){
+					pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstone_dead_pic/1.png";
+				}else{
+					pic = a[j].fm[k].image;
+				}
+				fm+='<img title="'+a[j].fm[k].id+'" src="'+pic+'"/><p>'+a[j].fm[k].name+'</p><p>'+a[j].fm[k].relation+'<p/>';
 			}
 			if(fm){
 				node='<div style="top:'+t+'rem;margin-top:-'+mt+'rem;" class="aa img2" title="'+a[j].id+'" align="'+a[j].parentid+'">'+fm+'</div>';
@@ -362,7 +431,13 @@ function getcanvas(){
 					t1=t1+aa*3.2;
 				}
 				for(var k = 0;k<b[i].fm.length;k++){
-					zn+='<img title="'+b[i].fm[k].id+'" src="'+b[i].fm[k].image+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
+					var pic = "";
+					if(b[i].fm[k].image == null || b[i].fm[k].image == ""){
+						pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstone_dead_pic/1.png";
+					}else{
+						pic = b[i].fm[k].image;
+					}
+					zn+='<img title="'+b[i].fm[k].id+'" src="'+pic+'"/><p>'+b[i].fm[k].name+'</p><p>'+b[i].fm[k].relation+'<p/>';
 				}
 				if(zn){
 					node1='<div class="aa img3" title="'+b[i].id+'" align="'+b[i].parentid+'"style="top:'+t1+'rem;margin-top:-'+mt1+'rem;">'+zn+'</div></div>';
