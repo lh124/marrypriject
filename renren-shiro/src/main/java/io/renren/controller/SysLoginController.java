@@ -1,5 +1,6 @@
 package io.renren.controller;
 
+import io.renren.service.SysUserService;
 import io.renren.utils.R;
 import io.renren.utils.ShiroUtil;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -38,6 +40,8 @@ import com.google.code.kaptcha.Producer;
 public class SysLoginController {
 	@Autowired
 	private Producer producer;
+	@Autowired
+	SysUserService sysUserService;
 	
 	@RequestMapping("captcha.jpg")
 	public void captcha(HttpServletResponse response)throws ServletException, IOException {
@@ -60,7 +64,7 @@ public class SysLoginController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/sys/login", method = RequestMethod.POST)
-	public R login(String username, String password, String captcha)throws IOException {
+	public R login(HttpServletRequest request,String username, String password, String captcha)throws IOException {
 		String kaptcha = ShiroUtil.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
 		if(!captcha.equalsIgnoreCase(kaptcha)){
 			return R.error("验证码不正确");
@@ -81,7 +85,7 @@ public class SysLoginController {
 		}catch (AuthenticationException e) {
 			return R.error("账户验证失败");
 		}
-	    
+		request.getSession().setAttribute("sys_user", sysUserService.queryByUserName(username));
 		return R.ok();
 	}
 	
