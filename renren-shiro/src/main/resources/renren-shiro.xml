@@ -49,6 +49,7 @@
 				/front/**=anon
 				/smart/**=anon
 				/tombstone/**=anon
+				/alter_getTheMubei/**=anon
 				/publicModule/**=anon
 				<!-- 兼容以前老系统的 开始 -->
 				/phone/**=anon
