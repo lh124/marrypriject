@@ -22,10 +22,11 @@
 </head>
 <body onload="init()" style="width: 98%;">
     <input type="hidden" id="userid" value="${request.getParameter('id')}">
-	<div class="m-t-10 person_img" id="userimage" style="padding-left: 2%;width: 100%;">
+	<div  id="userimage" style="width: 100%;padding-left:0.5%;">
 	</div>
 	<div class="top">
 		<div class="bigImg"></div>
+		<h3  style="cursor:pointer;position:relative;height:22px;"><p class="weui-icon-cancel" style="width:20px;position:absolute;margin-left:-10px;left:44%;color:white;font-size:30px;"></p></h3>
 	</div>
 </body>
 
@@ -44,7 +45,7 @@
 						$("#userimage").html(content);
 						var length = result.list.img.length;
 						for(var i = 0; i < length; i++){
-							content += '<img class="m-r-2p previewImage"  style="width:31%;margin-top:5px;" src="'+ result.list.img[i].pic +'"/>';
+							content += '<img class="previewImage"  style="width:31%;margin-left:2%;display:block;float:left;height:3.2rem;margin-top:10px;" src="'+ result.list.img[i].pic +'"/>';
 						}
 						$("#userimage").html(content);
 						$(".previewImage").on("click",function(){
