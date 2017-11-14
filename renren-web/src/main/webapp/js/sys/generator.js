@@ -49,6 +49,16 @@ var vm = new Vue({
                 page:1 
             }).trigger("reloadGrid");
 		},
+		databackup: function() {
+			var url =  "../databackup/tablelist";
+			$.ajax({
+				type: "POST",
+			    url: url,
+			    success: function(r){
+			    	alert(r.msg);
+				}
+			});
+		},
 		generator: function() {
 			var tableNames = getSelectedRows();
 			if(tableNames == null){
