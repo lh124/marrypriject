@@ -14,6 +14,7 @@ import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class SmartDataInpution {
 	@RequestMapping("/getData")
 	@ResponseBody
 	public R getData(HttpServletRequest request,HttpServletResponse response){
-		String key = request.getParameter("key");
+		String key = request.getParameter("key").replace("&quot;", "\"");
 		JSONObject json = JSONObject.fromObject(key);
 		String type = json.getString("type");
 		String token = json.getString("token");
@@ -81,20 +82,27 @@ public class SmartDataInpution {
 	public Object saveepcio(JSONObject json){
 		Object obj = null;
 		try {
-			String epc = json.getString("epc");
-			String ioType = json.getString("ioType");
-			String rfidId = json.getString("rfidId");
-			String studentId = json.getString("studentId");
+			List<Object> list = new ArrayList<Object>();
+			JSONArray array = json.getJSONArray("list");
 			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			IoEntity io = new IoEntity();
-			io.setEpc(epc);
-			io.setIoDate(new Date());
-			io.setIoType(ioType);
-			io.setRfidId(rfidId);
-			io.setStudentId(Integer.parseInt(studentId));
-			ioService.save(io);
+			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
+				JSONObject object = (JSONObject) iterator.next();
+				String epc = object.getString("epc");
+				String ioType = object.getString("ioType");
+				String rfidId = object.getString("rfidId");
+				String studentId = object.getString("userId");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				IoEntity io = new IoEntity();
+				io.setEpc(epc);
+				io.setIoDate(sdf.parse(object.getString("ioDate").replace("T", " ")));
+				io.setIoType(ioType);
+				io.setRfidId(rfidId);
+				io.setStudentId(Integer.parseInt(studentId));
+				ioService.save(io);
+				list.add(object.getString("id"));
+			}
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			obj = R.ok();
+			obj = R.ok().put(DATA, list);
 		} catch (Exception e) {
 			obj = R.error();
 		}
