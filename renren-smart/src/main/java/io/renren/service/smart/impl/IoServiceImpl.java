@@ -52,5 +52,10 @@ public class IoServiceImpl extends ServiceImpl<IoDao, IoEntity>  implements IoSe
 	public void deleteBatch(Integer[] ids){
 		ioDao.deleteBatch(ids);
 	}
+
+	@Override
+	public IoEntity queryObjectName(Integer id) {
+		return ioDao.queryObjectName(id);
+	}
 	
 }
