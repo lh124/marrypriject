@@ -18,6 +18,8 @@ public interface IoService extends IService<IoEntity>{
 	
 	IoEntity queryObject(Integer id);
 	
+	IoEntity queryObjectName(Integer id);
+	
 	List<IoEntity> queryList(Map<String, Object> map);
 	
 	int queryTotal(Map<String, Object> map);
