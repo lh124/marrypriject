@@ -16,7 +16,6 @@ import io.renren.utils.dataSource.DbContextHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,11 +71,48 @@ public class SmartDataInpution {
 				obj = queryEpc(json);
 			}else if(type.equals("saveepcio")){//通过epc，ioType，ioDate，rfidId，studentId保存学生进出校园数据
 				obj = saveepcio(json);
+			}else if(type.equals("getonschoolstudent")){//通过班级id查询所有在校的学生
+				obj = getonschoolstudent(json);
 			}
 			return (R)obj ;
 		}else{
 			return R.error("token错误");
 		}
+	}
+	
+	public Object getonschoolstudent(JSONObject json){
+		Object obj = null;
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<Object> list1 = new ArrayList<Object>();//在校学生
+			List<Object> list2 = new ArrayList<Object>();//不在校学生
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("classId", json.getString("classId"));
+			m.put("begin", 0);
+			m.put("limit", 200);
+			List<StudentEntity> list = studentService.queryList(m);//通过班级id查询班上所有学生
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator.next();
+				IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
+				if(ioentity != null){
+					if(ioentity.getIoType().equals("进")){
+						list1.add(studentEntity.getStudentName());
+					}else{
+						list2.add(studentEntity.getStudentName());
+					}
+				}else{
+					list2.add(studentEntity.getStudentName());
+				}
+			}
+			map.put("list1", list1);
+			map.put("list2", list2);
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+			obj = R.ok().put(DATA, map);
+		} catch (Exception e) {
+			obj = R.error();
+		}
+		return obj;
 	}
 	
 	public Object saveepcio(JSONObject json){

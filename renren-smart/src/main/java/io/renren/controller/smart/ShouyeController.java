@@ -5,6 +5,7 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
+import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
@@ -17,6 +18,7 @@ import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
 import io.renren.service.smart.CoreService;
 import io.renren.service.smart.FreshmanGuideService;
+import io.renren.service.smart.IoService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
@@ -100,6 +102,46 @@ public class ShouyeController {
 	private CoreService coreService;
 	@Autowired
 	private SysWeixinMsgService sysWeixinMsgService;
+	@Autowired
+	private IoService ioService;
+	
+	
+	/**
+	 * 查询一个班所有在校的人数
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getonschoolstudent")
+	public R getonschoolstudent(HttpSession session){
+		Object obj = null;
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		try {
+			List<Object> list2 = new ArrayList<Object>();//不在校学生
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("classId", student.getClassId());
+			m.put("begin", 0);
+			m.put("limit", 200);
+			List<StudentEntity> list = studentService.queryList(m);//通过班级id查询班上所有学生
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator.next();
+				IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
+				if(ioentity != null){
+					if(ioentity.getIoType().equals("进")){
+//						list1.add(studentEntity.getStudentName());
+					}else{
+						list2.add(studentEntity.getStudentName());
+					}
+				}else{
+					list2.add(studentEntity.getStudentName());
+				}
+			}
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+			obj = R.ok().put("page", list2);
+		} catch (Exception e) {
+			obj = R.error();
+		}
+		return (R) obj;
+	}
 	
 	/**
 	 * 查询所有学校
