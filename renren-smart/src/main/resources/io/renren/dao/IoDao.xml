@@ -24,6 +24,11 @@
 	<select id="queryObject" resultType="io.renren.entity.smart.IoEntity">
 		select <include refid="allColumns"></include> from io where id = #{value}
 	</select>
+	
+	<select id="queryObjectName" resultType="io.renren.entity.smart.IoEntity">
+		select * from io where epc in(select epc from student_epc where student_id = #{value}) 
+		      and io_date = (select max(io_date) from io where epc in(select epc from student_epc where student_id = #{value}))
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.IoEntity">
 		select top 
