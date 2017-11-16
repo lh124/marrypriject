@@ -99,7 +99,9 @@ public class CoreService {
 						}
 					}
 					if(content.equals("") || content == null){
-						content = "请点击下面的菜单按钮进行相关操作";
+						content = "1.智能校服的账号为学生在校学（籍）号，不清楚学籍号的可以问一下学校老师哦。"+
+								  "2.账号初始密码均为000000，建议家长登录后及时更改并记住更改后的密码。"+
+								  "3.点击右下角智能校服按钮就可以打开登录界面进行相关操作";
 					}
 					textMessage.setContent(content);
 					respXml = MessageUtil.messageToXml(textMessage);
@@ -117,7 +119,9 @@ public class CoreService {
 						}
 					}
 					if(content.equals("") || content == null){
-						content = "请点击下面的菜单按钮进行相关操作";
+						content = "1.智能校服的账号为学生在校学（籍）号，不清楚学籍号的可以问一下学校老师哦。"+
+								  "2.账号初始密码均为000000，建议家长登录后及时更改并记住更改后的密码。"+
+								  "3.点击右下角智能校服按钮就可以打开登录界面进行相关操作";
 					}
 					textMessage.setContent(content);
 					respXml = MessageUtil.messageToXml(textMessage);
