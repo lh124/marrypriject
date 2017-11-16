@@ -28,6 +28,7 @@
 	<select id="queryObjectName" resultType="io.renren.entity.smart.IoEntity">
 		select * from io where epc in(select epc from student_epc where student_id = #{value}) 
 		      and io_date = (select max(io_date) from io where epc in(select epc from student_epc where student_id = #{value}))
+		      and id = (SELECT MAX (id) FROM io WHERE epc IN (SELECT epc FROM student_epc WHERE student_id = #{value}))
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.IoEntity">
