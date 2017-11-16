@@ -129,10 +129,16 @@ public class ShouyeController {
 					if(ioentity.getIoType().equals("进")){
 //						list1.add(studentEntity.getStudentName());
 					}else{
-						list2.add(studentEntity.getStudentName());
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("name", studentEntity.getStudentName());
+						map.put("date", ioentity.getIoDate());
+						list2.add(map);
 					}
 				}else{
-					list2.add(studentEntity.getStudentName());
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("name", studentEntity.getStudentName());
+					map.put("date", new Date());
+					list2.add(map);
 				}
 			}
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);

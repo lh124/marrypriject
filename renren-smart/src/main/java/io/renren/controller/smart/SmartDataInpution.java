@@ -71,8 +71,8 @@ public class SmartDataInpution {
 				obj = queryEpc(json);
 			}else if(type.equals("saveepcio")){//通过epc，ioType，ioDate，rfidId，studentId保存学生进出校园数据
 				obj = saveepcio(json);
-			}else if(type.equals("getonschoolstudent")){//通过班级id查询所有在校的学生
-				obj = getonschoolstudent(json);
+			}else if(type.equals("getonschoolstudent")){//通过学校名字查询所有在校的学生
+				obj = getonschool(json);
 			}
 			return (R)obj ;
 		}else{
@@ -80,39 +80,52 @@ public class SmartDataInpution {
 		}
 	}
 	
-	public Object getonschoolstudent(JSONObject json){
+	public Object getonschool(JSONObject json){
 		Object obj = null;
+		String schoolName = json.getString("schoolName");
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("schoolId", schoolEntity.getId());
+		map.put("order", "");
+		map.put("sidx", "");
+		map.put("begin", 0);
+		map.put("limit", 100);
+		List<ClassEntity> list = classService.queryList(map);
+		obj = R.ok().put(DATA, getonschoolstudent(list));
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return obj;
+	}
+	
+	public Map<String, Object> getonschoolstudent(List<ClassEntity> list){
+		Map<String, Object> map = new HashMap<String, Object>();
+		Integer i = 0,j=0;
 		try {
-			Map<String, Object> map = new HashMap<String, Object>();
-			List<Object> list1 = new ArrayList<Object>();//在校学生
-			List<Object> list2 = new ArrayList<Object>();//不在校学生
 			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("classId", json.getString("classId"));
-			m.put("begin", 0);
-			m.put("limit", 200);
-			List<StudentEntity> list = studentService.queryList(m);//通过班级id查询班上所有学生
 			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-				StudentEntity studentEntity = (StudentEntity) iterator.next();
-				IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
-				if(ioentity != null){
-					if(ioentity.getIoType().equals("进")){
-						list1.add(studentEntity.getStudentName());
-					}else{
-						list2.add(studentEntity.getStudentName());
+				ClassEntity classEntity = (ClassEntity) iterator.next();
+				Map<String, Object> m = new HashMap<String, Object>();
+				m.put("classId", classEntity.getId());
+				m.put("begin", 0);
+				m.put("limit", 200);
+				List<StudentEntity> list1 = studentService.queryList(m);//通过班级id查询班上所有学生
+				for (Iterator iterator1 = list1.iterator(); iterator1.hasNext();) {
+					StudentEntity studentEntity = (StudentEntity) iterator1.next();
+					j++;
+					IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
+					if(ioentity != null){
+						if(ioentity.getIoType().equals("进")){
+							i++;
+						}
 					}
-				}else{
-					list2.add(studentEntity.getStudentName());
 				}
 			}
-			map.put("list1", list1);
-			map.put("list2", list2);
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			obj = R.ok().put(DATA, map);
+			map.put("total", j);
+			map.put("zxtotal", i);
 		} catch (Exception e) {
-			obj = R.error();
 		}
-		return obj;
+		return map;
 	}
 	
 	public Object saveepcio(JSONObject json){
