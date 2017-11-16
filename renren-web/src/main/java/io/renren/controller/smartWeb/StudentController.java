@@ -322,7 +322,12 @@ public class StudentController {
 	public R update(@RequestBody StudentEntity student){
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		if (student != null && !student.getPasswordd().equals("")){
-			String newPassword = new Sha256Hash(student.getPasswordd()).toHex();
+			String newPassword = "";
+			if(student.getPasswordd().length() < 30){
+				newPassword = new Sha256Hash(student.getPasswordd()).toHex();
+			}else{
+				newPassword = student.getPasswordd();
+			}
 			student.setPasswordd(newPassword);
 		}
 		
