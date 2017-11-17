@@ -33,7 +33,12 @@ $(function(){
 		           				var img; 
 		           				var imgs = "";
 		           				var content = "";
-		           				
+		           				var pic = "";
+		    					if(data.page.list[i].noticepic == null || data.page.list[i].noticepic == ""){
+		    			        	   
+		    			        }else{
+		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].noticepic+'" width="100%" height="55%"></div></p>';
+		    			        };
 		           				content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 	           		            '</p>';
 		           				result += '<div class="weui_cells moments">'+
@@ -42,7 +47,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="#">'+
 		           		              '<span>' + data.page.list[i].title + '</span>'+
-		           		            '</a>'+content +
+		           		            '</a>'+pic+content +
 		           		          
 		           		          '</div>'+
 		           		        '</div>'+
@@ -102,6 +107,12 @@ $(function(){
 		   						
 	                        	var imgs = "";
 	                        	var content = "";
+	                        	var pic = "";
+		    					if(data.page.list[i].noticepic == null || data.page.list[i].noticepic == ""){
+		    			        	   
+		    			        }else{
+		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].noticepic+'" width="100%" height="55%"></div></p>';
+		    			        };
 	                        	content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 	           		            '</p>';
 		           				result += '<div class="weui_cells moments">'+
@@ -109,7 +120,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].title + '</span>'+
-		           		            '</a>'+content +
+		           		            '</a>'+pic+content +
 		           		       
 		           		          '</div>'+
 		           		        '</div>'+

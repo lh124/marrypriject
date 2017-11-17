@@ -34,6 +34,12 @@ $(function(){
 		           				var imgs = "";
 		           				var content = "";
 		           				var type = "【" + data.page.list[i].createtime.substring(0,10)+"】";
+		           				var pic = "";
+		    					if(data.page.list[i].pic == null || data.page.list[i].pic == ""){
+		    			        	   
+		    			        }else{
+		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].pic+'" width="100%" height="55%"></div></p>';
+		    			        };
 		           				content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 	           		            '</p>';
 		           				result += '<div class="weui_cells moments">'+
@@ -42,7 +48,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="#">'+
 		           		              '<span>' + data.page.list[i].name + type +'</span>'+
-		           		            '</a>'+content +
+		           		            '</a>'+pic+content +
 		           		          
 		           		          '</div>'+
 		           		        '</div>'+
@@ -101,6 +107,12 @@ $(function(){
 	                        	var type = "【" + data.page.list[i].createtime.substring(0,10)+"】";
 	                        	var imgs = "";
 	                        	var content = "";
+	                        	var pic = "";
+		    					if(data.page.list[i].pic == null || data.page.list[i].pic == ""){
+		    			        	   
+		    			        }else{
+		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].pic+'" width="100%" height="55%"></div></p>';
+		    			        };
 	                        	content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 	           		            '</p>';
 		           				result += '<div class="weui_cells moments">'+
@@ -108,7 +120,7 @@ $(function(){
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
 		           		            '<a class="title" href="javascript:;">'+
 		           		              '<span>' + data.page.list[i].name + type +'</span>'+
-		           		            '</a>'+content +
+		           		            '</a>'+pic+content +
 		           		       
 		           		          '</div>'+
 		           		        '</div>'+

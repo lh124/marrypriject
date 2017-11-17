@@ -12,7 +12,7 @@ function forSubmit(){
 		type: "POST",
 	    url: "../shouye/savesmartword?content=" + contentNotice + "&title=" + title,
 	    success: function(r){
-	    	window.location.href="./shouye_2.html?class="+classId;
+	    	//window.location.href="./shouye_2.html?class="+classId;
 		}
 	});
 }

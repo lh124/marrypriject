@@ -13,100 +13,44 @@ g_object_name_type = ''
 now = timestamp = Date.parse(new Date()) / 1000; 
 var times = 1;
 var messageId = null;
-function forSubmit(){
-	var contentNotice = document.getElementById("contentNotice").value;
-	if(contentNotice == null || contentNotice == ""){
-		contentNotice = "未编写任何内容就已发布了。";
-	}
-	var title = document.getElementById("title").value;
-	if(title == null || title == ""){
-		title = "未填写标题";
-	}
-	var classId = document.getElementById("classId").value;
-	$.ajax({
+function save_data(){
+	$.ajax({ 
 		type: "POST",
-	    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + title,
-	    success: function(r){
-	    	var json = JSON.parse(r);
-	    	document.getElementById("shouye1id").value = json.id;
+	    url: "../photoclassworkmsg/save",
+	    data: {"classId":"1","userId":"1","content":$('.weui-textarea').val()},
+	    dataType:'json',
+	    success: function (result) {
+	    	messageId = result.id;
 		}
-	});
-}
-function send_request()
-{
-    var xmlhttp = null;
-    if (window.XMLHttpRequest)
-    {
-        xmlhttp=new XMLHttpRequest();
-    }
-    else if (window.ActiveXObject)
-    {
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-  
-    if (xmlhttp!=null)
-    {
-        serverUrl = '../../publicModule/common/oss/getSign'
-        xmlhttp.open( "POST", serverUrl, false );
-        var myFormDatea = getMyFormDate();
-        myFormDatea.append("id", messageId);
-        xmlhttp.send(myFormDatea);
-        return xmlhttp.responseText
-    }
-    else
-    {
-        alert("Your browser does not support XMLHTTP.");
-    }
+});
 };
 
-function save_data()
-{
-    var xmlhttp = null;
-    if (window.XMLHttpRequest)
-    {
-        xmlhttp=new XMLHttpRequest();
-    }
-    else if (window.ActiveXObject)
-    {
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-  
-    if (xmlhttp!=null)
-    {
-        serverUrl = '../photoclassworkmsg/save'
-        xmlhttp.open( "POST", serverUrl, false );
-        var myFormDatea = new FormData();
-        myFormDatea.append('classId', $('#classId').val());
-        myFormDatea.append('userId', $('#userId').val());
-        if ( $('.weui-textarea').val() != null && $('.weui-textarea').val() != "")
-        	myFormDatea.append('content', $('.weui-textarea').val());
-        xmlhttp.send(myFormDatea);
-        return xmlhttp.responseText
-    }
-    else
-    {
-        alert("Your browser does not support XMLHTTP.");
-    }
-};
-
-function get_signature()
-{
-    //可以判断当前expire是否超过了当前时间,如果超过了当前时间,就重新取一下.3s 做为缓冲
-    now = timestamp = Date.parse(new Date()) / 1000; 
-    if (expire < now + 3)
-    {
-        body = send_request()
-        var obj = eval ("(" + body + ")");
-        host = obj['host']
-        policyBase64 = obj['policy']
-        accessid = obj['accessid']
-        signature = obj['signature']
-        expire = parseInt(obj['expire'])
-        callbackbody = obj['callback'] 
-        key = obj['dir']
-        return true;
-    }
-    return false;
+function get_signature(){
+	$.ajax({ 
+		type: "POST",
+	    url: "../photoclassworkmsg/save",
+	    data: {"classId":$('#classId').val(),"userId":$('#userId').val(),"content":$('.weui-textarea').val()},
+	    dataType:'json',
+	    success: function (result) {
+	    	$.ajax({ 
+	    		type: "POST",
+	    	    url: "../../publicModule/common/oss/getSign",
+	    	    data: {"id":result.id,"type":12},
+	    	    dataType:'json',
+	    	    success: function (result) {
+	    	    	var obj = result;
+	    	        host = obj.host;
+	    	        policyBase64 = obj.policy;
+	    	        accessid = obj.accessid;
+	    	        signature = obj.signature;
+	    	        expire = parseInt(obj.expire);
+	    	        callbackbody = obj.callback;
+	    	        key = obj.dir;
+	    	        return true;
+	    		}
+	        });
+		}
+    });
 };
 
 
@@ -157,48 +101,73 @@ function get_uploaded_object_name(filename)
     }
 }
 
-function set_upload_param(up, filename, ret)
-{
-	if ( uploader.files.length <= 0 && ($("#content").val == null || $("#content").val== "") ) {
-		alert("请输入信息内容");
-	}
-	// 保存文字信息，生成对应id
-	if ( messageId == null) {
-		var resp = save_data();
-		var obj = eval ("(" + resp + ")");
-		messageId = obj['id'];
-		
-		if (uploader.files.length <= 0) {
-			alert("发布成功!");
-			//window.location.href = "classMessageList.html?classId=" + $("#classId");
-			return ;
+function dataURItoBlob (base64Data) {  
+	var byteString;  
+	if (base64Data.split(',')[0].indexOf('base64') >= 0)  
+	    byteString = atob(base64Data.split(',')[1]);  
+	else  
+	    byteString = unescape(base64Data.split(',')[1]);  
+	var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];  
+	var ia = new Uint8Array(byteString.length);  
+	for (var i = 0; i < byteString.length; i++) {  
+	    ia[i] = byteString.charCodeAt(i);  
+	}  
+	return new Blob([ia], {type: mimeString});  
+}
+
+function set_upload_param(path,type,type2,id){
+	$.ajax({ 
+		type: "POST",
+	    url: "../../publicModule/common/oss/getSign",
+	    data: {"id":id,"type":type},
+	    dataType:'json',
+	    success: function (result) {
+	    	var obj = result;
+	        host = obj.host;
+	        policyBase64 = obj.policy;
+	        accessid = obj.accessid;
+	        signature = obj.signature;
+	        expire = parseInt(obj.expire);
+	        callbackbody = obj.callback;
+	        key = obj.dir;
+	    	var formData = new FormData();
+	    	var blob = dataURItoBlob(path);
+	    	formData.append("name","headss.png");
+	    	formData.append("key", key + Date.parse(new Date()) + ".png");
+	    	formData.append("policy",policyBase64);
+	    	formData.append("OSSAccessKeyId",accessid);
+	    	formData.append("success_action_status","200");
+	    	formData.append("callback",callbackbody);
+	    	formData.append("signature",signature);
+	    	formData.append("file",blob);
+	    	
+	    	$.ajax({ 
+	    		url : host, 
+	    		type : 'POST', 
+	    		data : formData, 
+	    		processData : false, 
+	    		contentType : false,
+	    		beforeSend:function(){
+	    		},
+	    		success : function(responseStr) { 
+	    			if(responseStr.Status=='OK'){
+	    				alert("上传成功");
+	    				if(type2 == 1){
+	    					window.location.href="./shouye_1.html?classId="+document.getElementById("classId").value;
+	    				}else if(type2 == 2){
+	    					window.location.href="./shouye_2.html?classId="+document.getElementById("classId").value;
+	    				}else if(type2 == 6){
+	    					window.location.href="./shouye_6.html?schoolId="+document.getElementById("schoolId").value;
+	    				}
+	    			}
+	    		}, 
+	    		error : function(responseStr) { 
+	    			console.log("error");
+	    		} 
+	    	});
 		}
-	}
-	
-	uploaddingShowStart();
-    if (ret == false)
-    {
-        ret = get_signature()
-    }
-    g_object_name = key;
-    if (filename != '') { suffix = get_suffix(filename)
-        calculate_object_name(filename)
-    }
-    new_multipart_params = {
-        'key' : g_object_name,
-        'policy': policyBase64,
-        'OSSAccessKeyId': accessid, 
-        'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
-        'callback' : callbackbody,
-        'signature': signature,
-    };
-
-    up.setOption({
-        'url': host,
-        'multipart_params': new_multipart_params
     });
-
-    up.start();
+    
 }
 
 
@@ -222,11 +191,7 @@ var uploader = new plupload.Uploader({
 
 	init: {
 		PostInit: function() {
-			//document.getElementById('ossfile').innerHTML = '';
-			document.getElementById('postfiles').onclick = function() {
-            set_upload_param(uploader, '', false);
-            return false;
-			};
+			
 		},
 
 		FilesAdded: function(up, files) {
@@ -246,7 +211,7 @@ var uploader = new plupload.Uploader({
 			    }(i);
 			}
 			
-			$("#picSize").text(files.length + "/1");
+			$("#picSize").text(files.length + "/7");
 			/*plupload.each(files, function(file) {
 				document.getElementById('ossfile').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ')<b></b>'
 				+'<div class="progress"><div class="progress-bar" style="width: 0%"></div></div>'
