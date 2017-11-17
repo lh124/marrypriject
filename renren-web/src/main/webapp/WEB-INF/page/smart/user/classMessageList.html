@@ -27,13 +27,13 @@
 	<div class="weui_grids"  >
 	        #if($session.getAttribute('user_smart').userType == "2")
             <a href="javascript:void(0)" class="weui_grid js_grid"  id="startRecord"  >
-                <p class="weui_grid_label" >&nbsp;&nbsp;&nbsp;</p>
+                <p class="weui_grid_label" >按住录音</p>
             </a>
         	<a href="addClassMessage.html?classId=$request.getParameter('classId')" class="weui_grid js_grid"   >
             	<p class="weui_grid_label">发布信息</p>
         	</a>
         	<a href="javascript:void(0)" class="weui_grid js_grid" id="uploadVoice">
-            	<p class="weui_grid_label" >&nbsp;&nbsp;&nbsp;</p>
+            	<p class="weui_grid_label" >发布录音</p>
         	</a>  
         	#end
     </div>
@@ -51,35 +51,12 @@
      <script src="${rc.contextPath}/js/smart/user/classMessageLIst.js"></script>
      <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
      <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
-<script type="text/javascript" src="${rc.contextPath}/js/smart/user/upload.js?_${date.systemTime}"></script>
 <script src="${rc.contextPath}/js/smart/user/classvoide.js?"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>     
 <script type="text/javascript">
    var localId = "";
    var serverId = "";
-   function init(){
-		      $.ajax({ 
-				type: "POST",
-			    url: "../../publicModule/common/getWeChatSign",
-			    data: {"url":window.location.href},
-			    dataType:'json',
-			    success: function (result) {
-						wx.config({
-							debug: false, //
-							appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
-							timestamp: result.timestamp, // 必填，生成签名的时间戳
-							nonceStr: result.nonceStr, // 必填，生成签名的随机串
-							signature: result.signature,// 必填，签名，见附录1
-					        jsApiList: [
-					           'startRecord',
-					           'stopRecord',
-					           'uploadVoice'
-					        ]
-					    });
-				} 
-			});
-    }
 wx.ready(function () {
   // 4 音频接口
   // 4.2 开始录音按下按钮时
@@ -117,19 +94,13 @@ wx.ready(function () {
       success: function (res) {
         serverId = res.serverId;
         $.ajax({ 
-			url : "../shouye/uploadMedio?serverId="+res.serverId, 
+			url : "../shouye/downMedio?serverId="+res.serverId, 
 			type : 'POST', 
 	        dataType:"json",  
 			contentType : false,
 			success : function(responseStr) { 
-				var imgSrc = "http://wrs.gykjewm.com/statics/video/"+responseStr.path;
-				var file = imgSrc;
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function () {
-                      alert(reader.result);
-                      set_upload_param(reader.result);
-                };
+				init();
+				localId = "";
 			}
 		});
       }
