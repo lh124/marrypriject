@@ -1,4 +1,31 @@
-$(function(){
+function init(){
+	$.ajax({ 
+		type: "POST",
+	    url: "../../publicModule/common/getWeChatSign",
+	    data: {"url":window.location.href},
+	    dataType:'json',
+	    success: function (result) {
+				wx.config({
+					debug: false, //
+					appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
+					timestamp: result.timestamp, // 必填，生成签名的时间戳
+					nonceStr: result.nonceStr, // 必填，生成签名的随机串
+					signature: result.signature,// 必填，签名，见附录1
+			        jsApiList: [
+			           'startRecord',
+			           'stopRecord',
+			           'uploadVoice'
+			        ]
+			    });
+		} 
+	});
+	var sss = $('.dropload-up');
+	if(sss.length>1){
+		  for(var i = 1; i < sss.length; i++){
+			  sss[i].remove();
+		  }
+	}
+	$('.weui_panel_bd').html(""); 
 	//页数 
 	    var page = 0;
 	    // 每页展示10个
@@ -124,7 +151,7 @@ $(function(){
 		           		              '</div>';
 		           				}
 		           				if((data.page.list[i].content == null || data.page.list[i].content == "") && data.page.list[i].voice != null && data.page.list[i].voice != ""){
-		           					content = '<audio src="http://192.168.1.107/wrs/statics/video/'+data.page.list[i].voice+'" controls="controls"></audio>';
+		           					content = '<audio src="'+data.page.list[i].voice+'" controls="controls"></audio>';
 		           				}else{
 		           					content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
 		           		            '</p>';
@@ -182,7 +209,14 @@ $(function(){
 	            });
 	        }
 	    });
-	});
+	    var ss = $('.dropload-down');
+		   if(ss.length>1){
+			  $('.footers').html(ss[0]);
+			  for(var i = 1; i < ss.length; i++){
+				  ss[i].remove();
+			  }
+		   }
+	}
 	
 	var GetLength = function (str) {
 	    ///<summary>获得字符串实际长度，中文2，英文1</summary>
