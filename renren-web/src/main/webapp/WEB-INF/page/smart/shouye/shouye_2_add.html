@@ -12,8 +12,31 @@
        function upload(){
             forSubmit();
         }  
+        function init(){
+            $.ajax({ 
+		type: "POST",
+	    url: "../../publicModule/common/getWeChatSign",
+	    data: {"url":window.location.href},
+	    dataType:'json',
+	    success: function (result) {
+				wx.config({
+					debug: false, //
+					appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
+					timestamp: result.timestamp, // 必填，生成签名的时间戳
+					nonceStr: result.nonceStr, // 必填，生成签名的随机串
+					signature: result.signature,// 必填，签名，见附录1
+			        jsApiList: [
+			           'chooseImage',
+        				'previewImage',
+        				'uploadImage',
+        				'downloadImage'
+			        ]
+			    });
+		} 
+	});
+        }  
 </script>  
-<body ontouchstart>
+<body ontouchstart onload="init()">
     <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
 	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 	<input id="userId" value="$session.getAttribute('user_smart').id" >
@@ -33,6 +56,24 @@
 		                    <div class="weui-textarea-counter"><span>0</span>/500</div>
 		                </div>
 		            </div>
+		            
+		            <div class="weui-cells weui-cells_form" >
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <div class="weui-uploader">
+                                <div class="weui-uploader__hd">
+                                    <div class="weui-uploader__info" id="picSize">0/1</div>
+                                </div>
+                                <div class="weui-uploader__bd">
+                                    <div class="weui-uploader__input-box"  id="selectfiles1"></div>
+                                    <ul class="weui-uploader__files" id="uploaderFiles">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectfiles">
 		        </div>
 		        
 		        <div class="weui-gallery" id="gallery">
@@ -44,7 +85,7 @@
 		            </div>
 		        </div>
 		        <div class="weui-btn-area">
-		            <a class="weui-btn weui-btn_primary" href="javascript:upload()" id="postfiles">确定</a>
+		            <a class="weui-btn weui-btn_primary" href="javascript:void(0)" id="postfiless">确定</a>
 		        </div>
 		    </div>
 		</div>
@@ -62,7 +103,9 @@
 	<script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
 	<script src="${rc.contextPath}/js/smart/shouye/shouye_2_add.js?"></script><!-- _${date.systemTime} -->
 	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
-	<script type="text/javascript" src="${rc.contextPath}/js/smart/shouye/upload.js?_${date.systemTime}"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
+    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
+    <script src="${rc.contextPath}/js/smart/shouye/shouye_1_update.js?_${date.systemTime}"></script>
 	<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
 	<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
 	<script type="text/javascript">
@@ -74,5 +117,118 @@
 		   mydete.append("title", document.getElementById("title").value);
 		   return mydete;
 	    }
-	</script>
+	 var localId;
+	  var serverId;
+	  
+	 function addNewContent(obj) {
+		$("#uploaderFiles").html("");
+		var oldBox = "";
+		for(var a = 0; a < obj.length; a++) {
+			oldBox += "<li class='weui-uploader__file'><img class='weui-uploader__file weiImg' name='msgpic' src='"+obj[a]+"' /></li>";
+		}
+		$("#picSize").text(obj.length + "/1");
+		$("#uploaderFiles").html(oldBox);
+		$(".weiImg").on("click",function(){
+		 var index = $(this).prevAll().length;
+		 var src=$(this).attr("src"); 
+	  	 wx.previewImage({
+	      urls:obj
+	    });
+	  });
+	}
+
+wx.ready(function () {
+  // 5 图片接口
+  // 5.1 拍照、本地选图
+  var images = {
+    localId: [],
+    serverId: []
+  };
+  var length = 0;
+  //图片选择
+  document.querySelector('#selectfiles1').onclick = function () {
+    wx.chooseImage({
+      count: 1, 
+      success: function (res) {
+        localId = res.localIds;
+        length = localId.length
+        addNewContent(localId);
+      }
+    });
+  };
+  document.querySelector('#postfiless').onclick = function () {
+              var contentNotice = document.getElementById("contentNotice").value;
+				if(contentNotice == null || contentNotice == ""){
+					contentNotice = "未编写任何内容就已发布了。";
+				}
+				var title = document.getElementById("title").value;
+				if(title == null || title == ""){
+					title = "未填写标题";
+				}
+				var classId = document.getElementById("classId").value;
+				$.ajax({
+					type: "POST",
+				    url: "../shouye/savesmartword?content=" + contentNotice + "&title=" + title,
+				    success: function(r){
+				    	var json = JSON.parse(r);
+				    	if(length > 0){
+	            var k = 0;
+		        for(var i = 0; i < length; i++){
+		             k = i;
+			         wx.uploadImage({
+			        	localId: localId[i],
+			        	success: function (res) {
+			        		$.ajax({ 
+								url : "../../smart/shouye/uploadMedio?serverId="+res.serverId, 
+								type : 'POST', 
+	        					dataType:"json",  
+								contentType : false,
+								success : function(responseStr) { 
+								     var imgSrc = "http://wrs.gykjewm.com/statics/video/"+responseStr.path;
+								     function getBase64(img){//传入图片路径，返回base64
+				        			    function getBase64Image(img,width,height) {//width、height调用时传入具体像素值，控制大小 ,不传则默认图像大小
+				          				   var canvas = document.createElement("canvas");
+								            canvas.width = width ? width : img.width;
+								            canvas.height = height ? height : img.height;
+								            var ctx = canvas.getContext("2d");
+								            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+								            var dataURL = canvas.toDataURL();
+								            return dataURL;
+								         }
+								        var image = new Image();
+								        image.crossOrigin = '';
+								        image.src = img;
+								        var deferred=$.Deferred();
+								        if(img){
+								          image.onload =function (){
+								            deferred.resolve(getBase64Image(image));//将base64传给done上传处理
+								          }
+								          return deferred.promise();//问题要让onload完成后再return sessionStorage['imgTest']
+								        }
+								      }
+								      getBase64(imgSrc).then(function(base64){
+								          set_upload_param(base64,19,2,json.id);
+								      });
+									}
+							});
+						}
+					});
+			     }
+	        }else{
+	           window.location.href="./shouye_2.html";
+	        }
+					}
+				});
+  };
+
+  var shareData = {
+    title: '微信JS-SDK Demo',
+    desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
+    link: 'http://demo.open.weixin.qq.com/jssdk/',
+    imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
+  };
+  wx.onMenuShareAppMessage(shareData);
+  wx.onMenuShareTimeline(shareData);
+});
+</script>
 </html>
