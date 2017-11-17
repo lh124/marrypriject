@@ -208,8 +208,8 @@ public class ShouyeController {
 		classNotice.setName(request.getParameter("title"));
 		classNotice.setType(1);
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-		smartWorkService.save(classNotice);
-		return R.ok().put("path", null);
+		smartWorkService.insert(classNotice);
+		return R.ok().put("id", classNotice.getId());
 	}
 	
 	/**
@@ -226,8 +226,8 @@ public class ShouyeController {
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setTitle(request.getParameter("title"));
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		schoolNoticeService.save(classNotice);
-		return R.ok().put("path", null);
+		schoolNoticeService.insert(classNotice);
+		return R.ok().put("id", classNotice.getId());
 	}
 	
 	/**
@@ -243,8 +243,8 @@ public class ShouyeController {
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setTitle(request.getParameter("title"));
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		classNoticeService.save(classNotice);
-		return R.ok().put("path", null);
+		classNoticeService.insert(classNotice);
+		return R.ok().put("id", classNotice.getId());
 	}
 	
 	
