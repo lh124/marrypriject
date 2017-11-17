@@ -1,52 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-	<meta charset="utf-8">
-    <meta content="yes" name="apple-mobile-web-app-capable"><!-- 这meta的作用就是删除默认的苹果工具栏和菜单栏允许全屏模式浏览-->
-    <meta name="apple-touch-fullscreen" content="yes"><!-- 开启对web app程序的支持  -->
-    <meta content="telephone=no,email=no" name="format-detection"><!-- iPhone会自动把你这个文字加链接样式、并且点击这个数字还会自动拨号！telephone=no就忽略页面中的数字识别为电话号码 ,email=no 忽略识别邮箱 -->
-    <!--base css-->
-    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
-    <title>照片展示</title>
-    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/tombstone/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/tombstone/css/style.css">
-    <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/reset.js"></script>
-    <script type="text/javascript" src='${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js'></script>
-    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
-    <style>
-    	.top{width:100%;height:100%;position:fixed;padding:5%;background:black;top:0;display:none;}
-    	.bigImg{width:90%;height:90%;z-index:10;}
-    	.bigImg img{display:block;width:100%;height:auto;}
-    </style>
+<meta charset="utf-8">
+<title></title>
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
 </head>
-<body onload="init()" style="width: 98%;margin: 0 auto;">
-    <input type="hidden" id="userid" value="${request.getParameter('id')}">
-	<div  id="userimage" style="width: 100%;">
+
+<body ontouchstart class="page-bg" >
+
+	<input type="hidden" id="userid" value="${request.getParameter('id')}">
+	<div class="page-hd" id="photoContainer">
 	</div>
+	
 </body>
-
-
-
-   <script type="text/javascript">
-       function init(){
-           var id = document.getElementById("userid").value;
-           $.ajax({
-				type: "POST",
-			    url: "../geterweima?id="+id,
-			    dataType: "json",
-			    success: function(result){
-					if(result.status == 'ok'){
-						var content = "";
-						$("#userimage").html(content);
-						var length = result.list.img.length;
-						for(var i = 0; i < length; i++){
-							content += '<img class="previewImage"  style="width:100%;display:block;float:left;margin-top:10px;height:auto;" src="'+ result.list.img[i].pic +'"/>';
-						}
-						$("#userimage").html(content);
-					}
-				}
-			});
-       }
-   </script>
+	<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script>
+	<script src="${rc.contextPath}/js/tombstone/weixin/photo_show.js"></script> 
 </html>
+
