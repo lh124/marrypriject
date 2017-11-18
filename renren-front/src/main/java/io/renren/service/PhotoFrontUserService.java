@@ -2,12 +2,10 @@ package io.renren.service;
 
 import io.renren.entity.PhotoFrontUserEntity;
 
-import com.baomidou.mybatisplus.service.IService;
-
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.service.IService;
 
 /**
  * 
