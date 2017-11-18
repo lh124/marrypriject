@@ -82,6 +82,7 @@ function deleteType(id){
 	    success: function(r){
 			if (r.status == 'ok') {
 				getDatas();
+				$('#item').html("");
 				$.alert("删除成功");
 				return true;
 			} else {
