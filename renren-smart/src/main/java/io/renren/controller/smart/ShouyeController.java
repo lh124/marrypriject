@@ -112,7 +112,7 @@ public class ShouyeController {
 	
 	
 	/**
-	 * 查询一个班所有在校的人数
+	 * 查询一个班所有不在校的人数
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/getonschoolstudent")
