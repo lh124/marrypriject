@@ -1,11 +1,13 @@
 package io.renren.controller.smart;
 
 import io.renren.constant.ControllerConstant;
+import io.renren.controller.DataBackupsController;
 import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.IoEntity;
+import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
@@ -41,6 +43,7 @@ import io.renren.weixin.util.CommonUtil;
 import io.renren.weixin.util.Sign;
 import io.renren.weixin.util.SignUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -62,6 +65,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.aliyun.oss.OSSClient;
 
 
 /**
@@ -301,14 +306,32 @@ public class ShouyeController {
 	}
 	
 	/**
-	 * 通过微信服务器id下载语音
+	 * 通过微信服务器id下载图片
 	 */
 	@RequestMapping("/uploadMedio")
 	public R uploadMedio(HttpServletRequest request){
 		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
 		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "E:/web/webroot/wrs/statics/video");
-		System.out.println(path + "----------------------------");
 		return R.ok().put("path", path);
+	}
+	
+	/**
+	 * 通过微信服务器id下载语音
+	 */
+	@RequestMapping("/downMedio")
+	public R downMedio(HttpServletRequest request){
+		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
+		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "E:/web/webroot/wrs/statics/video");
+		DataBackupsController.uploadObject2OSS(new OSSClient("oss-cn-hangzhou.aliyuncs.com","LTAIyY1y6mvPjVip",
+				"zio4dKlkF6424JE3gUxa8vzPyBcAaF"),new File("E:/web/webroot/wrs/statics/video/"+path), "guanyukeji-static", "smart_medio/");
+		StudentEntity student = (StudentEntity) request.getSession().getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		PhotoClassWorkMsgEntity pcm = new PhotoClassWorkMsgEntity();
+		pcm.setGmtCreate(new Date());
+		pcm.setClassId(new Long(student.getClassId()));
+		pcm.setUserId(new Long(student.getId()));
+		pcm.setVoice("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_medio/"+path);
+		photoClassWorkMsgService.save(pcm);
+		return R.ok();
 	}
 	
 	/**
