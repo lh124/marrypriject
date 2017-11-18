@@ -1,5 +1,25 @@
 package io.renren.controller.photo;
 
+import io.renren.annotation.CheckAuth;
+import io.renren.annotation.IgnoreAuth;
+import io.renren.constant.ControllerConstant;
+import io.renren.entity.PhotoFrontUserEntity;
+import io.renren.entity.PhotoFrontUserInfoEntity;
+import io.renren.entity.PhotoTypeEntity;
+import io.renren.entity.PhotoUserClassEntity;
+import io.renren.enums.ClassRoleEnum;
+import io.renren.enums.PhotoTypeEnum;
+import io.renren.model.json.ResponseDTJson;
+import io.renren.service.PhotoFrontUserInfoService;
+import io.renren.service.PhotoFrontUserService;
+import io.renren.service.PhotoTypeService;
+import io.renren.service.PhotoUserClassService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.validator.ValidatorUtils;
+import io.renren.validator.group.AddGroup;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,34 +31,11 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
-import io.renren.annotation.CheckAuth;
-import io.renren.annotation.IgnoreAuth;
-import io.renren.constant.ControllerConstant;
-import io.renren.entity.PhotoFrontUserEntity;
-import io.renren.entity.PhotoFrontUserInfoEntity;
-import io.renren.entity.PhotoTypeEntity;
-import io.renren.entity.PhotoUserClassEntity;
-import io.renren.enums.ClassRoleEnum;
-import io.renren.enums.PhotoTypeEnum;
-import io.renren.enums.TypeEnum;
-import io.renren.model.json.RWrapper;
-import io.renren.model.json.ResponseDTJson;
-import io.renren.service.PhotoFrontUserInfoService;
-import io.renren.service.PhotoFrontUserService;
-import io.renren.service.PhotoTypeService;
-import io.renren.service.PhotoUserClassService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.validator.ValidatorUtils;
-import io.renren.validator.group.AddGroup;
 
 
 /**
@@ -297,10 +294,10 @@ public class PhotoTypeController {
 		
 		if (pte == null) 
 			return R.error("记录不存在").put("status", ResponseDTJson.FAIL);
-		
 		if ( pte.getType() != PhotoTypeEnum.PHOTO_TYPE_PERSONAL.getTypeValue() || 
-				pte.getRelatedId() != frontUser.getId() ) 
+				pte.getRelatedId() != Integer.parseInt(frontUser.getId().toString()) ){
 			return R.error("非法操作，三次非法操作冻结账户！").put("status", ResponseDTJson.FAIL);
+		} 
 		
 		photoTypeService.delete(typeId);
 		
