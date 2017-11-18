@@ -99,7 +99,6 @@ $(function(){
     var $androidActionSheet = $('#showInfo');
 
     $("#showAndroidActionSheet").on('click', function(){
-    	alert("show");
     	$androidActionSheet.attr("class", "weui_dialog weui_dialog_visible");
         //$androidActionSheet.fadeIn(200);
     	$("#mask").attr("class", "weui_mask weui_mask_visible");
