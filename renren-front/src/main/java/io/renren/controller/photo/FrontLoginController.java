@@ -5,7 +5,6 @@ import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.PhotoFrontUserEntity;
 import io.renren.entity.PhotoFunctionModulesEntity;
-import io.renren.entity.PhotoUserFunctionEntity;
 import io.renren.enums.WeChatEnum;
 import io.renren.model.json.ResponseDTJson;
 import io.renren.service.PhotoFrontUserService;
@@ -15,8 +14,6 @@ import io.renren.utils.HttpsClient;
 import io.renren.utils.MD5;
 import io.renren.utils.R;
 import io.renren.utils.Sign;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
 import io.renren.validator.Assert;
 
 import java.awt.image.BufferedImage;
