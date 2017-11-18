@@ -1,5 +1,19 @@
 package io.renren.controller.photo;
 
+import io.renren.annotation.CheckAuth;
+import io.renren.constant.ControllerConstant;
+import io.renren.entity.PhotoFrontUserEntity;
+import io.renren.entity.PhotoUserClassEntity;
+import io.renren.enums.ClassRoleEnum;
+import io.renren.model.json.ResponseDTJson;
+import io.renren.service.PhotoFrontUserService;
+import io.renren.service.PhotoUserClassService;
+import io.renren.utils.MD5;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.validator.Assert;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,22 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-
-import io.renren.annotation.CheckAuth;
-import io.renren.constant.ControllerConstant;
-import io.renren.entity.PhotoFrontUserEntity;
-import io.renren.entity.PhotoUserClassEntity;
-import io.renren.enums.ClassRoleEnum;
-import io.renren.model.json.ResponseDTJson;
-import io.renren.service.PhotoFrontUserService;
-import io.renren.service.PhotoUserClassService;
-import io.renren.utils.MD5;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.RRException;
-import io.renren.validator.Assert;
 
 
 /**
