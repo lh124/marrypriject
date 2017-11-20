@@ -17,7 +17,6 @@ import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
-import io.renren.service.smart.CoreService;
 import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
@@ -30,7 +29,6 @@ import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.util.OssUploadUtil;
-import io.renren.utils.HttpsClient;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
@@ -109,22 +107,6 @@ public class AppInterfaceController {
 	
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request){
-		String uri = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx948285e688ee8d66&redirect_uri=http%3a%2f%2f192.168.1.107%3a8080%2fwrs%2fsmart%2findex.html&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
-		StringBuffer str = new StringBuffer("https://api.weixin.qq.com/sns/oauth2/access_token");
-		str.append("?");
-        str.append("appid=wx948285e688ee8d66");
-        str.append("&secret=5c6f611bf5db5df293ead71e802a4896");
-        str.append("&code="+uri );
-        str.append("&grant_type=authorization_code");
-		 try {
-			String back = HttpsClient.httpsGet(str.toString());
-			System.out.println("-----------" + back);
-			JSONObject json = JSONObject.fromObject(back);
-	        String openid = json.containsKey("openid") ? json.getString("openid") : null;
-	        System.out.println(openid + "----------------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		String key = request.getParameter("key").replace("&quot;", "\"");
 		JSONObject json = JSONObject.fromObject(key);//用户登录
 		String type = json.getString("type");
