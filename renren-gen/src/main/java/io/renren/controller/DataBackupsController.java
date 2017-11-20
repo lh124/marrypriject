@@ -117,25 +117,6 @@ public class DataBackupsController {
 	@RequestMapping("/tablelist")
     public R exportDatabaseTool()  {  
 		 try {
-		     Runnable runnable = new Runnable() {  
-			     public void run() {  
-			          while (true) {  
-			              try {
-			            	  String date = new SimpleDateFormat("HH").format(new Date());
-			            	  if(date.equals("00")){
-			            		  getdata();
-			            		  Thread.sleep(1000 * 60 * 60 * 24);
-			            	  }else{
-			            		  Thread.sleep(1000);
-			            	  }
-			              } catch (InterruptedException e) {  
-			                  e.printStackTrace();  
-			              }  
-			          }  
-			     }  
-		     };  
-		     Thread thread = new Thread(runnable);  
-		     thread.start();  
 			return getdata();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
