@@ -41,7 +41,11 @@ public class SysRemarksController {
 	@RequiresPermissions("sysremarks:list")
 	public R list(@RequestParam Map<String, Object> params){
 		SysUserEntity user = (SysUserEntity) ShiroUtil.getUserEntity();
-		params.put("userId", user.getUserId());
+		if(user.getUserId() ==1){
+			params.put("userId", null);
+		}else{
+			params.put("userId", user.getUserId());
+		}
 		//查询列表数据
         Query query = new Query(params);
 		List<SysRemarksEntity> sysRemarksList = sysRemarksService.queryList(query);
