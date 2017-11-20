@@ -149,5 +149,18 @@
 		<servlet-name>oauthServlet</servlet-name>
 		<url-pattern>/oauthServlet</url-pattern>
 	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>dataServlet</servlet-name>
+		<servlet-class>
+			io.renren.servlet.DataServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dataServlet</servlet-name>
+		<url-pattern>/dataServlet</url-pattern>
+	</servlet-mapping>
     
 </web-app>
