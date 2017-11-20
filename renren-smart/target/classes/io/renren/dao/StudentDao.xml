@@ -5,14 +5,14 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,student_code as studentCode ,student_no as studentNo ,
+		id as id ,student_code as studentCode ,student_no as studentNo ,user_type as type,
 		student_name as studentName ,sex as sex ,student_type as studentType ,
 		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,
 		longitude, latitude		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,student_code ,student_no ,student_name ,sex ,student_type ,pic ,class_id ,passwordd , open_id,
+		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,pic ,class_id ,passwordd , open_id,
 		longitude, latitude	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
@@ -28,13 +28,14 @@
 		        <result property="passwordd" column="passwordd"/>
 		        <result property="openId" column="open_id"/>
 		        <result property="longitude" column="longitude"/>
+		        <result property="userType" column="user_type"/>
 		        <result property="latitude" column="latitude"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEntity">
 		select <include refid="allColumns"></include> from student where id = #{value}
 	</select>
-
+	
 	<select id="queryList" resultType="io.renren.entity.smart.StudentEntity">
 		select top ${limit} <include refid="allColumns"></include>
 		from student
@@ -59,9 +60,29 @@
 				</otherwise>
 		</choose>
 	</select>
+
+	<select id="queryListtongji" resultType="io.renren.entity.smart.StudentEntity">
+		<choose>
+		      <when test="classId != null">
+		           SELECT (select  COUNT(*) from student where class_id = ${classId} and open_id != '') as student_code,
+                       (select  COUNT(*) from student where class_id = ${classId} ) as student_no  from student where id = (select max(id) from student)
+		      </when>
+			  <otherwise>
+		           select id,class_name as student_name from class where school_id = ${schoolId} order by id ASC
+			  </otherwise>
+		</choose>
+	</select>
+	
+	<select id="queryListtongjiimgxf" resultType="io.renren.entity.smart.StudentEntity">
+		select * from student where ${classId}
+	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from student 
+		select count(*) from student where class_id=${classId}
+	</select>
+	
+	<select id="queryTotal" resultType="int">
+		select count(*) from student where class_id=${classId}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEntity">
@@ -77,6 +98,7 @@
 			passwordd,
 			open_id,
 			latitude,
+			user_type,
 			longitude
 		)
 		values
@@ -91,6 +113,7 @@
 			#{passwordd},
 			#{openId},
 			#{latitude},
+			#{userType},
 			#{longitude}
 			
 		)
@@ -105,6 +128,7 @@
 		<set>
 			<if test="studentCode != null">student_code = #{studentCode}, </if>
 			<if test="studentNo != null">student_no = #{studentNo}, </if>
+			<if test="userType != null">user_type = #{userType}, </if>
 			<if test="studentName != null">student_name = #{studentName}, </if>
 			<if test="sex != null">sex = #{sex}, </if>
 			<if test="studentType != null">student_type = #{studentType}, </if>

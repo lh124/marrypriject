@@ -16,10 +16,14 @@
 		        <result property="id" column="id"/>
 		        <result property="schoolName" column="school_name"/>
 		        <result property="pw" column="pw"/>
-	    </resultMap>
+	    </resultMap>  
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SchoolEntity">
 		select <include refid="allColumns"></include> from school where id = #{value}
+	</select>
+	
+	<select id="queryObjectName" resultType="io.renren.entity.smart.SchoolEntity">
+		select <include refid="allColumns"></include> from school where school_name = #{schoolName}
 	</select>
 
 
@@ -48,7 +52,6 @@
 				</otherwise>
 		</choose>
 	</select>
-	
 	
  	<select id="queryTotal" resultType="int">
 		select count(*) from school 
