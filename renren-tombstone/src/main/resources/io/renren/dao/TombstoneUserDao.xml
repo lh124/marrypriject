@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.tombstone.TombstoneUserDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,password as password ,nickname as nickname ,shipin as shipin,
+		pic as pic ,createtime as createtime, content as content,experience as experience,openid as openid		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,password ,nickname ,pic ,createtime ,content,experience,openid,shipin		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.tombstone.TombstoneUserEntity" id="tombstoneUserMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="password" column="password"/>
+		        <result property="nickname" column="nickname"/>
+		        <result property="pic" column="pic"/>
+		        <result property="content" column="content"/>
+		        <result property="openid" column="openid"/>
+		        <result property="experience" column="experience"/>
+		        <result property="shipin" column="shipin"/>
+		        <result property="createtime" column="createtime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.tombstone.TombstoneUserEntity">
+		select <include refid="allColumns"></include> from tombstone_user where id = #{value}
+	</select>
+	
+	<select id="queryObjectName" resultType="io.renren.entity.tombstone.TombstoneUserEntity">
+		select <include refid="allColumns"></include> from tombstone_user where name = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.tombstone.TombstoneUserEntity">
+		select <include refid="allColumns"></include> from tombstone_user
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tombstone_user 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.tombstone.TombstoneUserEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tombstone_user
+		(
+			`name`, 
+			`password`, 
+			`nickname`, 
+			`pic`, 
+			`createtime`
+		)
+		values
+		(
+			#{name}, 
+			#{password}, 
+			#{nickname}, 
+			#{pic}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.tombstone.TombstoneUserEntity">
+		update tombstone_user 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="nickname != null">`nickname` = #{nickname}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="openid != null">`openid` = #{openid}, </if>
+			<if test="experience != null">`experience` = #{experience}, </if>
+			<if test="shipin != null">`shipin` = #{shipin}, </if>
+			<if test="createtime != null">`createtime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from tombstone_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from tombstone_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
