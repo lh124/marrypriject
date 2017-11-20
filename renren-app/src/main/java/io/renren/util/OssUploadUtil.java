@@ -39,8 +39,6 @@ public class OssUploadUtil {
 		/**
 		 * 上传图片至OSS
 		 * @param ossClient  oss连接
-		 * @param file 上传文件（文件全路径如：D:\\image\\cake.jpg）
-		 * @param bucketName  存储空间
 		 * @param folder 模拟文件夹名 如"qj_nanjing/"
 		 * @return String 返回的唯一MD5数字签名
 		 * */
