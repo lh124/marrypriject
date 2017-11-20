@@ -1,17 +1,16 @@
 package io.renren.api;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import io.renren.Dto.RequestJson;
 import io.renren.annotation.IgnoreAuth;
 import io.renren.annotation.LoginUser;
 import io.renren.entity.UserEntity;
 import io.renren.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 

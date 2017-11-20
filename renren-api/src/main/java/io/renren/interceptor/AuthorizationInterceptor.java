@@ -1,12 +1,13 @@
 package io.renren.interceptor;
 
-import java.io.BufferedReader;
-
 import io.renren.annotation.IgnoreAuth;
-import io.renren.api.utils.BodyReaderHttpServletRequestWrapper;
 import io.renren.entity.TokenEntity;
 import io.renren.service.TokenService;
 import io.renren.utils.RRException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
@@ -15,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 权限(Token)验证
@@ -32,7 +30,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
     public static final String LOGIN_USER_KEY = "LOGIN_USER_KEY";
 
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         
     	/*BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
