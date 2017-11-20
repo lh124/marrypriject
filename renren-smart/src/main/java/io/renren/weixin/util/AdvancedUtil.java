@@ -1004,7 +1004,8 @@ public class AdvancedUtil {
 
 	public static void main(String[] args) {
 		// 获取接口访问凭证
-		String accessToken = CommonUtil.getToken("wx137b6eaa28b917e5", "af0d93dff20726be2a2dd042d62a8fb0").getAccessToken();
+		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
+		getSNSUserInfo(accessToken, "wx948285e688ee8d66");
 		// 合其家公众号
 		// String accessToken = CommonUtil.getToken("wxb714c7b2b1fff48c", "10fd5a921bc151ab8dafb6228de4511a").getAccessToken();
 		List<String> list = getWeixinServerIPList(accessToken);
