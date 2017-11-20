@@ -16,6 +16,8 @@
 		<module>renren-front</module> <!-- 学生相册模块 -->
 		<module>renren-smart</module> <!-- 智能校服后台模块 -->
 		<module>renren-public</module> <!-- 智能校服后台模块 -->
+		<module>renren-tombstone</module><!-- 墓碑二维码 -->
+		<module>renren-app</module><!-- app接口模块 -->
 	</modules>
 
 	<properties>
