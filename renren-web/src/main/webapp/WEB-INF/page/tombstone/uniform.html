@@ -79,7 +79,11 @@
 					    $("#personqq").attr("href","tel:"+result.businessCard.personqq); 
 					    $("#title").html(result.businessCard.name + "个人名片");
 					    $("#bodaphoto").attr("href","tel:"+result.businessCard.phone); 
-					    $("#weixinpic").attr("src",result.businessCard.weixinpic);
+					    if(result.businessCard.weixinpic == null || result.businessCard.weixinpic == ""){
+					        $("#weixinpic").attr("src","http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png");
+					    }else{
+					        $("#weixinpic").attr("src",result.businessCard.weixinpic);
+					    }
 					}
 				}
 			}
