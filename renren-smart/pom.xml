@@ -20,5 +20,10 @@
 			<artifactId>renren-gen</artifactId>
 			<version>${renren-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.renren</groupId>
+			<artifactId>renren-shiro</artifactId>
+			<version>${renren-version}</version>
+		</dependency>
 	</dependencies>
 </project>
