@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.FreshmanGuideDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,title as title ,freshmanPic as freshmanpic ,schoolId,content as content ,orderNo as orderno 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,title ,freshmanPic ,content ,orderNo,schoolId 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.FreshmanGuideEntity" id="freshmanGuideMap">
+		        <result property="id" column="id"/>
+		        <result property="title" column="title"/>
+		        <result property="freshmanpic" column="freshmanPic"/>
+		        <result property="content" column="content"/>
+		        <result property="orderno" column="orderNo"/>
+		        <result property="schoolId" column="schoolId"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.FreshmanGuideEntity">
+		select <include refid="allColumns"></include> from freshman_guide where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.FreshmanGuideEntity">
+		select <include refid="allColumns"></include> from freshman_guide where schoolId = #{schoolId}
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by orderno asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from freshman_guide 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.FreshmanGuideEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into freshman_guide
+		(
+			`title`, 
+			`freshmanPic`, 
+			`content`, 
+			`schoolId`, 
+			`orderNo`
+		)
+		values
+		(
+			#{title}, 
+			#{freshmanpic}, 
+			#{content},
+			#{schoolId}, 
+			#{orderno}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.FreshmanGuideEntity">
+		update freshman_guide 
+		<set>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="freshmanpic != null">`freshmanPic` = #{freshmanpic}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="orderno != null">`orderNo` = #{orderno}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from freshman_guide where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from freshman_guide where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

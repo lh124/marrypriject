@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SmartCoursewareDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,pic as pic ,type,createTime as createtime ,classid as classid 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,pic ,createTime ,classid ,type		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SmartCoursewareEntity" id="smartCoursewareMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="pic" column="pic"/>
+		        <result property="type" column="type"/>
+		        <result property="createtime" column="createTime"/>
+		        <result property="classid" column="classid"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SmartCoursewareEntity">
+		select <include refid="allColumns"></include> from smart_courseware where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SmartCoursewareEntity">
+		select <include refid="allColumns"></include> from smart_courseware where classid = #{classid}
+        <choose>
+            <when test="type != null">
+                and type = 1
+            </when>
+        </choose>
+        <choose>
+            <when test="name != null">
+                and name = #{name}
+            </when>
+        </choose>
+		<if test="offset != null and limit != null">
+			order by id desc limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_courseware where classid =#{classid}
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SmartCoursewareEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into smart_courseware
+		(
+			`name`, 
+			`pic`, 
+			`createTime`, 
+			`type`,
+			`classid`
+		)
+		values
+		(
+			#{name}, 
+			#{pic}, 
+			#{createtime}, 
+			#{type},
+			#{classid}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SmartCoursewareEntity">
+		update smart_courseware 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="createtime != null">`createTime` = #{createtime}, </if>
+			<if test="classid != null">`classid` = #{classid}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_courseware where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_courseware where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

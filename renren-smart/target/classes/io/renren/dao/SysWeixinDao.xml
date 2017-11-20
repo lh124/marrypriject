@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SysWeixinDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,appid as appid ,appsecret as appsecret ,origiid,createtime as createtime 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,appid ,appsecret ,createtime,origiid 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SysWeixinEntity" id="sysWeixinMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="appid" column="appid"/>
+		        <result property="origiid" column="origiid"/>
+		        <result property="appsecret" column="appsecret"/>
+		        <result property="createtime" column="createtime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SysWeixinEntity">
+		select <include refid="allColumns"></include> from sys_weixin where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SysWeixinEntity">
+		select <include refid="allColumns"></include> from sys_weixin
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_weixin 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SysWeixinEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_weixin
+		(
+			`name`, 
+			`appid`, 
+			`origiid`, 
+			`appsecret`, 
+			`createtime`
+		)
+		values
+		(
+			#{name}, 
+			#{appid}, 
+			#{origiid}, 
+			#{appsecret}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SysWeixinEntity">
+		update sys_weixin 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="appid != null">`appid` = #{appid}, </if>
+			<if test="appsecret != null">`appsecret` = #{appsecret}, </if>
+			<if test="createtime != null">`createtime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_weixin where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_weixin where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
