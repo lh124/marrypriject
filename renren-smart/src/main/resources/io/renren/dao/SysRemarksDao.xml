@@ -25,13 +25,16 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.SysRemarksEntity">
-		select <include refid="allColumns"></include> from sys_remarks where userId=#{userId}
+		select <include refid="allColumns"></include> from sys_remarks 
+		<if test="userId != null ">
+			where userId=#{userId}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
-                order by ${sidx} ${order}
+                order by solveIf,id desc
             </when>
 			<otherwise>
-                order by id desc
+                order by solveIf,id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
