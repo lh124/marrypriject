@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.tombstone.PicDao">
+
+	<select id="queryList" resultType="io.renren.entity.tombstone.PicEntity">
+		select name as pic,image_id as id  from image where IMAGE_ID in(select id from mubei) and position = 2
+	</select>
+
+</mapper>

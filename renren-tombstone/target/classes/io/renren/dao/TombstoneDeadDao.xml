@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.tombstone.TombstoneDeadDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,image as image ,birthdayanddeath as birthdayanddeath ,content as content ,
+		userid as userid ,parentid as parentid ,relation as relation ,createtime as createtime ,
+		usertype as usertype,children as children,relationtype as relationtype,account as account		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,image ,birthdayanddeath ,content ,userid ,parentid ,relation  ,createtime ,usertype,children,relationtype,account		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.tombstone.TombstoneDeadEntity" id="tombstoneDeadMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="image" column="image"/>
+		        <result property="birthdayanddeath" column="birthdayanddeath"/>
+		        <result property="content" column="content"/>
+		        <result property="userid" column="userid"/>
+		        <result property="parentid" column="parentid"/>
+		        <result property="relation" column="relation"/>
+		        <result property="usertype" column="usertype"/>
+		        <result property="relationtype" column="relationtype"/>
+		        <result property="account" column="account"/>
+		        <result property="createtime" column="createtime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.tombstone.TombstoneDeadEntity">
+		select <include refid="allColumns"></include> from tombstone_dead where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.tombstone.TombstoneDeadEntity">
+		select <include refid="allColumns"></include> from tombstone_dead 
+        where ${userid}
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tombstone_dead 
+		where ${userid}
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.tombstone.TombstoneDeadEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tombstone_dead
+		(
+			`name`, 
+			`image`, 
+			`birthdayanddeath`, 
+			`content`, 
+			`userid`, 
+			`parentid`, 
+			`usertype`,
+			`relation`, 
+			`relationtype`, 
+			`account`,
+			`createtime`
+		)
+		values
+		(
+			#{name}, 
+			#{image}, 
+			#{birthdayanddeath}, 
+			#{content}, 
+			#{userid}, 
+			#{parentid}, 
+			#{usertype},
+			#{relation}, 
+			#{relationtype}, 
+			#{account}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.tombstone.TombstoneDeadEntity">
+		update tombstone_dead 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="image != null">`image` = #{image}, </if>
+			<if test="birthdayanddeath != null">`birthdayanddeath` = #{birthdayanddeath}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="userid != null">`userid` = #{userid}, </if>
+			<if test="parentid != null">`parentid` = #{parentid}, </if>
+			<if test="relation != null">`relation` = #{relation}, </if>
+			<if test="usertype != null">`usertype` = #{usertype}, </if>
+			<if test="relationtype != null">`relationtype` = #{relationtype}, </if>
+			<if test="account != null">`account` = #{account}, </if>
+			<if test="createtime != null">`createtime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from tombstone_dead where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from tombstone_dead where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

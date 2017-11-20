@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.tombstone.BusinessCardDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,pic as pic ,position as position ,phone as phone ,
+		personqq as personqq,weixinpic as weixinpic,ordercard as ordercard ,positionenglish as positionenglish		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,pic ,position ,phone ,personqq,weixinpic,ordercard,positionenglish	
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.tombstone.BusinessCardEntity" id="businessCardMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="pic" column="pic"/>
+		        <result property="position" column="position"/>
+		        <result property="phone" column="phone"/>
+		        <result property="personqq" column="personqq"/>
+		        <result property="weixinpic" column="weixinpic"/>
+		        <result property="ordercard" column="ordercard"/>
+		        <result property="positionenglish" column="positionenglish"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.tombstone.BusinessCardEntity">
+		select <include refid="allColumns"></include> from business_card where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.tombstone.BusinessCardEntity">
+		select <include refid="allColumns"></include> from business_card
+        
+           order by ordercard asc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from business_card 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.tombstone.BusinessCardEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into business_card
+		(
+			`name`, 
+			`pic`, 
+			`position`,
+			`phone`, 
+			`positionenglish`,
+			`ordercard`,
+			`personqq`
+		)
+		values
+		(
+			#{name}, 
+			#{pic}, 
+			#{position}, 
+			#{phone}, 
+			#{positionenglish}, 
+			#{ordercard}, 
+			#{personqq}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.tombstone.BusinessCardEntity">
+		update business_card 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="ordercard != null">`ordercard` = #{ordercard}, </if>
+			<if test="positionenglish != null">`positionenglish` = #{positionenglish}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="position != null">`position` = #{position}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="personqq != null">`personqq` = #{personqq},</if>
+			<if test="weixinpic != null">`weixinpic` = #{weixinpic}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from business_card where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from business_card where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
