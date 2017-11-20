@@ -10,7 +10,13 @@ $(function () {
 			},
 			{ label: '姓名', name: 'name', index: 'name', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
-				 return '<img src="'+r+'" style="width:100px;height:100px;" />';
+				var pic = "";
+				if (r == null || r == "") {
+			        pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png";
+			    } else {
+			        pic = r;
+			    }
+				 return '<img src="'+pic+'" style="width:100px;height:100px;" />';
 			} }, 			
 			{ label: '职务(中文)', name: 'position', index: 'position', width: 80 }, 
 			{ label: '职务(英文)', name: 'positionenglish', index: 'positionenglish', width: 80 },
