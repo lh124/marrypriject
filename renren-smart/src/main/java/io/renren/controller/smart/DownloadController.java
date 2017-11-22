@@ -35,7 +35,11 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
 @RestController
 @RequestMapping("downloadheadimg")
 public class DownloadController {
@@ -87,8 +91,8 @@ public class DownloadController {
 	private static String writeZip(String strs) throws IOException {
         String[] files = strs.split(",");
         String filename = new SimpleDateFormat("yyyyHHddhhmmsss").format(new Date())+".zip";
-        String path = "http://wrs.gykjewm.com/statics/zip/"+filename;
-        OutputStream os = new BufferedOutputStream( new FileOutputStream( "E:/web/webroot/wrs/statics/zip/"+filename) );
+        String path = "http://192.168.1.107:8080/wrs/statics/zip/"+filename;
+        OutputStream os = new BufferedOutputStream( new FileOutputStream( "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/zip/"+filename) );
         ZipOutputStream zos = new ZipOutputStream( os );
         byte[] buf = new byte[8192];
         int len;
@@ -218,5 +222,50 @@ public class DownloadController {
         os.close();    
         is.close();    
     }  
+    
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+	public void downLoadFile(HttpServletRequest request,HttpServletResponse response){
+		try {
+			String fileid = request.getParameter("fileid").toString();//从前台获取当前下载文件的id值（每个上传到阿里云的文件都会有一个独一无二的id值）
+			String filename ="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/photo/1465293523207.jpg";//从前台获取要下载文件的文件名
+			int i=filename.lastIndexOf("\\");
+			filename=filename.substring(i+1);
+			String aliyunId = "LTAIyY1y6mvPjVip";
+			String aliyunSecret = "zio4dKlkF6424JE3gUxa8vzPyBcAaF";
+			String ossEndpoint =  "http://oss-cn-hangzhou.aliyuncs.com";
+			OSSClient ossClient  = new OSSClient(ossEndpoint, aliyunId, aliyunSecret);
+            //获取fileid对应的阿里云上的文件对象
+			OSSObject ossObject = ossClient.getObject("guanyukeji-static", fileid);//bucketName需要自己设置
+			
+            // 读去Object内容  返回
+			BufferedInputStream in=new BufferedInputStream(ossObject.getObjectContent());
+			//System.out.println(ossObject.getObjectContent().toString());
+			
+			
+			BufferedOutputStream out=new BufferedOutputStream(response.getOutputStream());
+			//通知浏览器以附件形式下载			
+			response.setHeader("Content-Disposition","attachment;filename="+URLEncoder.encode(filename,"utf-8"));
+			//BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(new File("f:\\a.txt")));
+			
+			byte[] car=new byte[1024];
+			int L=0;
+			while((L=in.read(car))!=-1){
+				out.write(car, 0,L);
+				
+			}
+			if(out!=null){
+				out.flush();
+				out.close();
+			}
+			if(in!=null){
+				in.close();
+			}
+			
+			ossClient.shutdown();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
