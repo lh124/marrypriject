@@ -22,6 +22,10 @@ public interface IoService extends IService<IoEntity>{
 	
 	List<IoEntity> queryList(Map<String, Object> map);
 	
+	List<IoEntity> queryListtongji(Map<String, Object> map);
+	
+	List<IoEntity> queryListtongjiimgxf(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(IoEntity io);
