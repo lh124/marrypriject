@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.WeixinFunctionDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name,pic as pic 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name,pic 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.WeixinFunctionEntity" id="weixinFunctionMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="pic" column="pic"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.WeixinFunctionEntity">
+		select <include refid="allColumns"></include> from weixin_function where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.WeixinFunctionEntity">
+		select <include refid="allColumns"></include> from weixin_function
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from weixin_function 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.WeixinFunctionEntity">
+		insert into weixin_function
+		(
+			`id`, 
+			`pic`, 
+			`name`
+		)
+		values
+		(
+			#{id}, 
+			#{pic},
+			#{name}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.WeixinFunctionEntity">
+		update weixin_function 
+		<set>
+		    <if test="pic != null">`pic` = #{pic}, </if>
+			<if test="name != null">`name` = #{name}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from weixin_function where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from weixin_function where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
