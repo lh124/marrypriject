@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+#parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			#if($shiro.hasPermission("weixinfunction:save"))
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			#end
+			#if($shiro.hasPermission("weixinfunction:update"))
+			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			#end
+			#if($shiro.hasPermission("weixinfunction:delete"))
+			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			#end
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+											<div class="form-group">
+			   	<div class="col-sm-2 control-label">功能名称</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="weixinFunction.name" placeholder="功能名称"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">图标</div>
+			   	<input type="hidden" id="myUserId" v-model="weixinFunction.id"/>
+			   	<div class="col-sm-10">
+			   	  <input type="file" dataType="1" id="fileimg">
+			    </div>
+			</div>
+							<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+			<input type="hidden" id="selectfiles">
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/uniform/weixinfunction.js?_${date.systemTime}"></script>
+<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/js/uniform/upload2.js?_${date.systemTime}"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
+<script type="text/javascript">
+    function myFormDateF(obj){
+		var mydete = new FormData();
+		mydete.append("type",27);
+		mydete.append("type2",1);
+		mydete.append("id", $("#myUserId").val());
+		return mydete;
+	}
+</script>
+</body>
+</html>
