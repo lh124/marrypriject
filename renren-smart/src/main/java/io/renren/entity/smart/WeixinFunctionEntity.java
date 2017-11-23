@@ -29,8 +29,18 @@ public class WeixinFunctionEntity implements Serializable {
 	//功能名称
 	@TableField(value="pic")
 	private String pic;
+	
+	//PC端路径
+	@TableField(value="pcurl")
+	private String pcurl;
 			
 
+	public String getPcurl() {
+		return pcurl;
+	}
+	public void setPcurl(String pcurl) {
+		this.pcurl = pcurl;
+	}
 	public String getPic() {
 		return pic;
 	}
