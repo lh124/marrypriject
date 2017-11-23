@@ -86,46 +86,13 @@ public class SmartDataInpution {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("schoolId", schoolEntity.getId());
-		map.put("order", "");
-		map.put("sidx", "");
-		map.put("begin", 0);
-		map.put("limit", 100);
-		List<ClassEntity> list = classService.queryList(map);
-		obj = R.ok().put(DATA, getonschoolstudent(list));
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("schoolId", schoolEntity.getId());
+		map.put("total", ioService.queryListtongjiimgxf(m).size());
+		map.put("zxtotal", ioService.queryListtongji(m).size());
+		obj = R.ok().put(DATA, map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		return obj;
-	}
-	
-	public Map<String, Object> getonschoolstudent(List<ClassEntity> list){
-		Map<String, Object> map = new HashMap<String, Object>();
-		Integer i = 0,j=0;
-		try {
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-				ClassEntity classEntity = (ClassEntity) iterator.next();
-				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("classId", classEntity.getId());
-				m.put("begin", 0);
-				m.put("limit", 200);
-				List<StudentEntity> list1 = studentService.queryList(m);//通过班级id查询班上所有学生
-				for (Iterator iterator1 = list1.iterator(); iterator1.hasNext();) {
-					StudentEntity studentEntity = (StudentEntity) iterator1.next();
-					j++;
-					IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
-					if(ioentity != null){
-						if(ioentity.getIoType().equals("进")){
-							i++;
-						}
-					}
-				}
-			}
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-			map.put("total", j);
-			map.put("zxtotal", i);
-		} catch (Exception e) {
-		}
-		return map;
 	}
 	
 	public Object saveepcio(JSONObject json){
