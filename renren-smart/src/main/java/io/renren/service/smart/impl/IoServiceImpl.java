@@ -57,5 +57,15 @@ public class IoServiceImpl extends ServiceImpl<IoDao, IoEntity>  implements IoSe
 	public IoEntity queryObjectName(Integer id) {
 		return ioDao.queryObjectName(id);
 	}
+
+	@Override
+	public List<IoEntity> queryListtongji(Map<String, Object> map) {
+		return ioDao.queryListtongji(map);
+	}
+	
+	@Override
+	public List<IoEntity> queryListtongjiimgxf(Map<String, Object> map) {
+		return ioDao.queryListtongjiimgxf(map);
+	}
 	
 }
