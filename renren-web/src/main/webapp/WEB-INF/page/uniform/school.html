@@ -36,6 +36,9 @@
 			#if($shiro.hasPermission("student_head_download"))
 			<a class="btn btn-primary" @click="downloadheadimg"><i class="fa fa-plus"></i>&nbsp;学生头像下载</a>
 			#end
+			#if($shiro.hasPermission("weixinfunctionimg:list"))
+			<a class="btn btn-primary" @click="weixinfunctionimg"><i class="fa fa-plus"></i>&nbsp;功能图标</a>
+			#end
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
