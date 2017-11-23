@@ -15,6 +15,8 @@ import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
+import io.renren.entity.smart.WeixinFunctionEntity;
+import io.renren.entity.smart.WeixinFunctionImgEntity;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
@@ -30,6 +32,8 @@ import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.SysWeixinMsgService;
+import io.renren.service.smart.WeixinFunctionImgService;
+import io.renren.service.smart.WeixinFunctionService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -109,6 +113,42 @@ public class ShouyeController {
 	private SysWeixinMsgService sysWeixinMsgService;
 	@Autowired
 	private IoService ioService;
+	
+	@Autowired
+	private WeixinFunctionImgService weixinFunctionImgService;
+	@Autowired
+	private WeixinFunctionService weixinFunctionService;
+	
+	/**
+	 * 查询首页的九宫格
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getweixinfunctionimg")
+	public R list(HttpServletRequest request,HttpSession session){
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("sidx", "");
+		params.put("order", "");
+		params.put("page", 1);
+		params.put("limit", 30);
+		params.put("schoolId", classService.queryObject(student.getClassId()).getSchoolId());
+		Query query = new Query(params);
+		List<WeixinFunctionEntity> weixinFunctionList = weixinFunctionService.queryList(query);
+		List<WeixinFunctionEntity> list = new ArrayList<WeixinFunctionEntity>();
+		for (Iterator iterator = weixinFunctionList.iterator(); iterator.hasNext();) {
+			WeixinFunctionEntity weixinFunctionEntity = (WeixinFunctionEntity) iterator.next();
+			params.put("functionId", weixinFunctionEntity.getId());
+			List<WeixinFunctionImgEntity> weixinFunctionImgList = weixinFunctionImgService.queryList(params);
+			if(weixinFunctionImgList.size() > 0){
+				for (Iterator iterator2 = weixinFunctionImgList.iterator(); iterator2.hasNext();) {
+					WeixinFunctionImgEntity weixinFunctionImgEntity = (WeixinFunctionImgEntity) iterator2.next();
+					weixinFunctionEntity.setPic(weixinFunctionImgEntity.getPic());
+				}
+			}
+			list.add(weixinFunctionEntity);
+		}
+		return R.ok().put("list", list);
+	}
 	
 	
 	/**
