@@ -12,6 +12,8 @@ import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
+import io.renren.entity.smart.WeixinFunctionEntity;
+import io.renren.entity.smart.WeixinFunctionImgEntity;
 import io.renren.enums.TypeEnum;
 import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.FreshmanGuideService;
@@ -23,6 +25,8 @@ import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
+import io.renren.service.smart.WeixinFunctionImgService;
+import io.renren.service.smart.WeixinFunctionService;
 import io.renren.utils.OssCallBackUtil;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
@@ -73,6 +77,10 @@ public class CallBackController {
 	private SmartWorkService smartWorkService;
 	@Autowired
 	private SmartCoursewareService smartCoursewareService;
+	@Autowired
+	private WeixinFunctionImgService weixinFunctionImgService;
+	@Autowired
+	private WeixinFunctionService weixinFunctionService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -152,6 +160,11 @@ public class CallBackController {
 						uploadvoideo(jsona);
 						return json;
 					}
+					// 图标上传
+					if (type.equals(TypeEnum.SMART_TUBIAO_PIC.getType())){
+						uploadtubiao(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -165,6 +178,38 @@ public class CallBackController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
+		}
+	}
+	
+	/**
+	 * 语音上传
+	 * @param json
+	 */
+	private void uploadtubiao(JSONObject json){
+		Long id = json.containsKey("id") ? json.getLong("id") : null;
+		Long type2 = json.containsKey("type2") ? json.getLong("type2") : null;
+		if (id != null) {
+			if(type2 != null){
+				if(type2 == 2){
+					WeixinFunctionImgEntity weixinFunctionImgEntity = this.weixinFunctionImgService.selectById(id);
+					if (weixinFunctionImgEntity != null) {
+						weixinFunctionImgEntity.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+						this.weixinFunctionImgService.update(weixinFunctionImgEntity);
+					} else {
+						logger.error("图标回掉失败");
+						logger.error(json.toString());
+					}
+				}else if(type2 == 1){
+					WeixinFunctionEntity  weixinFunctionEntity = this.weixinFunctionService.selectById(id);
+					if(weixinFunctionEntity != null){
+						weixinFunctionEntity.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+						this.weixinFunctionService.update(weixinFunctionEntity);
+					} else {
+						logger.error("图标回掉失败");
+						logger.error(json.toString());
+					}
+				}
+			}
 		}
 	}
 	
