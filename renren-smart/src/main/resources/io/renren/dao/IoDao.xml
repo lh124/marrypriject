@@ -34,12 +34,12 @@
 	<select id="queryListtongji" resultType="io.renren.entity.smart.IoEntity">
 		select t3.student_id as id from io t3,(
 			select t1.* from student t1,(
-			select id from class where school_id = (select id from school where id = #{schoolId})
+			select id from class where school_id = #{schoolId}
 			) t2 where t1.class_id = t2.id) t4 where t3.student_id = t4.id and t3.io_type='进'
 			and t3.id in(
 			select MAX(t3.id) as id from io t3,(
 			select t1.id from student t1,(
-			select id from class where school_id = (select id from school where id = #{schoolId})
+			select id from class where school_id = #{schoolId}
 			) t2 where t1.class_id = t2.id
 			) t4
 			where t3.student_id = t4.id GROUP BY t3.student_id 
@@ -49,7 +49,7 @@
 	
 	<select id="queryListtongjiimgxf" resultType="io.renren.entity.smart.IoEntity">
 		select t1.id from student t1,(
-			select id from class where school_id = (select id from school where id = #{schoolId})
+			select id from class where school_id = #{schoolId}
 			) t2 where t1.class_id = t2.id
 	</select>
 
