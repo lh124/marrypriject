@@ -30,5 +30,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/chapter-06/WebRoot/WEB-INF/lib/thumbnailator-0.4.6.jar"/>
+	<classpathentry kind="lib" path="/chapter-06/WebRoot/WEB-INF/lib/ant-1.7.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
