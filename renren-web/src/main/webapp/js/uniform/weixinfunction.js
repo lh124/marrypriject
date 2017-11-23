@@ -5,6 +5,7 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '功能名称', name: 'name', index: 'name', width: 80 },
+			{ label: 'PC端路径', name: 'pcurl', index: 'pcurl', width: 80 },
 			{ label: '默认图标', name: 'pic', index: 'pic', width: 80,formatter :function(r){
 				return '<img src="' + r + '" style="width:80px;height:80px;" />';
 			} }
