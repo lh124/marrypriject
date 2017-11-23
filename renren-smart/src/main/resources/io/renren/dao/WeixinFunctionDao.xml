@@ -5,16 +5,17 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name,pic as pic 		
+		id as id ,name as name,pic as pic,pcurl as pcurl 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name,pic 		
+		id ,name,pic ,pcurl		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.WeixinFunctionEntity" id="weixinFunctionMap">
 		        <result property="id" column="id"/>
 		        <result property="name" column="name"/>
+		        <result property="pcurl" column="pcurl"/>
 		        <result property="pic" column="pic"/>
 	    </resultMap>
 
@@ -45,12 +46,14 @@
 		insert into weixin_function
 		(
 			`id`, 
+			`pcurl`, 
 			`pic`, 
 			`name`
 		)
 		values
 		(
 			#{id}, 
+			#{pcurl},
 			#{pic},
 			#{name}
 		)
@@ -59,6 +62,7 @@
 	<update id="update" parameterType="io.renren.entity.smart.WeixinFunctionEntity">
 		update weixin_function 
 		<set>
+		    <if test="pcurl != null">`pcurl` = #{pcurl}, </if>
 		    <if test="pic != null">`pic` = #{pic}, </if>
 			<if test="name != null">`name` = #{name}</if>
 		</set>
