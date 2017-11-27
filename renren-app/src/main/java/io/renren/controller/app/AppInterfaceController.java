@@ -6,13 +6,17 @@ import io.renren.entity.smart.ClassInfoEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.IoEntity;
+import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoExaminationEntity;
+import io.renren.entity.smart.PhotoPicWorkMsgEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
+import io.renren.entity.smart.WeixinFunctionEntity;
+import io.renren.entity.smart.WeixinFunctionImgEntity;
 import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
@@ -21,6 +25,7 @@ import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PhotoExaminationService;
+import io.renren.service.smart.PhotoPicWorkMsgService;
 import io.renren.service.smart.PhotoScoreService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
@@ -28,7 +33,10 @@ import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
+import io.renren.service.smart.WeixinFunctionImgService;
+import io.renren.service.smart.WeixinFunctionService;
 import io.renren.util.OssUploadUtil;
+import io.renren.utils.Query;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
@@ -55,6 +63,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import redis.clients.jedis.Jedis;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
@@ -67,7 +77,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
  */
 @RestController
 @RequestMapping("appInterface")
-@SuppressWarnings("rawtypes")
+@SuppressWarnings("resource")
 public class AppInterfaceController {
 	
 	@Autowired
@@ -101,6 +111,15 @@ public class AppInterfaceController {
 	@Autowired
 	private IoService ioService;
 	
+	@Autowired
+	private WeixinFunctionImgService weixinFunctionImgService;
+	@Autowired
+	private WeixinFunctionService weixinFunctionService;
+	
+	@Autowired
+	private PhotoPicWorkMsgService photoPicWorkMsgService;
+	
+	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
 	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
 	
@@ -117,54 +136,226 @@ public class AppInterfaceController {
 				return R.error("您还没登录了！");
 			}
 		}else{
-			if(tokenService.queryByToken(json.getString("token")) != null){
-				if(type.equals("teacherNotice")){//老师通知
+			if(getToken(json.getString("token"))){
+				if(type.equals("teacherNotice")){
+					//老师通知
 					return teacherNotice(json.getJSONObject("data"));
-				} else if(type.equals("smartWorkList")){//作业
+				} else if(type.equals("smartWorkList")){
+					//作业
 					return smartWord(json.getJSONObject("data"));
-				} else if(type.equals("getClassId")){//班级
+				} else if(type.equals("getClassId")){
+					//班级
 					return getClassId(json.getJSONObject("data"));
-				} else if(type.equals("classInfo")){//班级信息
+				} else if(type.equals("classInfo")){
+					//班级信息
 					return classInfo(json.getJSONObject("data"));
-				} else if(type.equals("smartActivites")){//竞技活动
+				} else if(type.equals("smartActivites")){
+					//竞技活动
 					return smartActivites(json.getJSONObject("data"));
-				} else if(type.equals("schoolNotice")){//学校通知
+				} else if(type.equals("schoolNotice")){
+					//学校通知
 					return schoolNotice(json.getJSONObject("data"));
-				} else if(type.equals("psychological")){//心理咨询
+				} else if(type.equals("psychological")){
+					//心理咨询
 					return psychological(json.getJSONObject("data"));
-				} else if(type.equals("freshmanGuide")){//新生指南
+				} else if(type.equals("freshmanGuide")){
+					//新生指南
 					return freshmanGuide(json.getJSONObject("data"));
-				}else if(type.equals("examinationlist")){//考试成绩列表
+				}else if(type.equals("examinationlist")){
+					//考试成绩列表
 					return examinationlist(json.getJSONObject("data"));
-				}else if(type.equals("examinationdetail")){//考试成绩详情
+				}else if(type.equals("examinationdetail")){
+					//考试成绩详情
 					return examinationdetail(json.getJSONObject("data"));
-				}else if(type.equals("smartCourseware")){//随堂课件
+				}else if(type.equals("smartCourseware")){
+					//随堂课件
 					return smartCourseware(json.getJSONObject("data"));
-				}else if(type.equals("photoPicWorkMsg")){//班内消息
+				}else if(type.equals("photoPicWorkMsg")){
+					//班内消息
 					return photoPicWorkMsg(json.getJSONObject("data"));
-				}else if(type.equals("populationstatistics")){//人数统计
+				}else if(type.equals("populationstatistics")){
+					//人数统计
 					return populationstatistics(json.getJSONObject("data"));
-				}else if(type.equals("ioepclist")){//签到
+				}else if(type.equals("ioepclist")){
+					//签到
 					return ioepclist(json.getJSONObject("data"));
-				}else if(type.equals("updateName")){//修改姓名
+				}else if(type.equals("updateName")){
+					//修改姓名
 					return updateName(json.getJSONObject("data"));
-				}else if(type.equals("updatePassword")){//修改密码
+				}else if(type.equals("updatePassword")){
+					//修改密码
 					return updatePassword(json.getJSONObject("data"));
-				}else if(type.equals("teacherNoticeSave")){//老师通知保存
+				}else if(type.equals("teacherNoticeSave")){
+					//老师通知保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return teacherNoticeSave(json.getJSONObject("data"),multipartResolver,request);
-				}else if(type.equals("smartWorkSave")){//作业保存
+				}else if(type.equals("smartWorkSave")){
+					//作业保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return smartWorkSave(json.getJSONObject("data"),multipartResolver,request);
-				}else if(type.equals("schoolNoticeSave")){//学校通知保存
+					
+				}else if(type.equals("schoolNoticeSave")){
+					//学校通知保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return schoolNoticeSave(json.getJSONObject("data"),multipartResolver,request);
+					
+				}else if(type.equals("updateheadportrait")){
+					//头像修改
+					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+					return updateheadportrait(json.getJSONObject("data"),multipartResolver,request);
+				}else if(type.equals("shouyejiugongge")){
+					//首页九宫格
+					return shouyejiugongge(json.getJSONObject("data"));
+				}else if(type.equals("courseware")){
+					//课件上传
+					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+					return courseware(json.getJSONObject("data"),multipartResolver,request);
+				}else if(type.equals("voicesave")){
+					//语音上传
+					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+					return voicesave(json.getJSONObject("data"),multipartResolver,request);
+				}else if(type.equals("classworkmsgsave")){
+					//发布消息
+					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+					return classworkmsg(json.getJSONObject("data"),multipartResolver,request);
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R classworkmsg(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		PhotoClassWorkMsgEntity pcwme = new PhotoClassWorkMsgEntity();
+		InputStream[] is;
+		try {
+			is = uploadfile(multipartResolver, request);
+			pcwme.setClassId(json.getLong("classId"));
+			pcwme.setUserId(json.getLong("userId"));
+			pcwme.setContent(json.getString("content"));
+			pcwme.setGmtCreate(new Date());
+			pcwme.setStatus(1);
+			photoClassWorkMsgService.insert(pcwme);
+			if(is != null){
+				for (int i = 0; i < is.length; i++) {
+					PhotoPicWorkMsgEntity ppwme = new PhotoPicWorkMsgEntity();
+					ppwme.setGmtCreate(new Date());
+					ppwme.setRelatedId(pcwme.getId());
+					ppwme.setPicType(1);
+					ppwme.setName("smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_msg_pic/"));
+					photoPicWorkMsgService.save(ppwme);
+				}
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return R.ok();
+	}
+	
+	private R voicesave(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		PhotoClassWorkMsgEntity pcwme = new PhotoClassWorkMsgEntity();
+		InputStream[] is;
+		try {
+			is = uploadfile(multipartResolver, request);
+			if(is != null){
+				pcwme.setVoice(FILEPATH+"smart_courseware_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_courseware_pic/"));
+			}
+			pcwme.setClassId(json.getLong("classId"));
+			pcwme.setUserId(json.getLong("userId"));
+			pcwme.setGmtCreate(new Date());
+			pcwme.setStatus(1);
+			photoClassWorkMsgService.save(pcwme);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return R.ok();
+	}
+	
+	private R courseware(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		SmartCoursewareEntity courseware = new SmartCoursewareEntity();
+		InputStream[] is;
+		try {
+			is = uploadfile(multipartResolver, request);
+			if(is != null){
+				courseware.setPic(FILEPATH+"smart_courseware_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_courseware_pic/"));
+			}
+			courseware.setClassid(json.getInt("classId"));
+			courseware.setName(json.getString("title"));
+			courseware.setType(json.getInt("coursewareType"));
+			courseware.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			smartCoursewareService.save(courseware);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return R.ok();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private R shouyejiugongge(JSONObject json){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("sidx", "");
+		params.put("order", "");
+		params.put("page", 1);
+		params.put("limit", 30);
+		params.put("schoolId", json.getString("schoolId"));
+		Query query = new Query(params);
+		List<WeixinFunctionEntity> weixinFunctionList = weixinFunctionService.queryList(query);
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		for (Iterator iterator = weixinFunctionList.iterator(); iterator.hasNext();) {
+			WeixinFunctionEntity weixinFunctionEntity = (WeixinFunctionEntity) iterator.next();
+			params.put("functionId", weixinFunctionEntity.getId());
+			List<WeixinFunctionImgEntity> weixinFunctionImgList = weixinFunctionImgService.queryList(params);
+			if(weixinFunctionImgList.size() > 0){
+				for (Iterator iterator2 = weixinFunctionImgList.iterator(); iterator2.hasNext();) {
+					WeixinFunctionImgEntity weixinFunctionImgEntity = (WeixinFunctionImgEntity) iterator2.next();
+					weixinFunctionEntity.setPic(weixinFunctionImgEntity.getPic());
+				}
+			}
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("name", weixinFunctionEntity.getName());
+			map.put("pic", weixinFunctionEntity.getPic());
+			list.add(map);
+		}
+		return R.ok().put(DATA, list);
+	}
+	
+	private boolean getToken(String token){
+		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
+			TokenEntity tokens = tokenService.queryByToken(token);
+			if(tokens == null){
+				return false;
+			}else{
+				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				jedis.set(tokens.getToken(), tokens.getToken());
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	
+	public R updateheadportrait(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		try {
+			StudentEntity student = new StudentEntity();
+			student.setId(Integer.parseInt(json.getString("userId")));
+			InputStream[] is = uploadfile(multipartResolver, request);
+			if(is != null){
+				student.setPic(FILEPATH+"head_img/"+OssUploadUtil.uploadObject2OSS(is[0], "head_img/"));
+				studentService.update(student);
+				return R.ok().put(DATA, studentService.queryObject(student.getId()));
+			}else{
+				return R.ok().put(DATA, studentService.queryObject(student.getId()));
+			}
+		} catch (Exception e) {
+			return R.error("失败");
+		}
 	}
 	
 	public R schoolNoticeSave(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -258,6 +449,7 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, list);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public R populationstatistics(JSONObject json){
 		Map<String, Object> map = getMap(json);
 		map.put("begin", 0);
@@ -293,6 +485,7 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, photoClassWorkMsgService.queryList(map));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public R smartCourseware(JSONObject json){
 		List<SmartCoursewareEntity> list = null;
 		Map<String, Object> map = getMap(json);
@@ -447,6 +640,7 @@ public class AppInterfaceController {
 	
 	public R login(JSONObject json){
 		StudentEntity student = (StudentEntity)JSONObject.toBean(json.getJSONObject("data"), StudentEntity.class);
+		
 		StudentEntity user = new StudentEntity();
 		user.setStudentNo(student.getStudentNo());
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
@@ -472,6 +666,8 @@ public class AppInterfaceController {
 					token.setExpireTime(new Date());
 					tokenService.update(token);
 				}
+				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				jedis.set(tokening, tokening);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);
@@ -488,7 +684,7 @@ public class AppInterfaceController {
 	}
 	
 	//文件上传
-		public InputStream[] uploadfile(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
+	public InputStream[] uploadfile(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
 			InputStream[] is = null;
 			//判断 request 是否有文件上传,即多部分请求  
 	        if(multipartResolver.isMultipart(request)){
