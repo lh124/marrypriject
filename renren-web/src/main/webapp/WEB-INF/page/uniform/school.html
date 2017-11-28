@@ -39,6 +39,9 @@
 			#if($shiro.hasPermission("weixinfunctionimg:list"))
 			<a class="btn btn-primary" @click="weixinfunctionimg"><i class="fa fa-plus"></i>&nbsp;功能图标</a>
 			#end
+			#if($shiro.hasPermission("smartvideodevice:list"))
+			<a class="btn btn-primary" @click="smartvideodevice"><i class="fa fa-plus"></i>&nbsp;设备管理</a>
+			#end
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
