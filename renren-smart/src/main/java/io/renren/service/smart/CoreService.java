@@ -100,9 +100,12 @@ public class CoreService {
 						}
 					}
 					if(content.equals("") || content == null){
-						content = "1.智能校服的账号为学生在校学（籍）号，不清楚学籍号的可以问一下学校老师哦。"+
-								  "2.账号初始密码均为000000，建议家长登录后及时更改并记住更改后的密码。"+
-								  "3.点击右下角智能校服按钮就可以打开登录界面进行相关操作";
+						content = "尊敬的用户:根据您发送的内容，我们判断您可能需要了解以下问题：\n"+
+								   "1.登录账号是什么？\n"+
+								   "2.账号密码是什么？\n"+
+								   "3.怎么登录？\n"+
+								   "4.了解更多产品信息？\n"+
+								   "请回复相应数字进行查询";
 					}
 					textMessage.setContent(content);
 					respXml = MessageUtil.messageToXml(textMessage);
@@ -120,9 +123,12 @@ public class CoreService {
 						}
 					}
 					if(content.equals("") || content == null){
-						content = "1.智能校服的账号为学生在校学（籍）号，不清楚学籍号的可以问一下学校老师哦。"+
-								  "2.账号初始密码均为000000，建议家长登录后及时更改并记住更改后的密码。"+
-								  "3.点击右下角智能校服按钮就可以打开登录界面进行相关操作";
+						content = "尊敬的用户:根据您发送的内容，我们判断您可能需要了解以下问题：\n"+
+								   "1.登录账号是什么？\n"+
+								   "2.账号密码是什么？\n"+
+								   "3.怎么登录？\n"+
+								   "4.了解更多产品信息？\n"+
+								   "请回复相应数字进行查询";
 					}
 					textMessage.setContent(content);
 					respXml = MessageUtil.messageToXml(textMessage);
