@@ -5,18 +5,19 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name ,password as password ,nickname as nickname ,shipin as shipin,
+		id as id ,name as name ,password as password ,nickname as nickname ,shipin as shipin,bgmusic as bgmusic,
 		pic as pic ,createtime as createtime, content as content,experience as experience,openid as openid		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,password ,nickname ,pic ,createtime ,content,experience,openid,shipin		
+		id ,name ,password ,nickname ,pic ,createtime ,content,experience,openid,shipin,bgmusic		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.tombstone.TombstoneUserEntity" id="tombstoneUserMap">
 		        <result property="id" column="id"/>
 		        <result property="name" column="name"/>
 		        <result property="password" column="password"/>
+		        <result property="bgmusic" column="bgmusic"/>
 		        <result property="nickname" column="nickname"/>
 		        <result property="pic" column="pic"/>
 		        <result property="content" column="content"/>
@@ -83,6 +84,7 @@
 			<if test="openid != null">`openid` = #{openid}, </if>
 			<if test="experience != null">`experience` = #{experience}, </if>
 			<if test="shipin != null">`shipin` = #{shipin}, </if>
+			<if test="bgmusic != null">`bgmusic` = #{bgmusic}, </if>
 			<if test="createtime != null">`createtime` = #{createtime}</if>
 		</set>
 		where id = #{id}
