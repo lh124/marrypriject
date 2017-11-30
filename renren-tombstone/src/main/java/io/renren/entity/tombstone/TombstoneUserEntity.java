@@ -49,6 +49,10 @@ public class TombstoneUserEntity implements Serializable {
 	//视频
 	@TableField(value="shipin")
 	private String shipin;
+	
+	//背景音乐
+    @TableField(value="bgmusic")
+    private String bgmusic;
 			
 	//时间
 	@TableField(value="createtime")
@@ -58,6 +62,12 @@ public class TombstoneUserEntity implements Serializable {
 	private String openid;
 			
 
+	public String getBgmusic() {
+		return bgmusic;
+	}
+	public void setBgmusic(String bgmusic) {
+		this.bgmusic = bgmusic;
+	}
 	public String getShipin() {
 		return shipin;
 	}
