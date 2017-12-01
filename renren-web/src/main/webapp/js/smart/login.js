@@ -97,7 +97,6 @@
 		
 		//  微信登录验证
 		$(function(){
-		
 			var code = GetQueryString("code");
 			if ( code != undefined && code != null && code != "" ) {
 				$.ajax({
