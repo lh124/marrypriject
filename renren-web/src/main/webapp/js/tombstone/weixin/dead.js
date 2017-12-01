@@ -52,6 +52,8 @@ function init(){
 				if(result.list.user.shipin == null || result.list.user.shipin == ""){
 				}else{
 					var filename = result.list.user.shipin;
+					var bgmusic = result.list.user.bgmusic;
+					$('#bgmusic').prop('src',bgmusic);
 					$('#videomp4').prop('src',filename);
 					$('#videowebm').prop('src',filename);
 					$('#videoogv').prop('src',filename);
