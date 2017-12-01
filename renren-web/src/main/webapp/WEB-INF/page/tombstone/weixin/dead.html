@@ -48,7 +48,7 @@
 	</div>
 	<div class="music_con">
 		<audio id="mp" style="visibility:hidden;">
-			<source src="${rc.contextPath}/statics/tombstone/1.mp3">
+			<source src="" id="bgmusic">
 		</audio>
 	</div>
 	<div class="content">
@@ -132,7 +132,7 @@
         <div class="js_dialog" id="iosDialog22" style="display: none;">
             <div class="weui-mask"></div>
             <div class="weui-dialog">
-                <div class="weui-dialog__bd">您还未输入留言信息</div>
+                <div class="weui-dialog__bd">暂无</div>
                 <div class="weui-dialog__ft">
                     <a href="javascript:fadeouts()" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
                 </div>
@@ -151,14 +151,18 @@
 	<script>
 		var key=true;
 		$('.music').on("click",function(){
-			var audio=document.getElementById("mp");
-			if(key){
-				audio.play();
-				key=false;
-			}else{
-				audio.pause();
-				key=true;
-			}
+		    if(document.getElementById("bgmusic").src == null || document.getElementById("bgmusic").src == ""){
+		       $("#iosDialog22").fadeIn(200);
+		    }else{
+		       var audio=document.getElementById("mp");
+				if(key){
+					audio.play();
+					key=false;
+				}else{
+					audio.pause();
+					key=true;
+				}
+		    }
 
 		});
 	</script>
@@ -181,17 +185,22 @@
 		  	loop : true,
 		  };
 		  	$('.video').on('click',function(){
-		  		$('#my-video_html5_api').prop('src',$('#pathfile').val());
-		  		var player = videojs('my-video', options, function onPlayerReady() {
-				  videojs.log('播放器已经准备好了!');
-				  // In this context, `this` is the player that was created by Video.js.<br>  // 注意，这个地方的上下文， `this` 指向的是Video.js的实例对像player
-				  this.play();
-				 
-				  // How about an event listener?<br>  // 如何使用事件监听？
-				  this.on('ended', function() {
-				    alert('播放结束了!');
-				  });
-				});
+		  	    var videomp4src = document.getElementById("videomp4").src;
+		  	    if(videomp4src == null || videomp4src == ""){
+		  	        $("#iosDialog22").fadeIn(200);
+		  	    }else{
+		  	        $('#my-video_html5_api').prop('src',$('#pathfile').val());
+			  		var player = videojs('my-video', options, function onPlayerReady() {
+					  videojs.log('播放器已经准备好了!');
+					  // In this context, `this` is the player that was created by Video.js.<br>  // 注意，这个地方的上下文， `this` 指向的是Video.js的实例对像player
+					  this.play();
+					 
+					  // How about an event listener?<br>  // 如何使用事件监听？
+					  this.on('ended', function() {
+					    alert('播放结束了!');
+					  });
+					});
+		  	    }
 			})
 			//$('.m').show();
 	  		//$('#my-video_html5_api').prop('src',$('#pathfile').val());
