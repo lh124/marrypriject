@@ -11,6 +11,7 @@ public class TombstoneInterceptorUrlUtil {
 				".*/tombstone/savemessage",
 				".*/tombstone/getdeaddata",
 				".*/alter_getTheMubei",
+				".*/index.php",
 				".*/tombstone/uniform.html",
 				".*/tombstone/uniform0.html",
 				".*/tombstone/getbusinessCard",
