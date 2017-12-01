@@ -19,10 +19,11 @@ $(function(){
 	            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>'
 	        },
 	        loadUpFn : function(me){//刷新
+	        	page=1;
 	            $.ajax({
 	                type: 'GET',
 	                url: './io/list',
-	                data: 'page=' + 1 + "&limit=" + limit + "&order=desc&sidx=",
+	                data: 'page=' + page + "&limit=" + limit + "&order=desc&sidx=",
 	                dataType: 'json',
 	                success: function(data){
 	                    var result = '';
@@ -85,7 +86,6 @@ $(function(){
 	                    
 	                },
 	                error: function(xhr, type){
-	                    alert('Ajax error!');
 	                    // 即使加载出错，也得重置
 	                    me.resetload();
 	                }
@@ -176,7 +176,6 @@ $(function(){
                         me.resetload();
 	                },
 	                error: function(xhr, type){
-	                    alert('Ajax error!');
 	                    // 即使加载出错，也得重置
 	                    me.resetload();
 	                }
