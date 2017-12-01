@@ -51,6 +51,7 @@
 				/tombstone/**=anon
 				/appInterface/**=anon
 				/alter_getTheMubei/**=anon
+				/index.php/**=anon
 				/publicModule/**=anon
 				<!-- 兼容以前老系统的 开始 -->
 				/phone/**=anon
