@@ -30,5 +30,18 @@ public class AltergetTheMubeiController {
 			
 		}
 	}
+	
+	@RequestMapping("index.php")
+	public void indexPhp(HttpServletRequest request, HttpServletResponse response ){
+		try {
+			TombstoneUserEntity user = new TombstoneUserEntity();
+			user.setName(request.getParameter("homepage"));
+			EntityWrapper<TombstoneUserEntity> wrapper = new EntityWrapper<TombstoneUserEntity>(user);
+			user = this.tombstoneUserService.selectOne(wrapper);
+			response.sendRedirect("http://wrs.gykjewm.com/tombstone/weixin/dead.html?id="+user.getId());
+		} catch (Exception e) {
+			
+		}
+	}
 
 }
