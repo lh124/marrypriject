@@ -5,6 +5,7 @@ import io.renren.constant.ControllerConstant;
 import io.renren.entity.tombstone.BusinessCardEntity;
 import io.renren.entity.tombstone.LeavingMessageEntity;
 import io.renren.entity.tombstone.Obj;
+import io.renren.entity.tombstone.PicEntity;
 import io.renren.entity.tombstone.TombstoneDeadEntity;
 import io.renren.entity.tombstone.TombstoneUserEntity;
 import io.renren.model.json.ResponseDTJson;
@@ -78,6 +79,15 @@ public class TombstoneLoginController{
 	 */
 	@RequestMapping("/getallbusinessCard")
 	public R getallbusinessCard(HttpServletRequest request){
+		List<PicEntity> piclist = picService.queryList(null);
+		for (Iterator iterator = piclist.iterator(); iterator.hasNext();) {
+			PicEntity picEntity = (PicEntity) iterator.next();
+			TombstoneUserEntity user = new TombstoneUserEntity();
+			user.setId(picEntity.getId());
+//			user.setShipin("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+picEntity.getPic());
+			user.setBgmusic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+picEntity.getPic());
+			tombstoneUserService.update(user);
+		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<BusinessCardEntity> list = businessCardService.queryList(map);
 		return R.ok().put("list", list);
