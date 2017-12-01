@@ -4,7 +4,7 @@
 <mapper namespace="io.renren.dao.tombstone.PicDao">
 
 	<select id="queryList" resultType="io.renren.entity.tombstone.PicEntity">
-		select name as pic,image_id as id  from image where IMAGE_ID in(select id from mubei) and position = 2
+		select name as pic,image_id as id  from image where IMAGE_ID in(select id from mubei) and position = 'music'
 	</select>
 
 </mapper>
