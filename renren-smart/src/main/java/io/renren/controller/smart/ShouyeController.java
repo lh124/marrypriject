@@ -170,6 +170,7 @@ public class ShouyeController {
 			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 				StudentEntity studentEntity = (StudentEntity) iterator.next();
 				IoEntity ioentity = ioService.queryObjectName(studentEntity.getId());//通过学生id查询所有出入校记录
+				System.out.println(ioentity);
 				if(ioentity != null){
 					if(ioentity.getIoType().equals("进")){
 //						list1.add(studentEntity.getStudentName());
@@ -412,10 +413,23 @@ public class ShouyeController {
 		Query query = new Query(params);
 		List<ClassInfoEntity> classInfoList = classInfoService.queryList(query);
 		int total = classInfoService.queryTotal(query);
-		PageUtils pageUtil = new PageUtils(classInfoList, total, query.getLimit(), query.getPage());
+		
+		List<ClassInfoEntity> list = new ArrayList<ClassInfoEntity>();
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		for (Iterator iterator = classInfoList.iterator(); iterator.hasNext();) {
+			ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
+			StudentEntity user = studentService.queryObject(classInfoEntity.getUserId());
+			classInfoEntity.setName(user.getStudentName());
+			list.add(classInfoEntity);
+		}
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		
+		
+		PageUtils pageUtil = new PageUtils(list, total, query.getLimit(), query.getPage());
 		query.put("classId", student.getClassId());
 		query.put("begin", 0);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		query.put("userType", 1);
 		int studenttotal = this.studentService.queryList(query).size();
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		pageUtil.setTotalCount(studenttotal);
