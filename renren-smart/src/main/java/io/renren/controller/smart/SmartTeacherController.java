@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +63,11 @@ public class SmartTeacherController {
 	@RequestMapping("/save")
 	@RequiresPermissions("smartteacher:save")
 	public R save(@RequestBody SmartTeacherEntity smartTeacher){
+		if(smartTeacher.getPassword() == null || "".equals(smartTeacher.getPassword())){
+			smartTeacher.setPassword(new Sha256Hash("000000").toHex());
+		}else{
+			smartTeacher.setPassword(new Sha256Hash(smartTeacher.getPassword()).toHex());
+		}
 		smartTeacherService.insert(smartTeacher);
 		return R.ok().put("id", smartTeacher.getId());
 	}
@@ -72,6 +78,9 @@ public class SmartTeacherController {
 	@RequestMapping("/update")
 	@RequiresPermissions("smartteacher:update")
 	public R update(@RequestBody SmartTeacherEntity smartTeacher){
+		if(smartTeacher.getPassword().length() < 30){
+			smartTeacher.setPassword(new Sha256Hash(smartTeacher.getPassword()).toHex());
+		}
 		smartTeacherService.update(smartTeacher);
 		return R.ok().put("id", smartTeacher.getId());
 	}
