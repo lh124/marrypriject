@@ -403,6 +403,7 @@ public class ShouyeController {
 	/**
 	 * 班级信息
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/list_4")
 	public R list_4(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
@@ -423,7 +424,6 @@ public class ShouyeController {
 			list.add(classInfoEntity);
 		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		
 		
 		PageUtils pageUtil = new PageUtils(list, total, query.getLimit(), query.getPage());
 		query.put("classId", student.getClassId());
@@ -512,9 +512,13 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-        ClassEntity cla = this.classService.selectById(student.getClassId());
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("schoolid", cla.getSchoolId());
+        if(student.getUserType() == "1"){
+        	ClassEntity cla = this.classService.selectById(student.getClassId());
+    		params.put("schoolid", cla.getSchoolId());
+        }else{
+        	params.put("schoolid", student.getSchoolId());
+        }
+        DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Query query = new Query(params);
 		List<SmartActivitiesEntity> smartActivitiesList = smartActivitiesService.queryList(query);
 		int total = smartActivitiesService.queryTotal(query);
@@ -547,9 +551,13 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		ClassEntity cla = this.classService.selectById(student.getClassId());
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("schoolId", cla.getSchoolId());
+        if(student.getUserType() == "1"){
+        	ClassEntity cla = this.classService.selectById(student.getClassId());
+    		params.put("schoolId", cla.getSchoolId());
+        }else{
+        	params.put("schoolId", student.getSchoolId());
+        }
+        DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Query query = new Query(params);
 		List<PsychologicalCounselingEntity> psychologicalCounselingList = psychologicalCounselingService.queryList(query);
 		int total = psychologicalCounselingService.queryTotal(query);
@@ -565,9 +573,13 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		ClassEntity cla = this.classService.selectById(student.getClassId());
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("schoolId", cla.getSchoolId());
+        if(student.getUserType() == "1"){
+        	ClassEntity cla = this.classService.selectById(student.getClassId());
+    		params.put("schoolId", cla.getSchoolId());
+        }else{
+        	params.put("schoolId", student.getSchoolId());
+        }
+        DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Query query = new Query(params);
 		List<FreshmanGuideEntity> freshmanGuideList = freshmanGuideService.queryList(query);
 		int total = freshmanGuideService.queryTotal(query);
@@ -583,9 +595,13 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		ClassEntity cla = this.classService.selectById(student.getClassId());
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("schoolid", cla.getSchoolId());
+        if(student.getUserType() == "1"){
+        	ClassEntity cla = this.classService.selectById(student.getClassId());
+    		params.put("schoolid", cla.getSchoolId());
+        }else{
+        	params.put("schoolid", student.getSchoolId());
+        }
+        DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Query query = new Query(params);
 		List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryList(query);
 		int total = schoolNoticeService.queryTotal(query);
