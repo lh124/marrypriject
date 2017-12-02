@@ -7,13 +7,13 @@
 	<sql id="allColumnsAlias">
 		id as id ,student_code as studentCode ,student_no as studentNo ,user_type as type,
 		student_name as studentName ,sex as sex ,student_type as studentType ,
-		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,
+		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,school_id as schoolId
 		longitude, latitude		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,pic ,class_id ,passwordd , open_id,
-		longitude, latitude	
+		longitude, latitude,school_id	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.StudentEntity" id="studentMap">
@@ -25,6 +25,7 @@
 		        <result property="studentType" column="student_type"/>
 		        <result property="pic" column="pic"/>
 		        <result property="classId" column="class_id"/>
+		        <result property="schoolId" column="school_id"/>
 		        <result property="passwordd" column="passwordd"/>
 		        <result property="openId" column="open_id"/>
 		        <result property="longitude" column="longitude"/>
@@ -37,11 +38,22 @@
 	</select>
 	
 	<select id="queryList" resultType="io.renren.entity.smart.StudentEntity">
+	    
+		 
 		select top ${limit} <include refid="allColumns"></include>
 		from student
 		where id not in
 		(
-		 select top ${begin} id from student where class_id=${classId}
+		 select top ${begin} id from student 
+		 <if test="classId != null and classId !=''">
+		     where class_id=${classId} 
+		 </if>
+		 <if test="schoolId != null and schoolId != ''">
+		     where school_id=${schoolId} 
+		 </if>
+		 
+		 and user_type=#{userType}
+		 
 		 	<choose>
 		            <when test="sidx != null and sidx.trim() != ''">
 		                order by ${sidx} ${order}
@@ -50,7 +62,14 @@
 		                order by id desc
 					</otherwise>
 		     </choose>
-		) and class_id=${classId}
+		) 
+		<if test="classId != null and classId !=''">
+		   and class_id=${classId}
+		</if>
+		<if test="schoolId != null and schoolId != ''">
+		   and school_id=${schoolId} 
+		</if>
+		 and user_type=#{userType}
 		<choose>
 		         <when test="sidx != null and sidx.trim() != ''">
 		             order by ${sidx} ${order}
@@ -77,18 +96,21 @@
 		select * from student where ${classId}
 	</select>
 	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from student where class_id=${classId}
-	</select>
-	
 	<select id="queryTotal" resultType="int">
-		select count(*) from student where class_id=${classId}
+		select count(*) from student
+		<if test="classId != null and classId !=''">
+		     where class_id=${classId} 
+		 </if>
+		 <if test="schoolId != null and schoolId != ''">
+		     where school_id=${schoolId} 
+		 </if>
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEntity">
 		insert into student
 		(
-			student_code, 
+			student_code,
+			school_id, 
 			student_no, 
 			student_name, 
 			sex, 
@@ -103,7 +125,8 @@
 		)
 		values
 		( 
-			#{studentCode}, 
+			#{studentCode},
+			#{schoolId},  
 			#{studentNo}, 
 			#{studentName}, 
 			#{sex}, 
@@ -127,6 +150,7 @@
 		update student 
 		<set>
 			<if test="studentCode != null">student_code = #{studentCode}, </if>
+			<if test="schoolId != null">school_id = #{schoolId}, </if>
 			<if test="studentNo != null">student_no = #{studentNo}, </if>
 			<if test="userType != null">user_type = #{userType}, </if>
 			<if test="studentName != null">student_name = #{studentName}, </if>
