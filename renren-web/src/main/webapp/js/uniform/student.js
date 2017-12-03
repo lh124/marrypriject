@@ -48,7 +48,7 @@ $(function () {
             rows:"limit", 
             order: "order"
         },
-        postData:{'classId': $("#classId").val()},
+        postData:{'classId': $("#classId").val(),'userType':1,'schoolId':null},
         gridComplete:function(){
         	//隐藏grid底部滚动条
         	$("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" }); 
@@ -123,6 +123,7 @@ function uplaodclassidsd(){
 function uplaod(){
 	var url = vm.student.id == null ? "../sys/uniform/student/save" : "../sys/uniform/student/update";
 	vm.student.classId = $("#classId").val();
+	vm.student.userType = 1;
 	$.ajax({
 		type: "POST",
 	    url: url,
@@ -177,6 +178,7 @@ var vm = new Vue({
 		saveOrUpdate: function (event) {
 			var url = vm.student.id == null ? "../sys/uniform/student/save" : "../sys/uniform/student/update";
 			vm.student.classId = $("#classId").val();
+			vm.student.userType = 1;
 			$.ajax({
 				type: "POST",
 			    url: url,
@@ -272,7 +274,6 @@ var vm = new Vue({
 });
 document.getElementById("studentEpc").style.display = "none";
 document.getElementById("studentimage").style.display = "none";
-document.getElementById("studenttype").style.display = "none";
 document.getElementById("updateclassId").style.display = "none";
 function showimage(id){
 	$('#studentimage').modal('show');
