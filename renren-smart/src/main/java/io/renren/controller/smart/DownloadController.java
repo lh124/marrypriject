@@ -69,6 +69,8 @@ public class DownloadController {
 		for (Iterator iterator = classList.iterator(); iterator.hasNext();) {
 			ClassEntity classEntity = (ClassEntity) iterator.next();
 			map.put("classId", classEntity.getId());
+			map.put("schoolId", null);
+			map.put("userType", 1);
 			List<StudentEntity> studentList = studentService.queryList(map);
 			for (Iterator iterator2 = studentList.iterator(); iterator2.hasNext();) {
 				StudentEntity studentEntity = (StudentEntity) iterator2.next();
@@ -91,8 +93,8 @@ public class DownloadController {
 	private static String writeZip(String strs) throws IOException {
         String[] files = strs.split(",");
         String filename = new SimpleDateFormat("yyyyHHddhhmmsss").format(new Date())+".zip";
-        String path = "http://192.168.1.107:8080/wrs/statics/zip/"+filename;
-        OutputStream os = new BufferedOutputStream( new FileOutputStream( "D:/tool/apache-tomcat-8.0.46/webapps/wrs/statics/zip/"+filename) );
+        String path = "http://wrs.gykjewm.com/statics/zip/"+filename;
+        OutputStream os = new BufferedOutputStream( new FileOutputStream( "E:/web/webroot/wrs/statics/zip/"+filename) );
         ZipOutputStream zos = new ZipOutputStream( os );
         byte[] buf = new byte[8192];
         int len;
