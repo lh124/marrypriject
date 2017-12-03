@@ -148,6 +148,7 @@ public class SmartDataInpution {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classId", classId);
+		map.put("userType", 1);
 		map.put("order", "");
 		map.put("sidx", "");
 		map.put("begin", 0);
@@ -177,6 +178,7 @@ public class SmartDataInpution {
 		map.put("begin", 0);
 		map.put("page", 1);
 		map.put("limit", 1000);
+		map.put("userType", 1);
 		map.put("classId", Integer.parseInt(json.getString("classId")));
 		List<StudentEntity> studentlist = studentService.queryList(map);
 		List<StudentEpcEntity> epclist = new ArrayList<StudentEpcEntity>();
