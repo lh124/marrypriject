@@ -1,27 +1,5 @@
 package io.renren.controller.photoWeb;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
 import io.renren.controller.AbstractController;
 import io.renren.entity.PhotoClassEntity;
 import io.renren.entity.SysAdminSchoolEntity;
@@ -41,7 +19,25 @@ import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 import io.renren.validator.ValidatorUtils;
 import io.renren.validator.group.AddGroup;
-import io.renren.validator.group.UniformGroup;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
 /**
@@ -130,6 +126,7 @@ public class PhotoClassController extends AbstractController{
 	/**
 	 * 学校管理员查询班级
 	 */
+	@SuppressWarnings("unused")
 	@RequestMapping("/adminList")
 	@RequiresPermissions("photoclass:adminList")
 	public R adminList(@RequestParam Map<String, Object> params){

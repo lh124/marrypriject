@@ -37,6 +37,7 @@ public class PhotoDoFrontUserController {
 	private PhotoFrontUserInfoService photoFrontUserInfoService;
 	
 	
+	@SuppressWarnings("unused")
 	@ResponseBody
 	@RequestMapping("/addUsers")
 	@RequiresPermissions("sys:front:addUser")
