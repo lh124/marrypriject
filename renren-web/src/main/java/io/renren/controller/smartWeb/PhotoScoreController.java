@@ -1,5 +1,11 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.smart.PhotoScoreEntity;
+import io.renren.service.smart.PhotoScoreService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,13 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.renren.annotation.CheckAuth;
-import io.renren.entity.smart.PhotoScoreEntity;
-import io.renren.service.smart.PhotoScoreService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
 
 
 /**

@@ -1,5 +1,13 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.smart.PhotoExaminationEntity;
+import io.renren.service.smart.PhotoExaminationService;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.validator.ValidatorUtils;
+import io.renren.validator.group.UniformGroup;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,15 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.renren.annotation.CheckAuth;
-import io.renren.entity.smart.PhotoExaminationEntity;
-import io.renren.service.smart.PhotoExaminationService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.validator.ValidatorUtils;
-import io.renren.validator.group.UniformGroup;
 
 
 /**
