@@ -10,9 +10,11 @@ import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoExaminationEntity;
 import io.renren.entity.smart.PhotoPicWorkMsgEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
+import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartVideoDeviceEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -29,8 +31,10 @@ import io.renren.service.smart.PhotoPicWorkMsgService;
 import io.renren.service.smart.PhotoScoreService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
+import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.WeixinFunctionImgService;
@@ -110,7 +114,8 @@ public class AppInterfaceController {
 	private PhotoClassWorkMsgService photoClassWorkMsgService;
 	@Autowired
 	private IoService ioService;
-	
+	@Autowired
+	private SchoolService schoolService;
 	@Autowired
 	private WeixinFunctionImgService weixinFunctionImgService;
 	@Autowired
@@ -118,6 +123,8 @@ public class AppInterfaceController {
 	
 	@Autowired
 	private PhotoPicWorkMsgService photoPicWorkMsgService;
+	@Autowired
+	private SmartVideoDeviceService smartVideoDeviceService;
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
@@ -127,6 +134,7 @@ public class AppInterfaceController {
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request){
 		String key = request.getParameter("key").replace("&quot;", "\"");
+		System.out.println("---"+key);
 		JSONObject json = JSONObject.fromObject(key);//用户登录
 		String type = json.getString("type");
 		if(json.get("token") == null){
@@ -193,7 +201,6 @@ public class AppInterfaceController {
 					//作业保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return smartWorkSave(json.getJSONObject("data"),multipartResolver,request);
-					
 				}else if(type.equals("schoolNoticeSave")){
 					//学校通知保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -218,12 +225,46 @@ public class AppInterfaceController {
 					//发布消息
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return classworkmsg(json.getJSONObject("data"),multipartResolver,request);
+				}else if(type.equals("getVideoDevice")){
+					//获取允许查看的摄像头
+					return getVideoDevice(json.getJSONObject("data"));
+				}else if(type.equals("getallschool")){
+					//学校列表
+					return getallschool();
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R getallschool(){
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("limit", 10);
+		map.put("begin", 0);
+		List<SchoolEntity> list = schoolService.queryList(map);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("page", list);
+	}
+	
+	private R getVideoDevice(JSONObject json){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sidx", null);
+		map.put("order", null);
+		map.put("offset", 0);
+		map.put("limit", 30);
+		if(json.getInt("userType") == 1){
+			map.put("teacherSee", null);
+			map.put("studentSee", 1);
+		}else if(json.getInt("userType") == 2){
+			map.put("teacherSee", 1);
+			map.put("studentSee", null);
+		}
+		map.put("schoolId", json.get("schoolId"));
+		List<SmartVideoDeviceEntity> list = smartVideoDeviceService.queryList(map);
+		return R.ok().put(DATA, list);
 	}
 	
 	private R classworkmsg(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -321,6 +362,7 @@ public class AppInterfaceController {
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("name", weixinFunctionEntity.getName());
 			map.put("pic", weixinFunctionEntity.getPic());
+			map.put("id", weixinFunctionEntity.getId()+"");
 			list.add(map);
 		}
 		return R.ok().put(DATA, list);
@@ -672,9 +714,13 @@ public class AppInterfaceController {
 				map.put("id", user.getId());
 				map.put("token", tokening);
 				map.put("pic", user.getPic());
-				map.put("classId", user.getClassId());
+//				if(user.getUserType().equals("1")){
+					map.put("classId", user.getClassId());
+					map.put("schoolId", classService.queryObject(user.getClassId()).getSchoolId());
+//				}else{
+//					map.put("schoolId", user.getSchoolId());
+//				}
 				map.put("userType", user.getUserType());
-				map.put("schoolId", classService.queryObject(user.getClassId()).getSchoolId());
 				map.put("studentName", user.getStudentName());
 				return R.ok().put(DATA, map);
 			}else{
