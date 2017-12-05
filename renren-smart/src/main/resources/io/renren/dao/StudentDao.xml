@@ -37,47 +37,26 @@
 		select <include refid="allColumns"></include> from student where id = #{value}
 	</select>
 	
+	<!-- 通过班级id查询在校和不在校的学生 -->
+	<select id="queryListStudent" resultType="io.renren.entity.smart.StudentEntity">
+		select * from student where id in(
+			select student_id from io where id in(select max(id) id from(
+				select t1.* from io t1,student t2 where t1.student_id = t2.id and t2.class_id=#{classId} and t2.user_type=1
+			) t GROUP BY t.student_id) and io_type=#{ioType}
+		)
+	</select>
+	
 	<select id="queryList" resultType="io.renren.entity.smart.StudentEntity">
-	    
-		 
-		select top ${limit} <include refid="allColumns"></include>
-		from student
-		where id not in
-		(
-		 select top ${begin} id from student 
-		 <if test="classId != null and classId !=''">
+	    select <include refid="allColumns"></include> from student
+	    <if test="classId != null and classId !=''">
 		     where class_id=${classId} 
 		 </if>
 		 <if test="schoolId != null and schoolId != ''">
 		     where school_id=${schoolId} 
 		 </if>
-		 
 		 and user_type=#{userType}
-		 
-		 	<choose>
-		            <when test="sidx != null and sidx.trim() != ''">
-		                order by ${sidx} ${order}
-		            </when>
-					<otherwise>
-		                order by id desc
-					</otherwise>
-		     </choose>
-		) 
-		<if test="classId != null and classId !=''">
-		   and class_id=${classId}
-		</if>
-		<if test="schoolId != null and schoolId != ''">
-		   and school_id=${schoolId} 
-		</if>
-		 and user_type=#{userType}
-		<choose>
-		         <when test="sidx != null and sidx.trim() != ''">
-		             order by ${sidx} ${order}
-		         </when>
-				<otherwise>
-				             order by id desc
-				</otherwise>
-		</choose>
+		 order by id desc
+		 limit ${begin},${limit}
 	</select>
 
 	<select id="queryListtongji" resultType="io.renren.entity.smart.StudentEntity">
