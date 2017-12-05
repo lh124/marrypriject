@@ -29,12 +29,9 @@
 
 
 	<select id="queryList" resultType="io.renren.entity.smart.SchoolEntity">
-		select top ${limit} <include refid="allColumns"></include>
-		from school
-		where id not in
-		(
-		 select top ${begin} id from school  <if test="cityId != null">where city_id = #{cityId} </if>
-		 	<choose>
+		select <include refid="allColumns"></include> from school
+		   <if test="cityId != null">where city_id = #{cityId} </if>
+		   <choose>
 		            <when test="sidx != null and sidx.trim() != ''">
 		                order by ${sidx} ${order}
 		            </when>
@@ -42,15 +39,7 @@
 		                order by id desc
 					</otherwise>
 		     </choose>
-		) <if test="cityId != null">and city_id = #{cityId} </if>
-		<choose>
-		         <when test="sidx != null and sidx.trim() != ''">
-		             order by ${sidx} ${order}
-		         </when>
-				<otherwise>
-				             order by id desc
-				</otherwise>
-		</choose>
+		     limit ${begin},${limit}
 	</select>
 	
  	<select id="queryTotal" resultType="int">
