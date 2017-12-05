@@ -13,6 +13,7 @@ import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -29,6 +30,7 @@ import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.SysWeixinMsgService;
@@ -50,6 +52,7 @@ import io.renren.weixin.util.SignUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,6 +121,53 @@ public class ShouyeController {
 	private WeixinFunctionImgService weixinFunctionImgService;
 	@Autowired
 	private WeixinFunctionService weixinFunctionService;
+	@Autowired
+	private SmartLeaveService smartLeaveService;
+	
+	/**
+	 * 保存请假记录
+	 */
+	@RequestMapping("/saveleave")
+	public R saveleave(HttpServletRequest request,HttpSession session){
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		SmartLeaveEntity leave = new SmartLeaveEntity();
+		leave.setCalssid(student.getClassId());
+		leave.setUserid(student.getId());
+		leave.setContent(request.getParameter("content"));
+		leave.setTitle(request.getParameter("title"));
+		try {
+			leave.setStartdate(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("startDate")));
+			leave.setEnddate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(request.getParameter("endDate")+" 23:59:59"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		smartLeaveService.save(leave);
+		return R.ok();
+	}
+	
+	/**
+	 * 查询老师下面的所有班级
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getTeacherClass")
+	public R getTeacherClass(HttpServletRequest request,HttpSession session){
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		List<ClassEntity> list = new ArrayList<ClassEntity>();
+		if("1".equals(student.getUserType())){
+			list.add(classService.queryObject(student.getClassId()));
+		}else if("2".equals(student.getUserType())){
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("userId", student.getId());
+			List<ClassInfoEntity> infolist = classInfoService.queryListtongji(params);
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			for (Iterator iterator = infolist.iterator(); iterator.hasNext();) {
+				ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
+				list.add(classService.queryObject(classInfoEntity.getClassid()));
+			}
+		}
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("list", list);
+	}
 	
 	/**
 	 * 查询首页的九宫格
@@ -230,10 +280,9 @@ public class ShouyeController {
 	@RequestMapping("/savesmartcourse")
 	public R weixsave(HttpServletRequest request,HttpSession session){
 		SmartCoursewareEntity smartCourseware = new SmartCoursewareEntity();
-		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
 		ValidatorUtils.validateEntity(smartCourseware, AddGroup.class);
 		smartCourseware.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-		smartCourseware.setClassid(student.getClassId());
+		smartCourseware.setClassid(Integer.parseInt(request.getParameter("classId")));
 		smartCourseware.setName(request.getParameter("title"));
 		smartCourseware.setType(Integer.parseInt(request.getParameter("type")));
 		smartCoursewareService.insert(smartCourseware);
@@ -245,11 +294,8 @@ public class ShouyeController {
 	 */
 	@RequestMapping("/savesmartword")
 	public R savesmartword(HttpServletRequest request,HttpSession session){
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		SmartWorkEntity classNotice = new SmartWorkEntity();
-		classNotice.setClassid(student.getClassId());
+		classNotice.setClassid(Integer.parseInt(request.getParameter("classId")));
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setName(request.getParameter("title"));
 		classNotice.setType(1);
@@ -281,11 +327,8 @@ public class ShouyeController {
 	 */
 	@RequestMapping("/saveclassnotice")
 	public R saveclassnotice(HttpServletRequest request,HttpSession session){
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		ClassNoticeEntity classNotice = new ClassNoticeEntity();
-		classNotice.setClassId(student.getClassId() + "");
+		classNotice.setClassId(request.getParameter("classId"));
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setTitle(request.getParameter("title"));
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -407,10 +450,7 @@ public class ShouyeController {
 	@RequestMapping("/list_4")
 	public R list_4(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
-        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("classid", student.getClassId());
+		params.put("classid", params.get("classId"));
 		Query query = new Query(params);
 		List<ClassInfoEntity> classInfoList = classInfoService.queryList(query);
 		int total = classInfoService.queryTotal(query);
@@ -426,10 +466,10 @@ public class ShouyeController {
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		
 		PageUtils pageUtil = new PageUtils(list, total, query.getLimit(), query.getPage());
-		query.put("classId", student.getClassId());
 		query.put("begin", 0);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		query.put("userType", 1);
+		
 		int studenttotal = this.studentService.queryList(query).size();
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		pageUtil.setTotalCount(studenttotal);
@@ -459,8 +499,6 @@ public class ShouyeController {
 			}
 			params.put("classid", classid);
 			params.put("type", 1);
-		}else{
-			params.put("classid", student.getClassId());
 		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Query query = new Query(params);
@@ -493,10 +531,6 @@ public class ShouyeController {
 	@RequestMapping("/list_2")
 	public R list_2(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
-        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("classid", student.getClassId());
 		Query query = new Query(params);
 		List<SmartWorkEntity> smartWorkList = smartWorkService.queryList(query);
 		int total = smartWorkService.queryTotal(query);
@@ -532,10 +566,6 @@ public class ShouyeController {
 	@RequestMapping("/list_1")
 	public R list_1(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
-        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-        StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		params.put("classId", student.getClassId());
 		Query query = new Query(params);
 		List<ClassNoticeEntity> classNoticeList = classNoticeService.queryList(query);
 		int total = schoolNoticeService.queryTotal(query);
