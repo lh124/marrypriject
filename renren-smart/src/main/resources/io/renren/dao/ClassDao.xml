@@ -23,12 +23,8 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassEntity">
-		select top ${limit} <include refid="allColumns"></include>
-		from class
-		where id not in
-		(
-		 select top ${begin} id from class where school_id = ${schoolId} 
-		 	<choose>
+		select <include refid="allColumns"></include> from class where school_id = ${schoolId} 
+			 <choose>
 		            <when test="sidx != null and sidx.trim() != ''">
 		                order by ${sidx} ${order}
 		            </when>
@@ -36,15 +32,7 @@
 		                order by id desc
 					</otherwise>
 		     </choose>
-		) and school_id = ${schoolId}
-		<choose>
-		         <when test="sidx != null and sidx.trim() != ''">
-		             order by ${sidx} ${order}
-		         </when>
-				<otherwise>
-				             order by id desc
-				</otherwise>
-		</choose>
+		limit ${begin},${limit}
 	</select>
 	
  	<select id="queryTotal" resultType="int">

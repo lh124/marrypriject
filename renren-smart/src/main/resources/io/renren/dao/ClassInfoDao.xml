@@ -5,11 +5,11 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name ,type as type ,classid as classid ,content		
+		id as id ,name as name ,type as type ,classid as classid ,content,userId as userId		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,type ,classid ,content		
+		id ,name ,type ,classid ,content,userId		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.ClassInfoEntity" id="classInfoMap">
@@ -18,10 +18,15 @@
 		        <result property="type" column="type"/>
 		        <result property="classid" column="classid"/>
 		        <result property="content" column="content"/>
+		        <result property="userId" column="userId"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.ClassInfoEntity">
 		select <include refid="allColumns"></include> from class_info where id = #{value}
+	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.smart.ClassInfoEntity">
+		select <include refid="allColumns"></include> from class_info where userId = #{userId}
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassInfoEntity">
@@ -47,13 +52,15 @@
 		insert into class_info
 		(
 			`name`, 
-			`type`, 
+			`userId`, 
+			`type`,
 			`content`,
 			`classid`
 		)
 		values
 		(
 			#{name}, 
+			#{userId}, 
 			#{type}, 
 			#{content},
 			#{classid}
@@ -66,6 +73,7 @@
 			<if test="name != null">`name` = #{name}, </if>
 			<if test="type != null">`type` = #{type}, </if>
 			<if test="content != null">`content` = #{content}, </if>
+			<if test="userId != null">`userId` = #{userId}, </if>
 			<if test="classid != null">`classid` = #{classid}</if>
 		</set>
 		where id = #{id}
