@@ -37,7 +37,6 @@
         }  
 </script>  
 <body ontouchstart onload="init()">
-    <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
 	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 	<input id="userId" value="$session.getAttribute('user_smart').id" >
 	<input type="hidden" value="$request.getParameter('classId')" id="classId">
@@ -168,7 +167,7 @@ wx.ready(function () {
 				var classId = document.getElementById("classId").value;
 				$.ajax({
 					type: "POST",
-				    url: "../shouye/savesmartword?content=" + contentNotice + "&title=" + title,
+				    url: "../shouye/savesmartword?content=" + contentNotice + "&title=" + title+"&classId="+classId,
 				    success: function(r){
 				    	var json = JSON.parse(r);
 				    	if(length > 0){
@@ -215,7 +214,7 @@ wx.ready(function () {
 					});
 			     }
 	        }else{
-	           window.location.href="./shouye_2.html";
+	           window.location.href="./shouye_22.html?classId="+classId;
 	        }
 					}
 				});

@@ -9,7 +9,7 @@
     <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body ontouchstart>
-    <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
+    <input type="hidden" value="$request.getParameter('classId')" id="classId">
     <input id="smartcoursewareid" type="hidden">
 	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 	<div class="container" >
@@ -79,7 +79,7 @@
 		    }
 	        $.ajax({ 
 				type: "POST",
-			    url: "../shouye/savesmartcourse?title="+document.getElementById("title").value + "&type="+type,
+			    url: "../shouye/savesmartcourse?classId="+document.getElementById("classId").value+"&title="+document.getElementById("title").value + "&type="+type,
 			    dataType:'json',
 			    success: function (result) {
 			        document.getElementById("smartcoursewareid").value = result.id;

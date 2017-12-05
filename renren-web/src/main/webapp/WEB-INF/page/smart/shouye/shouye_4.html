@@ -6,20 +6,47 @@
     <title>班级信息</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
-    <style type="text/css">
-            body {  
-      			background: url(../../statics/images/1/1_4_1.png);
-      			background-repeat:no-repeat;
-    			background-size: 100% 100%;
-    			height: 100px;
-    			width: 100%;  
-    		}  
-    </style>
 </head>
-<body >
-    <div id="weui-cells" style="width: 100%;">
+
+<script type="text/javascript">
+    function init(){
+        if($session.getAttribute('user_smart').userType == "1"){
+            window.location.href = "./shouye_44.html?classId="+$session.getAttribute('user_smart').classId;
+        }else{
+	        $.ajax({
+		        type: 'GET',
+		        url:'../shouye/getTeacherClass',
+		        dataType: 'json',
+		        success: function(data){
+		           if(data.status == "ok"){
+		           		$("#listschool").html(content);
+		               var content = "";
+		               for(var i = 0; i < data.list.length; i++){
+		                   content += '<a class="weui-cell weui-cell_access" href="./shouye_44.html?classId='+data.list[i].id+'">'+
+		                              '<div class="weui-cell__bd"><p>'+data.list[i].className+'</p></div><div class="weui-cell__ft">'+
+		                              '</div></a>';
+		               }
+		               $("#listschool").html(content);
+		           }
+		        }
+		     });
+		   }
+    }
+</script>
+
+<body ontouchstart onload="init()">
+    <div class="container" id="container">
+		<div class="page slideIn" style="opacity:1;">
+		    <div class="page__hd" style="background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_notice_pic/2_2_1.jpg');height: 80px;background-size:100% 100%;-moz-background-size:100% 100%;background-repeat:no-repeat;">
+		    </div>
+		    <div class="page__bd">
+		        <div class="weui-cells__title">&nbsp;</div>
+		        <div class="weui-cells"  id="listschool">
+		        </div>
+		    </div>
+		</div>
+		
 	</div>   
 </body>
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="${rc.contextPath}/js/smart/shouye/shouye_4.js?_${date.systemTime}"></script>
 </html>

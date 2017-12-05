@@ -1,111 +1,52 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
 <head>
-<meta charset="utf-8">
-<title>随堂课件</title>
- <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui.css"/>
-  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
-  <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
-  <style type="text/css">
-  	.back_img {
-  		height: 180px; 
-  		background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_notice_pic/1_8_1.jpg'); 
-  		background-repeat:no-repeat; 
-  		background-size:100% 100%;
-  		-moz-background-size:100% 100%
-  	}
-  	.white_content {  
-		 display: none;  
-		 position: absolute;  
-		 top: 40%;  
-		 left: 5%;  
-		 width: 80%;  
-		 height: 120px;  
-		 border: 16px solid lightblue;  
-		 background-color: white;  
-		 z-index:1002;  
-		 overflow: auto;  
-	} 
-  </style>   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>随堂课件</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
 </head>
 
-<body style="background-color: #f8f8f8;" onload="init()">
-    <input id="docx" type="hidden">
-	<div class="page-hd back_img">
-		<!-- <h1 class="page-hd-title">班级寄语</h1> -->
-	</div>
-	<div class="weui_grids"  >
-	        #if($session.getAttribute('user_smart').userType == "2")
-            <a href="javascript:void(0)" class="weui_grid js_grid"   onclick="getclass()">
-                <p class="weui_grid_label" >班内搜索</p>
-            </a>
-        	<a href="./shouye_8_add.html" class="weui_grid js_grid"  >
-            	<p class="weui_grid_label">课件上传</p>
-        	</a>
-        	<a href="javascript:void(0)" class="weui_grid js_grid" onclick="getschool()">
-            	<p class="weui_grid_label" >其他学校</p>
-        	</a> 
-        	#end 
-        	 #if($session.getAttribute('user_smart').userType == "1")
-        	 <a href="javascript:void(0)" class="weui_grid js_grid"  style="width: 50%;" onclick="getclass()">
-                <p class="weui_grid_label" >班内搜索</p>
-            </a>
-        	<a href="javascript:void(0)" class="weui_grid js_grid" style="width: 50%;" onclick="getschool()">
-            	<p class="weui_grid_label" >其他学校</p>
-        	</a> 
-        	 #end 
-    </div>
-    
-    
-    <!--BEGIN dialog22-->
-        <div id="iosDialog1" style="display: none;text-align: center;" class="white_content">
-           <input type="hidden" id="schoolid" />
-           <div style="padding-left: 10px;">
-              学校名称：<select id="allschool" onchange="getxqschool()" style="text-align: center;width: 130px;">
-		                </select><br>
-		      课件名称：<input id="kjname" style="width: 130px;"/>
-           </div>
-		   <br>
-           <div style=" cursor: default; height: 40px;padding-right: 10px;">
-              <span style="font-size: 16px;" onclick="chaxunkj()">查询</span>&nbsp;&nbsp;
-		      <span style="font-size: 16px;" onclick="closediv()">关闭</span>
-		  </div>  
-        </div>
-        <!--END dialog22-->
-        <!--BEGIN dialog22-->
-        <div id="iosDialog2" style="display: none;text-align: center;" class="white_content">
-           <input type="hidden" id="schoolid" />
-           <div style="padding-left: 10px;">
-		      课件名称：<input id="kjnames" style="width: 130px;"/>
-           </div>
-		   <br>
-           <div style=" cursor: default; height: 40px;padding-right: 10px;">
-              <span style="font-size: 16px;" onclick="chaxunkj()">查询</span>&nbsp;&nbsp;
-		      <span style="font-size: 16px;" onclick="closediv()">关闭</span>
-		  </div>  
-        </div>
-        <!--END dialog22-->
-    
-    
-	<!-- <div class="weui_cells_title">我们的寄语</div> -->
-	<div class="weui_panel weui_panel_access nodata">
-		<div class="weui_panel_bd">
+<script type="text/javascript">
+    function init(){
+        if($session.getAttribute('user_smart').userType == "1"){
+            window.location.href = "./shouye_88.html?classId="+$session.getAttribute('user_smart').classId;
+        }else{
+            $.ajax({
+		        type: 'GET',
+		        url:'../shouye/getTeacherClass',
+		        dataType: 'json',
+		        success: function(data){
+		           if(data.status == "ok"){
+		           		$("#listschool").html(content);
+		               var content = "";
+		               for(var i = 0; i < data.list.length; i++){
+		                   content += '<a class="weui-cell weui-cell_access" href="./shouye_88.html?classId='+data.list[i].id+'">'+
+		                              '<div class="weui-cell__bd"><p>'+data.list[i].className+'</p></div><div class="weui-cell__ft">'+
+		                              '</div></a>';
+		               }
+		               $("#listschool").html(content);
+		           }
+		        }
+	     	});
+        }
+    }
+</script>
+
+<body ontouchstart onload="init()">
+    <div class="container" id="container">
+		<div class="page slideIn" style="opacity:1;">
+		    <div class="page__hd" style="background-image: url('http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_notice_pic/2_2_1.jpg');height: 80px;background-size:100% 100%;-moz-background-size:100% 100%;background-repeat:no-repeat;">
+		    </div>
+		    <div class="page__bd">
+		        <div class="weui-cells__title">&nbsp;</div>
+		        <div class="weui-cells"  id="listschool">
+		        </div>
+		    </div>
 		</div>
-		<div class="footers"></div>
-	</div>
-	<div>
-	    <input type="hidden" id="selectfiles" >
-	</div>
-     <script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.3/zepto.min.js"></script> 
-	 <script src="${fieldTool.STATIC_SOURCE_JS}updown.js"></script>
-	 <script type="text/javascript" src="http://www.xdocin.com/xdoc.js"></script> 
-	 <script src="${fieldTool.STATIC_SOURCE_JS}lazyimg.js"></script>
-     <script src="${rc.contextPath}/js/smart/shouye/shouye_8.js?_${date.systemTime}"></script>
-     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
-<script type="text/javascript" src="${rc.contextPath}/js/smart/user/upload.js?_${date.systemTime}"></script>
-<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
-<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>      
+		
+	</div>   
 </body>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </html>

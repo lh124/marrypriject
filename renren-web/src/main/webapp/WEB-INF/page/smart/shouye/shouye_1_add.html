@@ -34,7 +34,6 @@
         }  
 </script>  
 <body ontouchstart onload="init()">
-    <input id="classId" value="$session.getAttribute('user_smart').classId" type="hidden">
 	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
 	<input id="userId" value="$session.getAttribute('user_smart').id" >
 	<input type="hidden" value="$request.getParameter('classId')" id="classId">
@@ -214,7 +213,7 @@ wx.ready(function () {
 					});
 			     }
 	        }else{
-	           //window.location.href="./shouye_1.html";
+	           window.location.href="./shouye_11.html?classId="+classId;
 	        }
 					}
 				});
