@@ -37,8 +37,17 @@ public class ClassInfoEntity implements Serializable {
 	//班级寄语
 	@TableField(value="content")
 	private String content;
+	
+	@TableField(value="userId")
+	private Integer userId;
 			
 
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	public String getContent() {
 		return content;
 	}

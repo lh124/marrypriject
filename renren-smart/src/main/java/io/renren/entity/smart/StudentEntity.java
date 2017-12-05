@@ -47,6 +47,9 @@ public class StudentEntity implements Serializable {
 	private String pic;
 			
 	//
+	@TableField(value="school_id")
+	private Integer schoolId;
+	
 	@TableField(value="class_id")
 	private Integer classId;
 			
@@ -69,6 +72,12 @@ public class StudentEntity implements Serializable {
 	 */
 	@TableField(value="latitude")
 	private String latitude;
+	public Integer getSchoolId() {
+		return schoolId;
+	}
+	public void setSchoolId(Integer schoolId) {
+		this.schoolId = schoolId;
+	}
 	/**
 	 * 类别1学生，2老师
 	 */
