@@ -23,7 +23,6 @@ import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
-import io.renren.service.smart.SmartTeacherService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.WeixinFunctionImgService;
@@ -82,8 +81,6 @@ public class CallBackController {
 	private WeixinFunctionImgService weixinFunctionImgService;
 	@Autowired
 	private WeixinFunctionService weixinFunctionService;
-	@Autowired
-	private SmartTeacherService smartTeacherService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
