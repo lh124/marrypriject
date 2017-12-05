@@ -10,7 +10,6 @@ import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
-import io.renren.entity.smart.SmartTeacherEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -169,11 +168,6 @@ public class CallBackController {
 						uploadtubiao(jsona);
 						return json;
 					}
-					// 老师头像上传
-					if (type.equals(TypeEnum.SMART_TEACHER_PIC.getType())){
-						uploadteacherImage(jsona);
-						return json;
-					}
 				}
 				
 			} catch(Exception e){
@@ -187,25 +181,6 @@ public class CallBackController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
-		}
-	}
-	
-	/**
-	 * 随堂课件上传
-	 * @param json
-	 */
-	private void uploadteacherImage(JSONObject json){
-		//信息图片
-    	Long id = json.containsKey("id") ? json.getLong("id") : null;
-		if (id != null) {
-			SmartTeacherEntity smartteacher = this.smartTeacherService.selectById(id);
-			if (smartteacher != null) {
-				smartteacher.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
-				this.smartTeacherService.update(smartteacher);
-			} else {
-				logger.error("智能校服随堂课件回调关联数据不存在");
-				logger.error(json.toString());
-			}
 		}
 	}
 	
