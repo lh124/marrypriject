@@ -54,7 +54,9 @@
 		 <if test="schoolId != null and schoolId != ''">
 		     where school_id=${schoolId} 
 		 </if>
-		 and user_type=#{userType}
+		 <if test="userType != null and userType != ''">
+		     and user_type=#{userType}
+		 </if>
 		 order by id desc
 		 limit ${begin},${limit}
 	</select>
