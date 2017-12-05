@@ -546,7 +546,7 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-        if(student.getUserType() == "1"){
+        if(student.getUserType().equals("1")){
         	ClassEntity cla = this.classService.selectById(student.getClassId());
     		params.put("schoolid", cla.getSchoolId());
         }else{
@@ -581,7 +581,7 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-        if(student.getUserType() == "1"){
+        if(student.getUserType().equals("1")){
         	ClassEntity cla = this.classService.selectById(student.getClassId());
     		params.put("schoolId", cla.getSchoolId());
         }else{
@@ -603,7 +603,7 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-        if(student.getUserType() == "1"){
+        if(student.getUserType().equals("1")){
         	ClassEntity cla = this.classService.selectById(student.getClassId());
     		params.put("schoolId", cla.getSchoolId());
         }else{
@@ -625,7 +625,7 @@ public class ShouyeController {
 		//查询列表数据
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
-        if(student.getUserType() == "1"){
+        if(student.getUserType().equals("1")){
         	ClassEntity cla = this.classService.selectById(student.getClassId());
     		params.put("schoolid", cla.getSchoolId());
         }else{
