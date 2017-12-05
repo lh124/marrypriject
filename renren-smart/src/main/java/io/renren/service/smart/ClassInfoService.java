@@ -20,6 +20,8 @@ public interface ClassInfoService extends IService<ClassInfoEntity>{
 	
 	List<ClassInfoEntity> queryList(Map<String, Object> map);
 	
+	List<ClassInfoEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(ClassInfoEntity classInfo);

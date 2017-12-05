@@ -21,6 +21,8 @@ public interface StudentService extends IService<StudentEntity>{
 	
 	List<StudentEntity> queryList(Map<String, Object> map);
 	
+	List<StudentEntity> queryListStudent(Map<String, Object> map);
+	
 	List<StudentEntity> queryListtongji(Map<String, Object> map);
 	
 	List<StudentEntity> queryListtongjiimgxf(Map<String, Object> map);
