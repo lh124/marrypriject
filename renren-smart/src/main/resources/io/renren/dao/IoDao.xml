@@ -28,7 +28,7 @@
 	<select id="queryObjectName" resultType="io.renren.entity.smart.IoEntity">
 		select * from io where epc in(select epc from student_epc where student_id = #{value}) 
 		      and io_date = (select max(io_date) from io where epc in(select epc from student_epc where student_id = #{value}))
-		      and id = (SELECT MAX (id) FROM io WHERE epc IN (SELECT epc FROM student_epc WHERE student_id = #{value}))
+		      and id = (SELECT MAX(id) FROM io WHERE epc IN (SELECT epc FROM student_epc WHERE student_id = #{value}))
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.smart.IoEntity">
@@ -54,21 +54,15 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.IoEntity">
-		select top 
-		<choose>
-            <when test="limit != null">${limit}</when><otherwise>10</otherwise>
-        </choose> marry.id, marry.epc, marry.io_type, marry.io_date, marry.rfid_id from (select row_number() over(
-        <choose>
-            <when test="sidx != null and sidx.trim() != ''"> order by ${sidx} ${order} </when>
-			<otherwise> order by id desc </otherwise>
-        </choose>) as rownumber,
-		<include refid="allColumns"></include> 
-		from(SELECT theio.id , theio.epc, theio.io_type, theio.io_date, theio.rfid_id,theio.student_id FROM 
-		io as theio left join student_epc se on theio.epc=se.epc left join student as stu on stu.id=se.student_id where stu.id= #{studentId}) as harry) as marry where rownumber > 
-		<choose>
-            <when test="offset != null"> ${offset} </when>
-			<otherwise>0</otherwise>
-        </choose>
+        select <include refid="allColumns"></include>  from io where student_id = #{studentId}
+            <choose>
+	            <when test="sidx != null and sidx.trim() != ''"> order by ${sidx} ${order} </when>
+				<otherwise> order by id desc </otherwise>
+            </choose> 
+            limit <choose>
+			            <when test="offset != null"> ${offset} </when>
+						<otherwise>0</otherwise>
+			        </choose>,${limit}
 	</select>
 	
  	<select id="queryTotal" resultType="int">
