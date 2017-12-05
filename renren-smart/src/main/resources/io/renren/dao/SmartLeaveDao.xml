@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SmartLeaveDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,userId as userid ,calssId as calssid ,title as title ,content as content ,startDate as startdate ,endDate as enddate 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,userId ,calssId ,title ,content ,startDate ,endDate 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SmartLeaveEntity" id="smartLeaveMap">
+		        <result property="id" column="id"/>
+		        <result property="userid" column="userId"/>
+		        <result property="calssid" column="calssId"/>
+		        <result property="title" column="title"/>
+		        <result property="content" column="content"/>
+		        <result property="startdate" column="startDate"/>
+		        <result property="enddate" column="endDate"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SmartLeaveEntity">
+		select <include refid="allColumns"></include> from smart_leave where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SmartLeaveEntity">
+		select <include refid="allColumns"></include> from smart_leave
+		
+		<if test="userId != null and userId != ''">
+			where userId=#{userId}
+		</if>
+		<if test="classId != null and classId != ''">
+			where calssId=#{classId} and startDate &lt;= sysdate() and endDate &gt;= sysdate()
+		</if>
+		
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_leave 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SmartLeaveEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into smart_leave
+		(
+			`userId`, 
+			`calssId`, 
+			`title`, 
+			`content`, 
+			`startDate`, 
+			`endDate`
+		)
+		values
+		(
+			#{userid}, 
+			#{calssid}, 
+			#{title}, 
+			#{content}, 
+			#{startdate}, 
+			#{enddate}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SmartLeaveEntity">
+		update smart_leave 
+		<set>
+			<if test="userid != null">`userId` = #{userid}, </if>
+			<if test="calssid != null">`calssId` = #{calssid}, </if>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="startdate != null">`startDate` = #{startdate}, </if>
+			<if test="enddate != null">`endDate` = #{enddate}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_leave where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_leave where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
