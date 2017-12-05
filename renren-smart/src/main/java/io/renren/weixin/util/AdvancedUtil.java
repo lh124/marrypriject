@@ -6,7 +6,6 @@ import io.renren.weixin.pojo.ArticleMaterial;
 import io.renren.weixin.pojo.SNSUserInfo;
 import io.renren.weixin.pojo.SemanticParam;
 import io.renren.weixin.pojo.Template;
-import io.renren.weixin.pojo.TemplateParam;
 import io.renren.weixin.pojo.WeixinGroup;
 import io.renren.weixin.pojo.WeixinMedia;
 import io.renren.weixin.pojo.WeixinOauth2Token;
@@ -25,7 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -1003,16 +1001,17 @@ public class AdvancedUtil {
 	}
 
 	public static void main(String[] args) {
+		main_bak(args);
 		// 获取接口访问凭证
-		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
-		getSNSUserInfo(accessToken, "wx948285e688ee8d66");
+//		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
+//		getSNSUserInfo(accessToken, "o7__rjjocXdATM4sz0rYbt2z7SRw");
 		// 合其家公众号
 		// String accessToken = CommonUtil.getToken("wxb714c7b2b1fff48c", "10fd5a921bc151ab8dafb6228de4511a").getAccessToken();
-		List<String> list = getWeixinServerIPList(accessToken);
-		for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
-			String string = (String) iterator.next();
-			System.out.println(string);
-		}
+//		List<String> list = getWeixinServerIPList(accessToken);
+//		for (Iterator<?> iterator = list.iterator(); iterator.hasNext();) {
+//			String string = (String) iterator.next();
+//			System.out.println(string);
+//		}
 		/**
 		 * 查询分组
 		 */
@@ -1059,15 +1058,15 @@ public class AdvancedUtil {
 
 	public static void main_bak(String args[]) {
 		// 获取接口访问凭证
-		String accessToken = CommonUtil.getToken("APPID", "APPSECRET").getAccessToken();
+		String accessToken = CommonUtil.getToken("wx948285e688ee8d66", "5c6f611bf5db5df293ead71e802a4896").getAccessToken();
 
 		/**
 		 * 发送客服消息（文本消息）
 		 */
 		// 组装文本客服消息
-		String jsonTextMsg = makeTextCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", "点击查看<a href=\"http://blog.csdn.net/lyq8479\">柳峰的博客</a>");
-		// 发送客服消息
-		sendCustomMessage(accessToken, jsonTextMsg);
+//		String jsonTextMsg = makeTextCustomMessage("oEdzejiHCDqafJbz4WNJtWTMbDcE", "点击查看<a href=\"http://blog.csdn.net/lyq8479\">柳峰的博客</a>");
+//		// 发送客服消息
+//		sendCustomMessage(accessToken, jsonTextMsg);
 
 		/**
 		 * 发送客服消息（图文消息）
@@ -1110,17 +1109,17 @@ public class AdvancedUtil {
 		/**
 		 * 获取用户信息
 		 */
-//		WeixinUserInfo user = getUserInfo(accessToken, "oEdzejiHCDqafJbz4WNJtWTMbDcE");
-//		System.out.println("OpenID：" + user.getOpenId());
-//		System.out.println("关注状态：" + user.getSubscribe());
-//		System.out.println("关注时间：" + user.getSubscribeTime());
-//		System.out.println("昵称：" + user.getNickname());
-//		System.out.println("性别：" + user.getSex());
-//		System.out.println("国家：" + user.getCountry());
-//		System.out.println("省份：" + user.getProvince());
-//		System.out.println("城市：" + user.getCity());
-//		System.out.println("语言：" + user.getLanguage());
-//		System.out.println("头像：" + user.getHeadImgUrl());
+		WeixinUserInfo user = getUserInfo(accessToken, "o7__rjjocXdATM4sz0rYbt2z7SRw");
+		System.out.println("OpenID：" + user.getOpenId());
+		System.out.println("关注状态：" + user.getSubscribe());
+		System.out.println("关注时间：" + user.getSubscribeTime());
+		System.out.println("昵称：" + user.getNickname());
+		System.out.println("性别：" + user.getSex());
+		System.out.println("国家：" + user.getCountry());
+		System.out.println("省份：" + user.getProvince());
+		System.out.println("城市：" + user.getCity());
+		System.out.println("语言：" + user.getLanguage());
+		System.out.println("头像：" + user.getHeadImgUrl());
 
 		/**
 		 * 获取关注者列表
@@ -1132,76 +1131,76 @@ public class AdvancedUtil {
 		System.out.println("next_openid：" + weixinUserList.getNextOpenId());
 
 		/**
-		 * 上传多媒体文件
-		 */
-		WeixinMedia weixinMedia = uploadMedia(accessToken, "voice", "http://localhost:8080/weixinmpapi/test.mp3");
-		System.out.println(weixinMedia.getMediaId());
-		System.out.println(weixinMedia.getType());
-		System.out.println(weixinMedia.getCreatedAt());
+//		 * 上传多媒体文件
+//		 */
+//		WeixinMedia weixinMedia = uploadMedia(accessToken, "voice", "http://localhost:8080/weixinmpapi/test.mp3");
+//		System.out.println(weixinMedia.getMediaId());
+//		System.out.println(weixinMedia.getType());
+//		System.out.println(weixinMedia.getCreatedAt());
 
 		/**
 		 * 下载多媒体文件
 		 */
-		getMedia(accessToken, "N7xWhOGYSLWUMPzVcGnxKFbhXeD_lLT5sXxyxDGEsCzWIB2CcUijSeQOYjWLMpcn", "G:/download");
+//		getMedia(accessToken, "N7xWhOGYSLWUMPzVcGnxKFbhXeD_lLT5sXxyxDGEsCzWIB2CcUijSeQOYjWLMpcn", "G:/download");
 
 		/**
 		 * 发送模板消息
-		 */
-		List<TemplateParam> templateParamList = new ArrayList<TemplateParam>();
-		templateParamList.add(new TemplateParam("first", "您好，您已成功进行话费充值。", "#173177"));
-		templateParamList.add(new TemplateParam("accountType", "手机号", "#173177"));
-		templateParamList.add(new TemplateParam("account", "13985479457", "#173177"));
-		templateParamList.add(new TemplateParam("amount", "50元", "#173177"));
-		templateParamList.add(new TemplateParam("result", "充值成功", "#173177"));
-		templateParamList.add(new TemplateParam("remark", "备注：如有疑问，请致电10086联系我们。", "#173177"));
-		Template template = new Template();
-		template.setToUser("oEdzejiHCDqafJbz4WNJtWTMbDcE");
-		template.setTemplateId("tkFG1RNW-KxpAarx-6uwUnGDOd99-nb9hPbUMvtnnns");
-		template.setUrl("");
-		template.setTopColor("#00FF00");
-		template.setTemplateParamList(templateParamList);
-		sendTemplateMessage(accessToken, template);
+//		 */
+//		List<TemplateParam> templateParamList = new ArrayList<TemplateParam>();
+//		templateParamList.add(new TemplateParam("first", "您好，您已成功进行话费充值。", "#173177"));
+//		templateParamList.add(new TemplateParam("accountType", "手机号", "#173177"));
+//		templateParamList.add(new TemplateParam("account", "13985479457", "#173177"));
+//		templateParamList.add(new TemplateParam("amount", "50元", "#173177"));
+//		templateParamList.add(new TemplateParam("result", "充值成功", "#173177"));
+//		templateParamList.add(new TemplateParam("remark", "备注：如有疑问，请致电10086联系我们。", "#173177"));
+//		Template template = new Template();
+//		template.setToUser("oEdzejiHCDqafJbz4WNJtWTMbDcE");
+//		template.setTemplateId("tkFG1RNW-KxpAarx-6uwUnGDOd99-nb9hPbUMvtnnns");
+//		template.setUrl("");
+//		template.setTopColor("#00FF00");
+//		template.setTemplateParamList(templateParamList);
+//		sendTemplateMessage(accessToken, template);
 
 		/**
 		 * 上传图文消息素材
 		 */
-		ArticleMaterial article = new ArticleMaterial();
-		article.setAuthor("liufeng");
-		article.setContent("内容");
-		article.setContent_source_url("http://www.baidu.com");
-		article.setDigest("图文消息的摘要");
-		article.setShow_cover_pic("1");
-		article.setThumb_media_id("qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p");
-		article.setTitle("图文消息的标题");
-		List<ArticleMaterial> articleMaterialList = new ArrayList<ArticleMaterial>();
-		articleMaterialList.add(article);
-		HashMap<String, Object> resultMap3 = uploadNews(accessToken, articleMaterialList);
-		System.out.println(resultMap3);
+//		ArticleMaterial article = new ArticleMaterial();
+//		article.setAuthor("liufeng");
+//		article.setContent("内容");
+//		article.setContent_source_url("http://www.baidu.com");
+//		article.setDigest("图文消息的摘要");
+//		article.setShow_cover_pic("1");
+//		article.setThumb_media_id("qI6_Ze_6PtV7svjolgs-rN6stStuHIjs9_DidOHaj0Q-mwvBelOXCFZiq2OsIU-p");
+//		article.setTitle("图文消息的标题");
+//		List<ArticleMaterial> articleMaterialList = new ArrayList<ArticleMaterial>();
+//		articleMaterialList.add(article);
+//		HashMap<String, Object> resultMap3 = uploadNews(accessToken, articleMaterialList);
+//		System.out.println(resultMap3);
 
 		/**
-		 * 根据分组群发消息
-		 */
-		HashMap<String, Object> resultMap1 = sendMassMessageByGroup(accessToken, "102", "text", "测试群发消息！");
-		System.out.println(resultMap1);
-
-		/**
-		 * 根据openId列表群发消息
-		 */
-		List<String> openIdList = new ArrayList<String>();
-		openIdList.add("oEdzejiHCDqafJbz4WNJtWTMbDcE");
-		HashMap<String, Object> resultMap2 = sendMassMessageByOpenIdList(accessToken, openIdList, "text", "根据OpenID列表群发消息！");
-		System.out.println(resultMap2);
+//		 * 根据分组群发消息
+//		 */
+//		HashMap<String, Object> resultMap1 = sendMassMessageByGroup(accessToken, "102", "text", "测试群发消息！");
+//		System.out.println(resultMap1);
+//
+//		/**
+//		 * 根据openId列表群发消息
+//		 */
+//		List<String> openIdList = new ArrayList<String>();
+//		openIdList.add("oEdzejiHCDqafJbz4WNJtWTMbDcE");
+//		HashMap<String, Object> resultMap2 = sendMassMessageByOpenIdList(accessToken, openIdList, "text", "根据OpenID列表群发消息！");
+//		System.out.println(resultMap2);
 		
 		/**
 		 * 语义理解
-		 */
-		SemanticParam param = new SemanticParam();
-		param.setAppid("wx9fd67526e31e66bb");
-		param.setCategory("music");
-		param.setCity("贵阳");
-		param.setQuery("我想听零点乐队的相信自己");
-		param.setUid("oEdzejiHCDqafJbz4WNJtWTMbDcE");
-		String json = semanticSearch(accessToken, param);
-		System.out.println(json);
+//		 */
+//		SemanticParam param = new SemanticParam();
+//		param.setAppid("wx9fd67526e31e66bb");
+//		param.setCategory("music");
+//		param.setCity("贵阳");
+//		param.setQuery("我想听零点乐队的相信自己");
+//		param.setUid("oEdzejiHCDqafJbz4WNJtWTMbDcE");
+//		String json = semanticSearch(accessToken, param);
+//		System.out.println(json);
 	}
 }
