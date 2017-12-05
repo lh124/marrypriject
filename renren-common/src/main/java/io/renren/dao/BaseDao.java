@@ -39,7 +39,7 @@ public interface BaseDao<T> {
 	List<T> queryList(Map<String, Object> map);
 	
 	List<T> queryListtongji(Map<String, Object> map);
-	
+	 
 	List<T> queryListtongjiimgxf(Map<String, Object> map);
 	
 	List<T> queryListStudent(Map<String, Object> map);
