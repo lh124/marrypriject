@@ -35,6 +35,15 @@
 				 -->
 				<div class="weui-cells__title"></div>
 				<div class="weui-cells">
+				    #if($session.getAttribute('user_smart').userType == "2")
+				    <a class="weui-cell weui-cell_access"  href="./leaveadd.html">
+						<div class="weui-cell__hd"><img src="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/leave.png" alt="" style="width:20px;margin-right:5px;display:block"></div>
+						<div class="weui-cell__bd">
+							<p>请假信息</p>
+						</div>
+						<div class="weui-cell__ft"></div>
+					</a>
+				    #end
 					<a class="weui-cell weui-cell_access" onclick="$('#iosDialog3').fadeIn(100);" href="javascript:void(0);">
 						<div class="weui-cell__hd"><img src="/statics/images/userCenter/changAccount.png" alt="" style="width:20px;margin-right:5px;display:block"></div>
 						<div class="weui-cell__bd">
