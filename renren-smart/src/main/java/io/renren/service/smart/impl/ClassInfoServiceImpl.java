@@ -52,5 +52,10 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoDao, ClassInfoEnt
 	public void deleteBatch(Integer[] ids){
 		classInfoDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<ClassInfoEntity> queryListtongji(Map<String, Object> map) {
+		return classInfoDao.queryListtongji(map);
+	}
 	
 }
