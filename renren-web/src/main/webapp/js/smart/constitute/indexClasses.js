@@ -16,6 +16,6 @@ $(function(){
 	               $("#listschool").html(content);
 	           }
 	        }
-	 	});
+	 	}); 
 	});
 });
