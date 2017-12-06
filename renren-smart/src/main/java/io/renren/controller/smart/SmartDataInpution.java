@@ -100,7 +100,7 @@ public class SmartDataInpution {
 		try {
 			List<Object> list = new ArrayList<Object>();
 			JSONArray array = json.getJSONArray("list");
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 				JSONObject object = (JSONObject) iterator.next();
 				String epc = object.getString("epc");

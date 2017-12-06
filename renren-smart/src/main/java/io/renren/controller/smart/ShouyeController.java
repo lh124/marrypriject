@@ -134,7 +134,7 @@ public class ShouyeController {
 		leave.setCalssid(student.getClassId());
 		leave.setUserid(student.getId());
 		leave.setContent(request.getParameter("content"));
-		leave.setTitle(request.getParameter("title"));
+		leave.setStates("1");
 		try {
 			leave.setStartdate(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("startDate")));
 			leave.setEnddate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(request.getParameter("endDate")+" 23:59:59"));
@@ -181,7 +181,11 @@ public class ShouyeController {
 		params.put("order", "");
 		params.put("page", 1);
 		params.put("limit", 30);
-		params.put("schoolId", classService.queryObject(student.getClassId()).getSchoolId());
+		if(student.getUserType().equals("1")){
+			params.put("schoolId", classService.queryObject(student.getClassId()).getSchoolId());
+		}else{
+			params.put("schoolId", student.getSchoolId());
+		}
 		Query query = new Query(params);
 		List<WeixinFunctionEntity> weixinFunctionList = weixinFunctionService.queryList(query);
 		List<WeixinFunctionEntity> list = new ArrayList<WeixinFunctionEntity>();
