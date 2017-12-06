@@ -11,6 +11,9 @@ $(function(){
 				var teachername = "";//科任老师
 				var studentname = "";//班委
 				var contents = "";
+				var t = 0;
+				var s = 0;
+				var kg = "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				for(var i = 0; i < obj.length; i++){
 					var classPost = "";
 					if(obj[i].classPost!= null && obj[i].classPost != ""){
@@ -20,24 +23,25 @@ $(function(){
 						bzrteacher = obj[i].name + classPost;
 						teachername += obj[i].name + classPost+"&nbsp;&nbsp;&nbsp;&nbsp;";
 						contents = obj[i].content;
+						t++;
 					}else if(obj[i].type == "2"){
-						if((teachername.length > 30 && teachername.length < 40) || 
-						   (teachername.length > 180 && teachername.length < 200) || 
-						   (teachername.length > 350 && teachername.length < 370) || 
-						   (teachername.length > 510 && teachername.length < 530)){
-							teachername += obj[i].name +  classPost+"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+						if(t%2 == 0){
+							teachername += (kg+obj[i].name +  classPost);
 						}else{
-							teachername += obj[i].name +  classPost+"&nbsp;&nbsp;&nbsp;&nbsp;";
+							teachername += ("&nbsp;&nbsp;&nbsp;&nbsp;"+obj[i].name +  classPost);
 						}
+						t++;
 					}else if(obj[i].type == "3"){
-						if((studentname.length > 30 && studentname.length < 40) || 
-						   (studentname.length > 180 && studentname.length < 200) || 
-						   (studentname.length > 350 && studentname.length < 370) ||
-						   (studentname.length > 510 && studentname.length < 530)){
-							studentname += obj[i].name + classPost+"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+						if(s%2 == 0 && s != 0){
+							studentname += (kg+obj[i].name + classPost);
 						}else{
-							studentname += obj[i].name + classPost+"&nbsp;&nbsp;&nbsp;&nbsp;";
+							if(s == 0){
+								studentname += (obj[i].name + classPost);
+							}else{
+								studentname += ("&nbsp;&nbsp;&nbsp;&nbsp;"+obj[i].name + classPost);
+							}
 						}
+						s++;
 					}
 				}
 				if(contents == null || contents == ""){
