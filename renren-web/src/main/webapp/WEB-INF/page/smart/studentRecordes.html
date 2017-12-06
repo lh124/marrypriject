@@ -14,8 +14,9 @@
 		    </div>
 		    <div class="page__bd">
 		        <div class="weui-cells__title">&nbsp;</div>
+		        #if($session.getAttribute('user_smart').userType == "1")
 		        <div class="weui-cells">
-		            <a class="weui-cell weui-cell_access" href="./studentRecordes1.html">
+		            <a class="weui-cell weui-cell_access" href="./studentRecordes1.html?studentId=$session.getAttribute('user_smart').id">
 		                <div class="weui-cell__bd">
 		                    <p>个人签到</p>
 		                </div>
@@ -23,6 +24,11 @@
 		                </div>
 		            </a>
 		        </div>
+		        #end
+		        #if($session.getAttribute('user_smart').userType == "2")
+		        <div class="weui-cells" id="listschool">
+		        </div>
+		        #end
 		    </div>
 		</div>
 		
