@@ -44,13 +44,10 @@ public class IoController {
 	public R list(@RequestParam Map<String, Object> params, HttpSession session){
 		//查询列表数据
         Query query = new Query(params);
-        
-        
         StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
         Integer studentId = student.getId();
-        
         query.put("studentId", studentId);
-        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+        DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		List<IoEntity> ioList = ioService.queryList(query);
 		int total = ioService.queryTotal(query);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
