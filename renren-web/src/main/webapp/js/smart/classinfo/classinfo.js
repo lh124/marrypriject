@@ -5,7 +5,8 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '姓名', name: 'name', index: 'name', width: 80 }, 			
-			{ label: '职务(1为班主任,2科任老师,3班委)', name: 'type', index: 'type', width: 80 }, 			
+			{ label: '角色(1为班主任,2科任老师,3班委)', name: 'type', index: 'type', width: 80 }, 
+			{ label: '职务', name: 'classPost', index: 'classPost', width: 80 }, 
 			{ label: '班级id', name: 'classid', index: 'classid', width: 80 }			
         ],
 		viewrecords: true,
@@ -40,12 +41,66 @@ $(function () {
 document.getElementById("calssInfocontent").style.display = "none";
 function getcontent(type){
 	if(type == "1"){
+		getData($("#schoolId").val(),2);
 		document.getElementById("calssInfocontent").style.display = "block";
 	}else{
+		if(type == "2"){
+			getData($("#schoolId").val(),2);
+		}else{
+			getData2($("#classId").val(),1);
+		}
 		document.getElementById("calssInfocontent").style.display = "none";
 		document.getElementById("calssInfocontent").value = "";
 	}
 }
+function getData2(id,type){
+	$.ajax({
+		type: "POST",
+	    url: "../sys/uniform/student/list?classId="+id+"&userType="+type+"&page=1&limit=200&order=&sidx=",
+	    success: function(r){
+	    	if(r.code === 0){
+	    		var list = r.page.list;
+	    		var content = '<option value="-1">请选择</option>';
+	    		$("#userName").html(content);
+	    		for(var i = 0; i < list.length; i++){
+	    			if($("#userType").val() == list[i].id){
+	    				content += '<option value="'+list[i].id+'" selected="selected">'+list[i].studentName+'</option>';
+	    			}else{
+	    				content += '<option value="'+list[i].id+'">'+list[i].studentName+'</option>';
+	    			}
+	    		}
+	    		$("#userName").html(content);
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
+
+function getData(id,type){
+	$.ajax({
+		type: "POST",
+	    url: "../sys/uniform/student/list?schoolId="+id+"&userType="+type+"&page=1&limit=200&order=&sidx=",
+	    success: function(r){
+	    	if(r.code === 0){
+	    		var list = r.page.list;
+	    		var content = '<option value="-1">请选择</option>';
+	    		$("#userName").html(content);
+	    		for(var i = 0; i < list.length; i++){
+	    			if($("#userType").val() == list[i].id){
+	    				content += '<option value="'+list[i].id+'" selected="selected">'+list[i].studentName+'</option>';
+	    			}else{
+	    				content += '<option value="'+list[i].id+'">'+list[i].studentName+'</option>';
+	    			}
+	    		}
+	    		$("#userName").html(content);
+			}else{
+				alert(r.msg);
+			}
+		}
+	});
+}
+
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
@@ -70,9 +125,14 @@ var vm = new Vue({
 			vm.showList = false;
             vm.title = "修改";
             
-            vm.getInfo(id)
+            vm.getInfo(id);
+            
 		},
 		saveOrUpdate: function (event) {
+			if($("#userName").val() == null || $("#userName").val() == "" || $("#userName").val() == "-1"){
+				alert("请选择姓名");
+				return false;
+			}
 			vm.classInfo.classid = $("#classId").val();
 			var url = vm.classInfo.id == null ? "../classinfo/save" : "../classinfo/update";
 			$.ajax({
@@ -116,9 +176,16 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get("../classinfo/info/"+id, function(r){
                 vm.classInfo = r.classInfo;
+                $("#userType").val(vm.classInfo.userId);
                 if(vm.classInfo.type == "1"){
+                	getData($("#schoolId").val(),2);
                 	document.getElementById("calssInfocontent").style.display = "block";
                 }else{
+                	if(vm.classInfo.type == "2"){
+            			getData($("#schoolId").val(),2);
+            		}else{
+            			getData2($("#classId").val(),1);
+            		}
                 	document.getElementById("calssInfocontent").style.display = "none";
                 }
             });
