@@ -85,24 +85,27 @@
 		 <if test="schoolId != null and schoolId != ''">
 		     where school_id=${schoolId} 
 		 </if>
+		 <if test="userType != null and userType != ''">
+		     and user_type=#{userType}
+		 </if>
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.StudentEntity">
 		insert into student
 		(
-			student_code,
-			school_id, 
-			student_no, 
-			student_name, 
-			sex, 
-			student_type, 
-			pic, 
-			class_id, 
-			passwordd,
-			open_id,
-			latitude,
-			user_type,
-			longitude
+			`student_code`,
+			`school_id`, 
+			`student_no`, 
+			`student_name`, 
+			`sex`, 
+			`student_type`, 
+			`pic`, 
+			`class_id`, 
+			`passwordd`,
+			`open_id`,
+			`latitude`,
+			`user_type`,
+			`longitude`
 		)
 		values
 		( 
@@ -143,7 +146,6 @@
 			<if test="openId != null  and openId.trim() != ''">open_id = #{openId},</if>
 			<if test="latitude != null  and latitude.trim() != ''">latitude = #{latitude},</if>
 			<if test="longitude != null  and longitude.trim() != ''">longitude = #{longitude}</if>
-			
 		</set>
 		where id = #{id}
 	</update>
