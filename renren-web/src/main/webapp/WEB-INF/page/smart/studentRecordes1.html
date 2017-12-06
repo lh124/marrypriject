@@ -10,6 +10,7 @@
 </head>
 
 <body style="background-color: #f8f8f8;">
+    <input type="hidden" value="$request.getParameter('studentId')" id="studentId">
 	<div class="weui_panel weui_panel_access">
 		<div class="weui_grids">
 			<div class="timeline">
@@ -49,12 +50,12 @@
 	        	page=1;
 	            $.ajax({
 	                type: 'GET',
-	                url: './io/list',
-	                data: 'page=' + page + "&limit=" + limit + "&order=desc&sidx=",
+	                url: './sign/findStudentIo',
+	                data: 'page=' + page + "&limit=" + limit + "&order=desc&sidx=&studentId="+$("#studentId").val(),
 	                dataType: 'json',
 	                success: function(data){
 	                    var result = '';
-	                    var arrLen = data.page.list.length;
+	                    var arrLen = data.data.length;
 	                    if(arrLen > 0){
 	                        for(var i=0; i<arrLen; i++){
 	                        	if (i == 0) {
@@ -65,8 +66,8 @@
 						    					'<div class="timeline-item-tail">'+
 						    					'</div>'+
 						    					'<div class="timeline-item-content">'+
-						    						'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-						    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+						    						'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+						    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 						    					'</div>'+
 						    				'</li>';
 	                        	} else if ( i > 0 && i < (arrLen - 1)) {
@@ -77,8 +78,8 @@
 						    					'<div class="timeline-item-tail">'+
 						    					'</div>'+
 						    					'<div class="timeline-item-content">'+
-							    					'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-						    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+							    					'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+						    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 						    					'</div>'+
 						    				'</li>';
 	                        		
@@ -90,8 +91,8 @@
 					    					'<div class="timeline-item-tail hide">'+
 					    					'</div>'+
 					    					'<div class="timeline-item-content">'+
-						    					'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-					    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+						    					'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+					    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 					    					'</div>'+
 					    				'</li>';
 	                        	}
@@ -124,11 +125,11 @@
 	         var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url: './io/list',
-	                data: 'page=' + page + "&limit=" + limit + "&order=desc&sidx=",
+	                url: './sign/findStudentIo',
+	                data: 'page=' + page + "&limit=" + limit + "&order=desc&sidx=&studentId="+$("#studentId").val(),
 	                dataType: 'json',
 	                success: function(data){
-	           			var arrLen = data.page.list.length;
+	           			var arrLen = data.data.length;
 	                    if(arrLen > 0){
 	                    	if (page > 1 ){
 	                    		var sec = $("div .timeline-item-tail").attr("class","timeline-item-tail");
@@ -145,8 +146,8 @@
 							    					'<div class="timeline-item-tail">'+
 							    					'</div>'+
 							    					'<div class="timeline-item-content">'+
-							    						'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-							    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+							    						'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+							    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 							    					'</div>'+
 							    				'</li>';
 	                        		} else {
@@ -157,8 +158,8 @@
 								    					'<div class="timeline-item-tail">'+
 								    					'</div>'+
 								    					'<div class="timeline-item-content">'+
-									    					'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-								    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+									    					'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+								    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 								    					'</div>'+
 								    				'</li>';
 	                        		}
@@ -170,8 +171,8 @@
 						    					'<div class="timeline-item-tail">'+
 						    					'</div>'+
 						    					'<div class="timeline-item-content">'+
-							    					'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-						    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+							    					'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+						    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 						    					'</div>'+
 						    				'</li>';
 	                        		
@@ -183,8 +184,8 @@
 					    					'<div class="timeline-item-tail hide">'+
 					    					'</div>'+
 					    					'<div class="timeline-item-content">'+
-						    					'<h4 class="recent">' + data.page.list[i].ioType + '</h4>'+
-					    						'<p class="recent">' + data.page.list[i].ioDate + '</p>'+
+						    					'<h4 class="recent">' + data.data[i].ioType + '</h4>'+
+					    						'<p class="recent">' + data.data[i].ioDate + '</p>'+
 					    					'</div>'+
 					    				'</li>';
 	                        	}
