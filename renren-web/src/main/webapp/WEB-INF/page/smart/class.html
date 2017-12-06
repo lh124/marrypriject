@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>$request.getParameter('className')</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/mingpian/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/tombstone/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+		.class_top{height: 1.46rem;background: white;margin-top: 0.2rem;text-align: center;line-height:0.6rem;}
+        .weui-flex__item{padding-top: 0.2rem;font-size: 0.4rem;}
+        .active{color: #22cab7;}
+        .class_mid{margin-top: 0.2rem;background:#fef8f7;height:0rem; }
+        .class_mid dl{width: 33.33%;height: 3.93rem;float: left;}
+        .class_mid dl dt{width: 2.26rem;height: 2.26rem;margin:0 auto;padding-top: 0.7rem;}
+        .class_mid dl dt img{display: block;width: 100%;height: 100%;border-radius: 50%;}
+        .class_mid dl dd{text-align: center!important;width: 100%;line-height: 1.2rem;}
+    </style>
+</head>
+<script type="text/javascript">
+    function init(type){
+         $.ajax({
+	        type: 'GET',
+	        url:'./sign/findstudent?classId='+$("#classId").val()+"&type="+type,
+	        dataType: 'json',
+	        success: function(data){
+	           if(data.status == "ok"){
+	           		var content = "";
+	           		$("#studentlist").html(content);
+	           		var list = data.data;
+	           		for(var i = 0; i < list.classStudent.length; i++){
+	           		    var pic = list.classStudent[i].pic;
+	           		    if(pic == null || pic == ""){
+	           		        pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png";
+	           		    }
+	           		    content += '<dl><a href="./studentRecordes1.html?studentId='+list.classStudent[i].id+'"><dt><img src="'+pic+'" /></dt>'+
+	           		               '<dd>'+list.classStudent[i].studentName+'</dd></a></dl>';
+	           		}
+	           		$("#classstudenttotal").html(list.classTotal);
+	           		$("#zxlistTotal").html(list.zxlistTotal);
+	           		$("#bzxlistTotal").html(list.bzxlistTotal);
+	           		$("#classLeaveTotal").html(list.classLeaveTotal);
+	           		$("#studentlist").html(content);
+	           }
+	        }
+		});
+    }
+    
+    function leave(type){
+         $.ajax({
+	        type: 'GET',
+	        url:'./sign/findstudent?classId='+$("#classId").val()+"&type="+type,
+	        dataType: 'json',
+	        success: function(data){
+	           if(data.status == "ok"){
+	           		var content = "";
+	           		$("#studentlist").html(content);
+	           		var list = data.data;
+	           		for(var i = 0; i < list.classStudent.length; i++){
+	           		    var pic = list.classStudent[i].pic;
+	           		    if(pic == null || pic == ""){
+	           		        pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png";
+	           		    }
+	           		    content += '<dl><a href="./leave.html?id='+list.classStudent[i].id+'"><dt><img src="'+pic+'" /></dt>'+
+	           		               '<dd>'+list.classStudent[i].studentName+'</dd></a></dl>';
+	           		}
+	           		$("#classstudenttotal").html(list.classTotal);
+	           		$("#zxlistTotal").html(list.zxlistTotal);
+	           		$("#bzxlistTotal").html(list.bzxlistTotal);
+	           		$("#classLeaveTotal").html(list.classLeaveTotal);
+	           		$("#studentlist").html(content);
+	           }
+	        }
+		});
+    }
+</script>
+<body ontouchstart style="background:#faf6f3;" onload="init(1)">
+    <input type="hidden" value="$request.getParameter('classId')" id="classId">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<div class="class_top weui-flex">
+                <div class="weui-flex__item" onclick="init(1)">
+                    <p class="active p">总数</p>
+                    <p style="color:#22cab7;" id="classstudenttotal">0</p>
+                </div>
+                <div class="weui-flex__item" onclick="init(2)">
+                    <p class="p">已到</p>
+                    <p style="color:#0de490;" id="zxlistTotal">0</p>
+                </div>
+                <div class="weui-flex__item" onclick="init(3)">
+                    <p class="p">未到</p>
+                    <p style="color:#f20202;" id="bzxlistTotal">0</p>
+                </div>
+                <div class="weui-flex__item" onclick="leave(4)">
+                    <p class="p">请假</p>
+                    <p style="color:#0d7fcf;" id="classLeaveTotal">0</p>
+                </div>
+            </div>
+            <div class="class_mid" id="studentlist">
+            </div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+    $('.weui-flex__item').on("click",function(){
+        $(this).find(".p").addClass('active');
+        $(this).siblings().find('.p').removeClass('active');
+    });
+    var a=$('.class_mid>dl');
+    a=a.length;
+    a=Math.ceil(a/3)*4+"rem";
+    $('.class_mid').height(a);
+</script>
+</html>
