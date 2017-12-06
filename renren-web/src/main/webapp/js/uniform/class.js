@@ -124,7 +124,7 @@ var vm = new Vue({
 				return ;
 			}
 			var id = getSelectedRow();
-			window.location.href="classinfo.html?classId="+ id;
+			window.location.href="classinfo.html?classId="+ id+"&schoolId="+$("#schoolId").val();
 		},
 		addCourseware: function(id){
 			var ids = getSelectedRows();
