@@ -21,7 +21,7 @@ public class ClassInfoEntity implements Serializable {
 		//主键id
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
-		
+		 
 	//姓名
 	@TableField(value="name")
 	private String name;
@@ -38,6 +38,15 @@ public class ClassInfoEntity implements Serializable {
 	@TableField(value="content")
 	private String content;
 	
+	@TableField(value="classPost")
+	private String classPost;
+	
+	public String getClassPost() {
+		return classPost;
+	}
+	public void setClassPost(String classPost) {
+		this.classPost = classPost;
+	}
 	@TableField(value="userId")
 	private Integer userId;
 			

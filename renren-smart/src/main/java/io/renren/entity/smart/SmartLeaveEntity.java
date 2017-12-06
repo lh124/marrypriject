@@ -22,7 +22,7 @@ public class SmartLeaveEntity implements Serializable {
 		//
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
-		
+		 
 	//用户id
 	@TableField(value="userId")
 	private Integer userid;
@@ -31,9 +31,9 @@ public class SmartLeaveEntity implements Serializable {
 	@TableField(value="calssId")
 	private Integer calssid;
 			
-	//请假标题
-	@TableField(value="title")
-	private String title;
+	//请假状态1为待处理，2为同意，3为不同意
+	@TableField(value="states")
+	private String states;
 			
 	//请假详情
 	@TableField(value="content")
@@ -84,17 +84,12 @@ public class SmartLeaveEntity implements Serializable {
 	public Integer getCalssid() {
 		return calssid;
 	}
-	/**
-	 * 设置：请假标题
-	 */
-	public void setTitle(String title) {
-		this.title = title;
+	
+	public String getStates() {
+		return states;
 	}
-	/**
-	 * 获取：请假标题
-	 */
-	public String getTitle() {
-		return title;
+	public void setStates(String states) {
+		this.states = states;
 	}
 	/**
 	 * 设置：请假详情
