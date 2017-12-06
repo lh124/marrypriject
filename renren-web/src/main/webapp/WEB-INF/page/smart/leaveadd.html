@@ -21,12 +21,6 @@
 		        <!-- <div class="weui-cells__title">单选列表项</div> -->
 		        <div class="weui-cells weui-cells_form">
 		        <div class="weui-cell">
-	                <div class="weui-cell__hd"><label for="" class="weui-label">请假标题</label></div>
-	                <div class="weui-cell__bd">
-	                    <input class="weui-textarea weui-cell__bd" id ="title"  >
-	                </div>
-	            </div>
-		        <div class="weui-cell">
 	                <div class="weui-cell__hd"><label for="" class="weui-label">请假开始时间</label></div>
 	                <div class="weui-cell__bd">
 	                    <input class="weui-input" type="date" id="startDate"/>
@@ -95,21 +89,19 @@
 	          $("#iosDialog21").fadeOut(200);
 	      }
 	      document.querySelector('#postfiless').onclick = function () {
-	           var title = $("#title").val();
 	           var startDate = $("#startDate").val();
 	           var endDate = $("#endDate").val();
 	           var content = $("#content").val();
-	           if(title == "" || startDate == "" ||endDate=="" || content == ""){
+	           if(startDate == "" ||endDate=="" || content == ""){
 	                $("#iosDialog21").fadeIn(200);
 	                return false;
 	           }
 	           $.ajax({
 					type: "POST",
-				    url: "./shouye/saveleave?title=" + title + "&startDate=" + startDate + 
+				    url: "./shouye/saveleave?startDate=" + startDate + 
 				         "&endDate=" + endDate+"&content="+content,
 				    success: function(r){
 				         $("#iosDialog2").fadeIn(200);
-				         $("#title").val("");
 				         $("#startDate").val("");
 				         $("#endDate").val("");
 				         $("#content").val("");
