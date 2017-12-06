@@ -23,7 +23,7 @@ $(function(){
 	            var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_2?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val(),
+	                url:'../shouye/list_2?page=' + page + '&limit=10&sidx=&order=desc&classid='+ $('#classId').val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
@@ -97,7 +97,7 @@ $(function(){
 	         var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_2?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val(),
+	                url:'../shouye/list_2?page=' + page + '&limit=10&sidx=&order=desc&classid='+ $('#classId').val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;

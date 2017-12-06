@@ -19,7 +19,7 @@ function init(){
 	            var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val() + "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
+	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classid='+ $('#classId').val() + "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
@@ -50,7 +50,7 @@ function init(){
 	                    }
 						
 	                    // 为了测试，延迟1秒加载
-	                    $('.weui_panel_bd').append(result);  
+	                    $('.weui_panel_bd').html(result);  
 	                    //$('.weui_panel').append(result);
 	                        var lazyloadImg = new LazyloadImg({
 					            el: '.weui_panel_bd [data-img]', //匹配元素
@@ -85,7 +85,7 @@ function init(){
 	         var result = '';
 	            $.ajax({
 	                type: 'GET',
-	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classId='+ $('#classId').val()+ "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
+	                url:'../shouye/list_8?page=' + page + '&limit=10&sidx=&order=desc&classid='+ $('#classId').val()+ "&schoolId="+$("#schoolid").val()+ "&name="+$("#kjname").val(),
 	                dataType: 'json',
 	                success: function(data){
 	           			var arrLen = data.page.list.length;
