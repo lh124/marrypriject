@@ -60,6 +60,11 @@
             <artifactId>renren-app</artifactId>
             <version>${renren-version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.renren</groupId>
+            <artifactId>renren-married</artifactId>
+            <version>${renren-version}</version>
+        </dependency>
     </dependencies>
 	<build>
 		<finalName>wrs</finalName>
