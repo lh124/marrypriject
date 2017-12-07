@@ -8,12 +8,12 @@
 		id as id ,student_code as studentCode ,student_no as studentNo ,user_type as type,
 		student_name as studentName ,sex as sex ,student_type as studentType ,
 		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,school_id as schoolId
-		longitude, latitude		
+		longitude, latitude,phoen as phoen		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,pic ,class_id ,passwordd , open_id,
-		longitude, latitude,school_id	
+		longitude, latitude,school_id,phoen	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.StudentEntity" id="studentMap">
@@ -26,6 +26,7 @@
 		        <result property="pic" column="pic"/>
 		        <result property="classId" column="class_id"/>
 		        <result property="schoolId" column="school_id"/>
+		        <result property="phoen" column="phoen"/>
 		        <result property="passwordd" column="passwordd"/>
 		        <result property="openId" column="open_id"/>
 		        <result property="longitude" column="longitude"/>
@@ -142,11 +143,12 @@
 			<if test="studentType != null">student_type = #{studentType}, </if>
 			<if test="pic != null">pic = #{pic}, </if>
 			<if test="classId != null">class_id = #{classId}, </if>
+			<if test="phoen != null">phoen = #{phoen}, </if>
 			<if test="passwordd != null  and passwordd.trim() != ''">passwordd = #{passwordd},</if>
 			<if test="openId != null  and openId.trim() != ''">open_id = #{openId},</if>
 			<if test="latitude != null  and latitude.trim() != ''">latitude = #{latitude},</if>
 			<if test="longitude != null  and longitude.trim() != ''">longitude = #{longitude}</if>
-		</set>
+		</set> 
 		where id = #{id}
 	</update>
 	
