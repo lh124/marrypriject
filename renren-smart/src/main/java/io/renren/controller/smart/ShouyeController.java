@@ -409,16 +409,17 @@ public class ShouyeController {
 	@RequestMapping("/downMedio")
 	public R downMedio(HttpServletRequest request){
 		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
-		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), "E:/web/webroot/wrs/statics/video");
+		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), request.getSession().getServletContext().getRealPath("statics/video/"));
 		DataBackupsController.uploadObject2OSS(new OSSClient("oss-cn-hangzhou.aliyuncs.com","LTAIyY1y6mvPjVip",
-				"zio4dKlkF6424JE3gUxa8vzPyBcAaF"),new File("E:/web/webroot/wrs/statics/video/"+path), "guanyukeji-static", "smart_medio/");
+				"zio4dKlkF6424JE3gUxa8vzPyBcAaF"),new File(request.getSession().getServletContext().getRealPath("statics/video/")+path), "guanyukeji-static", "smart_medio/");
 		StudentEntity student = (StudentEntity) request.getSession().getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
 		PhotoClassWorkMsgEntity pcm = new PhotoClassWorkMsgEntity();
+		pcm.setId(new Long(request.getParameter("id")));
 		pcm.setGmtCreate(new Date());
 		pcm.setClassId(new Long(student.getClassId()));
 		pcm.setUserId(new Long(student.getId()));
 		pcm.setVoice("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/smart_medio/"+path);
-		photoClassWorkMsgService.save(pcm);
+		photoClassWorkMsgService.update(pcm);
 		return R.ok();
 	}
 	
