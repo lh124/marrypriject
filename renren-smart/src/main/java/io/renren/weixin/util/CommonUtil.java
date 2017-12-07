@@ -150,7 +150,7 @@ public class CommonUtil {
 		else if ("audio/mpeg".equals(contentType))
 			fileExt = ".mp3";
 		else if ("audio/amr".equals(contentType))
-			fileExt = ".amr";
+			fileExt = ".mp3";
 		else if ("video/mp4".equals(contentType))
 			fileExt = ".mp4";
 		else if ("video/mpeg4".equals(contentType))
