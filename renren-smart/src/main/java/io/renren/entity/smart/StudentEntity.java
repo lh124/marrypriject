@@ -66,12 +66,21 @@ public class StudentEntity implements Serializable {
 	 */
 	@TableField(value="longitude")
 	private String longitude;
-	
 	/**
 	 * 纬度
 	 */
 	@TableField(value="latitude")
 	private String latitude;
+	 
+	@TableField(value="phoen")
+	private String phoen;
+	
+	public String getPhoen() {
+		return phoen;
+	}
+	public void setPhoen(String phoen) {
+		this.phoen = phoen;
+	}
 	public Integer getSchoolId() {
 		return schoolId;
 	}
