@@ -14,6 +14,7 @@ import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartVideoDeviceEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
@@ -34,6 +35,7 @@ import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -47,6 +49,7 @@ import io.renren.utils.dataSource.DbContextHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,6 +128,8 @@ public class AppInterfaceController {
 	private PhotoPicWorkMsgService photoPicWorkMsgService;
 	@Autowired
 	private SmartVideoDeviceService smartVideoDeviceService;
+	@Autowired
+	private SmartLeaveService smartLeaveService;
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
@@ -231,12 +236,117 @@ public class AppInterfaceController {
 				}else if(type.equals("getallschool")){
 					//学校列表
 					return getallschool();
+				}else if(type.equals("getallstudent")){
+					//通过班级id查询所有的学生
+					return getallstudent(json.getJSONObject("data"));
+				}else if(type.equals("saveSmartLeave")){
+					//通过学生id保存请假记录
+					return saveSmartLeave(json.getJSONObject("data"));
+				}else if(type.equals("getStudentIdLeave")){
+					//通过学生id查询自己的请假记录
+					return getStudentIdLeave(json.getJSONObject("data"));
+				}else if(type.equals("getClassIdLeave")){
+					//通过班级id查询当天请假人数
+					return getClassIdLeave(json.getJSONObject("data"));
+				}else if(type.equals("getSmartLeaveDetail")){
+					//通过请假条id查询请假条详情
+					return getSmartLeaveDetail(json.getJSONObject("data"));
+				}else if(type.equals("getStudentzaixiao")){
+					//通过班级id查询在校或者不在校的学生的学生
+					return getStudentzaixiao(json.getJSONObject("data"));
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R getStudentzaixiao(JSONObject json){
+		Integer classId = json.getInt("classId");
+		Integer type = json.getInt("zaixiaotype");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("classId", classId);
+		if(type == 1){
+			//在校学生
+			map.put("ioType", "进");
+		}else if(type == 2){
+			//不在校
+			map.put("ioType", "出");
+		}
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		List<StudentEntity> list = studentService.queryListStudent(map);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put(DATA, list);
+	}
+	
+	private R getSmartLeaveDetail(JSONObject json){
+		Map<String, Object> map = new HashMap<String, Object>();
+		SmartLeaveEntity leave = smartLeaveService.queryObject(json.getInt("id"));
+		StudentEntity student = new StudentEntity();
+		if(leave != null){
+			student = studentService.queryObject(leave.getUserid());
+		}
+		map.put("leave", leave);
+		map.put("student", student);
+		return R.ok().put(DATA, map);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private R getClassIdLeave(JSONObject json){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("offset", 0);
+		map.put("limit", 100);
+		map.put("userId", null);
+		map.put("classId", json.getInt("classId"));
+		List<StudentEntity> list = new ArrayList<StudentEntity>();
+		List<SmartLeaveEntity> leaveList = smartLeaveService.queryList(map);
+		for (Iterator iterator = leaveList.iterator(); iterator.hasNext();) {
+			SmartLeaveEntity smartLeaveEntity = (SmartLeaveEntity) iterator.next();
+			StudentEntity student = studentService.queryObject(smartLeaveEntity.getUserid());
+			student.setId(smartLeaveEntity.getId());//将请假条的id设置给学生id便于后面查询请假条详情
+			list.add(student);
+		}
+		return R.ok().put(DATA, list);
+	}
+	
+	private R getStudentIdLeave(JSONObject json){
+		Integer id = json.getInt("userId");
+		Map<String, Object> map = getMap(json);
+		map.put("userId", id);
+		map.put("classId", null);
+		return R.ok().put(DATA, smartLeaveService.queryList(map));
+	}
+	
+	private R saveSmartLeave(JSONObject json){
+		SmartLeaveEntity smartLeave = new SmartLeaveEntity();
+		Integer id = json.getInt("userId");
+		StudentEntity student = studentService.queryObject(id);
+		smartLeave.setUserid(id);
+		smartLeave.setContent(json.getString("content"));
+		try {
+			smartLeave.setStartdate(new SimpleDateFormat("yyyy-MM-dd").parse(json.getString("startDate")));
+			smartLeave.setEnddate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(json.getString("endDate")+" 23:59:59"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		smartLeave.setCalssid(student.getClassId());
+		smartLeaveService.save(smartLeave);
+		return R.ok();
+	}
+	
+	private R getallstudent(JSONObject json){
+		Integer classId = json.getInt("classId");
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("limit", 100);
+		map.put("begin", 0);
+		map.put("classId", classId);
+		map.put("schoolId", null);
+		map.put("userType", 1);
+		List<StudentEntity> list = studentService.queryList(map);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put(DATA, list);
 	}
 	
 	private R getallschool(){
@@ -246,7 +356,7 @@ public class AppInterfaceController {
 		map.put("begin", 0);
 		List<SchoolEntity> list = schoolService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok().put("page", list);
+		return R.ok().put(DATA, list);
 	}
 	
 	private R getVideoDevice(JSONObject json){
@@ -485,7 +595,7 @@ public class AppInterfaceController {
 	public R ioepclist(JSONObject json){
 		Map<String, Object> map = getMap(json);
 		map.put("studentId", json.getString("studentId"));
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		List<IoEntity> list = ioService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		return R.ok().put(DATA, list);
@@ -633,8 +743,29 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, smartActivitiesList);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public R getClassId(JSONObject json){
-		return R.ok().put(DATA, classService.queryObject(Integer.parseInt(json.getString("classId"))));
+		Integer userId = json.getInt("userId");
+		List<ClassEntity> list = new ArrayList<ClassEntity>();
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		StudentEntity student = studentService.queryObject(userId);
+		if(student == null){
+			return R.error("用户登录异常");
+		}else{
+			if("1".equals(student.getUserType())){
+				list.add(classService.queryObject(student.getClassId()));
+			}else if("2".equals(student.getUserType())){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("userId", student.getId());
+				List<ClassInfoEntity> infolist = classInfoService.queryListtongji(params);
+				for (Iterator iterator = infolist.iterator(); iterator.hasNext();) {
+					ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
+					list.add(classService.queryObject(classInfoEntity.getClassid()));
+				}
+			}
+		}
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		return R.ok().put("list", list);
 	}
 	
 	public R classInfo(JSONObject json){
@@ -714,12 +845,12 @@ public class AppInterfaceController {
 				map.put("id", user.getId());
 				map.put("token", tokening);
 				map.put("pic", user.getPic());
-//				if(user.getUserType().equals("1")){
+				if(user.getUserType().equals("1")){
 					map.put("classId", user.getClassId());
 					map.put("schoolId", classService.queryObject(user.getClassId()).getSchoolId());
-//				}else{
-//					map.put("schoolId", user.getSchoolId());
-//				}
+				}else{
+					map.put("schoolId", user.getSchoolId());
+				}
 				map.put("userType", user.getUserType());
 				map.put("studentName", user.getStudentName());
 				return R.ok().put(DATA, map);
