@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SmartVideoDeviceDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,school_id as schoolId ,verification_code as verificationCode ,serial_number as serialNumber ,teacher_see as teacherSee ,student_see as studentSee 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,school_id ,verification_code ,serial_number ,teacher_see ,student_see 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SmartVideoDeviceEntity" id="smartVideoDeviceMap">
+		        <result property="id" column="id"/>
+		        <result property="schoolId" column="school_id"/>
+		        <result property="verificationCode" column="verification_code"/>
+		        <result property="serialNumber" column="serial_number"/>
+		        <result property="teacherSee" column="teacher_see"/>
+		        <result property="studentSee" column="student_see"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SmartVideoDeviceEntity">
+		select <include refid="allColumns"></include> from smart_video_device where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SmartVideoDeviceEntity">
+		select <include refid="allColumns"></include> from smart_video_device where school_id = #{schoolId}
+		<if test="teacherSee != null">
+			and  teacher_see = 1
+		</if>
+		<if test="studentSee != null">
+			and student_see=1
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_video_device 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SmartVideoDeviceEntity">
+		insert into smart_video_device
+		(
+			`id`, 
+			`school_id`, 
+			`verification_code`, 
+			`serial_number`, 
+			`teacher_see`, 
+			`student_see`
+		)
+		values
+		(
+			#{id}, 
+			#{schoolId}, 
+			#{verificationCode}, 
+			#{serialNumber}, 
+			#{teacherSee}, 
+			#{studentSee}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SmartVideoDeviceEntity">
+		update smart_video_device 
+		<set>
+			<if test="schoolId != null">`school_id` = #{schoolId}, </if>
+			<if test="verificationCode != null">`verification_code` = #{verificationCode}, </if>
+			<if test="serialNumber != null">`serial_number` = #{serialNumber}, </if>
+			<if test="teacherSee != null">`teacher_see` = #{teacherSee}, </if>
+			<if test="studentSee != null">`student_see` = #{studentSee}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_video_device where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_video_device where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
