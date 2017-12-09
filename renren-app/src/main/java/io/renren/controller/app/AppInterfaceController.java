@@ -41,6 +41,7 @@ import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.WeixinFunctionImgService;
 import io.renren.service.smart.WeixinFunctionService;
+import io.renren.util.MsgUtil;
 import io.renren.util.OssUploadUtil;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -57,6 +58,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -72,6 +74,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import redis.clients.jedis.Jedis;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
@@ -254,12 +257,54 @@ public class AppInterfaceController {
 				}else if(type.equals("getStudentzaixiao")){
 					//通过班级id查询在校或者不在校的学生的学生
 					return getStudentzaixiao(json.getJSONObject("data"));
+				}else if(type.equals("sendMsg")){
+					//通过手机号码发送验证码
+					return sendMsg(json.getJSONObject("data"));
+				}else if(type.equals("updatePhone")){
+					//绑定或修改手机号
+					return updatePhone(json.getJSONObject("data"));
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R updatePhone(JSONObject json){
+		String phone = json.getString("phone");
+		Integer userId = json.getInt("userId");
+		StudentEntity studnet = new StudentEntity();
+		studnet.setId(userId);
+		studnet.setPhoen(phone);
+		studentService.update(studnet);
+		return R.ok();
+	}
+	
+	private R sendMsg(JSONObject json){
+		String randow = getRandow();
+		String phone = json.getString("phone");
+		if(phone == null || "null".equals(phone) || "".equals(phone)){
+			return R.error("手机号码不能为空");
+		}else if(!phone.matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")){
+			return R.error("手机号码有误，请重新输入");
+		}else{
+			try {
+				MsgUtil.sendSms(phone, randow);
+			} catch (ClientException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.ok().put(DATA, randow);
+	}
+	
+	private String getRandow(){
+		String randow = "";
+		 Random random = new Random();
+		for(int i = 0; i < 6; i++){
+			randow += random.nextInt(10);
+		}
+		return randow;
 	}
 	
 	private R getStudentzaixiao(JSONObject json){
@@ -387,6 +432,9 @@ public class AppInterfaceController {
 			pcwme.setContent(json.getString("content"));
 			pcwme.setGmtCreate(new Date());
 			pcwme.setStatus(1);
+			if(uploadmedio(multipartResolver, request) != null){
+				pcwme.setVoice("smart_medio/"+OssUploadUtil.uploadObject2OSS(uploadmedio(multipartResolver, request)[0], "smart_medio/"));
+			}
 			photoClassWorkMsgService.insert(pcwme);
 			if(is != null){
 				for (int i = 0; i < is.length; i++) {
@@ -860,7 +908,7 @@ public class AppInterfaceController {
 		}
 	}
 	
-	//文件上传
+	//图片文件上传
 	public InputStream[] uploadfile(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
 			InputStream[] is = null;
 			//判断 request 是否有文件上传,即多部分请求  
@@ -878,6 +926,25 @@ public class AppInterfaceController {
 	        	}
 	        }
 	        return is;
-		}
+	}
 	
+	//语音文件上传
+	public InputStream[] uploadmedio(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
+				InputStream[] is = null;
+				//判断 request 是否有文件上传,即多部分请求  
+		        if(multipartResolver.isMultipart(request)){
+		        	MultipartHttpServletRequest m= (MultipartHttpServletRequest)request;
+		        	List<MultipartFile> detail = new ArrayList<MultipartFile>();
+		        	if(m.getFiles("medio").size() != 0){
+		        		detail = m.getFiles("medio");
+		        		is = new InputStream[detail.size()];
+		        		for (int i = 0; i < detail.size(); i++) {
+		        			if(!detail.get(i).isEmpty()){
+		        				is[i] = detail.get(i).getInputStream();
+		        			}
+		        		}
+		        	}
+		        }
+		        return is;
+		}
 }
