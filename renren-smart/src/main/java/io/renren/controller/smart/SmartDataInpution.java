@@ -3,11 +3,13 @@ package io.renren.controller.smart;
 import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.SchoolEntity;
+import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
 import io.renren.service.smart.ClassService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.SchoolService;
+import io.renren.service.smart.SmartExceptionService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.R;
@@ -16,6 +18,7 @@ import io.renren.utils.dataSource.DbContextHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +48,8 @@ public class SmartDataInpution {
 	private StudentEpcService studentEpcService;
 	@Autowired
 	private IoService ioService;
+	@Autowired
+	private SmartExceptionService smartExceptionService;
 	
 	private static final String DATA = "data";
 	
@@ -57,27 +62,67 @@ public class SmartDataInpution {
 		String token = json.getString("token");
 		Object obj = null;
 		if(token.equals("bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a")){
-			if(type.equals("getallclass")){//通过学校名字查询所有班级
+			if(type.equals("getallclass")){
+				//通过学校名字查询所有班级
 				obj = getallclass(json);
-			}else if(type.equals("getallstudent")){//通过班级id查询所有学生
+			}else if(type.equals("getallstudent")){
+				//通过班级id查询所有学生
 				obj = getallstudent(json);
-			}else if(type.equals("deleteepc")){//通过epc值进行删除相应的epc
+			}else if(type.equals("deleteepc")){
+				//通过epc值进行删除相应的epc
 				obj = deleteepc(json);
-			}else if(type.equals("findallepcclassid")){//通过班级id查询所有的epc
+			}else if(type.equals("findallepcclassid")){
+				//通过班级id查询所有的epc
 				obj = findallepcclassid(json);
-			}else if(type.equals("saveepc")){//通过学生id和epc值进行数据保存
+			}else if(type.equals("saveepc")){
+				//通过学生id和epc值进行数据保存
 				obj = saveepc(json);
-			}else if(type.equals("queryEpc")){//通过epc查询是否已绑定
+			}else if(type.equals("queryEpc")){
+				//通过epc查询是否已绑定
 				obj = queryEpc(json);
-			}else if(type.equals("saveepcio")){//通过epc，ioType，ioDate，rfidId，studentId保存学生进出校园数据
+			}else if(type.equals("saveepcio")){
+				//通过epc，ioType，ioDate，rfidId，studentId保存学生进出校园数据
 				obj = saveepcio(json);
-			}else if(type.equals("getonschoolstudent")){//通过学校名字查询所有在校的学生
+			}else if(type.equals("getonschoolstudent")){
+				//通过学校名字查询所有在校的学生
 				obj = getonschool(json);
+			}else if(type.equals("exceptionSave")){
+				//异常信息上传
+				obj = exceptionSave(json);
+			}else if(type.equals("getallexception")){
+				//通过学校名查询所有的异常信息
+				obj = getallexception(json);
 			}
 			return (R)obj ;
 		}else{
 			return R.error("token错误");
 		}
+	}
+	
+	public Object getallexception(JSONObject json){
+		Object obj = null;
+		String schoolName = json.getString("schoolName");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("schoolName", schoolName);
+		map.put("sidx", null);
+		map.put("order", null);
+		map.put("offset", 0);
+		map.put("limit", 100);
+		obj = R.ok().put(DATA, smartExceptionService.queryList(map));
+		return obj;
+	}
+	
+	public Object exceptionSave(JSONObject json){
+		String schoolName = json.getString("schoolName");
+		String modularName = json.getString("modularName");
+		String exceptionInformation = json.getString("exceptionInformation");
+		SmartExceptionEntity exception = new SmartExceptionEntity();
+		exception.setCreatetime(new Date());
+		exception.setSchoolname(schoolName);
+		exception.setModularname(modularName);
+		exception.setExceptioninformation(exceptionInformation);
+		smartExceptionService.save(exception);
+		return R.ok();
 	}
 	
 	public Object getonschool(JSONObject json){
