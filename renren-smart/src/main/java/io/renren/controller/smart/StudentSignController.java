@@ -7,6 +7,7 @@ import io.renren.entity.smart.StudentEntity;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.StudentService;
+import io.renren.util.MsgUtil;
 import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,6 +25,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.aliyuncs.exceptions.ClientException;
 
 @RestController("signControllerSmart")
 @RequestMapping("/smart/sign")
@@ -34,6 +38,54 @@ public class StudentSignController {
 	private IoService ioService;
 	@Autowired
 	private SmartLeaveService smartLeaveService;
+	
+	/**
+	 * 根据手机号和验证码修改用户的手机号码
+	 */
+	@RequestMapping("/updateStudentPhone")
+	public R updateStudentPhone(HttpServletRequest request,HttpSession session){
+		StudentEntity student = (StudentEntity) session.getAttribute(ControllerConstant.SESSION_SMART_USER_KEY);
+		String phoneyzm = request.getParameter("phoneyzm");
+		String phone = request.getParameter("phone");
+		if(phone == null || "".equals(phone)){
+			return R.error("手机号不能为空");
+		}
+		if(phoneyzm == null || "".equals(phoneyzm)){
+		}else{
+			if(!phoneyzm.equals(request.getSession().getAttribute("phoneyzm"))){
+				return R.error("验证码错误");
+			}else{
+				student.setPhoen(phone);
+				studentService.update(student);
+			}
+		}
+		return R.ok();
+	}
+	
+	/**
+	 * 通过手机号发送验证码
+	 */
+	@RequestMapping("/findyanzhengma")
+	public R findyanzhengma(HttpServletRequest request,HttpSession session){
+		String phone = request.getParameter("phone");
+		String randow = getRandow();
+		try { 
+			MsgUtil.sendSms(phone, randow);
+			request.getSession().setAttribute("phoneyzm", randow);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return R.ok();
+	}
+	
+	private String getRandow(){
+		String randow = "";
+		 Random random = new Random();
+		for(int i = 0; i < 6; i++){
+			randow += random.nextInt(10);
+		}
+		return randow;
+	}
 	
 	/**
 	 * 根据请假条id修改状态
