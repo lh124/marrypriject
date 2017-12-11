@@ -128,15 +128,19 @@ public class SmartDataInpution {
 	public Object getonschool(JSONObject json){
 		Object obj = null;
 		String schoolName = json.getString("schoolName");
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("schoolId", schoolEntity.getId());
-		map.put("total", ioService.queryListtongjiimgxf(m).size());
-		map.put("zxtotal", ioService.queryListtongji(m).size());
-		obj = R.ok().put(DATA, map);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		if(schoolEntity != null){
+			Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("schoolId", schoolEntity.getId());
+			map.put("total", ioService.queryListtongjiimgxf(m).size());
+			map.put("zxtotal", ioService.queryListtongji(m).size());
+			obj = R.ok().put(DATA, map);
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		}else{
+			obj = R.error("暂无此学校");
+		}
 		return obj;
 	}
 	
