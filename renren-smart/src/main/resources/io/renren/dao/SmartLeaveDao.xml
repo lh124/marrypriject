@@ -5,11 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,userId as userid ,calssId as calssid ,states as states ,content as content ,startDate as startdate ,endDate as enddate 		
+		id as id ,userId as userid ,calssId as calssid ,states as states ,content as content ,
+		startDate as startdate ,endDate as enddate,beizhu as beizhu  		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,userId ,calssId ,states ,content ,startDate ,endDate 		
+		id ,userId ,calssId ,states ,content ,startDate ,endDate ,beizhu		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartLeaveEntity" id="smartLeaveMap">
@@ -19,6 +20,7 @@
 		        <result property="states" column="states"/>
 		        <result property="content" column="content"/>
 		        <result property="startdate" column="startDate"/>
+		        <result property="beizhu" column="beizhu"/>
 		        <result property="enddate" column="endDate"/>
 	    </resultMap>
 
@@ -82,6 +84,7 @@
 			<if test="states != null">`states` = #{states}, </if>
 			<if test="content != null">`content` = #{content}, </if>
 			<if test="startdate != null">`startDate` = #{startdate}, </if>
+			<if test="beizhu != null">`beizhu` = #{beizhu}, </if>
 			<if test="enddate != null">`endDate` = #{enddate}</if>
 		</set>
 		where id = #{id}
