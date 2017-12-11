@@ -70,7 +70,7 @@ public class StudentSignController {
 		String phone = request.getParameter("phone");
 		String randow = getRandow();
 		try { 
-			MsgUtil.sendSms(phone, randow);
+			MsgUtil.sendSms(phone, randow,MsgUtil.YZMBD);
 			request.getSession().setAttribute("phoneyzm", randow);
 		} catch (ClientException e) {
 			e.printStackTrace();
@@ -94,9 +94,11 @@ public class StudentSignController {
 	public R updateleave(HttpServletRequest request){
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		String states = request.getParameter("states");
+		String beizhu = request.getParameter("beizhu");
 		SmartLeaveEntity leave = new SmartLeaveEntity();
 		leave.setId(id);
 		leave.setStates(states);
+		leave.setBeizhu(beizhu);
 		smartLeaveService.update(leave);
 		return R.ok();
 	}
@@ -170,8 +172,9 @@ public class StudentSignController {
 	 */
 	@RequestMapping("/findStudentIo")
 	public R findStudentIo(HttpServletRequest request){
+		Integer studentId = Integer.parseInt(request.getParameter("studentId"));
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("studentId", request.getParameter("studentId"));
+		map.put("studentId", studentId);
 		if(request.getParameter("page") != null && !"".equals(request.getParameter("page"))){
 			int page = Integer.parseInt(request.getParameter("page"));
 			map.put("limit", page*10);
@@ -180,6 +183,9 @@ public class StudentSignController {
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		List<IoEntity> ioList = ioService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("iolist", ioList);
+		m.put("student", studentService.queryObject(studentId));
 		return R.ok().put("data", ioList);
 	}
 	
