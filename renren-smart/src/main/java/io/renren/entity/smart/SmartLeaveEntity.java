@@ -46,8 +46,17 @@ public class SmartLeaveEntity implements Serializable {
 	//请假结束时间
 	@TableField(value="endDate")
 	private Date enddate;
+	
+	@TableField(value="beizhu")
+	private String beizhu;
 			
 
+	public String getBeizhu() {
+		return beizhu;
+	}
+	public void setBeizhu(String beizhu) {
+		this.beizhu = beizhu;
+	}
 	/**
 	 * 设置：
 	 */
