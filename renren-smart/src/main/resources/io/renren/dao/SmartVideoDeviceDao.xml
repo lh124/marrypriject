@@ -5,11 +5,13 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,school_id as schoolId ,verification_code as verificationCode ,serial_number as serialNumber ,teacher_see as teacherSee ,student_see as studentSee 		
+		id as id ,school_id as schoolId ,verification_code as verificationCode ,serial_number as serialNumber ,
+		teacher_see as teacherSee ,student_see as studentSee,
+		cameraNo as cameraNo 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,school_id ,verification_code ,serial_number ,teacher_see ,student_see 		
+		id ,school_id ,verification_code ,serial_number ,teacher_see ,student_see,cameraNo 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartVideoDeviceEntity" id="smartVideoDeviceMap">
@@ -18,6 +20,7 @@
 		        <result property="verificationCode" column="verification_code"/>
 		        <result property="serialNumber" column="serial_number"/>
 		        <result property="teacherSee" column="teacher_see"/>
+		        <result property="cameraNo" column="cameraNo"/>
 		        <result property="studentSee" column="student_see"/>
 	    </resultMap>
 
@@ -58,6 +61,7 @@
 			`verification_code`, 
 			`serial_number`, 
 			`teacher_see`, 
+			`cameraNo`, 
 			`student_see`
 		)
 		values
@@ -66,7 +70,8 @@
 			#{schoolId}, 
 			#{verificationCode}, 
 			#{serialNumber}, 
-			#{teacherSee}, 
+			#{teacherSee},
+			#{cameraNo}, 
 			#{studentSee}
 		)
 	</insert>
@@ -78,6 +83,7 @@
 			<if test="verificationCode != null">`verification_code` = #{verificationCode}, </if>
 			<if test="serialNumber != null">`serial_number` = #{serialNumber}, </if>
 			<if test="teacherSee != null">`teacher_see` = #{teacherSee}, </if>
+			<if test="cameraNo != null">`cameraNo` = #{cameraNo}, </if>
 			<if test="studentSee != null">`student_see` = #{studentSee}</if>
 		</set>
 		where id = #{id}
