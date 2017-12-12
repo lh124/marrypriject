@@ -6,7 +6,8 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '学校id', name: 'schoolId', index: 'school_id', width: 80 }, 			
 			{ label: '设备验证码', name: 'verificationCode', index: 'verification_code', width: 80 }, 			
-			{ label: '设备序列号', name: 'serialNumber', index: 'serial_number', width: 80 }, 			
+			{ label: '设备序列号', name: 'serialNumber', index: 'serial_number', width: 80 }, 	
+			{ label: '设备通道', name: 'cameraNo', index: 'cameraNo', width: 80 },
 			{ label: '是否允许老师查看', name: 'teacherSee', index: 'teacher_see', width: 80,formatter :function(r){
 				 if(r == 1 ){
 					 return '是';
