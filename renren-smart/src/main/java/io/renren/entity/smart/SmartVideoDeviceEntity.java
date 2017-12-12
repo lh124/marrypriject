@@ -41,8 +41,18 @@ public class SmartVideoDeviceEntity implements Serializable {
 	//是否允许学生查看（0否，1是）
 	@TableField(value="student_see")
 	private Integer studentSee;
+	
+	//通道
+	@TableField(value="cameraNo")
+	private Integer cameraNo;
 			
 
+	public Integer getCameraNo() {
+		return cameraNo;
+	}
+	public void setCameraNo(Integer cameraNo) {
+		this.cameraNo = cameraNo;
+	}
 	/**
 	 * 设置：
 	 */
