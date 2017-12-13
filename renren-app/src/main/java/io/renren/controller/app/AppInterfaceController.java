@@ -235,7 +235,7 @@ public class AppInterfaceController {
 					return classworkmsg(json.getJSONObject("data"),multipartResolver,request);
 				}else if(type.equals("getVideoDevice")){
 					//获取允许查看的摄像头
-					return getVideoDevice(json.getJSONObject("data"));
+					return R.ok().put(DATA, getVideoDevice(json.getInt("userType"),json.getInt("schoolId")));
 				}else if(type.equals("getallschool")){
 					//学校列表
 					return getallschool();
@@ -249,26 +249,64 @@ public class AppInterfaceController {
 					//通过学生id查询自己的请假记录
 					return getStudentIdLeave(json.getJSONObject("data"));
 				}else if(type.equals("getClassIdLeave")){
-					//通过班级id查询当天请假人数
-					return getClassIdLeave(json.getJSONObject("data"));
+//					//通过班级id查询当天请假人数
+//					return getClassIdLeave(json.getJSONObject("data"));
 				}else if(type.equals("getSmartLeaveDetail")){
 					//通过请假条id查询请假条详情
 					return getSmartLeaveDetail(json.getJSONObject("data"));
 				}else if(type.equals("getStudentzaixiao")){
-					//通过班级id查询在校或者不在校的学生的学生
-					return getStudentzaixiao(json.getJSONObject("data"));
+//					//通过班级id查询在校或者不在校的学生的学生
+//					return getStudentzaixiao(json.getJSONObject("data"));
 				}else if(type.equals("sendMsg")){
 					//通过手机号码发送验证码
 					return sendMsg(json.getJSONObject("data"));
 				}else if(type.equals("updatePhone")){
 					//绑定或修改手机号
 					return updatePhone(json.getJSONObject("data"));
+				}else if(type.equals("updateLeaveType")){
+					//老师是否同意请假条
+					return updateLeaveType(json.getJSONObject("data"));
+				}else if(type.equals("updatepasswrodtophone")){
+					//忘记密码：通过手机号找回密码
+					return updatepasswrodtophone(json.getJSONObject("data"));
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R updatepasswrodtophone(JSONObject json){
+		String  phone = json.getString("phone");
+		StudentEntity user = new StudentEntity();
+		user.setPhoen(phone);
+		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
+		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
+		user = this.studentService.selectOne(wrapper);
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		if(user == null){
+			return R.error("该号码暂未绑定");
+		}else{
+			user.setPasswordd(new Sha256Hash("000000").toHex());
+			studentService.update(user);
+			try {
+				MsgUtil.sendSms(phone, "000000",MsgUtil.YZMPASSWORD);
+			} catch (ClientException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.ok().put(DATA, "密码为：000000");
+	}
+	
+	private R updateLeaveType(JSONObject json){
+		Integer id = Integer.parseInt(json.getString("id"));
+		SmartLeaveEntity leave = new SmartLeaveEntity();
+		leave.setId(id);
+		leave.setStates(json.getString("states")); 
+		leave.setBeizhu(json.getString("beizhu"));
+		smartLeaveService.update(leave);
+		return R.ok().put(DATA, smartLeaveService.queryObject(id));
 	}
 	
 	private R updatePhone(JSONObject json){
@@ -290,7 +328,7 @@ public class AppInterfaceController {
 			return R.error("手机号码有误，请重新输入");
 		}else{
 			try {
-				MsgUtil.sendSms(phone, randow);
+				MsgUtil.sendSms(phone, randow,MsgUtil.YZMBD);
 			} catch (ClientException e) {
 				e.printStackTrace();
 			}
@@ -307,9 +345,7 @@ public class AppInterfaceController {
 		return randow;
 	}
 	
-	private R getStudentzaixiao(JSONObject json){
-		Integer classId = json.getInt("classId");
-		Integer type = json.getInt("zaixiaotype");
+	private List<StudentEntity> getStudentzaixiao(Integer classId,Integer type){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classId", classId);
 		if(type == 1){
@@ -322,7 +358,7 @@ public class AppInterfaceController {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		List<StudentEntity> list = studentService.queryListStudent(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok().put(DATA, list);
+		return list;
 	}
 	
 	private R getSmartLeaveDetail(JSONObject json){
@@ -338,12 +374,12 @@ public class AppInterfaceController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private R getClassIdLeave(JSONObject json){
+	private List<StudentEntity> getClassIdLeave(Integer classId){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("offset", 0);
 		map.put("limit", 100);
 		map.put("userId", null);
-		map.put("classId", json.getInt("classId"));
+		map.put("classId", classId);
 		List<StudentEntity> list = new ArrayList<StudentEntity>();
 		List<SmartLeaveEntity> leaveList = smartLeaveService.queryList(map);
 		for (Iterator iterator = leaveList.iterator(); iterator.hasNext();) {
@@ -352,7 +388,7 @@ public class AppInterfaceController {
 			student.setId(smartLeaveEntity.getId());//将请假条的id设置给学生id便于后面查询请假条详情
 			list.add(student);
 		}
-		return R.ok().put(DATA, list);
+		return list;
 	}
 	
 	private R getStudentIdLeave(JSONObject json){
@@ -391,7 +427,12 @@ public class AppInterfaceController {
 		map.put("userType", 1);
 		List<StudentEntity> list = studentService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok().put(DATA, list);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("allstudent", list);//班级所有学生
+		m.put("zaixiaostudent", getStudentzaixiao(classId, 1));//在校学生
+		m.put("nozaixiaostudent", getStudentzaixiao(classId, 2));//不在校学生
+		m.put("leavestudent", getClassIdLeave(classId));//请假的学生
+		return R.ok().put(DATA, m);
 	}
 	
 	private R getallschool(){
@@ -404,22 +445,22 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, list);
 	}
 	
-	private R getVideoDevice(JSONObject json){
+	private List<SmartVideoDeviceEntity> getVideoDevice(Integer userType,Integer schoolId){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sidx", null);
 		map.put("order", null);
 		map.put("offset", 0);
 		map.put("limit", 30);
-		if(json.getInt("userType") == 1){
+		if(userType == 1){
 			map.put("teacherSee", null);
 			map.put("studentSee", 1);
-		}else if(json.getInt("userType") == 2){
+		}else if(userType == 2){
 			map.put("teacherSee", 1);
 			map.put("studentSee", null);
 		}
-		map.put("schoolId", json.get("schoolId"));
+		map.put("schoolId", schoolId);
 		List<SmartVideoDeviceEntity> list = smartVideoDeviceService.queryList(map);
-		return R.ok().put(DATA, list);
+		return list;
 	}
 	
 	private R classworkmsg(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -600,6 +641,7 @@ public class AppInterfaceController {
 			ClassNoticeEntity classNotice = new ClassNoticeEntity();
 			classNotice.setClassId(json.getString("classId") + "");
 			classNotice.setContent(json.getString("content"));
+			classNotice.setNoticeType(json.getString("noticeType"));
 			classNotice.setTitle(json.getString("title"));
 			classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 			InputStream[] is = uploadfile(multipartResolver, request);
@@ -642,11 +684,22 @@ public class AppInterfaceController {
 	
 	public R ioepclist(JSONObject json){
 		Map<String, Object> map = getMap(json);
-		map.put("studentId", json.getString("studentId"));
+		Integer id = Integer.parseInt(json.getString("studentId"));
+		map.put("studentId", id);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		List<IoEntity> list = ioService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok().put(DATA, list);
+		Map<String, Object> m = new HashMap<String, Object>();
+		StudentEntity student = studentService.queryObject(id);
+		m.put("list", list);
+		m.put("student", student);
+		ClassEntity classEntity = classService.queryObject(student.getClassId());
+		if(Integer.parseInt(student.getUserType()) == 1){
+			m.put("videoDeviceList", getVideoDevice(Integer.parseInt(student.getUserType()), classEntity.getSchoolId()));
+		}else if(Integer.parseInt(student.getUserType()) == 2){
+			m.put("videoDeviceList", getVideoDevice(Integer.parseInt(student.getUserType()), student.getSchoolId()));
+		}
+		return R.ok().put(DATA, m);
 	}
 	
 	@SuppressWarnings("rawtypes")
