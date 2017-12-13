@@ -47,6 +47,13 @@
 		        <!-- <div class="weui-cells__title">单选列表项</div> -->
 		        <div class="weui-cells weui-cells_form">
 		        <input class="weui-textarea weui-cell__bd weui-cell" id ="title" placeholder="请输入通知标题" >
+		        <select class="weui-textarea weui-cell__bd weui-cell"  id="noticeType">
+		            <option value="作业通知">作业通知</option>
+		            <option value="放假通知">放假通知</option>
+		            <option value="班会通知">班会通知</option>
+		            <option value="家长会通知">家长会通知</option>
+		            <option value="其他通知">其他通知</option>
+		        </select>
 		            <div class="weui-cell">
 		                <div class="weui-cell__bd">
 		                    <textarea oninput="counts(this)" id="contentNotice" class="weui-textarea" placeholder="请输入需要通知的内容" rows="3"></textarea>
@@ -166,7 +173,7 @@ wx.ready(function () {
 				var classId = document.getElementById("classId").value;
 				$.ajax({
 					type: "POST",
-				    url: "../shouye/saveclassnotice?classId=" + classId + "&content=" + contentNotice + "&title=" + title,
+				    url: "../shouye/saveclassnotice?noticeType="+$("#noticeType").val()+"&classId=" + classId + "&content=" + contentNotice + "&title=" + title,
 				    success: function(r){
 				    	var json = JSON.parse(r);
 				    	if(length > 0){
