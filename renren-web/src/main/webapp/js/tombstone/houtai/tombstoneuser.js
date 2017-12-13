@@ -81,6 +81,7 @@ var vm = new Vue({
 			    success: function(r){
 			    	if(r.code === 0){
 			    		document.getElementById("myUserId").value = r.id;
+			    		document.getElementById("type2").value = 1;
 			    		if(document.getElementById("fileimg").value != null && document.getElementById("fileimg").value != ""){
 			    			getFile(document.getElementById("fileimg"));
 			    			vm.reload();
