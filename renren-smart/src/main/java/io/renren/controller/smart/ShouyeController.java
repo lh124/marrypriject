@@ -335,6 +335,7 @@ public class ShouyeController {
 		classNotice.setClassId(request.getParameter("classId"));
 		classNotice.setContent(request.getParameter("content"));
 		classNotice.setTitle(request.getParameter("title"));
+		classNotice.setNoticeType(request.getParameter("noticeType"));
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		classNoticeService.insert(classNotice);
 		return R.ok().put("id", classNotice.getId());
