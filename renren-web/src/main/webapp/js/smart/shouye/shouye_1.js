@@ -32,23 +32,24 @@ $(function(){
 	                        for(var i = 0; i < arrLen; i++){
 		           				var img; 
 		           				var imgs = "";
-		           				var content = "";
+		           				var noticeType = "";
 		           				var pic = "";
-		    					if(data.page.list[i].noticepic == null || data.page.list[i].noticepic == ""){
-		    			        	   
-		    			        }else{
-		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].noticepic+'" width="100%" height="55%"></div></p>';
-		    			        };
-		           				content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
-	           		            '</p>';
+		           				if(data.page.list[i].noticeType == null || data.page.list[i].noticeType == ""){
+	                        		noticeType = '<p id="paragraph" class="paragraph">其他通知</p>';
+	                        	}else{
+	                        		noticeType = '<p id="paragraph" class="paragraph">' + data.page.list[i].noticeType +
+		           		            '</p>';
+	                        	}
 		           				result += '<div class="weui_cells moments">'+
 		           		        '<div class="weui_cell moments__post">'+
 		           		        
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
-		           		            '<a class="title" href="#">'+
-		           		              '<span>' + data.page.list[i].title + '</span>'+
-		           		            '</a>'+pic+content +
-		           		          
+				           		       '<a class="title" href="./shouye_1_detail.html?id='+data.page.list[i].id+'">'+
+		       		                 '<span>' + data.page.list[i].title + '</span>'+
+		       		               '</a>'+
+		       		              '<a class="title" href="./shouye_1_detail.html?id='+data.page.list[i].id+'">'+
+		       		                 noticeType+
+		       		               '</a>'+
 		           		          '</div>'+
 		           		        '</div>'+
 		           		      '</div>';
@@ -104,24 +105,23 @@ $(function(){
 	                    if(arrLen > 0){
 	                        for(var i = 0; i < arrLen; i++){
 	                        	var img;
-		   						
 	                        	var imgs = "";
-	                        	var content = "";
-	                        	var pic = "";
-		    					if(data.page.list[i].noticepic == null || data.page.list[i].noticepic == ""){
-		    			        	   
-		    			        }else{
-		    			        	pic = '<p><div style="text-align: center;"><img src= "' +  data.page.list[i].noticepic+'" width="100%" height="55%"></div></p>';
-		    			        };
-	                        	content = '<p id="paragraph" class="paragraph">' + data.page.list[i].content +
-	           		            '</p>';
+	                        	var noticeType = "";
+	                        	if(data.page.list[i].noticeType == null || data.page.list[i].noticeType == ""){
+	                        		noticeType = '<p id="paragraph" class="paragraph">其他通知</p>';
+	                        	}else{
+	                        		noticeType = '<p id="paragraph" class="paragraph">' + data.page.list[i].noticeType +
+		           		            '</p>';
+	                        	}
 		           				result += '<div class="weui_cells moments">'+
 		           		        '<div class="weui_cell moments__post">'+
 		           		          '<div class="weui_cell_bd" style="width:100%;">'+
-		           		            '<a class="title" href="javascript:;">'+
-		           		              '<span>' + data.page.list[i].title + '</span>'+
-		           		            '</a>'+pic+content +
-		           		       
+			           		       '<a class="title" href="./shouye_1_detail.html?id='+data.page.list[i].id+'">'+
+	         		                 '<span>' + data.page.list[i].title + '</span>'+
+	         		               '</a>'+
+	         		              '<a class="title" href="./shouye_1_detail.html?id='+data.page.list[i].id+'">'+
+	         		                 noticeType+
+	         		               '</a>'+
 		           		          '</div>'+
 		           		        '</div>'+
 		           		      '</div>';
