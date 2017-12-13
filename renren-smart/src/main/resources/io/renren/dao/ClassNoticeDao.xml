@@ -5,11 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,title as title ,noticePic as noticepic ,classId,content as content ,createTime as createtime 		
+		id as id ,title as title ,noticePic as noticepic ,classId,content as content ,
+		createTime as createtime ,noticeType as noticeType		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,title ,noticePic ,content ,createTime,classId 		
+		id ,title ,noticePic ,content ,createTime,classId ,noticeType		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.ClassNoticeEntity" id="classNoticeMap">
@@ -18,6 +19,7 @@
 		        <result property="noticepic" column="noticePic"/>
 		        <result property="content" column="content"/>
 		        <result property="createtime" column="createTime"/>
+		        <result property="noticeType" column="noticeType"/>
 		        <result property="classId" column="classId"/>
 	    </resultMap>
 
@@ -49,6 +51,7 @@
 		(
 			`title`, 
 			`noticePic`, 
+			`noticeType`, 
 			`content`, 
 			`classId`,
 			`createTime`
@@ -57,6 +60,7 @@
 		(
 			#{title}, 
 			#{noticepic}, 
+			#{noticeType}, 
 			#{content}, 
 			#{classId},
 			#{createtime}
@@ -69,6 +73,7 @@
 			<if test="title != null">`title` = #{title}, </if>
 			<if test="noticepic != null">`noticePic` = #{noticepic}, </if>
 			<if test="content != null">`content` = #{content}, </if>
+			<if test="noticeType != null">`noticeType` = #{noticeType}, </if>
 			<if test="createtime != null">`createTime` = #{createtime}</if>
 		</set>
 		where id = #{id}
