@@ -12,7 +12,13 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '登录账号', name: 'name', index: 'name', width: 80 }, 			
 			{ label: '昵称', name: 'nickname', index: 'nickname', width: 80 },
-			{ label: '头像', name: 'pic', index: 'pic', width: 80 }, 			
+			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
+				 if(r != null && r != ""){
+					 return '<img src="' + r + '" style="width:80px;height:80px;" />';
+				 }else{
+					 return '';
+				 }
+			} },
 			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 },
 			{ label: '操作', name: 'id', index: 'id', width: 80,formatter :function(r){
 				 return '<button onclick="shipin(' + r +')">视频上传</button>';
@@ -20,7 +26,7 @@ $(function () {
 			}
         ],
 		viewrecords: true,
-        height: 385,
+        height: 600,
         rowNum: 10,
 		rowList : [10,30,50],
         rownumbers: true, 

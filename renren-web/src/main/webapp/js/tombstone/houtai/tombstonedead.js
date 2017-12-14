@@ -9,13 +9,19 @@ $(function () {
 			},
 			{ label: '死者姓名(第一代)', name: 'name', index: 'name', width: 80 },
 			{ label: '拼音', name: 'account', index: 'account', width: 80 },
-			{ label: '头像', name: 'image', index: 'image', width: 80 }, 			
+			{ label: '头像', name: 'image', index: 'image', width: 80,formatter :function(r){
+				 if(r != null && r != ""){
+					 return '<img src="' + r + '" style="width:80px;height:80px;" />';
+				 }else{
+					 return '';
+				 }
+			} },
 			{ label: '生卒年', name: 'birthdayanddeath', index: 'birthdayanddeath', width: 80 }, 			
 			{ label: '个人简介', name: 'content', index: 'content', width: 80 }, 			
 			{ label: '创建时间', name: 'createtime', index: 'createtime', width: 80 }			
         ],
 		viewrecords: true,
-        height: 385,
+        height: 600,
         rowNum: 10,
 		rowList : [10,30,50],
         rownumbers: true, 
