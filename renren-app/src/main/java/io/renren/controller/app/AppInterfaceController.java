@@ -145,7 +145,7 @@ public class AppInterfaceController {
 		System.out.println("---"+key);
 		JSONObject json = JSONObject.fromObject(key);//用户登录
 		String type = json.getString("type");
-		if(json.get("token") == null){
+		if(json.get("token") == null || "".equals(json.get("token")) || "null".equals(json.get("token"))){
 			if(type.equals("userLogin")){//用户登录接口
 				return login(json);
 			}else{
@@ -585,7 +585,7 @@ public class AppInterfaceController {
 	public R updateheadportrait(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		try {
 			StudentEntity student = new StudentEntity();
-			student.setId(Integer.parseInt(json.getString("userId")));
+			student.setId(Integer.parseInt(json.getString("studentId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
 				student.setPic(FILEPATH+"head_img/"+OssUploadUtil.uploadObject2OSS(is[0], "head_img/"));
@@ -954,6 +954,8 @@ public class AppInterfaceController {
 				}
 				map.put("userType", user.getUserType());
 				map.put("studentName", user.getStudentName());
+				map.put("studentNo", user.getStudentNo());
+				map.put("phone", user.getPhoen());
 				return R.ok().put(DATA, map);
 			}else{
 				return R.error("密码错误");
@@ -963,7 +965,7 @@ public class AppInterfaceController {
 	
 	//图片文件上传
 	public InputStream[] uploadfile(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
-			InputStream[] is = null;
+		InputStream[] is = null;
 			//判断 request 是否有文件上传,即多部分请求  
 	        if(multipartResolver.isMultipart(request)){
 	        	MultipartHttpServletRequest m= (MultipartHttpServletRequest)request;
