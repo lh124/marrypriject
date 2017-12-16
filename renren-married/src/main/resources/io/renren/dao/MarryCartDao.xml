@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryCartDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,main_id as mainId ,states as states ,createTime as createtime,userId as userId 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,main_id ,states ,createTime ,userId		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryCartEntity" id="marryCartMap">
+		        <result property="id" column="id"/>
+		        <result property="mainId" column="main_id"/>
+		        <result property="states" column="states"/>
+		        <result property="userId" column="userId"/>
+		        <result property="createtime" column="createTime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryCartEntity">
+		select <include refid="allColumns"></include> from marry_cart where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryMainEntity">
+	    select t2.* from  marry_cart t1,marry_main t2 where t1.main_id=t2.id 
+		<if test="main_id != null and main_id != ''">
+			 and t1.main_id=#{main_id} and t1.states=#{states}
+		</if>
+		<if test="userId != null and userId != ''">
+			 and t1.userId=#{userId} and t1.states=#{states}
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_cart 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryCartEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_cart
+		(
+			`main_id`, 
+			`states`, 
+			`userId`,
+			`createTime`
+		)
+		values
+		(
+			#{mainId}, 
+			1, 
+			#{userId}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryCartEntity">
+		update marry_cart 
+		<set>
+			<if test="mainId != null">`main_id` = #{mainId}, </if>
+			<if test="states != null">`states` = #{states}, </if>
+			<if test="createtime != null">`createTime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_cart where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_cart where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
