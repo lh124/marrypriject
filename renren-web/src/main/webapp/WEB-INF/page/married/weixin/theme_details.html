@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<script type="text/javascript">
+    function init(){
+         $.ajax({
+				type: "POST",
+				url: "../weixin/index/findObj?id="+$("#id").val(),
+				dataType: "json",
+				success: function(result){
+					if(result.status == 'ok'){
+						$("#title").html(result.obj.title);
+						$("#author").html(result.obj.author);
+						$("#content").html(result.obj.content);
+						$("#pic").prop('src',result.obj.pic);
+						$("#price").html("￥"+result.obj.price);
+					}
+				}
+		});
+    }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
+<input type="hidden" id="id" value="${request.getParameter('id')}">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<div class="theme_top">
+				<div class="theme_top1"></div>
+				<div class="theme_top2"></div>
+			</div>
+	        <div class="details_con">
+				<h3 id="title"></h3>
+				<h4 id="author"></h4>
+				<p id="content"></p>
+				<img src="${rc.contextPath}/statics/marry/img/details.png" id="pic"/>
+	        </div>
+	        <div class="details_foot">
+				<div class="details_foot_top">
+					价格:<span id="price"></span>
+				</div>
+				<div class="details_foot_mid">
+					<a href="shop_cart.html">加入购物车</a>
+					<a href="confirm_order.html" style="margin-left:6%;">立即下单</a>
+				</div>
+	        </div>
+		</div>
+	</div>
+</body>
+</html>

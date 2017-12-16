@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" href="css/marry.css"/>
+    <script type="text/javascript" src="js/reset.js"></script>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+</head>
+<body ontouchstart style="background:#fff7f8;">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<div class="weui-flex feedback_tit" id="nav">
+	            <div class="weui-flex__item"><span class="active">全部<br/>127</span></div>
+	            <div class="weui-flex__item"><span>接受<br/>127</span></div>
+	            <div class="weui-flex__item"><span>暂定<br/>127</span></div>
+	        </div>
+	        <div class="feedback_con" style="display: block;">
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+	        </div>
+	        <div class="feedback_con">
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳1</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳1</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳1</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳1</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+	        </div>
+	        <div class="feedback_con">
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳2</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳2</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳2</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳2</dd>
+				</dl>
+				<dl>
+					<dt><img src="img/aa.png"></dt>
+					<dd>李元芳2</dd>
+				</dl>
+	        </div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+            $('#nav div').on("click",function(){
+                var index = $(this).prevAll().length;
+                $(this).find('span').addClass('active');
+                $(this).siblings().find('span').removeClass('active');
+                $(".feedback_con").hide();
+                $(".feedback_con").eq(index).show();
+            });
+        });
+	</script>
+</body>
+</html>

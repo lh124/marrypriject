@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" href="css/marry.css"/>
+    <script type="text/javascript" src="js/reset.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+<body ontouchstart style="background:#efefef;">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<h4 class="data_tit">婚礼邀请</h4>
+			<div class="data_side">
+				<div id="mychart"></div>
+			</div>
+			<div class="data_video">
+				<div class="data_video_tit">
+					<img src="img/message.png" />
+					祝福统计
+				</div>
+				<div class="data_video_amount">
+					祝福总计<span>300条</span>
+				</div>
+			</div>
+			<div class="data_video">
+				<div class="data_video_tit">
+					<img src="img/video.png" />
+					视频统计
+				</div>
+				<div class="data_video_amount">
+					视频总计<span>300个</span>
+				</div>
+			</div>
+			<div class="data_packet">
+				<div class="data_packet_tit">
+					<img src="img/packet.png" />
+					红包统计
+				</div>
+				<div class="data_packet_amount" style="border-bottom: 1px solid #F4F4F4;">
+					红包总计<span>300个</span>
+				</div>
+				<div class="data_packet_amount" style="border-bottom: 1px solid #F4F4F4;">
+					红包金额<span>30000元</span>
+				</div>
+				<div class="data_packet_amount">
+					<button class="tixian" type="button">提现</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var myChart = echarts.init(document.getElementById('mychart'));
+	option = {
+	    tooltip: {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b}: {c} ({d}%)"
+	    },
+	    legend: {
+	        orient: 'vertical',
+	        x: '10px',
+	        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+	    },
+	    series: [
+	        {
+	            name:'访问来源',
+	            type:'pie',
+	            radius: ['50%', '70%'],
+	            center: ['60%','50%'],
+	            avoidLabelOverlap: false,
+	            label: {
+	                normal: {
+	                    show: false,
+	                    position: 'center'
+	                },
+	                emphasis: {
+	                    show: true,
+	                    textStyle: {
+	                        fontSize: '24',
+	                    }
+	                }
+	            },
+	            labelLine: {
+	                normal: {
+	                    show: false
+	                }
+	            },
+	            data:[
+	                {value:335, name:'直接访问'},
+	                {value:310, name:'邮件营销'},
+	                {value:234, name:'联盟广告'},
+	                {value:135, name:'视频广告'},
+	                {value:1548, name:'搜索引擎'}
+	            ]
+	        }
+	    ]
+	};
+	myChart.setOption(option);
+</script>
+</html>

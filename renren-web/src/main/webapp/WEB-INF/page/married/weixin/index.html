@@ -11,7 +11,17 @@
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript">
           function init(){
+                login();
                 maindata();
+           }
+           function login(){
+               $.ajax({
+						type: "POST",
+					    url: "../user/save",
+					    dataType: "json",
+					    success: function(result){
+						}
+				});
            }
            function maindata(){
                $.ajax({

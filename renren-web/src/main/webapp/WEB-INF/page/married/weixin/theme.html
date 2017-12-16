@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<script type="text/javascript">
+     function init(){
+               $.ajax({
+						type: "POST",
+					    url: "../weixin/index/list?page=1",
+					    dataType: "json",
+					    success: function(result){
+							if(result.status == 'ok'){
+							    var content = "";
+							    for(var i = 0; i < result.list.length; i++){
+							        content += '<a href="theme_details.html?id='+result.list[i].id+'"><dl><dt>'+
+							                   '<img style="height:180px;" src="'+result.list[i].pic+'"/></dt><dd>'+
+							                   '<p class="theme_con_p">'+result.list[i].title+'<br/><span>￥'+result.list[i].price+
+							                   '</span></p></dd></dl></a>';
+							    }
+							    $("#list").html(content);
+							}
+						}
+				});
+           }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<div class="theme_top">
+				<div class="theme_top1"></div>
+				<div class="theme_top2"></div>
+				<div class="theme_top3"></div>
+			</div>
+			<div class="theme_con" id="list">
+		
+			</div>
+		</div>
+	</div>
+</body>
+</html>
