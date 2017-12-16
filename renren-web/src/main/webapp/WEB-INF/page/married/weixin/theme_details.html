@@ -26,6 +26,19 @@
 				}
 		});
     }
+    function savecart(id){
+         $.ajax({
+				type: "POST",
+				url: "../weixin/cart/save?id="+id,
+				dataType: "json",
+				success: function(result){
+				    alert(result.msg);
+					if(result.status == 'ok'){
+						
+					}
+				}
+		});
+    }
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
 <input type="hidden" id="id" value="${request.getParameter('id')}">
@@ -46,7 +59,7 @@
 					价格:<span id="price"></span>
 				</div>
 				<div class="details_foot_mid">
-					<a href="shop_cart.html">加入购物车</a>
+					<a href="#" onclick="savecart(${request.getParameter('id')})">加入购物车</a>
 					<a href="confirm_order.html" style="margin-left:6%;">立即下单</a>
 				</div>
 	        </div>
