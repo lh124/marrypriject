@@ -62,9 +62,7 @@ public class MarriedInterfaceAuthorizationInterceptor extends HandlerInterceptor
         if (frontUser == null) {
         	return errorTurnHandler(url,request,response,"请先登录");
         }
-        
         return true;
-      
     }
     
     /**
