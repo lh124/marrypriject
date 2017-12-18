@@ -16,6 +16,7 @@
 		(
 			`user_id`, 
 			`token`, 
+			`accessToken`,
 			`expire_time`, 
 			`update_time`
 		)
@@ -23,6 +24,7 @@
 		(
 			#{userId}, 
 			#{token}, 
+			#{accessToken}, 
 			#{expireTime}, 
 			#{updateTime}
 		)
@@ -32,6 +34,7 @@
 		update tb_token 
 		<set>
 			<if test="token != null">`token` = #{token}, </if>
+			<if test="accessToken != null">`accessToken` = #{accessToken}, </if>
 			<if test="expireTime != null">`expire_time` = #{expireTime}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}</if>
 		</set>
