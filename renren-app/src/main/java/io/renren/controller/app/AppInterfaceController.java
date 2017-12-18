@@ -48,8 +48,13 @@ import io.renren.utils.R;
 import io.renren.utils.dataSource.DBTypeEnum;
 import io.renren.utils.dataSource.DbContextHolder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -269,12 +274,32 @@ public class AppInterfaceController {
 				}else if(type.equals("updatepasswrodtophone")){
 					//忘记密码：通过手机号找回密码
 					return updatepasswrodtophone(json.getJSONObject("data"));
+				}else if(type.equals("getAccessToken")){
+					//获取设备的AccessToken
+					return getAccessToken(json.getJSONObject("data"));
 				}
 			}else{
 				return R.error("您的账号已在其它设备上登录，请重新登录。");
 			}
 		}
 		return R.ok();
+	}
+	
+	private R getAccessToken(JSONObject json){
+		TokenEntity token = tokenService.queryByUserId(new Long(json.getInt("userId")));
+		String data = "";
+		if(token == null){
+			data = "该用户未登录";
+		}else{
+			if(new Date().getTime() > token.getExpireTime().getTime()){
+				JSONObject jso = getAccessToken("https://open.ys7.com/api/lapp/token/get");
+				token.setExpireTime(new Date(new Long(jso.getJSONObject("data").getString("expireTime"))));
+				token.setAccessToken(jso.getJSONObject("data").getString("accessToken"));
+				tokenService.update(token);
+			}
+			data = token.getAccessToken();
+		}
+		return R.ok().put(DATA, data);
 	}
 	
 	private R updatepasswrodtophone(JSONObject json){
@@ -474,7 +499,7 @@ public class AppInterfaceController {
 			pcwme.setGmtCreate(new Date());
 			pcwme.setStatus(1);
 			if(uploadmedio(multipartResolver, request) != null){
-				pcwme.setVoice("smart_medio/"+OssUploadUtil.uploadObject2OSS(uploadmedio(multipartResolver, request)[0], "smart_medio/"));
+				pcwme.setVoice(FILEPATH+"smart_medio/"+OssUploadUtil.uploadObject2OSS2(uploadmedio(multipartResolver, request)[0], "smart_medio/"));
 			}
 			photoClassWorkMsgService.insert(pcwme);
 			if(is != null){
@@ -483,7 +508,7 @@ public class AppInterfaceController {
 					ppwme.setGmtCreate(new Date());
 					ppwme.setRelatedId(pcwme.getId());
 					ppwme.setPicType(1);
-					ppwme.setName("smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_msg_pic/"));
+					ppwme.setName(FILEPATH+"smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_msg_pic/"));
 					photoPicWorkMsgService.save(ppwme);
 				}
 			}
@@ -928,16 +953,17 @@ public class AppInterfaceController {
 				TokenEntity token = tokenService.queryByUserId(new Long(user.getId()));
 				String tokening = new Sha256Hash(user.getPasswordd()+new Date()).toString();
 				if(token == null){
+					JSONObject jso = getAccessToken("https://open.ys7.com/api/lapp/token/get");
 					token = new TokenEntity();
 					token.setUserId(new Long(user.getId()));
 					token.setUpdateTime(new Date());
-					token.setExpireTime(new Date());
 					token.setToken(tokening);
+					token.setExpireTime(new Date(new Long(jso.getJSONObject("data").getString("expireTime"))));
+					token.setAccessToken(jso.getJSONObject("data").getString("accessToken"));
 					tokenService.save(token);
 				}else{
 					token.setToken(tokening);
 					token.setUpdateTime(new Date());
-					token.setExpireTime(new Date());
 					tokenService.update(token);
 				}
 				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
@@ -956,11 +982,67 @@ public class AppInterfaceController {
 				map.put("studentName", user.getStudentName());
 				map.put("studentNo", user.getStudentNo());
 				map.put("phone", user.getPhoen());
+				map.put("accessToken", token.getAccessToken());
 				return R.ok().put(DATA, map);
 			}else{
 				return R.error("密码错误");
 			}
 		}
+	}
+	
+	 public JSONObject getAccessToken(String url) {
+		    StringBuffer str = new StringBuffer();
+	        str.append("appKey=c963be80cbe0421ba77d2cf10fc1b6aa");
+	        str.append("&appSecret=5befd037504655c2607c45d2a78b4072");
+	        String param = str.toString();
+	        PrintWriter out = null;
+	        BufferedReader in = null;
+	        String result = "";
+	        try {
+	            URL realUrl = new URL(url);
+	            // 打开和URL之间的连接
+	            URLConnection conn = realUrl.openConnection();
+	            // 设置通用的请求属性
+	            conn.setRequestProperty("accept", "*/*");
+	            conn.setRequestProperty("connection", "Keep-Alive");
+	            conn.setRequestProperty("user-agent",
+	                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+	            // 发送POST请求必须设置如下两行
+	            conn.setDoOutput(true);
+	            conn.setDoInput(true);
+	            // 获取URLConnection对象对应的输出流
+	            out = new PrintWriter(conn.getOutputStream());
+	            // 发送请求参数
+	            out.print(param);
+	            // flush输出流的缓冲
+	            out.flush();
+	            // 定义BufferedReader输入流来读取URL的响应
+	            in = new BufferedReader(
+	                    new InputStreamReader(conn.getInputStream()));
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                result += line;
+	            }
+	        } catch (Exception e) {
+	            System.out.println("发送 POST 请求出现异常！"+e);
+	            e.printStackTrace();
+	        }
+	        //使用finally块来关闭输出流、输入流
+	        finally{
+	            try{
+	                if(out!=null){
+	                    out.close();
+	                }
+	                if(in!=null){
+	                    in.close();
+	                }
+	            }
+	            catch(IOException ex){
+	                ex.printStackTrace();
+	            }
+	        }
+	        JSONObject json = JSONObject.fromObject(result);
+	        return json;
 	}
 	
 	//图片文件上传
