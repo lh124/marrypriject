@@ -4,10 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
+<script type="text/javascript">
+     function save(){
+          var groomName = $("#groomName").val();
+          var brideName = $("#brideName").val();
+          var weddingDate = $("#weddingDate").val();
+          var weddingAddress = $("#weddingAddress").val();
+          var content = $("#content").val();
+          $.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveWedding?groomName="+groomName+"&brideName="+brideName+"&weddingDate="+
+			         weddingDate + "&weddingAddress="+weddingAddress+"&content="+content,
+				dataType: "json",
+				success: function(result){
+				    window.location.href="invite_card.html"; 
+				}
+		 });
+     }
+</script>
 <body ontouchstart style="background:#efefef;">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
@@ -15,7 +34,7 @@
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label class="weui-label">新郎姓名</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" type="text" placeholder="请输入新郎的真实姓名"/>
+	                    <input class="weui-input" id="groomName" type="text" placeholder="请输入新郎的真实姓名"/>
 	                </div>
 	            </div>
 	            <div class="weui-cell">
@@ -23,7 +42,7 @@
 	                    <label class="weui-label">新娘姓名</label>
 	                </div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" type="text" placeholder="请输入新娘的真实姓名"/>
+	                    <input class="weui-input" id="brideName" type="text" placeholder="请输入新娘的真实姓名"/>
 	                </div>
 	            </div>
 	        </div>
@@ -31,7 +50,7 @@
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label for="" class="weui-label">婚礼日期</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" type="datetime-local" value="" placeholder=""/>
+	                    <input class="weui-input" id="weddingDate" type="datetime-local" value="" placeholder=""/>
 	                </div>
 	            </div>
 	        </div>
@@ -39,7 +58,7 @@
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label for="" class="weui-label">婚礼地址</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" type="address" value="" placeholder="请输入婚礼地址"/>
+	                    <input class="weui-input" id="weddingAddress" type="address" value="" placeholder="请输入婚礼地址"/>
 	                </div>
 	            </div>
 	        </div>
@@ -47,14 +66,14 @@
 				<div class="weui-cell">婚礼留言</div>
 		        <div class="weui-cell">
 	                <div class="weui-cell__bd">
-	                    <textarea class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+	                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
 	                    <div class="weui-textarea-counter"><span>0</span>/200</div>
 	                </div>
 		        </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
-	                <a class="selectbg_next" href="invite_card.html">保存</a>
+	                <a class="selectbg_next" href="#" onclick="save()">保存</a>
 	            </div>
 	        </div>
 		</div>

@@ -4,23 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<body ontouchstart style="background:#ffffff;">
+<script type="text/javascript">
+     function init(){
+           $.ajax({
+				type: "POST",
+			    url: "../weixin/me/findWedding",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          $("#groomNameandbrideName").html(result.marryWedding.groomname+"&"+result.marryWedding.bridename);
+				          $("#weddingDate").html(result.marryWedding.weddingdate);
+				          $("#weddingAddress").html(result.marryWedding.weddingaddress);
+				          $("#content").html(result.marryWedding.content);
+				          var content = '<a class="selectbg_next" href="invite.html?id='+result.marryWedding.id+'">邀请好友</a>';
+				          $("#yqhyid").html(content);
+				     }
+				}
+		 });
+     }
+</script>
+<body ontouchstart style="background:#ffffff;" onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="invite_tit"></div>
 			<div class="invite_con">
-				<h3>新郎&新娘</h3>
-				<h4>2017.10.1</h4>
-				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
-				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
+				<h3 id="groomNameandbrideName">新郎&新娘</h3>
+				<h4 id="weddingDate">2017.10.1</h4>
+				<p id="weddingAddress">发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
+				<p id="content">发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
 			</div>
 			<div class="card_top weui-cells weui-cells_form">
-	            <div class="weui-cell">
-	                <a class="selectbg_next" href="invite.html">邀请好友</a>
+	            <div class="weui-cell" id="yqhyid">
 	            </div>
 	        </div>
 		</div>

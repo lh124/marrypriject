@@ -4,12 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
 </head>
-<body ontouchstart style="background:#fff7f8;">
+<script type="text/javascript">
+    function init(){
+        $.ajax({
+				type: "POST",
+			    url: "../weixin/me/allattendawedding",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          var content0 = "";
+				          var content1 = "";
+				          var content2 = "";
+				          var content3 = "";
+				          for(var i = 0; i < result.data.list0.length;i++){
+				              content0 += '<a href="invite.html?id='+result.data.list0[i].id+'">'+
+				                          '<dl><dt><img src="'+result.data.list0[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.data.list0[i].nickname+'<span>11-30</span></h4>'+
+				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
+				          }
+				          for(var i = 0; i < result.data.list1.length;i++){
+				              content1 += '<a href="invite.html?id='+result.data.list1[i].id+'">'+
+				                          '<dl><dt><img src="'+result.data.list1[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.data.list1[i].nickname+'<span>11-30</span></h4>'+
+				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
+				          }
+				          for(var i = 0; i < result.data.list2.length;i++){
+				              content2 += '<a href="invite.html?id='+result.data.list2[i].id+'">'+
+				                          '<dl><dt><img src="'+result.data.list2[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.data.list2[i].nickname+'<span>11-30</span></h4>'+
+				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
+				          }
+				          for(var i = 0; i < result.data.list3.length;i++){
+				              content3 += '<a href="invite.html?id='+result.data.list3[i].id+'">'+
+				                          '<dl><dt><img src="'+result.data.list3[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.data.list3[i].nickname+'<span>11-30</span></h4>'+
+				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
+				          }
+				          $("#list0").html(content0);
+				          $("#list1").html(content1);
+				          $("#list2").html(content2);
+				          $("#list3").html(content3);
+				     }
+				}
+		 });
+    }
+</script>
+<body ontouchstart style="background:#fff7f8;" onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="weui-flex invite_manage_tit" id="nav">
@@ -18,157 +63,13 @@
 	            <div class="weui-flex__item"><span>暂定</span></div>
 	            <div class="weui-flex__item"><span>无法参加</span></div>
 	        </div>
-	        <div class="invite_manage_con" style="display: block;">
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
+	        <div class="invite_manage_con" style="display: block;"id="list3">
 	        </div>
-	        <div class="invite_manage_con">
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>1立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>1立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>1立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>1立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
+	        <div class="invite_manage_con" id="list1">
 	        </div>
-	        <div class="invite_manage_con">
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>2立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>2立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>2立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>2立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
+	        <div class="invite_manage_con" id="list0">
 	        </div>
-	        <div class="invite_manage_con">
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>3立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>3立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>3立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
-				<a href="invite.html">
-					<dl>
-						<dt><img src="img/aa.png" /></dt>
-						<dd>
-							<h4>3立方米<span>11-30</span></h4>
-							<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p>
-						</dd>
-					</dl>
-				</a>
+	        <div class="invite_manage_con" id="list2">
 	        </div>
 		</div>
 	</div>

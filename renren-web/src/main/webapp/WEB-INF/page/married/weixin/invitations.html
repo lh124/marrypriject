@@ -4,15 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<body ontouchstart style="background:#efefef;">
+<script type="text/javascript">
+     function init(){
+           $.ajax({
+				type: "POST",
+			    url: "../weixin/me/findWedding",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				         if(result.marryWedding != null){
+				             window.location.href="invite_card.html"; 
+				         }
+				     }
+				}
+		 });
+     }
+</script>
+<body ontouchstart style="background:#efefef;"onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="invitations">
-				<img src="img/invitations.png">
+				<img src="${rc.contextPath}/statics/marry/img/invitations.png">
 			</div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">

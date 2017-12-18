@@ -4,30 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<body ontouchstart style="background:#ffffff;">
+<script type="text/javascript">
+     function init(){
+           $.ajax({
+				type: "POST",
+			    url: "../weixin/me/findWedding?id="+$("#id").val(),
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          $("#groomNameandbrideName").html(result.marryWedding.groomname+"&"+result.marryWedding.bridename);
+				          $("#weddingDate").html(result.marryWedding.weddingdate);
+				          $("#weddingAddress").html(result.marryWedding.weddingaddress);
+				          $("#content").html(result.marryWedding.content);
+				          var content = '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.marryWedding.id+',0)">暂定</a></div>'+
+				                        '<div class="weui-flex__item"><a class="act" href="#" onclick="saveyq('+result.marryWedding.id+',1)">接受</a></div>'+
+				                        '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.marryWedding.id+',2)">无法参加</a></div>';
+				          $("#yqhyid").html(content);
+				     }
+				}
+		 });
+     }
+     
+     function saveyq(id,states){
+         var code = GetQueryString("code");
+         if(code != null && code != ""){
+             $.ajax({
+				type: "POST",
+			    url: "../weixin/me/attendawedding?id="+id+"&states="+states+"&code="+code,
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				         
+				     }
+				}
+		 	 });
+         }
+     }
+     
+     function GetQueryString(name){
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	 }
+</script>
+<body ontouchstart style="background:#ffffff;"onload="init()">
+<input type="hidden" id="id" value="${request.getParameter('id')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="invite_tit"></div>
 			<div class="invite_con">
-				<h3>新郎&新娘</h3>
-				<h4>2017.10.1</h4>
-				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
-				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
+				<h3 id="groomNameandbrideName"></h3>
+				<h4 id="weddingDate"></h4>
+				<p id="weddingAddress"></p>
+				<p id="content"></p>
 			</div>
-			<div class="invite_sure weui-flex">
-				<div class="weui-flex__item">
-					<a href="#">暂定</a>
-				</div>
-				<div class="weui-flex__item">
-					<a class="act" href="#">接受</a>
-				</div>
-				<div class="weui-flex__item">
-					<a href="#">无法参加</a>
-				</div>
+			<div class="invite_sure weui-flex" id="yqhyid">
+				
 	        </div>
 		</div>
 	</div>

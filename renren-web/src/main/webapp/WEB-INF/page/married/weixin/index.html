@@ -20,6 +20,9 @@
 					    url: "../user/save",
 					    dataType: "json",
 					    success: function(result){
+					        if(result.status == 'ok'){
+					             $("#total").html(result.total);
+					        }
 						}
 				});
            }
@@ -92,7 +95,7 @@
 		                <a href="shop_cart.html" class="weui-tabbar__item">
 		                    <span style="display: inline-block;position: relative;">
 		                        <img src="${rc.contextPath}/statics/marry/img/chart.png" alt="" class="weui-tabbar__icon">
-		                        <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">0</span>
+		                        <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;" id="total">0</span>
 		                    </span>
 		                    <p class="weui-tabbar__label">购物车</p>
 		                </a>
