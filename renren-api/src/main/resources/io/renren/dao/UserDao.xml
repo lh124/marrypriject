@@ -12,4 +12,4 @@
 		select * from tb_user where mobile = #{value}
 	</select>
 
-</mapper>
+</mapper> 
