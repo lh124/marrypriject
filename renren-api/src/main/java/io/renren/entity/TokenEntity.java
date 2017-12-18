@@ -25,6 +25,10 @@ public class TokenEntity implements Serializable {
 	//token
 	@TableField(value="token")
 	private String token;
+	
+	@TableField(value="accessToken")
+	private String accessToken;
+	
 	//过期时间
 	@TableField(value="expire_time")
 	private Date expireTime;
@@ -35,6 +39,12 @@ public class TokenEntity implements Serializable {
 	@TableField(value="app")
 	private Integer app;
 
+	public String getAccessToken() {
+		return accessToken;
+	}
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 	/**
 	 * 设置：用户ID
 	 */
