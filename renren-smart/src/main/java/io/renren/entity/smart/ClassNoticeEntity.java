@@ -41,8 +41,17 @@ public class ClassNoticeEntity implements Serializable {
 	//发布时间
 	@TableField(value="classId")
 	private String classId;
+	
+	@TableField(value="noticeType")
+	private String noticeType;
 			
 
+	public String getNoticeType() {
+		return noticeType;
+	}
+	public void setNoticeType(String noticeType) {
+		this.noticeType = noticeType;
+	}
 	public String getClassId() {
 		return classId;
 	}
