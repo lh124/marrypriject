@@ -4,11 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
-    <link rel="stylesheet" href="css/weui.min.css"/>
-    <link rel="stylesheet" href="css/marry.css"/>
-    <script type="text/javascript" src="js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<body ontouchstart style="background:#efefef;">
+<script type="text/javascript">
+    function init(){
+         $.ajax({
+				type: "POST",
+				url: "../weixin/index/findObj?id="+$("#id").val(),
+				dataType: "json",
+				success: function(result){
+					if(result.status == 'ok'){
+						$("#title").html(result.obj.title);
+						$("#author").html(result.obj.author);
+						$("#pic").prop('src',result.obj.pic);
+						$("#price").html("价格￥"+result.obj.price);
+						$("#pricetotal").html("￥"+result.obj.price);
+					}
+				}
+		});
+    }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
+    <input type="hidden" id="id" value="${request.getParameter('id')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div style="flex:1;margin-bottom:2.8rem;">
@@ -16,11 +36,11 @@
 					<div class="weui-panel__bd">
 		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
 		                    <div class="weui-media-box__hd">
-		                        <img class="weui-media-box__thumb" src="img/theme1.png" alt="">
+		                        <img class="weui-media-box__thumb" src="" alt="" id="pic">
 		                    </div>
 		                    <div class="weui-media-box__bd">
-		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
-		                        <p class="weui-media-box__desc">价格：10W</p>
+		                        <h4 class="weui-media-box__title" id="title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc" id="price"></p>
 		                    </div>
 		                </a>
 		            </div>
@@ -31,7 +51,7 @@
 					<div class="weui-cells weui-cells_checkbox cart_total_money_con">
 			            <label class="weui-cell weui-check__label" for="s11">
 			                <div class="weui-cell__bd">
-			                    <p>总金额：<i>￥300000</i></p>
+			                    <p>总金额：<i id="pricetotal"></i></p>
 			                </div>
 			            </label>
 			        </div>
