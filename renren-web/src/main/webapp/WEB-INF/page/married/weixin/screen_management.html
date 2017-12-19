@@ -1,17 +1,96 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>screen_management.html</title>
-	
-    <meta name="keywords" content="keyword1,keyword2,keyword3">
-    <meta name="description" content="this is my page">
-    <meta name="content-type" content="text/html; charset=UTF-8">
-    
-    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
-
-  </head>
-  
-  <body>
-    This is my HTML page. <br>
-  </body>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+</head>
+<body ontouchstart style="background:white;">
+	<div class="container" id="container">
+		<div class="page interact" id="pageContainer">
+			<div class="screen_top"></div>
+			<div class="screen_mid">
+				<div class="screen_mid_top"></div>
+				<div class="screen_con">
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen1.png">
+						</dt>
+						<dd>送祝福</dd>
+						<span style="display:block;">进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen2.png">
+						</dt>
+						<dd>视频</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen3.png">
+						</dt>
+						<dd>故事</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen4.png">
+						</dt>
+						<dd>抢红包</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen5.png">
+						</dt>
+						<dd>相册</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen6.png">
+						</dt>
+						<dd>发红包</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen7.png">
+						</dt>
+						<dd>摇一摇</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen8.png">
+						</dt>
+						<dd>抽奖</dd>
+						<span>进行中</span>
+					</dl>
+					<dl>
+						<dt>
+							<img src="${rc.contextPath}/statics/marry/img/screen9.png">
+						</dt>
+						<dd>小游戏</dd>
+						<span>进行中</span>
+					</dl>
+				</div>
+				<div class="screen_mid_bot"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".screen_con dl").on("click",function(){
+				$(".screen_con dl").find('span').hide();
+				$(this).find("span").show();
+			});
+		});
+	</script>
+</body>
 </html>

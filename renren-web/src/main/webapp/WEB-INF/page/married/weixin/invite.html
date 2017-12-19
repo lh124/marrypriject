@@ -17,13 +17,13 @@
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
-				          $("#groomNameandbrideName").html(result.marryWedding.groomname+"&"+result.marryWedding.bridename);
-				          $("#weddingDate").html(result.marryWedding.weddingdate);
-				          $("#weddingAddress").html(result.marryWedding.weddingaddress);
-				          $("#content").html(result.marryWedding.content);
-				          var content = '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.marryWedding.id+',0)">暂定</a></div>'+
-				                        '<div class="weui-flex__item"><a class="act" href="#" onclick="saveyq('+result.marryWedding.id+',1)">接受</a></div>'+
-				                        '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.marryWedding.id+',2)">无法参加</a></div>';
+				          $("#groomNameandbrideName").html(result.data.marryWedding.groomname+"&"+result.data.marryWedding.bridename);
+				          $("#weddingDate").html(result.data.marryWedding.weddingdate);
+				          $("#weddingAddress").html(result.data.marryWedding.weddingaddress);
+				          $("#content").html(result.data.marryWedding.content);
+				          var content = '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.data.marryWedding.id+',0)">暂定</a></div>'+
+				                        '<div class="weui-flex__item"><a class="act" href="#" onclick="saveyq('+result.data.marryWedding.id+',1)">接受</a></div>'+
+				                        '<div class="weui-flex__item"><a href="#" onclick="saveyq('+result.data.marryWedding.id+',2)">无法参加</a></div>';
 				          $("#yqhyid").html(content);
 				     }
 				}
@@ -31,6 +31,7 @@
      }
      
      function saveyq(id,states){
+         window.location.href="send_bless.html";
          var code = GetQueryString("code");
          if(code != null && code != ""){
              $.ajax({
@@ -39,7 +40,7 @@
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
-				         
+				          
 				     }
 				}
 		 	 });

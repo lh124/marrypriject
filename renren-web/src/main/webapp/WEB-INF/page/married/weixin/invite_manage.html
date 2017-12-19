@@ -13,7 +13,7 @@
     function init(){
         $.ajax({
 				type: "POST",
-			    url: "../weixin/me/allattendawedding",
+			    url: "../weixin/me/alljieshouattendawedding",
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
@@ -21,30 +21,30 @@
 				          var content1 = "";
 				          var content2 = "";
 				          var content3 = "";
-				          for(var i = 0; i < result.data.list0.length;i++){
-				              content0 += '<a href="invite.html?id='+result.data.list0[i].id+'">'+
-				                          '<dl><dt><img src="'+result.data.list0[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.data.list0[i].nickname+'<span>11-30</span></h4>'+
-				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
+				          for(var i = 0; i < result.userlist.length;i++){
+				              var time = result.userlist[i].createTime.substring(0,10);
+				              content3 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              if(result.userlist[i].states == 0){
+				                  content0 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }else if(result.userlist[i].states == 1){
+				                  content1 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }else if(result.userlist[i].states == 2){
+				                  content2 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }
 				          }
-				          for(var i = 0; i < result.data.list1.length;i++){
-				              content1 += '<a href="invite.html?id='+result.data.list1[i].id+'">'+
-				                          '<dl><dt><img src="'+result.data.list1[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.data.list1[i].nickname+'<span>11-30</span></h4>'+
-				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
-				          }
-				          for(var i = 0; i < result.data.list2.length;i++){
-				              content2 += '<a href="invite.html?id='+result.data.list2[i].id+'">'+
-				                          '<dl><dt><img src="'+result.data.list2[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.data.list2[i].nickname+'<span>11-30</span></h4>'+
-				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
-				          }
-				          for(var i = 0; i < result.data.list3.length;i++){
-				              content3 += '<a href="invite.html?id='+result.data.list3[i].id+'">'+
-				                          '<dl><dt><img src="'+result.data.list3[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.data.list3[i].nickname+'<span>11-30</span></h4>'+
-				                          '<p>分内的事开了房间考虑到附近的开始浪费飞机当时开了房间都是</p></dd></dl></a>';
-				          }
+				          
 				          $("#list0").html(content0);
 				          $("#list1").html(content1);
 				          $("#list2").html(content2);

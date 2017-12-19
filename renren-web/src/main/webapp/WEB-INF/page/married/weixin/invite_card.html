@@ -17,11 +17,11 @@
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
-				          $("#groomNameandbrideName").html(result.marryWedding.groomname+"&"+result.marryWedding.bridename);
-				          $("#weddingDate").html(result.marryWedding.weddingdate);
-				          $("#weddingAddress").html(result.marryWedding.weddingaddress);
-				          $("#content").html(result.marryWedding.content);
-				          var content = '<a class="selectbg_next" href="invite.html?id='+result.marryWedding.id+'">邀请好友</a>';
+				          $("#groomNameandbrideName").html(result.data.marryWedding.groomname+"&"+result.data.marryWedding.bridename);
+				          $("#weddingDate").html(result.data.marryWedding.weddingdate);
+				          $("#weddingAddress").html(result.data.marryWedding.weddingaddress);
+				          $("#content").html(result.data.marryWedding.content);
+				          var content = '<a class="selectbg_next" href="invite.html?id='+result.data.marryWedding.id+'">邀请好友</a>';
 				          $("#yqhyid").html(content);
 				     }
 				}
@@ -33,10 +33,10 @@
 		<div class="page" id="pageContainer">
 			<div class="invite_tit"></div>
 			<div class="invite_con">
-				<h3 id="groomNameandbrideName">新郎&新娘</h3>
-				<h4 id="weddingDate">2017.10.1</h4>
-				<p id="weddingAddress">发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
-				<p id="content">发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
+				<h3 id="groomNameandbrideName"></h3>
+				<h4 id="weddingDate"></h4>
+				<p id="weddingAddress"></p>
+				<p id="content"></p>
 			</div>
 			<div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell" id="yqhyid">

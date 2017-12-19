@@ -8,13 +8,39 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/echarts.min.js"></script>
+   <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
 </head>
-<body ontouchstart style="background:#efefef;">
+<script type="text/javascript">
+    function init(){
+        $.ajax({
+				type: "POST",
+			    url: "../weixin/me/allSign",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          $("#smtotal").html(result.list.length+"人");
+				     }
+				}
+		 });
+    }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<h4 class="data_tit">婚礼邀请</h4>
 			<div class="data_side">
 				<div id="mychart"></div>
+			</div>
+			<div class="data_video">
+				<div class="data_video_tit">
+					<img src="${rc.contextPath}/statics/marry/img/code_amount.png" />
+					扫码统计
+				</div>
+				<div class="data_video_amount">
+					<a href="code_amount.html">
+						扫码总计<span id="smtotal">0人</span>
+					</a>
+				</div>
 			</div>
 			<div class="data_video">
 				<div class="data_video_tit">
@@ -55,6 +81,11 @@
 <script type="text/javascript">
 	var myChart = echarts.init(document.getElementById('mychart'));
 	option = {
+		title : {
+	        text: '邀请嘉宾总数',
+	        subtext: '500人',
+	        x:'center'
+	    },
 	    tooltip: {
 	        trigger: 'item',
 	        formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -62,14 +93,14 @@
 	    legend: {
 	        orient: 'vertical',
 	        x: '10px',
-	        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+	        data:['应到人数','实到人数','未到人数']
 	    },
 	    series: [
 	        {
-	            name:'访问来源',
+	            name:'嘉宾',
 	            type:'pie',
 	            radius: ['50%', '70%'],
-	            center: ['60%','50%'],
+	            center: ['50%','60%'],
 	            avoidLabelOverlap: false,
 	            label: {
 	                normal: {
@@ -89,15 +120,14 @@
 	                }
 	            },
 	            data:[
-	                {value:335, name:'直接访问'},
-	                {value:310, name:'邮件营销'},
-	                {value:234, name:'联盟广告'},
-	                {value:135, name:'视频广告'},
-	                {value:1548, name:'搜索引擎'}
+	                {value:335, name:'应到人数'},
+	                {value:310, name:'实到人数'},
+	                {value:234, name:'未到人数'},
 	            ]
 	        }
 	    ]
 	};
 	myChart.setOption(option);
+
 </script>
 </html>

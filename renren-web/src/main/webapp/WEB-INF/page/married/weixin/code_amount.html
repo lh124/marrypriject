@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+</head>
+<script type="text/javascript">
+    function init(){
+        $.ajax({
+				type: "POST",
+			    url: "../weixin/me/allSign",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          var content ="";
+				          for(var i = 0; i < result.list.length;i++){
+				              content += '<dl><dt><img src="'+result.list[i].pic+'"></dt>'+
+				                          '<dd>'+result.list[i].nickname+'</dd></dl>';
+				          }
+				          $("#list").html(content);
+				          $("#total").html("扫码签到人数"+result.list.length+"人");
+				     }
+				}
+		 });
+    }
+</script>
+<body ontouchstart style="background:white;" onload="init()">
+	<div class="container" id="container">
+		<div class="page interact" id="pageContainer">
+			<div class="mine_foot" id="nav">
+	            <p style="text-align:center;line-height:0.93rem;color:white;font-size:0.4rem;" id="total">扫码签到人数0人</p>
+	        </div>
+	        <div class="feedback_con" style="display: block;" id="list">
+				<dl>
+					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+				<dl>
+					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
+					<dd>李元芳</dd>
+				</dl>
+	        </div>
+		</div>
+	</div>
+</body>
+</html>

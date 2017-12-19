@@ -7,7 +7,22 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
+<script type="text/javascript">
+	$(function(){
+		var value = null;
+		$("#danmu").on("blur",function(){
+			value = $("#danmu").val();
+		});
+		$(".btn").on("click",function(){
+			var node='<p>"'+value+'"</p>';
+			$(".interact_mid").prepend(node);
+			$("#danmu").val("");
+		});
+	});
+</script>
+
 <body ontouchstart style="background:white;">
 	<div class="container" id="container">
 		<div class="page interact" id="pageContainer" style="display:flex;">
@@ -17,7 +32,7 @@
 			<div class="interact_foot">
 				<label for="danmu">弹幕</label>
 	            <input type="text" id="danmu" placeholder ="编辑内容发送弹幕"> 
-				<button type="button">发送</button>
+				<button type="button" class="btn">发送</button>
 			</div>
 		</div>
 	</div>

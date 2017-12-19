@@ -7,25 +7,59 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<body ontouchstart style="background:#efefef;">
+<script type="text/javascript">
+    function init(){
+           $.ajax({
+				type: "POST",
+			    url: "../weixin/me/findWedding?id="+$("#id").val(),
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          $('#pic').prop('src',result.data.user.pic);
+				          $("#nickname").html(result.data.user.nickname);
+				          $("#gropname").html("1.欢迎来到"+result.data.marryWedding.groomname+
+				                        "&"+result.data.marryWedding.bridename+"的婚礼");
+				     }
+				}
+		 });
+     }
+     
+     function saveqiandao(id){
+         $.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveSign?id="+id,
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				         alert(result.msg);
+				         window.location.href = "mine.html";
+				     }else{
+				         alert(result.msg);
+				     }
+				}
+		 });
+     }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
+<input type="hidden" id="id" value="${request.getParameter('id')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="sign_empty"></div>
 			<div class="sign_in_con">
 				<dl>
 					<dt>
-						<img src="${rc.contextPath}/statics/marry/img/sign_head.png" />
+						<img src="" id="pic"/>
 					</dt>
-					<dd>
-						不管发生
+					<dd id="nickname">
 					</dd>
 				</dl>
-				<p>1.欢迎来到李晓&齐贾的婚礼</p>
+				<p id="gropname"></p>
 				<p>2.请点击下方的按钮确认签到进入会场</p>
 			</div>
 			<div class="sign_in_foot">
-				<button type="button">确认签到</button>
+				<button type="button" onclick="saveqiandao(${request.getParameter('id')})">确认签到</button>
 			</div>
 		</div>
 	</div>
