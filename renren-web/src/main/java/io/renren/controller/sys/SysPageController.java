@@ -90,4 +90,15 @@ public class SysPageController {
 	public String tombstone(@PathVariable("url") String url){
 		return "tombstone/" + url + ".html";
 	}
+	
+	// -----------------------码上结婚--------------------------
+	@RequestMapping("married/{module}/{url}.html")
+	public String marriedPage(@PathVariable("url") String url, @PathVariable("module") String module){
+		return "married/" + module + "/" + url + ".html";
+	}
+			
+	@RequestMapping("/married/{url}.html")
+	public String married(@PathVariable("url") String url){
+		return "married/" + url + ".html";
+	}
 }
