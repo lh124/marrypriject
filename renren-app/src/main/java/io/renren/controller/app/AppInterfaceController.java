@@ -153,6 +153,9 @@ public class AppInterfaceController {
 		if(json.get("token") == null || "".equals(json.get("token")) || "null".equals(json.get("token"))){
 			if(type.equals("userLogin")){//用户登录接口
 				return login(json);
+			}else if(type.equals("updatepasswrodtophone")){
+				//忘记密码：通过手机号找回密码
+				return updatepasswrodtophone(json.getJSONObject("data"));
 			}else{
 				return R.error("您还没登录了！");
 			}
@@ -264,16 +267,13 @@ public class AppInterfaceController {
 //					return getStudentzaixiao(json.getJSONObject("data"));
 				}else if(type.equals("sendMsg")){
 					//通过手机号码发送验证码
-					return sendMsg(json.getJSONObject("data"));
+					return sendMsg(json.getJSONObject("data"),request);
 				}else if(type.equals("updatePhone")){
 					//绑定或修改手机号
-					return updatePhone(json.getJSONObject("data"));
+					return updatePhone(json.getJSONObject("data"),request);
 				}else if(type.equals("updateLeaveType")){
 					//老师是否同意请假条
 					return updateLeaveType(json.getJSONObject("data"));
-				}else if(type.equals("updatepasswrodtophone")){
-					//忘记密码：通过手机号找回密码
-					return updatepasswrodtophone(json.getJSONObject("data"));
 				}else if(type.equals("getAccessToken")){
 					//获取设备的AccessToken
 					return getAccessToken(json.getJSONObject("data"));
@@ -334,17 +334,21 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, smartLeaveService.queryObject(id));
 	}
 	
-	private R updatePhone(JSONObject json){
+	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
 		Integer userId = json.getInt("userId");
+		Integer code = json.getInt("code");
+		if(code != Integer.parseInt(request.getSession().getAttribute("randow").toString())){
+			R.error("验证码错误");
+		}
 		StudentEntity studnet = new StudentEntity();
 		studnet.setId(userId);
 		studnet.setPhoen(phone);
 		studentService.update(studnet);
-		return R.ok();
+		return R.ok().put(DATA, studnet);
 	}
 	
-	private R sendMsg(JSONObject json){
+	private R sendMsg(JSONObject json,HttpServletRequest request){
 		String randow = getRandow();
 		String phone = json.getString("phone");
 		if(phone == null || "null".equals(phone) || "".equals(phone)){
@@ -358,6 +362,7 @@ public class AppInterfaceController {
 				e.printStackTrace();
 			}
 		}
+		request.getSession().setAttribute("randow", randow);
 		return R.ok().put(DATA, randow);
 	}
 	
