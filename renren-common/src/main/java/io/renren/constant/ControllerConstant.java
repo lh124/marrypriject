@@ -6,8 +6,10 @@ public class ControllerConstant {
 	public static String USER_SESSION_KEY = "frontUser";
 	/** *智能校服用户  */
 	public static final String SESSION_SMART_USER_KEY = "user_smart";
-	/** *智能校服用户  */
+	/** *墓碑二维码用户  */
 	public static final String SESSION_TOMBSTONE_USER_KEY = "user_tombstone";
+	/** *码上结婚用户  */
+	public static final String SESSION_MARRIED_USER_KEY = "user_married";
 	/**  *用户注册后默认密码  */
 	public static String DEFAULT_PASSWORD = "000000";
 	/**  *等待审核  */
