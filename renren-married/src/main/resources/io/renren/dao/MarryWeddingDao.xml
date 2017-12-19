@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryWeddingDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,groomName as groomname ,brideName as bridename ,weddingDate as weddingdate ,
+		weddingAddress as weddingaddress ,content as content,userId as userId 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,groomName ,brideName ,weddingDate ,weddingAddress ,content ,userId		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryWeddingEntity" id="marryWeddingMap">
+		        <result property="id" column="id"/>
+		        <result property="groomname" column="groomName"/>
+		        <result property="bridename" column="brideName"/>
+		        <result property="weddingdate" column="weddingDate"/>
+		        <result property="userId" column="userId"/>
+		        <result property="weddingaddress" column="weddingAddress"/>
+		        <result property="content" column="content"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryWeddingEntity">
+		select <include refid="allColumns"></include> from marry_wedding where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryWeddingEntity">
+		select <include refid="allColumns"></include> from marry_wedding
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_wedding 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryWeddingEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_wedding
+		(
+			`groomName`, 
+			`brideName`, 
+			`userId`, 
+			`weddingDate`, 
+			`weddingAddress`, 
+			`content`
+		)
+		values
+		(
+			#{groomname}, 
+			#{bridename}, 
+			#{userId}, 
+			#{weddingdate}, 
+			#{weddingaddress}, 
+			#{content}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryWeddingEntity">
+		update marry_wedding 
+		<set>
+			<if test="groomname != null">`groomName` = #{groomname}, </if>
+			<if test="userId != null">`userId` = #{userId}, </if>
+			<if test="bridename != null">`brideName` = #{bridename}, </if>
+			<if test="weddingdate != null">`weddingDate` = #{weddingdate}, </if>
+			<if test="weddingaddress != null">`weddingAddress` = #{weddingaddress}, </if>
+			<if test="content != null">`content` = #{content}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_wedding where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_wedding where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

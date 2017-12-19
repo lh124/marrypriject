@@ -42,6 +42,10 @@
 		</if>
 	</select>
 	
+	<select id="queryListtongji" resultType="io.renren.entity.married.MarriedUserEntity">
+		select t2.* from marry_sign t1,married_user t2 where t2.id = t1.userId and t1.weddingId=#{weddingId}
+	</select>
+	
  	<select id="queryTotal" resultType="int">
 		select count(*) from married_user 
 	</select>

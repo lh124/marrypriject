@@ -3,8 +3,11 @@ package io.renren.controller.married;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryParticipateEntity;
+import io.renren.entity.married.MarrySignEntity;
 import io.renren.entity.married.MarryWeddingEntity;
+import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryParticipateService;
+import io.renren.service.married.MarrySignService;
 import io.renren.service.married.MarryWeddingService;
 import io.renren.util.WeixinUtil;
 import io.renren.utils.R;
@@ -35,6 +38,67 @@ public class WeixinMeController {
 	private MarryWeddingService marryWeddingService;
 	@Autowired
 	private MarryParticipateService marryParticipateService;
+	@Autowired
+	private MarriedUserService marriedUserService;
+	@Autowired
+	private MarrySignService marrySignService;
+	
+	/**
+	 * 查询所有签到记录
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/allSign")
+	public R allSign(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+		marryWedding.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
+		marryWedding = marryWeddingService.selectOne(wrapper);
+		List<MarriedUserEntity> list = new ArrayList<MarriedUserEntity>();
+		if(marryWedding != null){
+			Map<String , Object> map = new HashMap<String, Object>();
+			map.put("weddingId", marryWedding.getId());
+			list = marriedUserService.queryListtongji(map);
+		}
+		return R.ok().put("list", list);
+	}
+	
+	/**
+	 * 保存签到记录
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/saveSign")
+	public R saveSign(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarrySignEntity marrySign = new MarrySignEntity();
+		marrySign.setUserid(user.getId());
+		marrySign.setWeddingid(Integer.parseInt(request.getParameter("id")));
+		EntityWrapper<MarrySignEntity> wrapper = new EntityWrapper<MarrySignEntity>(marrySign);
+		marrySign = marrySignService.selectOne(wrapper);
+		if(marrySign != null){
+			return R.ok("您已签到");
+		}
+		MarrySignEntity ms = new MarrySignEntity();
+		ms.setUserid(user.getId());
+		ms.setWeddingid(Integer.parseInt(request.getParameter("id")));
+		marrySignService.save(ms);
+		return R.ok("签到成功");
+	}
+	
+	/**
+	 * 查询自己所接受邀请的所有婚礼
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/alljieshouattendawedding")
+	public R alljieshouattendawedding(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", user.getId());
+		return R.ok().put("userlist", marryParticipateService.queryListtongji(map));
+	}
 	
 	/**
 	 * 查询所有参加婚礼的人
@@ -52,7 +116,7 @@ public class WeixinMeController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("weddingId", marryWedding.getId());
 		map.put("offset", 0);
-		map.put("limit", 10);
+		map.put("limit", 1000);
 		List<MarryParticipateEntity> list = marryParticipateService.queryList(map);
 		List<MarriedUserEntity> list0 = new ArrayList<MarriedUserEntity>();
 		List<MarriedUserEntity> list1 = new ArrayList<MarriedUserEntity>();
@@ -161,7 +225,10 @@ public class WeixinMeController {
 		}
 		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
 		marryWedding = this.marryWeddingService.selectOne(wrapper);
-		return R.ok().put("marryWedding", marryWedding);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("marryWedding", marryWedding);
+		map.put("user", marriedUserService.queryObject(marryWedding.getUserId()));
+		return R.ok().put("data", map);
 	}
 
 }

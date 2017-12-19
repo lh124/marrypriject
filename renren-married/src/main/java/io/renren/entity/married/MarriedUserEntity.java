@@ -38,8 +38,16 @@ public class MarriedUserEntity implements Serializable {
 	//微信openId
 	@TableField(value="openId")
 	private String openid;
-			
+	
+	//婚礼留言
+	private String content;		
 
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 	/**
 	 * 设置：
 	 */

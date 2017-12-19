@@ -5,10 +5,16 @@ import io.renren.service.married.MarryWeddingService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
+import io.renren.utils.ZXingCodeUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +36,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class MarryWeddingController {
 	@Autowired
 	private MarryWeddingService marryWeddingService;
+	
+	/**
+	 * 码上结婚二维码下载二维码
+	 */
+	
+	@RequestMapping("/dowloadClassQrCodemb")
+	public void dowloadClassQrCodemb(Long id, HttpServletResponse response) throws IOException{
+		String url = "http://192.168.1.107:8080/wrs/married/weixin/sign_in.html?id=" + id;
+		ByteArrayOutputStream baos = ZXingCodeUtil.getQRCodeByteArray(url);
+		byte[] data = baos.toByteArray();
+		response.reset();  
+        response.setHeader("Content-Disposition", "attachment; filename=\"id" + id  + ".png\"");  
+        response.addHeader("Content-Length", "" + data.length);  
+        response.setContentType("application/octet-stream; charset=UTF-8");  
+        IOUtils.write(data, response.getOutputStream());
+        baos.close();
+	}
 	
 	/**
 	 * 列表

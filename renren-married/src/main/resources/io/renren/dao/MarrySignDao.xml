@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarrySignDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,weddingId as weddingid ,userId as userid 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,weddingId ,userId 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarrySignEntity" id="marrySignMap">
+		        <result property="id" column="id"/>
+		        <result property="weddingid" column="weddingId"/>
+		        <result property="userid" column="userId"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarrySignEntity">
+		select <include refid="allColumns"></include> from marry_sign where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarriedUserEntity">
+		select t2.* from marry_sign t1,married_user t2 where t2.id = t1.userId and t1.weddingId=#{weddingId}
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_sign 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarrySignEntity">
+		insert into marry_sign
+		(
+			`id`, 
+			`weddingId`, 
+			`userId`
+		)
+		values
+		(
+			#{id}, 
+			#{weddingid}, 
+			#{userid}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarrySignEntity">
+		update marry_sign 
+		<set>
+			<if test="weddingid != null">`weddingId` = #{weddingid}, </if>
+			<if test="userid != null">`userId` = #{userid}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_sign where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_sign where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

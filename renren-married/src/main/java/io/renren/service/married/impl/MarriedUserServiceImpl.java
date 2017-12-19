@@ -52,5 +52,10 @@ public class MarriedUserServiceImpl extends ServiceImpl<MarriedUserDao, MarriedU
 	public void deleteBatch(Integer[] ids){
 		marriedUserDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<MarriedUserEntity> queryListtongji(Map<String, Object> map) {
+		return marriedUserDao.queryListtongji(map);
+	}
 	
 }

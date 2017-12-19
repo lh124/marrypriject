@@ -20,6 +20,8 @@ public interface MarriedUserService extends IService<MarriedUserEntity>{
 	
 	List<MarriedUserEntity> queryList(Map<String, Object> map);
 	
+	List<MarriedUserEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarriedUserEntity marriedUser);
