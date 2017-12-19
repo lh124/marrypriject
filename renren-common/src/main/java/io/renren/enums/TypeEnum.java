@@ -50,7 +50,9 @@ public enum TypeEnum {
 	SMART_TUBIAO_PIC(27, "tubiao_pic_", "图标", "图标成功", "图标失败", 6, "tubiao/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
 	SMART_TEACHER_PIC(28, "teacher_pic_", "老师头像", "老师头像上传成功", "老师头像上传失败", 6, "teacher/",
-			"http://wrs.gykjewm.com/smart/callBack/msgPic" );
+			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	MARRIED_MAIN_PIC(29, "married_main_", "码上结婚产品图片", "码上结婚产品图片上传成功", "码上结婚产品图片上传失败", 6, "married/main/",
+			"http://wrs.gykjewm.com/married/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
 	private String description;
