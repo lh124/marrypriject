@@ -13,9 +13,7 @@ import com.aliyuncs.profile.IClientProfile;
 
 public class MsgUtil {
 	
-	public static final String YZMBD = "SMS_116565141";//发送验证码
-	
-	public static final String YZMPASSWORD = "SMS_116561953";//发送初始化密码
+	public static final String YZMBD = "SMS_117512269";//发送验证码
 	
 	//产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
@@ -23,12 +21,12 @@ public class MsgUtil {
     static final String domain = "dysmsapi.aliyuncs.com";
 
     //  此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAISquH2fwxJ75T";
-    static final String accessKeySecret = "7JdTAcnJ1mPDVihZ5SvGWUK0AFi1GR";
+    static final String accessKeyId = "LTAIhWGX3P47TOD6";
+    static final String accessKeySecret = "KW4IuXkbif0KcJktUA3ZS5ltZzPDeq";
     
     public static void main(String[] args) {
     	try {
-			sendSms("13765072164", getRandow(), YZMBD);
+			sendSms("15286082209", getRandow(), YZMBD);
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
@@ -45,8 +43,8 @@ public class MsgUtil {
 
     public static SendSmsResponse sendSms(String phone,String randow,String type) throws ClientException {
         //可自助调整超时时间
-        System.setProperty("sun.net.client.defaultConnectTimeout", "100000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "100000");
+        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "30000");
 
         //初始化acsClient,暂不支持region化
         IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
@@ -58,7 +56,7 @@ public class MsgUtil {
         //必填:待发送手机号
         request.setPhoneNumbers(phone);
         //必填:短信签名-可在短信控制台中找到
-        request.setSignName("孙军1");
+        request.setSignName("贵州冠宇科技");
         //必填:短信模板-可在短信控制台中找到
         request.setTemplateCode(type);
         //可选:
