@@ -87,7 +87,6 @@ public class OssUploadUtil {
 			String bucketName = BACKET_NAME;
 			String fileName = null;
 			try {
-				System.out.println("----------------123");
 				//文件名
 				fileName = UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
 				//文件大小
