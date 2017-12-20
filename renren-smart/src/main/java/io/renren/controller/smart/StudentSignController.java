@@ -68,8 +68,10 @@ public class StudentSignController {
 	@RequestMapping("/findyanzhengma")
 	public R findyanzhengma(HttpServletRequest request,HttpSession session){
 		String phone = request.getParameter("phone");
+		System.out.println(phone + "----------------------");
 		String randow = getRandow();
 		try { 
+			System.out.println(randow + "-----------------");
 			MsgUtil.sendSms(phone, randow,MsgUtil.YZMBD);
 			request.getSession().setAttribute("phoneyzm", randow);
 		} catch (ClientException e) {
