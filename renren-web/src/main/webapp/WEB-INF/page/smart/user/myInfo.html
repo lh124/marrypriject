@@ -273,7 +273,11 @@
 			  dataType: "json",
 			  success: function(result){
 			  		$("#nickname").text(result.info.studentName);
-			  		$("#userphone").text(result.info.phoen);
+			  		if(result.info.phoen == null || result.info.phoen == "null"){
+			  		    $("#userphone").text("");
+			  		}else{
+			  		    $("#userphone").text(result.info.phoen);
+			  		}
 					$("#account").text(result.info.studentNo);
 					$("#headImg").attr("src",result.info.pic);
 			  },
