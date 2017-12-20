@@ -3,6 +3,101 @@
 .a div{width:33%;height:99px;float:left;}
 </style>
 <script type="text/javascript">
+var countdown=60; //倒计时时间
+function forWarm(obj,msg){
+	var $tooltips = $('.js_tooltips');
+	
+	if ($tooltips.css('display') === 'none'){
+		
+		// toptips的fixed, 如果有`animation`, `position: fixed`不生效
+		$('.page.cell').removeClass('slideIn');
+		
+		$tooltips.text(msg);
+		$tooltips.css('display', 'block');
+		
+		setTimeout(function () {
+			$tooltips.css('display', 'none');
+			$tooltips.text("错误提示");
+		}, 2000);
+	}
+	// 输入框提示
+	if(typeof(obj) != 'undefined' && obj != null){
+			obj.addClass("weui-cell_warn");
+	}
+}
+
+function settime(val) { 
+		if (countdown == 0) { 
+		   $("#sendmsg").html("获取验证码"); 
+		    countdown = 60; 
+		} else { 
+		    $("#sendmsg").html("重新发送(" + countdown + ")"); 
+		    countdown--; 
+		    setTimeout(function() { 
+			    settime(val) 
+			},1000)
+		} 
+	} 
+
+function sendmsg(t){
+			var phone = $('#phone').val();
+			if(countdown != 60){
+			    forWarm(null,"请勿重复点击验证码");
+			    return false;
+			}
+			if(phone == null || phone == ""){
+			    forWarm(null,"手机号码不能为空");
+			    return false;
+			}
+			var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+			if(!myreg.test(phone)){ 
+			    forWarm(null,"请输入有效的手机号码"); 
+			    return false; 
+			} 
+			$.ajax({
+				  type: 'POST',
+				  url: '../smart/sign/findyanzhengma?phone='+phone,
+				  dataType: "json",
+				  success: function(result){
+				      if(result.status === "ok"){
+				          settime($("#sendmsg"));
+				      }else{
+				          forWarm(null,result.msg);
+				      }
+				  }
+		    });
+}
+   function comfirmPhone(){
+       $loadingToast = $('#loadingToast')
+       var phone = $('#phone').val();
+		var phoneyzm = $('#phoneyzm').val();
+		$.ajax({
+		  type: 'POST',
+		  dataType: "json",
+		  url: '../smart/sign/updateStudentPhone?phone='+phone+"&phoneyzm="+phoneyzm,
+		  success: function(result){
+				if(result.status === "ok"){
+				    $('#phone').val("");
+				    $('#phoneyzm').val("");
+				    getUserInfo();
+					$("#iosDialog22").fadeOut(200);
+					var $toast = $('#toast');
+					$toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+				}else{
+				    forWarm(null,result.msg);
+				}
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  		
+		  }
+		});
+   }
+
    $(function () {
       var content = "";
       $.ajax({
@@ -18,6 +113,21 @@
 			    		               '<p style="font-size: 14px; ">'+r.list[i].name+'</p></a></div>';
 			    		}
 			    		$("#weixinfunctions").html(content);
+					}else{
+						alert(r.msg);
+					}
+				}
+			});
+			
+			$.ajax({
+				type: "POST",
+			    url: "../smart/user/userInfo",
+			    success: function(r){
+			        r = JSON.parse(r);
+			    	if(r.code === 0){
+			    		if(r.info.phoen == null || r.info.phoen == ""){
+			    		     $("#iosDialog22").fadeIn(200);
+			    		}
 					}else{
 						alert(r.msg);
 					}
@@ -64,3 +174,47 @@
 	    </div>
 	</div>
 </div>
+	    <div id="loadingToast" style="display:none;">
+	        <div class="weui-mask_transparent"></div>
+	        <div class="weui-toast">
+	            <i class="weui-loading weui-icon_toast"></i>
+	            <p class="weui-toast__content">修改中</p>
+	        </div>
+	    </div>
+	    <div id="toast" style="display: none;">
+	        <div class="weui-mask_transparent"></div>
+	        <div class="weui-toast">
+	            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+	            <p class="weui-toast__content">操作成功</p>
+	        </div>
+	    </div>
+<!--BEGIN dialog3-->
+        <div class="js_dialog" id="iosDialog22" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">绑定手机号码</strong></div>
+                	<div class="weui-cells weui-cells_form" >
+						<div class="weui-cell">
+							<div class="weui-cell__bd">
+								<input class="weui-input" type="text" id="phone" placeholder="手机号码">
+							</div>
+							<div class="weui-cell__ft">
+								<i class="weui-icon-warn"></i>
+							</div>
+						</div>
+						<div class="weui-cell" style="margin-bottom: 10px;">
+							<div class="weui-cell__bd">
+								<input style="width: 58%;float: left;"class="weui-input" type="text" id="phoneyzm" placeholder="验证码" >
+								<a style="float: right;width: 40%;" href="javascript:;" id="sendmsg" onclick="sendmsg(this)" class="weui-dialog__btn weui-dialog__btn_primary" >获取验证码</a>
+							</div>
+							<div class="weui-cell__ft">
+								<i class="weui-icon-warn"></i>
+							</div>
+						</div>
+					</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmPhone" onclick="comfirmPhone()">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog3-->  
