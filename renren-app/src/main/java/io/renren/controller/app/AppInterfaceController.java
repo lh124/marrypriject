@@ -155,7 +155,10 @@ public class AppInterfaceController {
 				return login(json);
 			}else if(type.equals("updatepasswrodtophone")){
 				//忘记密码：通过手机号找回密码
-				return updatepasswrodtophone(json.getJSONObject("data"));
+				return updatepasswrodtophone(json.getJSONObject("data"),request);
+			}else if(type.equals("sendMsgBack")){
+				//通过手机号码发送验证码(找回密码时）
+				return sendMsg(json.getJSONObject("data"),request);
 			}else{
 				return R.error("您还没登录了！");
 			}
@@ -279,7 +282,8 @@ public class AppInterfaceController {
 					return getAccessToken(json.getJSONObject("data"));
 				}
 			}else{
-				return R.error("您的账号已在其它设备上登录，请重新登录。");
+//				return R.error("您的账号已在其它设备上登录，请重新登录。");
+				return R.error("您还未登录了");
 			}
 		}
 		return R.ok();
@@ -302,8 +306,14 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, data);
 	}
 	
-	private R updatepasswrodtophone(JSONObject json){
+	private R updatepasswrodtophone(JSONObject json,HttpServletRequest request){
 		String  phone = json.getString("phone");
+		String  password = json.getString("password");
+		String code = json.getString("code");
+		String code2 = request.getSession().getAttribute("randow").toString();
+		if(!code.equals(code2)){
+			return R.error("验证码错误");
+		}
 		StudentEntity user = new StudentEntity();
 		user.setPhoen(phone);
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
@@ -313,15 +323,15 @@ public class AppInterfaceController {
 		if(user == null){
 			return R.error("该号码暂未绑定");
 		}else{
-			user.setPasswordd(new Sha256Hash("000000").toHex());
+			user.setPasswordd(new Sha256Hash(password).toHex());
 			studentService.update(user);
 			try {
-				MsgUtil.sendSms(phone, "000000",MsgUtil.YZMPASSWORD);
+				MsgUtil.sendSms(phone, password,MsgUtil.YZMPASSWORD);
 			} catch (ClientException e) {
 				e.printStackTrace();
 			}
 		}
-		return R.ok().put(DATA, "密码为：000000");
+		return R.ok().put(DATA, "密码为："+password);
 	}
 	
 	private R updateLeaveType(JSONObject json){
@@ -337,9 +347,10 @@ public class AppInterfaceController {
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
 		Integer userId = json.getInt("userId");
-		Integer code = json.getInt("code");
-		if(code != Integer.parseInt(request.getSession().getAttribute("randow").toString())){
-			R.error("验证码错误");
+		String code = json.getString("code");
+		String code2 = request.getSession().getAttribute("randow").toString();
+		if(!code.equals(code2)){
+			return R.error("验证码错误");
 		}
 		StudentEntity studnet = new StudentEntity();
 		studnet.setId(userId);
@@ -356,7 +367,7 @@ public class AppInterfaceController {
 		}else if(!phone.matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")){
 			return R.error("手机号码有误，请重新输入");
 		}else{
-			try {
+			try {System.out.println(randow+"---------------");
 				MsgUtil.sendSms(phone, randow,MsgUtil.YZMBD);
 			} catch (ClientException e) {
 				e.printStackTrace();
@@ -547,6 +558,9 @@ public class AppInterfaceController {
 	}
 	
 	private R courseware(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		if(json.getString("classId") == null || "".equals(json.getString("classId")) || "null".equals(json.getString("classId"))){
+			return R.error("班级未选择");
+		}
 		SmartCoursewareEntity courseware = new SmartCoursewareEntity();
 		InputStream[] is;
 		try {
@@ -598,18 +612,18 @@ public class AppInterfaceController {
 	}
 	
 	private boolean getToken(String token){
-		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
+//		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
 			TokenEntity tokens = tokenService.queryByToken(token);
 			if(tokens == null){
 				return false;
 			}else{
-				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
-				jedis.set(tokens.getToken(), tokens.getToken());
+//				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+//				jedis.set(tokens.getToken(), tokens.getToken());
 				return true;
 			}
-		}else{
-			return true;
-		}
+//		}else{
+//			return true;
+//		}
 	}
 	
 	public R updateheadportrait(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -971,8 +985,8 @@ public class AppInterfaceController {
 					token.setUpdateTime(new Date());
 					tokenService.update(token);
 				}
-				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
-				jedis.set(tokening, tokening);
+//				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+//				jedis.set(tokening, tokening);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);
