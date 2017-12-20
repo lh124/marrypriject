@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 </head>
 <script type="text/javascript">
      function save(){
@@ -28,7 +30,7 @@
      }
 </script>
 <body ontouchstart style="background:#efefef;">
-	<div class="container" id="container">
+<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
@@ -46,11 +48,38 @@
 	                </div>
 	            </div>
 	        </div>
+	        <div class="weui-cells weui-cells_form" >
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <div class="weui-uploader">
+                                <div class="weui-uploader__hd">
+                                    <div class="weui-uploader__info" id="picSize">0/1</div>
+                                </div>
+                                <div class="weui-uploader__bd">
+                                    <div class="weui-uploader__input-box"  id="selectfiles1"></div>
+                                    <ul class="weui-uploader__files" id="uploaderFiles">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectfiles">
+	        </div>
+		        
+	        <div class="weui-gallery" id="gallery">
+	            <span class="weui-gallery__img" id="galleryImg"></span>
+	            <div class="weui-gallery__opr">
+	                <a href="javascript:forRemvePic();" class="weui-gallery__del">
+	                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+	                </a>
+	            </div>
+	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label for="" class="weui-label">婚礼日期</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" id="weddingDate" type="datetime-local" value="" placeholder=""/>
+	                    <input class="weui-input" id="weddingDate" type="datetime-local" value="请选择婚礼日期" placeholder="请选择婚礼日期"/>
 	                </div>
 	            </div>
 	        </div>
@@ -63,20 +92,66 @@
 	            </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
+	            <div class="weui-cell">
+	                <div class="weui-cell__hd"><label for="" class="weui-label">字体颜色</label></div>
+	                <div class="weui-cell__bd">
+	                    <input class="weui-input" id="color" value="#fe4567" type="color" value=""/>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="card_top weui-cells weui-cells_form">
 				<div class="weui-cell">婚礼留言</div>
 		        <div class="weui-cell">
 	                <div class="weui-cell__bd">
-	                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
-	                    <div class="weui-textarea-counter"><span>0</span>/200</div>
+	                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="5"></textarea>
+	                    <div class="weui-textarea-counter"><span>0</span>/100</div>
 	                </div>
 		        </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
-	                <a class="selectbg_next" href="#" onclick="save()">保存</a>
+	                <a class="selectbg_next" href="#">预览效果</a>
 	            </div>
 	        </div>
 		</div>
 	</div>
+	<div id="toast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+            <p class="weui-toast__content">添加成功</p>
+        </div>
+    </div>
+    <div class="page" id="pageContainer" style="display:none;">
+		<div class="invite_tit"></div>
+			<div class="invite_con">
+				<div style="padding-top:2.3rem;">
+					<img src="${rc.contextPath}/statics/marry/img/aa.png" />
+				</div>
+				<h3>新郎&新娘</h3>
+				<h4>2017.10.1/17.00</h4>
+				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
+				<p class="address">地址：放技能打开了司法解释看到了担惊受恐</p>
+			</div>
+			<div class="card_top weui-cells weui-cells_form">
+	            <div class="weui-cell">
+	                <a class="selectbg_next" href="invite.html">保存</a>
+	            </div>
+	        </div>
+	    </div>
+    </div>
 </body>
+<script type="text/javascript">
+	$(function(){
+		$(".selectbg_next").on("click",function(){
+			var groomName = $("#groomName").val();
+			var brideName = $("#brideName").val();
+			var weddingAddress = $("#weddingAddress").val();
+			var color = $("#color").val();
+			var content = $("#content").val();
+			$(".container").hide();
+			$(".page").eq(1).show();
+		});
+	});
+</script>
 </html>
