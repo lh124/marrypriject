@@ -38,6 +38,12 @@
 						</div>
 						<div class="weui-cell__ft" ></div>
 					</a>
+					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterPhone">
+						<div class="weui-cell__bd">
+							<p>手机绑定</p>
+						</div>
+						<div class="weui-cell__ft" id="userphone"></div>
+					</a>
 					<div class="weui-cell">
 						<div class="weui-cell__bd" >
 							<p>账号</p>
@@ -54,7 +60,7 @@
 	        <div class="weui-mask_transparent"></div>
 	        <div class="weui-toast">
 	            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-	            <p class="weui-toast__content">修改成功</p>
+	            <p class="weui-toast__content">操作成功</p>
 	        </div>
 	    </div>
 		<div id="loadingToast" style="display:none;">
@@ -109,14 +115,46 @@
             </div>
         </div>
         <!--END dialog1-->  
+         <!--BEGIN dialog3-->
+        <div class="js_dialog" id="iosDialog22" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">绑定手机号码</strong></div>
+                	<div class="weui-cells weui-cells_form" >
+						<div class="weui-cell">
+							<div class="weui-cell__bd">
+								<input class="weui-input" type="text" id="phone" placeholder="手机号码">
+							</div>
+							<div class="weui-cell__ft">
+								<i class="weui-icon-warn"></i>
+							</div>
+						</div>
+						<div class="weui-cell" style="margin-bottom: 10px;">
+							<div class="weui-cell__bd">
+								<input style="width: 58%;float: left;"class="weui-input" type="text" id="phoneyzm" placeholder="验证码" >
+								<a style="float: right;width: 40%;" href="javascript:;" id="sendmsg" class="weui-dialog__btn weui-dialog__btn_primary" >获取验证码</a>
+							</div>
+							<div class="weui-cell__ft">
+								<i class="weui-icon-warn"></i>
+							</div>
+						</div>
+					</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancelPassword">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmPhone">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog3-->  
 	</div>
 </body>
 <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
 	// 提示面板
 	var $iosDialog1 = $('#iosDialog1'),cancel = $('#cancel'),
-	comfirm = $("#comfirm"),$loadingToast = $('#loadingToast')
-	iosDialog2 = $('#iosDialog2');
+	comfirm = $("#comfirm"),$loadingToast = $('#loadingToast'),
+	iosDialog2 = $('#iosDialog2'),iosDialog22=$('#iosDialog22');
+	var countdown=60; //倒计时时间
 	
 	$(function(){
 		// 初始化用户信息
@@ -131,26 +169,101 @@
 		});
 		// 确认
 		$("#comfirm").on("click", function(){
-			
 			$(this).parents('.js_dialog').fadeOut(200);
 			alterUserInfo();
 			
 		});
-		
-		
+		//发送验证码
+		$("#sendmsg").on("click", function(){
+			var phone = $('#phone').val();
+			if(countdown != 60){
+			    forWarm(null,"请勿重复点击验证码");
+			    return false;
+			}
+			if(phone == null || phone == ""){
+			    forWarm(null,"手机号码不能为空");
+			    return false;
+			}
+			var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+			if(!myreg.test(phone)){ 
+			    forWarm(null,"请输入有效的手机号码"); 
+			    return false; 
+			} 
+			$.ajax({
+				  type: 'POST',
+				  url: '../sign/findyanzhengma?phone='+phone,
+				  dataType: "json",
+				  success: function(result){
+				      if(result.status === "ok"){
+				          settime($("#sendmsg"));
+				      }else{
+				          forWarm(null,result.msg);
+				      }
+				  }
+		    });
+		});
 		//弹出输入框
 		$("#alterPassword").on("click",function (){
 			 iosDialog2.fadeIn(200);
 		});
+		$("#alterPhone").on("click",function (){
+			 iosDialog22.fadeIn(200);
+		});
 		// 确认
 		$("#comfirmPassword").on("click", function(){
-			
 			$(this).parents('.js_dialog').fadeOut(200);
 			alterUserPassword();
-			
+		});
+		$("#comfirmPhone").on("click", function(){
+			alterUserPhone();
 		});
 		
 	});
+	
+	function settime(val) { 
+		if (countdown == 0) { 
+		   $("#sendmsg").html("获取验证码"); 
+		    countdown = 60; 
+		} else { 
+		    $("#sendmsg").html("重新发送(" + countdown + ")"); 
+		    countdown--; 
+		    setTimeout(function() { 
+			    settime(val) 
+			},1000)
+		} 
+	} 
+	
+	//绑定手机号
+	function alterUserPhone(){
+		var phone = $('#phone').val();
+		var phoneyzm = $('#phoneyzm').val();
+		$.ajax({
+		  type: 'POST',
+		  dataType: "json",
+		  url: '../sign/updateStudentPhone?phone='+phone+"&phoneyzm="+phoneyzm,
+		  success: function(result){
+				if(result.status === "ok"){
+				    $('#phone').val("");
+				    $('#phoneyzm').val("");
+				    getUserInfo();
+					iosDialog22.fadeOut(200);
+					var $toast = $('#toast');
+					$toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+				}else{
+				    forWarm(null,result.msg);
+				}
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  		
+		  }
+		});
+	}
+	
 	//用户更新用户信息
 	function getUserInfo(){
 		$.ajax({
@@ -160,6 +273,7 @@
 			  dataType: "json",
 			  success: function(result){
 			  		$("#nickname").text(result.info.studentName);
+			  		$("#userphone").text(result.info.phoen);
 					$("#account").text(result.info.studentNo);
 					$("#headImg").attr("src",result.info.pic);
 			  },
@@ -170,7 +284,6 @@
 	}
 	// 修改用户信息
 	function alterUserInfo(){
-		
 		var nickname = $('#newNickname').val();
 		$.ajax({
 		  type: 'POST',
@@ -208,7 +321,6 @@
 	}
 	// 修改用户信息
 	function alterUserPassword(){
-		
 		var oldPassword = $('#oldPassword').val();
 		var newPassword = $('#newPassword').val();
 		$.ajax({
