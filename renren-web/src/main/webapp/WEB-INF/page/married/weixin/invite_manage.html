@@ -25,22 +25,22 @@
 				              var time = result.userlist[i].createTime.substring(0,10);
 				              content3 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
 				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
 				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
 				              if(result.userlist[i].states == 0){
 				                  content0 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
 				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
 				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
 				              }else if(result.userlist[i].states == 1){
 				                  content1 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
 				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
 				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
 				              }else if(result.userlist[i].states == 2){
 				                  content2 += '<a href="invite.html?id='+result.userlist[i].id+'">'+
 				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
-				                          '<dd><h4>'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
 				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
 				              }
 				          }
