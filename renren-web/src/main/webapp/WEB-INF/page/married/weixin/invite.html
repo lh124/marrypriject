@@ -6,6 +6,8 @@
     <title>“码”上结婚</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
@@ -32,34 +34,35 @@
 	        </div>
 	        <div class="weui-share" onclick="$(this).fadeOut();$(this).removeClass('fadeOut')">
 				<div class="weui-share-box">
-				点击右上角发送给指定朋友或分享到朋友圈 <i></i>
+					点击右上角发送给指定朋友或分享到朋友圈 <i></i>
+					</div>
 				</div>
-			</div> 
-		</div>
+			</div>
 	</div>
 </body>
 <script>
 	wx.ready(function(){
 		document.querySelector('#onMenuShareAppMessage').onclick = function () {
+		   $('.weui-share').show().addClass('fadeIn');
 		   wx.onMenuShareAppMessage({
-		      title: '互联网之子',
-		      desc: '在长大的过程中，我才慢慢发现，我身边的所有事，别人跟我说的所有事，那些所谓本来如此，注定如此的事，它们其实没有非得如此，事情是可以改变的。更重要的是，有些事既然错了，那就该做出改变。',
-		      link: 'http://movie.douban.com/subject/25785114/',
-		      imgUrl: 'https://image.baidu.com/search/detail?z=0&word=%E5%AD%99%E9%83%A1&hs=0&pn=0&spn=0&di=0&pi=42852395633&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cs=3340220972%2C2770932971&os=&simid=&adpicid=0&lpn=0&fm=&sme=&cg=&bdtype=-1&oriquery=&objurl=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F6d81800a19d8bc3ec09f00008b8ba61ea9d34560.jpg&fromurl=&gsm=0&catename=pcindexhot',
+		      title: '码上结婚',
+		      desc: '获取邀请函的留言',
+		      link: 'www.baidu.com',//invite_card.html
+		      imgUrl: '',
 		      trigger: function (res) {
-		        alert('用户点击发送给朋友');
+		      	 $('.weui-share').show().addClass('fadeOut');
 		      },
 		      success: function (res) {
-		        alert('已分享');
+		      	 $('.weui-share').show().addClass('fadeOut');
 		      },
 		      cancel: function (res) {
-		        alert('已取消');
+		      	 $('.weui-share').show().addClass('fadeOut');
 		      },
 		      fail: function (res) {
-		        alert(JSON.stringify(res));
+		      	 $('.weui-share').show().addClass('fadeOut');
+		         alert(JSON.stringify(res));
 		      }
 		   });
-		   alert('已注册获取“发送给朋友”状态事件');
 		};
 	});
 </script>
