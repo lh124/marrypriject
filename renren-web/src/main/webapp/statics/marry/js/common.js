@@ -4,7 +4,7 @@
 function init(){
   $.ajax({ 
 	type: "POST",
-    url: "http://192.168.1.104:8080/wrs/publicModule/common/getWeChatSign",
+    url: "http://192.168.1.102:8080/wrs/publicModule/common/getWeChatSign",
     data: {"url":window.location.href},
     dataType:'json',
     success: function (result) {
