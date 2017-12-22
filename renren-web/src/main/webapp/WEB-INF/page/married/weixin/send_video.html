@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
 </head>
 <body ontouchstart style="background:#fdf7f7;">
 	<div class="container" id="container">
@@ -16,8 +17,8 @@
                     <div class="weui-cell">编辑祝福</div>
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <textarea class="weui-textarea" placeholder="请输入文本" rows="5"></textarea>
-                            <div class="weui-textarea-counter"><span>0</span>/200</div>
+                            <textarea id="content" class="weui-textarea" placeholder="请输入文本" rows="5"></textarea>
+                            <div class="weui-textarea-counter"><span id="count">0</span>/150</div>
                         </div>
                     </div>
                 </div>
@@ -27,13 +28,13 @@
                     <div class="weui-cell">视频选择</div>
                     <div class="weui-cell">
                         <div class="weui-cell__bd">
-                            <dl>
+                            <dl class="luzhi">
                                 <dt><img src="${rc.contextPath}/statics/marry/img/video_left.png"></dt>
-                                <dd>录制视频<input type="file" style="visibility:hidden;" accept="video/*" capture="camcorder"></dd>
+                                <dd>录制视频<input id="luzhi" type="file" style="display:none;" accept="video/*" capture="camcorder"></dd>
                             </dl>
-                            <dl>
+                            <dl class="bendi">
                                 <dt><img src="${rc.contextPath}/statics/marry/img/video_right.png"></dt>
-                                <dd>本机选择</dd>
+                                <dd>本机选择<input id="bendi" type="file" style="display:none;"></dd>
                             </dl>
                         </div>
                     </div>
@@ -47,4 +48,29 @@
 		</div>
 	</div>
 </body>
+<script>
+	$(function(){
+		$(".luzhi").on("click",function(){
+			$("#luzhi").show();
+			$("#bendi").hide();
+		});
+		$(".bendi").on("click",function(){
+			$("#luzhi").hide();
+			$("#bendi").show();
+		});
+		var max = 149;
+		$("#content").on("input", function(){
+		     var text = $(this).val();
+		     var len = text.length;
+		     $("#count").text(len);
+		     if(len > max){
+		        alert("字数超过限制，请重新输入");  
+		        $("#content").val(text.substr(0,max));  
+		     }
+		     else{
+		       $(this).closest(".weui_cell").addClass(".weui_cell_warn");
+		     }
+		});
+	});
+</script>
 </html>
