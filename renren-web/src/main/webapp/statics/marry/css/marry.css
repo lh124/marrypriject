@@ -36,7 +36,7 @@
 .invite_con img{display: block;margin:0 auto;width: 3.26rem;height: 3.26rem;border-radius: 50%;}
 .invite_con h3{padding-top: 0.1rem;text-align: center;color: white;font-size: 0.45rem;}
 .invite_con h4{padding-top: 0rem;text-align: center;color: white;font-size: 0.4rem;}
-.invite_con p{text-indent: 0.7rem;font-size: 12px;color: white;line-height: 0.6rem;margin-top: 0.1rem;}
+.invite_con p{text-indent: 0.7rem;font-size: 14px;color: white;line-height: 0.6rem;margin-top: 0.1rem;}
 .invite_sure{height:2rem;background: #f8eeed;line-height: 2rem;text-align: center;}
 .invite_sure a{color: black;font-size: 0.35rem;}
 .act{background: #fe4567;color:white!important;display: block;height: 1rem;margin: 0.5rem auto;width: 2rem;text-align: center;line-height: 1rem;border-radius: 0.2rem;font-size: 0.35rem;}
@@ -113,6 +113,7 @@
 
 /*请帖信息*/
 .card_top{margin-top:0.3rem;background: white;}
+.card_top .msg{font-size:12px;color:red;display:none;}
 input::-webkit-input-placeholder {
    color: #aab2bd;
    font-size: 0.35rem;
