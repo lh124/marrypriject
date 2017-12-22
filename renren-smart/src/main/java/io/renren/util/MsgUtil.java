@@ -26,7 +26,7 @@ public class MsgUtil {
     
     public static void main(String[] args) {
     	try {
-			sendSms("15286082209", getRandow(), YZMBD);
+			sendSms("13765072164", getRandow(), YZMBD);
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
