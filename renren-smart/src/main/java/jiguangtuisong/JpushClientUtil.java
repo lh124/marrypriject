@@ -189,7 +189,6 @@ public class JpushClientUtil {
                 .setNotification(Notification.newBuilder()
                         //指定当前推送的android通知
                         .addPlatformNotification(AndroidNotification.newBuilder()
- 
                                 .setAlert(notification_title)
                                 .setTitle(notification_title)
                                 //此字段为透传字段，不会显示在通知栏。用户可以通过此字段来做一些定制需求，如特定的key传要指定跳转的页面（value）
@@ -327,8 +326,9 @@ public class JpushClientUtil {
     }
  
     public static void main(String[] args){
-        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
-            System.out.println("success");
-        }
+    	sendToRegistrationId("4756", "", "", "", "");
+//        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
+//            System.out.println("success");
+//        }
     }
 }
