@@ -190,9 +190,8 @@ input::-webkit-input-placeholder {
 .person_packet dl dt{height: 1.2rem;width: 1.2rem;float: left;border-radius: 50%;}
 .person_packet dl dt img{display: block;width: 100%;height: 100%;border-radius: 50%;}
 .person_packet dl dd{margin-left: 0.2rem;float: left;width: 6.2rem;}
-.person_packet dl dd p{line-height: 0.5rem;font-size: 0.35rem;margin-top: 0.1rem;}
-.person_packet dl dd .p{font-size: 0.3rem;color: #a7a3a2;}
-.person_packet dl dd span{float: right;}
+.person_packet dl dd p{line-height: 0.5rem;font-size: 0.35rem;margin-top: 0.1rem;width:3.2rem;}
+.person_packet_right{text-align:right;line-height:1.0rem;font-size:0.45rem;color:#fe4567;}
 
 /*邀请管理*/
 .invite_manage_tit{height: 1.2rem;width: 100%;line-height: 1.2rem;text-align: center;border-bottom: 1px solid #c3bfbe;}
