@@ -91,53 +91,53 @@
 </body>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
 <script type="text/javascript">
-	function init(){
-		      $.ajax({ 
-				type: "POST",
-			    url: "../../publicModule/common/getWeChatSign",
-			    data: {"url":window.location.href},
-			    dataType:'json',
-			    success: function (result) {
-						wx.config({
-							debug: false, //
-							appId: 'wxb9072ff1ebcf745c', // 必填，公众号的唯一标识
-							timestamp: result.timestamp, // 必填，生成签名的时间戳
-							nonceStr: result.nonceStr, // 必填，生成签名的随机串
-							signature: result.signature,// 必填，签名，见附录1
-					        jsApiList: [
-					           'scanQRCode',
-					           'checkJsApi'
-					        ]
-					    });
-				} 
-			});
-		  }
-wx.ready(function () {
- wx.checkJsApi({  
-            jsApiList : ['scanQRCode'],  
-            success : function(res) {  
-            }  
-        });  
-  // 9.1.1 扫描二维码并返回结果
-  document.querySelector('#scanQRCode').onclick = function () {
-    wx.scanQRCode({
-	    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-	    success: function (res) {
-	    	var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+ 	$.ajax({
+		type: "POST",
+	    url: "../user/save",
+	    dataType: "json",
+	    success: function(result){
+	        if(result.status == 'ok'){
+	             $("#total").html(result.total);
+	        }
 		}
 	});
-  };
-
-
-  var shareData = {
-    title: '微信JS-SDK Demo',
-    desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
-    link: 'http://demo.open.weixin.qq.com/jssdk/',
-    imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
-  };
-  wx.onMenuShareAppMessage(shareData);
-  wx.onMenuShareTimeline(shareData);
-});
+    $.ajax({
+		type: "POST",
+	    url: "../weixin/index/list?page=1",
+	    dataType: "json",
+	    success: function(result){
+			if(result.status == 'ok'){
+			    var content = "";
+			    var length = result.list.length;
+			    if(length > 3){
+			        length = 3;
+			    }
+			    for(var i = 0; i < length; i++){
+			        content += '<a href="theme_details.html?id='+result.list[i].id+'"><dl><dt>'+
+			                   '<img src="'+result.list[i].pic+'"/></dt><dd>'+
+			                   '<p>'+result.list[i].title+'<span>￥'+result.list[i].price+
+			                   '</span></p></dd></dl></a>';
+			    }
+			    content += '<div class="more"><a href="./theme.html">查看更多'+
+			               '<img src="${rc.contextPath}/statics/marry/img/right.png" alt="">'+
+			               '</a></div>';
+			    $("#list").html(content);
+			}
+		}
+	});
+	wx.ready(function(){
+		document.querySelector('#scanQRCode').onclick = function () {
+		    wx.scanQRCode({
+		      needResult: 1,
+		      desc: 'scanQRCode desc',
+		      success: function (res) {
+		         alert("扫码成功");
+		         window.location.href = "./sign_in.html";
+		      }
+		    });
+		 };
+	});
 	</script>
 </html>

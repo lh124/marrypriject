@@ -10,6 +10,7 @@
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
 </head>
 <script type="text/javascript">
      function save(){
@@ -29,15 +30,16 @@
 		 });
      }
 </script>
-<body ontouchstart style="background:#efefef;">
+<body ontouchstart style="background:#efefef;" onload="init()">
 <div class="container" id="container">
-		<div class="page" id="pageContainer">
+		<div class="page" id="pageContainer" style="display:block;">
 			<div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label class="weui-label">新郎姓名</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" id="groomName" type="text" placeholder="请输入新郎的真实姓名"/>
+	                    <input autofocus="autofocus" class="weui-input" id="groomName" type="text" placeholder="请输入新郎的真实姓名"/>
 	                </div>
+	                <span class="msg">请输入正确的姓名</span>
 	            </div>
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd">
@@ -46,33 +48,32 @@
 	                <div class="weui-cell__bd">
 	                    <input class="weui-input" id="brideName" type="text" placeholder="请输入新娘的真实姓名"/>
 	                </div>
+	                <span class="msg">请输入正确的姓名</span>
 	            </div>
 	        </div>
-	        <div class="weui-cells weui-cells_form" >
-                    <div class="weui-cell">
-                        <div class="weui-cell__bd">
-                            <div class="weui-uploader">
-                                <div class="weui-uploader__hd">
-                                    <div class="weui-uploader__info" id="picSize">0/1</div>
-                                </div>
-                                <div class="weui-uploader__bd">
-                                    <div class="weui-uploader__input-box"  id="selectfiles1"></div>
-                                    <ul class="weui-uploader__files" id="uploaderFiles">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" id="selectfiles">
-	        </div>
-		        
 	        <div class="weui-gallery" id="gallery">
 	            <span class="weui-gallery__img" id="galleryImg"></span>
 	            <div class="weui-gallery__opr">
 	                <a href="javascript:forRemvePic();" class="weui-gallery__del">
 	                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
 	                </a>
+	            </div>
+	        </div>
+	        <div class="weui-cells weui-cells_form" >
+	            <div class="weui-cell">
+	                <div class="weui-cell__bd">
+	                    <div class="weui-uploader">
+	                        <div class="weui-uploader__hd">
+	                            <p class="weui-uploader__title" id="typeName">图片上传</p>
+	                            <div class="weui-uploader__info" id="picSize">0/1</div>
+	                        </div>
+	                        <div class="weui-uploader__bd">
+	                        	<div class="weui-uploader__input-box"  id="selectfiles1"></div>
+	                            <ul class="weui-uploader__files" id="uploaderFiles">
+	                            </ul>
+	                        </div>
+	                    </div>
+	                </div>
 	            </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
@@ -89,6 +90,7 @@
 	                <div class="weui-cell__bd">
 	                    <input class="weui-input" id="weddingAddress" type="address" value="" placeholder="请输入婚礼地址"/>
 	                </div>
+	                <span class="msg">请输入您的地址</span>
 	            </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
@@ -103,14 +105,15 @@
 				<div class="weui-cell">婚礼留言</div>
 		        <div class="weui-cell">
 	                <div class="weui-cell__bd">
-	                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="5"></textarea>
-	                    <div class="weui-textarea-counter"><span>0</span>/100</div>
+	                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
+	                    <div class="weui-textarea-counter"><span id="count">0</span>/80</div>
 	                </div>
 		        </div>
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
-	                <a class="selectbg_next" href="#">预览效果</a>
+	                <a  id="save"  class="selectbg_next" href="./invite.html">保存</a>
+	                <a id="preview" style="margin-left:0.2rem;" class="selectbg_next" href="#">预览效果</a>
 	            </div>
 	        </div>
 		</div>
@@ -123,8 +126,7 @@
         </div>
     </div>
     <div class="page" id="pageContainer" style="display:none;">
-		<div class="invite_tit"></div>
-			<div class="invite_con">
+			<div class="invite_con fanhui">
 				<div style="padding-top:2.3rem;">
 					<img src="${rc.contextPath}/statics/marry/img/aa.png" />
 				</div>
@@ -133,24 +135,159 @@
 				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
 				<p class="address">地址：放技能打开了司法解释看到了担惊受恐</p>
 			</div>
-			<div class="card_top weui-cells weui-cells_form">
-	            <div class="weui-cell">
-	                <a class="selectbg_next" href="invite.html">保存</a>
-	            </div>
-	        </div>
+			<i id="shut" style="text-align:center;font-size:30px;display:block;width:100%;line-height:1.4rem;background:white;" class="weui-icon-cancel"></i>
 	    </div>
     </div>
 </body>
 <script type="text/javascript">
 	$(function(){
-		$(".selectbg_next").on("click",function(){
+		/*判断正确姓名新郎*/
+		function checkGroomName(val){
+		 reg = /^[\u4E00-\u9FA5]{2,4}$/;
+		 if(!reg.test(val)){
+		  	$(".msg").eq(0).show(); 
+		 } else{
+		 	$(".msg").eq(0).hide(); 
+		 	return val;
+		 }
+		}
+		/*判断正确姓名新娘*/
+		function checkbrideName(val){
+		 reg = /^[\u4E00-\u9FA5]{2,4}$/;
+		 if(!reg.test(val)){
+		  	$(".msg").eq(1).show(); 
+		 } else{
+		 	$(".msg").eq(1).hide(); 
+		 	return val;
+		 }
+		}
+		/*图片预览*/
+		function addNewContent(obj) {
+			$("#uploaderFiles").html("");
+			var oldBox = "";
+			for(var a = 0; a < obj.length; a++) {
+				oldBox += "<li class='weui-uploader__file'><img class='weui-uploader__file weiImg' name='msgpic' src='"+obj[a]+"' /></li>";
+			}
+			$("#picSize").text(obj.length + "/1");
+			$("#uploaderFiles").html(oldBox);
+			$(".weiImg").on("click",function(){
+			 var index = $(this).prevAll().length;
+			 var src=$(this).attr("src"); 
+		  	 wx.previewImage({
+		      urls:obj
+		    });
+		  });
+		}
+		wx.ready(function(){
+		/*添加 图片*/
+			var images = {
+			    localId: [],
+			    serverId: []
+			  };
+			 var length = 0;
+			  //图片选择
+			 document.querySelector('#selectfiles1').onclick = function () {
+			    wx.chooseImage({
+			      count: 1, 
+			      success: function (res) {
+			        localId = res.localIds;
+			        length = localId.length
+			        addNewContent(localId);
+			      }
+			    });
+			  };
+		});
+		var groom,bride;
+		/*失去焦点事件*/
+		$("#groomName").on("blur",function(){
 			var groomName = $("#groomName").val();
+			groom = checkGroomName(groomName);
+		});
+		$("#brideName").on("blur",function(){
+			var brideName = $("#brideName").val();
+			bride = checkbrideName(brideName);
+		});
+		$("#weddingAddress").on("blur",function(){
+			var weddingAddress = $("#weddingAddress").val();
+			if(weddingAddress == "null"){
+				$(".msg").eq(2).show(); 
+			}else{
+				$(".msg").eq(2).hide(); 
+				weddingAddress = $("#weddingAddress").val();
+			}
+		});
+		 var max = 79;
+		 $("#content").on("input", function(){
+		     var text = $(this).val();
+		     var len = text.length;
+		     $("#count").text(len);
+		     if(len > max){
+		        alert("字数超过限制，请重新输入");  
+		        $("#content").val(text.substr(0,max));  
+		     }
+		     else{
+		       $(this).closest(".weui_cell").addClass(".weui_cell_warn");
+		     }
+		  });
+		$("#preview").on("click",function(){
+			var bg = localStorage.getItem("select_bg");
+			var groomName = $("#groomName").val();
+			var weddingDate = $("#weddingDate").val();
 			var brideName = $("#brideName").val();
 			var weddingAddress = $("#weddingAddress").val();
-			var color = $("#color").val();
+			var col = $("#color").val();
 			var content = $("#content").val();
-			$(".container").hide();
-			$(".page").eq(1).show();
+			$(".fanhui").on("click",function(){
+				$(".container").show();
+				$(".page").eq(1).hide();
+			});
+			$("#shut").on("click",function(){
+				$(".container").show();
+				$(".page").eq(1).hide();
+			});
+			if(groom && bride && localId && weddingAddress){
+				$(".container").hide();
+				$(".page").eq(1).show();
+				$(".invite_con").css("background-image","url("+bg+")");
+				$(".invite_con").find("img").attr("src",localId);
+				$(".invite_con").find("h3").text(groomName+"&"+brideName);
+				$(".invite_con").find("h3").css("color",col);
+				$(".invite_con").find("h4").text(weddingDate.substring(0,10)+"    "+weddingDate.substring(11));
+				$(".invite_con").find("h4").css("color",col);
+				$(".invite_con").find("p").css("color",col);
+				$(".invite_con").find("p").eq(0).text(content);
+				$(".invite_con").find("p").eq(1).text("地址："+weddingAddress);
+			}else{
+				alert("请填写完整的正确信息");
+			}
+		});
+		$("#save").on("click",function(){
+			var bg = localStorage.getItem("select_bg");
+			var groomName = $("#groomName").val();
+			var brideName = $("#brideName").val();
+			var weddingDate = $("#weddingDate").val();
+			var weddingAddress = $("#weddingAddress").val();
+			var col = $("#color").val();
+			var content = $("#content").val();
+			if(groom && bride && localId && weddingAddress){
+				var invite = {
+				 	"groomName":groomName,
+				 	"brideName":brideName,
+				 	"weddingAddress":weddingAddress,
+				 	"col":col,
+				 	"bg":bg,
+				 	"content":content
+				 };
+				 /*上传图片*/
+				 
+				 
+				 
+				 localStorage.removeItem("select_bg");
+				 localStorage.setItem("invite",JSON.stringify(invite));
+				 window.location.href = "./invite.html";
+			}else{
+				alert("请填写完整的正确信息");
+			}
 		});
 	});
 </script>

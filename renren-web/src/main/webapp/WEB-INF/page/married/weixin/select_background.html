@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body ontouchstart style="background:#efefef;">
 	<div class="container" id="container">
@@ -18,13 +19,13 @@
 			            <div class="weui-flex__item">
 			            	<div class="placeholder">
 			            		<img src="${rc.contextPath}/statics/marry/img/1.png" />
-								<input type="radio" name="bg">
+								<input class="radio" checked="" type="radio" name="bg">
 			            	</div>
 			            </div>
 			            <div class="weui-flex__item">
 			            	<div class="placeholder">
 			            		<img src="${rc.contextPath}/statics/marry/img/2.png" />
-								<input type="radio" name="bg">
+								<input class="radio" type="radio" name="bg">
 			            	</div>
 			            </div>
 			        </div>
@@ -32,13 +33,13 @@
 			            <div class="weui-flex__item">
 			            	<div class="placeholder">
 			            		<img src="${rc.contextPath}/statics/marry/img/3.png" />
-								<input type="radio" name="bg">
+								<input class="radio" type="radio" name="bg">
 			            	</div>
 			            </div>
 			            <div class="weui-flex__item">
 			            	<div class="placeholder">
 			            		<img src="${rc.contextPath}/statics/marry/img/4.png" />
-								<input type="radio" name="bg">
+								<input class="radio" type="radio" name="bg">
 			            	</div>
 			            </div>
 			        </div>
@@ -46,10 +47,26 @@
 			</div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
-	                <a class="selectbg_next" href="card_information.html">下一步</a>
+	                <a class="selectbg_next" href="./card_information.html">下一步</a>
 	            </div>
 	        </div>
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	$(function(){
+		localStorage.removeItem('select_bg');
+		$(".card_top").on("click",function(){
+			var obj = $(".radio");
+			var index = 0;
+		    for(var i=0; i<obj.length; i ++){
+		        if(obj[i].checked){
+		            index = i;
+		        }
+		    }
+		    var select_bg = $("img").eq(index).attr('src');
+		    localStorage.setItem("select_bg",select_bg);
+		});
+	});
+</script>
 </html>
