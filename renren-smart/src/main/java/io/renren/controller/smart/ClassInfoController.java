@@ -1,17 +1,12 @@
 package io.renren.controller.smart;
 
 import io.renren.entity.smart.ClassInfoEntity;
-import io.renren.entity.smart.StudentEntity;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,24 +37,14 @@ public class ClassInfoController {
 	/**
 	 * 列表
 	 */
-	@SuppressWarnings("rawtypes")
 	@RequestMapping("/list")
 	@RequiresPermissions("classinfo:list")
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
         Query query = new Query(params);
 		List<ClassInfoEntity> classInfoList = classInfoService.queryList(query);
-		List<ClassInfoEntity> list = new ArrayList<ClassInfoEntity>();
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-		for (Iterator iterator = classInfoList.iterator(); iterator.hasNext();) {
-			ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
-			StudentEntity user = studentService.queryObject(classInfoEntity.getUserId());
-			classInfoEntity.setName(user.getStudentName());
-			list.add(classInfoEntity);
-		}
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		int total = classInfoService.queryTotal(query);
-		PageUtils pageUtil = new PageUtils(list, total, query.getLimit(), query.getPage());
+		PageUtils pageUtil = new PageUtils(classInfoList, total, query.getLimit(), query.getPage());
 		return R.ok().put("page", pageUtil);
 	}
 	
