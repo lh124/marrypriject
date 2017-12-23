@@ -31,13 +31,17 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassInfoEntity">
-		select <include refid="allColumns"></include> from class_info where classid = #{classid}
+	    select t1.type,t1.content,t1.classPost,t2.student_name name,t1.id,t1.classid from class_info t1,student t2 
+	    where t1.userId = t2.id and t1.classid=#{classid}
+		<if test="userType != null and userType != ''">
+			and (t1.type=1 or t1.type=2)
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
 			<otherwise>
-                order by type asc
+                order by t1.type asc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
