@@ -9,7 +9,7 @@ function init(){
     dataType:'json',
     success: function (result) {
 			wx.config({
-				debug: true, //
+				debug: false, //
 				appId: 'wx948285e688ee8d66', // 必填，公众号的唯一标识
 				timestamp: result.timestamp, // 必填，生成签名的时间戳
 				nonceStr: result.nonceStr, // 必填，生成签名的随机串
