@@ -31,7 +31,7 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassInfoEntity">
-	    select t1.type,t1.content,t1.classPost,t2.student_name name,t1.id,t1.classid from class_info t1,student t2 
+	    select t1.type,t1.content,t1.userId ,t1.classPost,t2.student_name name,t1.id,t1.classid from class_info t1,student t2 
 	    where t1.userId = t2.id and t1.classid=#{classid}
 		<if test="userType != null and userType != ''">
 			and (t1.type=1 or t1.type=2)
