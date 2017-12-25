@@ -42,8 +42,8 @@
 	<insert id="save" parameterType="io.renren.entity.smart.ClassEntity">
 		insert into class
 		(
-			class_name, 
-			school_id
+			`class_name`, 
+			`school_id`
 		)
 		values
 		(
@@ -55,8 +55,8 @@
 	<update id="update" parameterType="io.renren.entity.smart.ClassEntity">
 		update class 
 		<set>
-			<if test="className != null">class_name = #{className}, </if>
-			<if test="schoolId != null">school_id = #{schoolId}</if>
+			<if test="className != null">`class_name` = #{className}, </if>
+			<if test="schoolId != null">`school_id` = #{schoolId}</if>
 		</set>
 		where id = #{id}
 	</update>

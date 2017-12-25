@@ -49,9 +49,9 @@
 	<insert id="save" parameterType="io.renren.entity.smart.SchoolEntity">
 		insert into school
 		(
-			school_name, 
-			pw,
-			city_id
+			`school_name`, 
+			`pw`,
+			`city_id`
 		)
 		values
 		(
@@ -64,9 +64,9 @@
 	<update id="update" parameterType="io.renren.entity.smart.SchoolEntity">
 		update school 
 		<set>
-			<if test="schoolName != null">school_name = #{schoolName}, </if>
-			<if test="pw != null">pw = #{pw},</if>
-			<if test="pw != null">city_id = #{cityId}</if>
+			<if test="schoolName != null">`school_name` = #{schoolName}, </if>
+			<if test="pw != null">`pw` = #{pw},</if>
+			<if test="pw != null">`city_id` = #{cityId}</if>
 		</set>
 		where id = #{id}
 	</update>
