@@ -6,8 +6,10 @@
     <title>“码”上结婚</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/bootstrap.min.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/bootstrap.min.js"></script>
 </head>
 <script type="text/javascript">
 	$(function(){
@@ -17,18 +19,42 @@
 		});
 		$(".btn").on("click",function(){
 			var node='<p>"'+value+'"</p>';
+			value = null;
 			$(".interact_mid").prepend(node);
 			$("#danmu").val("");
 		});
+		$('.carousel').carousel();
 	});
 </script>
 
 <body ontouchstart style="background:white;">
-	<div class="container" id="container">
-		<div class="page interact" id="pageContainer" style="display:flex;">
-			<div class="interact_top"></div>
-			<div class="interact_mid">
+	<div class="container" id="container" style="padding:0;">
+		<div class="page interact" id="pageContainer">
+			<div class="interact_top" style="margin:0;">
+				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="height:5.3rem;">
+				  <!-- Wrapper for slides -->
+				  <div class="carousel-inner" role="listbox" style="height:5.3rem;">
+				    <div class="item active" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in1.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in2.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in3.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in4.png" alt="...">
+				    </div>   
+				  </div>
+				</div>
 			</div>
+			<div class="page__bd" style="height: 100%;">
+		        <div class="weui-tab">
+		            <div class="weui-tab__panel interact_mid">
+		            </div>
+		        </div>
+		    </div>
 			<div class="interact_foot">
 				<label for="danmu">弹幕</label>
 	            <input type="text" id="danmu" placeholder ="编辑内容发送弹幕"> 
