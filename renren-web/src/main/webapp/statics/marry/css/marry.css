@@ -57,8 +57,9 @@
 .cart_total_pay{height: 1.25rem;color: white;line-height: 1.25rem;text-align: center;background: #fe4567;font-size: 0.4rem;display: block;}
 
 /*互动*/
-.interact .interact_top{height: 5.3rem;width: 100%;background: url(../img/index_theme_con1.png) no-repeat center;background-size: cover;position: fixed;top:0;}
-.interact .interact_mid{margin:5.3rem 0 1.6rem 0;height: 10.85rem;background: url(../img/hudong.png) no-repeat center;background-size: cover;width: 100%;padding:0 0.4rem;font-size: 0.4rem;}
+.interact .interact_top{height: 5.3rem;width: 100%;position: fixed;top:0;}
+.interact .interact_top img{display:block;width:100%;height:100%;}
+.interact .interact_mid{margin:5.3rem 0 0rem 0;height: 9rem;background: url(../img/hudong.png) no-repeat center;background-size: cover;width: 100%;padding:0 0.4rem;font-size: 0.4rem;}
 .interact .interact_foot{height: 1.6rem;width: 100%;position: fixed;bottom: 0.1rem;background: #f9f9f9;}
 .interact_foot label{float: left;line-height: 1.6rem;text-indent: 0.6rem;font-size: 0.4rem;color: #6c6869;}
 .interact_foot input{float: left;height: 0.8rem;margin:0.4rem 0.3rem;width: 6.2rem;border: 1px solid #fe4567;border-radius: 0.15rem;text-align: left;text-indent:0.1rem;}
