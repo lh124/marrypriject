@@ -41,8 +41,38 @@ public class IoEntity implements Serializable {
 	
 	@TableField(value="student_id")
 	private Integer studentId;
+	
+	//通道
+	@TableField(value="cameraNo")
+	private Integer cameraNo;
+	
+	//验证码
+	@TableField(value="verification_code")
+	private String verificationCode;
+			
+	//序列号
+	@TableField(value="serial_number")
+	private String serialNumber;
 			
 
+	public Integer getCameraNo() {
+		return cameraNo;
+	}
+	public void setCameraNo(Integer cameraNo) {
+		this.cameraNo = cameraNo;
+	}
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
 	public Integer getStudentId() {
 		return studentId;
 	}
