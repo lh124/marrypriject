@@ -3,6 +3,8 @@ package io.renren.controller;
 import io.renren.service.SysUserService;
 import io.renren.utils.R;
 import io.renren.utils.ShiroUtil;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -69,7 +71,7 @@ public class SysLoginController {
 		if(!captcha.equalsIgnoreCase(kaptcha)){
 			return R.error("验证码不正确");
 		}
-		
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		try{
 			Subject subject = ShiroUtil.getSubject();
 			//sha256加密
