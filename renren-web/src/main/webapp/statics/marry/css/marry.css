@@ -1,6 +1,6 @@
 /*首页*/
 .index_header{height:1.2rem;width:100%;background: #fe4567;color:white;line-height: 1.2rem;}
-.index_header .header_logo{float: left;background: url(../img/logo.png) no-repeat 0.5rem 0.08rem;background-size: 30% 100%;width:4.5rem;font-size: 0.45rem;text-indent: 2rem;}
+.index_header .header_logo{float: left;background: url(../img/logo.png) no-repeat 0.3rem 0.08rem;background-size: 26% 100%;width:5rem;font-size: 0.45rem;text-indent: 1.8rem;}
 .index_header .header_con{float: left;font-size: 0.35rem;}
 .index_banner{height: 8rem;background: url(../img/banner.png) no-repeat center;background-size: cover;}
 .empty{height:0.9rem;background: white;}
@@ -150,7 +150,7 @@ input::-webkit-input-placeholder {
 /*我的*/
 .mine_banner{height: 5.13rem;background: url(../img/min_banner.png) no-repeat center;background-size: cover;}
 .mine_tit{height: 1.67rem;background: url(../img/mine_tit.png) no-repeat center;background-size: cover;}
-.mine_con{margin-top: 0.4rem;}
+.mine_con{margin-top: 0.4rem;margin-bottom:1.8rem;}
 .mine_con a:nth-child(1){background: #ffeff0;}
 .mine_con a:nth-child(2){background: #e1e5fe;}
 .mine_con a:nth-child(3){background: #fff1fe;}
@@ -217,12 +217,12 @@ input::-webkit-input-placeholder {
 .screen_top{height: 5.3rem;width: 100%;background: url(../img/index_theme_con1.png) no-repeat center;background-size: cover;}
 .screen_mid_top{height: 1.26rem;width: 100%;background: url(../img/screen_top.png) no-repeat center;background-size: cover;}
 .screen_mid_bot{height: 1.92rem;width: 100%;background: url(../img/screen_bot.png) no-repeat center;background-size: cover;position: fixed;bottom: 0;}
-.screen_con{padding:0.4rem;margin-top: -0.4rem;}
-.screen_con dl{width: 2.6rem;height: 2.6rem;background: #f0f0f0;border-radius: 50%;float: left;margin-left: 0.41rem;margin-top: 0.4rem;position: relative;}
+.screen_con{padding:0.3rem;margin-top: -0.55rem;}
+.screen_con dl{width: 2.4rem;height: 2.4rem;background: #f0f0f0;border-radius: 50%;float: left;margin-left: 0.5rem;margin-top: 0.3rem;position: relative;}
 .screen_con dt img{display: block;margin:0 auto;width: 1rem;height: 1rem;}
 .screen_con dt{padding-top:0.6rem;}
 .screen_con dd{text-align: center;font-size: 0.35rem;color: #fe4565;line-height: 0.7rem;}
-.screen_con span{position: absolute;top: 0;right: -0.2rem;display: block;width: 1.6rem;height: 0.6rem;text-align: center;line-height: 0.6rem;background: url(../img/screen_span.png) no-repeat center;background-size: cover;color: white;display: none;}
+.screen_con span{position: absolute;top: -0.001rem;right: -0.4rem;display: block;width: 1.6rem;height: 0.573rem;text-align: center;line-height: 0.573rem;background: url(../img/screen_span.png) no-repeat center;background-size: cover;color: white;display: none;}
 
 /*发送祝福*/
 .send img{float: left;}
