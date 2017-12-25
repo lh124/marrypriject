@@ -4,12 +4,14 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
+import io.renren.entity.smart.SmartVideoDeviceEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
 import io.renren.service.smart.ClassService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartExceptionService;
+import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.R;
@@ -30,7 +32,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jiguangtuisong.JpushClientUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -61,6 +62,8 @@ public class SmartDataInpution {
 	private IoService ioService;
 	@Autowired
 	private SmartExceptionService smartExceptionService;
+	@Autowired
+	private SmartVideoDeviceService smartVideoDeviceService;
 	
 	private static final String DATA = "data";
 	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
@@ -184,10 +187,10 @@ public class SmartDataInpution {
 			map.put("total", ioService.queryListtongjiimgxf(m).size());
 			map.put("zxtotal", ioService.queryListtongji(m).size());
 			obj = R.ok().put(DATA, map);
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		}else{
 			obj = R.error("暂无此学校");
 		}
+		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		return obj;
 	}
 	
@@ -230,12 +233,21 @@ public class SmartDataInpution {
 				io.setIoType(ioType);
 				io.setRfidId(rfidId);
 				io.setStudentId(Integer.parseInt(studentId));
+				if(object.get("vodeoId") != null && !"".equals(object.get("vodeoId"))){
+					Integer id = object.getInt("vodeoId");
+					SmartVideoDeviceEntity svde = smartVideoDeviceService.queryObject(id);
+					if(svde != null){
+						io.setCameraNo(svde.getCameraNo());
+						io.setSerialNumber(svde.getSerialNumber());
+						io.setVerificationCode(svde.getVerificationCode());
+					}
+				}
 				ioService.save(io);
 				list.add(object.getString("id"));
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("type", 6);
-				JpushClientUtil.sendToRegistrationId(studentId, "进出校通知", "进出校记录", ioType+"校门", m.toString());
 			}
+//			JpushClientUtil.sendToRegistrationId(studentId, "进出校通知", "进出校记录", ioType+"校门", m.toString());
 			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 			obj = R.ok().put(DATA, list);
 		} catch (Exception e) {
