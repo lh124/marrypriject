@@ -46,7 +46,7 @@
 				<div class="banner-progres"></div>
 			</div>
 			<div class="zy_media interact_top" id="theVedio" style="margin:0;z-index:224;display:none;">
-			    <video poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
+			    <video id="aa"  poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
 			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
 			        您的浏览器不支持HTML5视频
 			    </video>
@@ -57,64 +57,64 @@
 		           		<div class="screen_mid_top"></div>
 							<div class="screen_con">
 								<a href="./hongbao.html">
-									<dl>
+									<dl title="1">
 										<dt>
 											<img src="${rc.contextPath}/statics/marry/img/screen6.png">
 										</dt>
 										<dd>红包雨</dd>
-										<span style="display:block;">进行中</span>
+										<span>进行中</span>
 									</dl>
 								</a>
-								<dl class="video">
+								<dl title="2" class="video">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen2.png">
 									</dt>
 									<dd>视频</dd>
 									<span>进行中</span>
 								</dl>
-								<dl  class="photo">
+								<dl title="3" class="photo">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen3.png">
 									</dt>
 									<dd>摄影展</dd>
 									<span>进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="4" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen1.png">
 									</dt>
 									<dd>祝福</dd>
 									<span >进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="5" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen4.png">
 									</dt>
 									<dd>抢红包</dd>
 									<span>进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="6" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen5.png">
 									</dt>
 									<dd>相册</dd>
 									<span>进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="7" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen7.png">
 									</dt>
 									<dd>摇一摇</dd>
 									<span>进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="8" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen8.png">
 									</dt>
 									<dd>抽奖</dd>
 									<span>进行中</span>
 								</dl>
-								<dl style="display:none;">
+								<dl title="9" style="display:none;">
 									<dt>
 										<img src="${rc.contextPath}/statics/marry/img/screen9.png">
 									</dt>
@@ -129,40 +129,47 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		var a = document.documentElement.clientWidth;
-		var b = a*1075/1920;
-		var banner = new FragmentBanner({
-			container : "#banner1",//选择容器 必选
-			imgs : ['${rc.contextPath}/statics/marry/img/in1.png','${rc.contextPath}/statics/marry/img/in2.png','${rc.contextPath}/statics/marry/img/in3.png','${rc.contextPath}/statics/marry/img/in4.png'],//图片集合 必选
-			size : {
-				width : a,
-				height : b
-			},//容器的大小 可选
-			//行数与列数 可选
-			grid : {
-				line : 12,
-				list : 14
-			},
-			index: 0,//图片集合的索引位置 可选
-			type : 2,//切换类型 1 ， 2 可选
-			boxTime : 5000,//小方块来回运动的时长 可选
-			fnTime : 10000//banner切换的时长 可选
-		});
+		/*摄影展示*/
+		function sheying(){
+			var a = document.documentElement.clientWidth;
+			var b = a*1075/1920;
+			var banner = new FragmentBanner({
+				container : "#banner1",//选择容器 必选
+				imgs : ['${rc.contextPath}/statics/marry/img/in1.png','${rc.contextPath}/statics/marry/img/in2.png','${rc.contextPath}/statics/marry/img/in3.png','${rc.contextPath}/statics/marry/img/in4.png'],//图片集合 必选
+				size : {
+					width : a,
+					height : b
+				},//容器的大小 可选
+				//行数与列数 可选
+				grid : {
+					line : 12,
+					list : 14
+				},
+				index: 0,//图片集合的索引位置 可选
+				type : 1,//切换类型 1 ， 2 可选
+				boxTime : 5000,//小方块来回运动的时长 可选
+				fnTime : 10000//banner切换的时长 可选
+			});
+		};
 		$(function(){
 			$(".screen_con dl").on("click",function(){
 				$(".screen_con dl").find('span').hide();
+				var id = $(this).attr("title");
 				$(this).find("span").show();
+				$(".banner-number").html("");
 			});
 			$('.carousel').carousel();
-				$(".photo").on("click",function(){
+			$(".photo").on("click",function(){
 				$(".interact_top").hide();
+				sheying();
 				$("#banner1").show();
 			});
 			$(".video").on("click",function(){
 				$(".interact_top").hide();
 				$("#theVedio").show();
+				$(".banner-number").html("");
 				//视频样式设置
-				zymedia('video',{});
+				zymedia('video',{autoplay: true});
 			});
 		});
 	</script>
