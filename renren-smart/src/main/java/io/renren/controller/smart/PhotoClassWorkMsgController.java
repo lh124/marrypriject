@@ -65,7 +65,6 @@ public class PhotoClassWorkMsgController {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		for (PhotoClassWorkMsgEntity pcwm : photoClassWorkMsgList) {
 			StudentEntity studnet = studentService.selectById(pcwm.getUserId());
-			studnet.setPasswordd("");
 			pcwm.setStudent(studnet);
 		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
