@@ -20,6 +20,8 @@ public interface PhotoClassWorkMsgService extends IService<PhotoClassWorkMsgEnti
 	
 	List<PhotoClassWorkMsgEntity> queryList(Map<String, Object> map);
 	
+	List<PhotoClassWorkMsgEntity> queryListtongji(Map<String, Object> map); 
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(PhotoClassWorkMsgEntity photoClassWorkMsg);
