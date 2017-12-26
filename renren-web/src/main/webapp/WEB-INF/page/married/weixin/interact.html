@@ -102,21 +102,19 @@
 		fnTime : 10000//banner切换的时长 可选
 	});
 	$(function(){
-		$(".screen_con dl").on("click",function(){
-			$(".screen_con dl").find('span').hide();
-			$(this).find("span").show();
-		});
+		var websocket = null;
+	     //判断当前浏览器是否支持WebSocket
+	     if ('WebSocket' in window) {
+	         websocket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/websocket");
+	     }
+	     else {
+	         alert('当前浏览器 Not support websocket')
+	     }
+	    socket.onmessage=function(ev){
+	    	var obj = eval(   '('+ev.data+')'   );
+	    	alert(obj);
+	    }
 		$('.carousel').carousel();
-			$(".photo").on("click",function(){
-			$(".interact_top").hide();
-			$("#banner1").show();
-		});
-		$(".video").on("click",function(){
-			$(".interact_top").hide();
-			$("#theVedio").show();
-			//视频样式设置
-			zymedia('video',{});
-		});
 	});
 </script>
 </html>
