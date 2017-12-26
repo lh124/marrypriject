@@ -215,13 +215,13 @@ input::-webkit-input-placeholder {
 .feedback_con dl dd{background: #fe4567;line-height: 0.73rem;color: white;text-align: center;margin-top: 0.43rem;}
 
 /*屏幕管理*/
-.screen_top{height: 5.3rem;width: 100%;background: url(../img/index_theme_con1.png) no-repeat center;background-size: cover;}
+.screen_top{width: 100%;background: url(../img/index_theme_con1.png) no-repeat center;background-size: cover;}
 .screen_mid_top{height: 1.26rem;width: 100%;background: url(../img/screen_top.png) no-repeat center;background-size: cover;}
 .screen_mid_bot{height: 1.92rem;width: 100%;background: url(../img/screen_bot.png) no-repeat center;background-size: cover;position: fixed;bottom: 0;}
 .screen_con{padding:0.3rem;margin-top: -0.55rem;}
-.screen_con dl{width: 2.4rem;height: 2.4rem;background: #f0f0f0;border-radius: 50%;float: left;margin-left: 0.5rem;margin-top: 0.3rem;position: relative;}
+.screen_con dl{width: 2.4rem;height: 2.4rem;background: #f0f0f0;border-radius: 50%;float: left;margin-left: 0.55rem;margin-top: 0.1rem;position: relative;margin-bottom:0.12rem;}
 .screen_con dt img{display: block;margin:0 auto;width: 1rem;height: 1rem;}
-.screen_con dt{padding-top:0.6rem;}
+.screen_con dt{padding-top:0.5rem;}
 .screen_con dd{text-align: center;font-size: 0.35rem;color: #fe4565;line-height: 0.7rem;}
 .screen_con span{position: absolute;top: -0.001rem;right: -0.4rem;display: block;width: 1.6rem;height: 0.573rem;text-align: center;line-height: 0.573rem;background: url(../img/screen_span.png) no-repeat center;background-size: cover;color: white;display: none;}
 
