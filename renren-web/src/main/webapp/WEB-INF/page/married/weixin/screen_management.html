@@ -5,90 +5,164 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}video.css">
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/bootstrap.min.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/banner.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/banner.js"></script>
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_CSS}video.js"></script>
 </head>
 <body ontouchstart style="background:white;">
-	<div class="container" id="container">
+	<div class="container" id="container" style="padding:0;">
 		<div class="page interact" id="pageContainer">
-			<div class="screen_top"></div>
-			<div class="screen_mid">
-				<div class="screen_mid_top"></div>
-				<div class="screen_con">
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen1.png">
-						</dt>
-						<dd>送祝福</dd>
-						<span style="display:block;">进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen2.png">
-						</dt>
-						<dd>视频</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen3.png">
-						</dt>
-						<dd>故事</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen4.png">
-						</dt>
-						<dd>抢红包</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen5.png">
-						</dt>
-						<dd>相册</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen6.png">
-						</dt>
-						<dd>发红包</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen7.png">
-						</dt>
-						<dd>摇一摇</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen8.png">
-						</dt>
-						<dd>抽奖</dd>
-						<span>进行中</span>
-					</dl>
-					<dl>
-						<dt>
-							<img src="${rc.contextPath}/statics/marry/img/screen9.png">
-						</dt>
-						<dd>小游戏</dd>
-						<span>进行中</span>
-					</dl>
+			<div class="interact_top" style="margin:0;z-index:222;">
+				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="height:5.3rem;">
+				  <!-- Wrapper for slides -->
+				  <div class="carousel-inner" role="listbox" style="height:5.3rem;">
+				    <div class="item active" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in1.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in2.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in3.png" alt="...">
+				    </div>
+				    <div class="item" style="height:5.3rem;">
+				      <img src="${rc.contextPath}/statics/marry/img/in4.png" alt="...">
+				    </div>   
+				  </div>
 				</div>
-				<div class="screen_mid_bot"></div>
 			</div>
+			<div class="banner interact_top" id="banner1" style="margin:0;z-index:222;display:none;">
+				<div class="banner-view"></div>
+				<div class="banner-btn" style="visibility:hidden;"></div>
+				<div class="banner-number"></div>
+				<div class="banner-progres"></div>
+			</div>
+			<div class="zy_media interact_top" id="theVedio" style="margin:0;z-index:224;display:none;">
+			    <video poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
+			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
+			        您的浏览器不支持HTML5视频
+			    </video>
+			</div>
+			<div class="page__bd">
+		        <div class="weui-tab">
+		            <div class="weui-tab__panel screen_mid" style="margin-top:5.3rem;">
+		           		<div class="screen_mid_top"></div>
+							<div class="screen_con">
+								<a href="./hongbao.html">
+									<dl>
+										<dt>
+											<img src="${rc.contextPath}/statics/marry/img/screen6.png">
+										</dt>
+										<dd>发红包</dd>
+										<span style="display:block;">进行中</span>
+									</dl>
+								</a>
+								<dl class="video">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen2.png">
+									</dt>
+									<dd>视频</dd>
+									<span>进行中</span>
+								</dl>
+								<dl  class="photo">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen3.png">
+									</dt>
+									<dd>摄影展</dd>
+									<span>进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen1.png">
+									</dt>
+									<dd>祝福</dd>
+									<span >进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen4.png">
+									</dt>
+									<dd>抢红包</dd>
+									<span>进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen5.png">
+									</dt>
+									<dd>相册</dd>
+									<span>进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen7.png">
+									</dt>
+									<dd>摇一摇</dd>
+									<span>进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen8.png">
+									</dt>
+									<dd>抽奖</dd>
+									<span>进行中</span>
+								</dl>
+								<dl style="display:none;">
+									<dt>
+										<img src="${rc.contextPath}/statics/marry/img/screen9.png">
+									</dt>
+									<dd>小游戏</dd>
+									<span>进行中</span>
+								</dl>
+							</div>
+							<div class="screen_mid_bot"></div>
+		            </div>
+		        </div>
+		    </div>
 		</div>
 	</div>
 	<script type="text/javascript">
+		var a = document.documentElement.clientWidth;
+		var b = a*1075/1920;
+		var banner = new FragmentBanner({
+			container : "#banner1",//选择容器 必选
+			imgs : ['${rc.contextPath}/statics/marry/img/in1.png','${rc.contextPath}/statics/marry/img/in2.png','${rc.contextPath}/statics/marry/img/in3.png','${rc.contextPath}/statics/marry/img/in4.png'],//图片集合 必选
+			size : {
+				width : a,
+				height : b
+			},//容器的大小 可选
+			//行数与列数 可选
+			grid : {
+				line : 12,
+				list : 14
+			},
+			index: 0,//图片集合的索引位置 可选
+			type : 2,//切换类型 1 ， 2 可选
+			boxTime : 5000,//小方块来回运动的时长 可选
+			fnTime : 10000//banner切换的时长 可选
+		});
 		$(function(){
 			$(".screen_con dl").on("click",function(){
 				$(".screen_con dl").find('span').hide();
 				$(this).find("span").show();
+			});
+			$('.carousel').carousel();
+				$(".photo").on("click",function(){
+				$(".interact_top").hide();
+				$("#banner1").show();
+			});
+			$(".video").on("click",function(){
+				$(".interact_top").hide();
+				$("#theVedio").show();
+				//视频样式设置
+				zymedia('video',{});
 			});
 		});
 	</script>

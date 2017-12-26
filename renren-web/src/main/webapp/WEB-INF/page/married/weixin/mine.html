@@ -130,12 +130,7 @@
 	wx.ready(function(){
 		document.querySelector('#scanQRCode').onclick = function () {
 		    wx.scanQRCode({
-		      needResult: 1,
-		      desc: 'scanQRCode desc',
-		      success: function (res) {
-		         alert("扫码成功");
-		         window.location.href = "./sign_in.html";
-		      }
+		      desc: 'scanQRCode desc'
 		    });
 		 };
 	});

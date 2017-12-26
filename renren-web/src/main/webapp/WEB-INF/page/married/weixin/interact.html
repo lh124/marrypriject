@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui2.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}weui3.css"/>
+	<link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_CSS}video.css">
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
-    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/bootstrap.min.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
-    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/banner.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/banner.js"></script>
+    <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_CSS}video.js"></script>
 </head>
 <script type="text/javascript">
 	$(function(){
@@ -49,6 +55,18 @@
 				  </div>
 				</div>
 			</div>
+			<div class="banner interact_top" id="banner1" style="margin:0;z-index:222;display:none;">
+				<div class="banner-view"></div>
+				<div class="banner-btn" style="visibility:hidden;"></div>
+				<div class="banner-number"></div>
+				<div class="banner-progres"></div>
+			</div>
+			<div class="zy_media interact_top" id="theVedio" style="margin:0;z-index:224;display:none;">
+			    <video poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
+			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
+			        您的浏览器不支持HTML5视频
+			    </video>
+			</div>
 			<div class="page__bd" style="height: 100%;">
 		        <div class="weui-tab">
 		            <div class="weui-tab__panel interact_mid">
@@ -63,4 +81,42 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	var a = document.documentElement.clientWidth;
+	var b = a*1075/1920;
+	var banner = new FragmentBanner({
+		container : "#banner1",//选择容器 必选
+		imgs : ['${rc.contextPath}/statics/marry/img/in1.png','${rc.contextPath}/statics/marry/img/in2.png','${rc.contextPath}/statics/marry/img/in3.png','${rc.contextPath}/statics/marry/img/in4.png'],//图片集合 必选
+		size : {
+			width : a,
+			height : b
+		},//容器的大小 可选
+		//行数与列数 可选
+		grid : {
+			line : 12,
+			list : 14
+		},
+		index: 0,//图片集合的索引位置 可选
+		type : 2,//切换类型 1 ， 2 可选
+		boxTime : 5000,//小方块来回运动的时长 可选
+		fnTime : 10000//banner切换的时长 可选
+	});
+	$(function(){
+		$(".screen_con dl").on("click",function(){
+			$(".screen_con dl").find('span').hide();
+			$(this).find("span").show();
+		});
+		$('.carousel').carousel();
+			$(".photo").on("click",function(){
+			$(".interact_top").hide();
+			$("#banner1").show();
+		});
+		$(".video").on("click",function(){
+			$(".interact_top").hide();
+			$("#theVedio").show();
+			//视频样式设置
+			zymedia('video',{});
+		});
+	});
+</script>
 </html>
