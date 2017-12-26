@@ -43,18 +43,18 @@
 		              $("#content").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+leave.content);
 		              var beizhu = "";
 		              $("#buttons").html("");
-		              if(leave.states == "1"){
-		                  beizhu = "待老师批复该请假条";
-		                  var buttons = '<div class="weui-flex__item">'+
-		                                '<button type="button" onclick="updateleave(2,'+leave.id+')">同意</button></div>'+
-		                                '<div class="weui-flex__item">'+
-		                                '<button type="button" onclick="updateleave(3,'+leave.id+')">不同意</button></div>';
-		                  $("#buttons").html(buttons);              
+		              if(leave.states == "1" && (leave.beizhu != null || leave.beizhu != "")){
+		                  beizhu = "待老师审批该请假条";
 		              }else if(leave.states == "2"){
 		                  beizhu = "老师已批准该请假条";
 		              }else if(leave.states == "3"){
 		                  beizhu = "老师未批准该请假条";
 		              }
+		              var buttons = '<div class="weui-flex__item">'+
+		                                '<button type="button" onclick="updateleave(2,'+leave.id+')">同意</button></div>'+
+		                                '<div class="weui-flex__item">'+
+		                                '<button type="button" onclick="updateleave(3,'+leave.id+')">不同意</button></div>';
+		              $("#buttons").html(buttons); 
 		              $("#beizhu").html(beizhu);
 		           }
 		        }
@@ -65,7 +65,7 @@
      function updateleave(states,id){
          $.ajax({
 		        type: 'GET',
-		        url:'./sign/updateleave?id='+id+'&states='+states,
+		        url:'./sign/updateleave?id='+id+'&states='+states+'&beizhu='+$("#beizhu").val(),
 		        dataType: 'json',
 		        success: function(data){
 		            if(data.status == "ok"){
@@ -100,7 +100,9 @@
             </div>
             <div class="reason">
                 <h5>备注：</h5>
-                 <p id="beizhu"></p>
+                 <p id="beizhu">
+                     <textarea rows="" cols="" id="beizhu"></textarea>
+                 </p>
                 <div class="weui-flex" id="buttons">
                 </div>
             </div>

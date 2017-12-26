@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>群聊消息</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <link rel="stylesheet" href="${rc.contextPath}/statics/jstx/amazeui.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" media="screen" />
+  <script type="text/javascript" src="${rc.contextPath}/statics/jstx/js/jquery-1.11.1.min.js"></script>
+  <script src="${rc.contextPath}/statics/jstx/jquery.min.js"></script>
+  <script src="${rc.contextPath}/statics/jstx/amazeui.min.js"></script>
+  <style type="text/css">
+      input,button{outline:none;}
+      .wenwen-footer input{height:40px;padding:5 5px;border-radius:5px;line-height:40px;width:100%;box-sizing:border-box;border:1;}
+      .wenwen-footer button{width:100%;background:#42929d;color:#fff;border-radius:5px;border:0;height:40px;}
+      .wenwen-footer{width:100%;position:fixed;bottom:-15px;left:0;background:#fff;padding-bottom:20px;border-top:solid 1px #ddd;box-sizing:border-box;}
+  </style>
+</head>
+<body onload="init()">
+	<div id="main">
+	<div id="ChatBox" class="am-g am-g-fixed" >
+	  <div class="am-u-lg-12" style="height:100%;border:1px solid #999;overflow-y:scroll;padding-bottom:50px; ">
+		<ul id="chatContent" class="am-comments-list am-comments-list-flip" style="padding-bottom: -50px;bottom:-15px;">
+			<li id="msgtmp" class="am-comment" style="display:none;">
+			    <a href="#" >
+			        <img  class="am-comment-avatar" src="${rc.contextPath}/statics/jstx/other.jpg" alt=""/>
+			    </a>
+			    <div class="am-comment-main" >
+			        <header class="am-comment-hd">
+			            <div class="am-comment-meta">
+			              <a ff="nickname" href="#link-to-user" class="am-comment-author">某人</a>
+			              <time ff="msgdate" datetime="" title="">15:30</time>
+			            </div>
+			        </header>
+			     <div ff="content" class="am-comment-bd">此处是消息内容</div>
+			    </div>
+			</li>
+		</ul>
+	  </div>
+	</div>
+	<div id="EditBox" class="am-g am-g-fixed wenwen-footer" >
+	<div style="float: left;width: 72%;">
+	   <input type="text" id="content"placeholder="请输入关键字" />
+	</div>
+	<div style="float: left;width: 28%;">
+	    <button id="send" >发送</button>
+	</div>
+	</div>
+</div>
+<script type="text/javascript">
+function init(){
+    $.ajax({ 
+			type: "POST",
+		    url: "../../smart/jstx/list",
+		    success: function (result) {
+		        result = JSON.parse(result);
+		        var ans = "";
+		        if(result.status == "ok"){
+		            for(var i = 0; i < result.list.length; i++){
+		                if(result.list[i].studentId == $session.getAttribute('user_smart').id){
+		                   ans += '<li id="msgtmp'+i+'" class="am-comment am-comment-flip am-comment-warning" style="display: list-item; margin-left: 20%;">';
+					       ans += '<a href="#" ><img class="am-comment-avatar" src="${rc.contextPath}/statics/jstx/other.jpg"></a>';
+					       ans += '<div class="am-comment-main"><header class="am-comment-hd"><div class="am-comment-meta">';
+					       ans += '<a ff="nickname" href="#link-to-user" class="am-comment-author">匿名</a>';
+					       ans += '<time ff="msgdate" datetime="" title="">'+result.list[i].createtime+'</time></div></header>'
+					           +'<div ff="content" class="am-comment-bd">'+result.list[i].content+'</div></div></li>';
+		                }else{
+		                   ans += '<li id="msgtmp'+i+'" class="am-comment am-comment-success" style="display: list-item; margin-right: 20%;">';
+					       ans += '<a href="#"><img class="am-comment-avatar" src="${rc.contextPath}/statics/jstx/other.jpg"></a>';
+					       ans += '<div class="am-comment-main"><header class="am-comment-hd"><div class="am-comment-meta">';
+					       ans += '<a ff="nickname" href="#link-to-user" class="am-comment-author">某人</a>';
+					       ans += '<time ff="msgdate" datetime="" title="">'+result.list[i].createtime+'</time></div></header>'
+					           +'<div ff="content" class="am-comment-bd">'+result.list[i].content+'</div></div></li>';
+		                }
+		            }
+		        }
+		        ans += '<li id="msgtmp" class="am-comment" style="display:none;"><a href="#" ff="pic">'+
+		               '<img class="am-comment-avatar" src="${rc.contextPath}/statics/jstx/other.jpg" alt=""/>'+
+		               '</a><div class="am-comment-main" ><header class="am-comment-hd">'+
+		               '<div class="am-comment-meta"><a ff="nickname" href="#link-to-user" class="am-comment-author">某人</a>'+
+		               '<time ff="msgdate" datetime="" title="">15:30</time></div></header>'+
+		               '<div ff="content" class="am-comment-bd"></div></div></li>';
+	        	$('#chatContent').html(ans);	
+			} 
+		});
+}
+
+
+$(function(){
+    var nickname = "";
+    var pic = "";
+    var id = "";
+    var classId = "";
+    $.ajax({
+			  type: 'GET',
+			  url: '../user/userInfo',
+			  dataType: "json",
+			  success: function(result){
+					nickname = result.info.studentName;
+					pic = result.info.pic;
+					id = result.info.id;
+					classId = result.info.classId;
+			  }
+			});
+	var socket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/websocket");
+    //接收服务器的消息
+    socket.onmessage=function(ev){
+    	var obj = eval(   '('+ev.data+')'   );
+    	addMessage(obj);
+    }
+    
+    $("#send").click(function(){
+        	//获取输入框的内容
+        	var txt = $("#content").val();
+        	if(txt == null || txt == ""){
+        	   alert("不能发送空消息");
+        	   return false;
+        	}
+        	$.ajax({ 
+				type: "POST",
+			    url: "../../smart/jstx/save?content="+txt,
+			    success: function (result) {
+			    }
+			});
+        	//构建一个标准格式的JSON对象
+        	var obj = JSON.stringify({
+	    		nickname:nickname,
+	    		pic:pic,
+	    		id:id,
+	    		classId:classId,
+	    		content:txt
+	    	});
+	    	// 发送消息
+            socket.send(obj);
+            $("#content").val("");
+    });   
+});
+
+//人名nickname，时间date，是否自己isSelf，内容content
+function addMessage(msg){
+    if($session.getAttribute('user_smart').userType == "2" || ($session.getAttribute('user_smart').classId == msg.classId && $session.getAttribute('user_smart').userType == "1")){
+            var box = $("#msgtmp").clone(); 	//复制一份模板，取名为box
+			box.show();							//设置box状态为显示
+			box.appendTo("#chatContent");		//把box追加到聊天面板中
+			box.find('[ff="nickname"]').html(msg.nickname); //在box中设置昵称
+			if(msg.pic != null && msg.pic != ""){
+			   box.find('[ff="pic"]').html('<img  class="am-comment-avatar" src="'+msg.pic+'" alt=""/>');
+			}
+			box.find('[ff="msgdate"]').html(msg.date); 		//在box中设置时间
+			box.find('[ff="content"]').html(msg.content); 	//在box中设置内容
+			box.addClass(msg.isSelf? 'am-comment-flip':'');	//右侧显示
+			box.addClass(msg.isSelf? 'am-comment-warning':'am-comment-success');//颜色
+			box.css((msg.isSelf? 'margin-left':'margin-right'),"20%");//外边距
+			$("#ChatBox div:eq(0)").scrollTop(999999); 	//滚动条移动至最底部	
+    }
+    //init();
+}
+</script>
+</body>
+</html>
