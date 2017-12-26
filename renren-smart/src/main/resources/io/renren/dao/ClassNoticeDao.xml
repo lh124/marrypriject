@@ -42,6 +42,14 @@
 		</if>
 	</select>
 	
+	
+	<select id="queryListtongji" resultType="io.renren.entity.smart.ClassNoticeEntity">
+		select t1.*,t2.newsType,t2.id as newsId from class_notice t1,smart_news t2 
+		where t1.id = t2.newsId and t2.states=2 and t1.classId=#{classId} and t2.userId=#{userId}
+		order by t2.newsType,t1.id desc
+		limit #{offset}, #{limit}
+	</select>
+	
  	<select id="queryTotal" resultType="int">
 		select count(*) from class_notice 
 	</select>
