@@ -26,7 +26,7 @@ public class PhotoClassWorkMsgEntity implements Serializable {
 
 		//
 	@TableId(value="id",type=IdType.AUTO)
-	private Long id;	
+	private Long id;	 
 		
 	//
 	@NotNull(message="关联班级不能为空",groups={AddGroup.class})
@@ -64,6 +64,24 @@ public class PhotoClassWorkMsgEntity implements Serializable {
 	private List<PhotoPicWorkMsgEntity> picList;
 	@TableField(exist=false)
 	private StudentEntity student;
+	
+	private Integer newsType;
+	
+	private Integer newsId;
+			
+
+	public Integer getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(Integer newsId) {
+		this.newsId = newsId;
+	}
+	public Integer getNewsType() {
+		return newsType;
+	}
+	public void setNewsType(Integer newsType) {
+		this.newsType = newsType;
+	}
 	
 	/**
 	 * 设置：
