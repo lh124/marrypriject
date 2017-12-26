@@ -22,7 +22,7 @@ public class SysPageController {
 	public String page(@PathVariable("url") String url ){
 		return "sys/" + url + ".html";
 	}
-	
+	 
 	@RequestMapping("uniform/{url}.html")
 	public String uniformPage(@PathVariable("url") String url ){
 		return "uniform/" + url + ".html";
