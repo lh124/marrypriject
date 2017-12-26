@@ -34,6 +34,8 @@
 		<result property="gmtCreate" column="gmt_create"/>
 		<result property="userId" column="user_id"/>
 		<result property="voice" column="voice"/>
+		<result property="newsType" column="newsType"/>
+		<result property="newsId" column="newsId"/>
 		<collection property="picList" resultMap="queryPicListMap"></collection>
 	</resultMap>
 	<resultMap type="io.renren.entity.smart.PhotoPicWorkMsgEntity" id="queryPicListMap">
