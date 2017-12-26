@@ -44,8 +44,24 @@ public class ClassNoticeEntity implements Serializable {
 	
 	@TableField(value="noticeType")
 	private String noticeType;
+	
+	private Integer newsType;
+	
+	private Integer newsId;
 			
 
+	public Integer getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(Integer newsId) {
+		this.newsId = newsId;
+	}
+	public Integer getNewsType() {
+		return newsType;
+	}
+	public void setNewsType(Integer newsType) {
+		this.newsType = newsType;
+	}
 	public String getNoticeType() {
 		return noticeType;
 	}
