@@ -1,17 +1,116 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>upload.html</title>
-	
-    <meta name="keywords" content="keyword1,keyword2,keyword3">
-    <meta name="description" content="this is my page">
-    <meta name="content-type" content="text/html; charset=UTF-8">
-    
-    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
-
-  </head>
-  
-  <body>
-    This is my HTML page. <br>
-  </body>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
+</head>
+<script type="text/javascript">
+     function save(){
+          var groomName = $("#groomName").val();
+          var brideName = $("#brideName").val();
+          var weddingDate = $("#weddingDate").val();
+          var weddingAddress = $("#weddingAddress").val();
+          var content = $("#content").val();
+          $.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveWedding?groomName="+groomName+"&brideName="+brideName+"&weddingDate="+
+			         weddingDate + "&weddingAddress="+weddingAddress+"&content="+content,
+				dataType: "json",
+				success: function(result){
+				    window.location.href="invite_card.html"; 
+				}
+		 });
+     }
+</script>
+<body ontouchstart style="background:#efefef;" onload="init()">
+<div class="container" id="container">
+		<div class="page" id="pageContainer" style="display:block;">
+	        <div class="weui-gallery" id="gallery">
+	            <span class="weui-gallery__img" id="galleryImg"></span>
+	            <div class="weui-gallery__opr">
+	                <a href="javascript:forRemvePic();" class="weui-gallery__del">
+	                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+	                </a>
+	            </div>
+	        </div>
+	        <div class="weui-cells weui-cells_form" >
+	            <div class="weui-cell">
+	                <div class="weui-cell__bd">
+	                    <div class="weui-uploader">
+	                        <div class="weui-uploader__hd">
+	                            <p class="weui-uploader__title" id="typeName">摄影展图片上传</p>
+	                            <div class="weui-uploader__info" id="picSize">0/7</div>
+	                        </div>
+	                        <div class="weui-uploader__bd">
+	                        	<div class="weui-uploader__input-box"  id="selectfiles1"></div>
+	                            <ul class="weui-uploader__files" id="uploaderFiles">
+	                            </ul>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="card_top weui-cells weui-cells_form">
+	            <div class="weui-cell">
+	                <a  id="save"  class="selectbg_next" href="javascript:void(0);">上传</a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<div id="toast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+            <p class="weui-toast__content">添加成功</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		/*图片预览*/
+		function addNewContent(obj) {
+			$("#uploaderFiles").html("");
+			var oldBox = "";
+			for(var a = 0; a < obj.length; a++) {
+				oldBox += "<li class='weui-uploader__file'><img class='weui-uploader__file weiImg' name='msgpic' src='"+obj[a]+"' /></li>";
+			}
+			$("#picSize").text(obj.length + "/7");
+			$("#uploaderFiles").html(oldBox);
+			$(".weiImg").on("click",function(){
+			 var index = $(this).prevAll().length;
+			 var src=$(this).attr("src"); 
+		  	 wx.previewImage({
+		      urls:obj
+		    });
+		  });
+		}
+		wx.ready(function(){
+		/*添加 图片*/
+			var images = {
+			    localId: [],
+			    serverId: []
+			  };
+			 var length = 0;
+			  //图片选择
+			 document.querySelector('#selectfiles1').onclick = function () {
+			    wx.chooseImage({
+			      count: 7, 
+			      success: function (res) {
+			        localId = res.localIds;
+			        length = localId.length
+			        addNewContent(localId);
+			      }
+			    });
+			  };
+		});
+	});
+</script>
 </html>
