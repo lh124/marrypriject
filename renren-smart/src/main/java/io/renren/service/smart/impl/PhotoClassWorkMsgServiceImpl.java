@@ -52,5 +52,10 @@ public class PhotoClassWorkMsgServiceImpl extends ServiceImpl<PhotoClassWorkMsgD
 	public void deleteBatch(Long[] ids){
 		photoClassWorkMsgDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<PhotoClassWorkMsgEntity> queryListtongji(Map<String, Object> map) {
+		return photoClassWorkMsgDao.queryListtongji(map); 
+	}
 	
 }
