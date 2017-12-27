@@ -634,7 +634,8 @@ public class TeacherAppInterfaceController {
 	public R schoolNotice(JSONObject json){
 		Map<String, Object> map = getMap(json);
 		map.put("schoolid", json.getString("schoolId"));
-		List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryList(map);
+		map.put("userId", json.get("teacherId"));
+		List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryListtongji(map);
 		return R.ok().put(DATA, schoolNoticeList);
 	}
 	
