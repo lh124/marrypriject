@@ -52,5 +52,10 @@ public class SchoolNoticeServiceImpl extends ServiceImpl<SchoolNoticeDao, School
 	public void deleteBatch(Integer[] ids){
 		schoolNoticeDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<SchoolNoticeEntity> queryListtongji(Map<String, Object> map) {
+		return schoolNoticeDao.queryListtongji(map);
+	}
 	
 }
