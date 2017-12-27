@@ -20,6 +20,8 @@ public interface SchoolNoticeService extends IService<SchoolNoticeEntity>{
 	
 	List<SchoolNoticeEntity> queryList(Map<String, Object> map);
 	
+	List<SchoolNoticeEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(SchoolNoticeEntity schoolNotice);
