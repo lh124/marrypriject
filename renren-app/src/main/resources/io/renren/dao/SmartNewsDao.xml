@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.app.SmartNewsDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,states as states ,newsId as newsid ,newsType as newstype,userId as userId,title as title 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,states ,newsId ,newsType,userId,title 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.app.SmartNewsEntity" id="smartNewsMap">
+		        <result property="id" column="id"/>
+		        <result property="states" column="states"/>
+		        <result property="newsid" column="newsId"/>
+		        <result property="userId" column="userId"/>
+		        <result property="title" column="title"/>
+		        <result property="newstype" column="newsType"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.app.SmartNewsEntity">
+		select <include refid="allColumns"></include> from smart_news where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.app.SmartNewsEntity">
+		select <include refid="allColumns"></include> from smart_news
+		<if test="userId != null and userId != ''">
+			where userId=#{userId} and states=#{states}
+		</if>
+        order by newsType,id desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_news 
+		<if test="userId != null and userId != ''">
+			where userId=#{userId} and newsType=0
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.app.SmartNewsEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into smart_news
+		(
+			`states`, 
+			`userId`, 
+			`newsId`, 
+			`title`, 
+			`newsType`
+		)
+		values
+		(
+			#{states}, 
+			#{userId}, 
+			#{newsid}, 
+			#{title}, 
+			#{newstype}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.app.SmartNewsEntity">
+		update smart_news 
+		<set>
+			<if test="states != null">`states` = #{states}, </if>
+			<if test="newsid != null">`newsId` = #{newsid}, </if>
+			<if test="userId != null">`userId` = #{userId}, </if>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="newstype != null">`newsType` = #{newstype}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_news where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_news where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
