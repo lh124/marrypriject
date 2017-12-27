@@ -24,6 +24,13 @@
 	<select id="queryObject" resultType="io.renren.entity.smart.SchoolNoticeEntity">
 		select <include refid="allColumns"></include> from school_notice where id = #{value}
 	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.smart.SchoolNoticeEntity">
+		select t1.*,t2.newsType,t2.id as newsId  from smart_news t2,school_notice t1 
+		where t2.newsId = t1.id and t2.states=1 and t2.userId=#{userId} and t1.schoolId=#{schoolid}
+		order by t2.newsType,t1.id desc
+		limit #{offset}, #{limit}
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.SchoolNoticeEntity">
 		select <include refid="allColumns"></include> from school_notice where schoolId=#{schoolid}
