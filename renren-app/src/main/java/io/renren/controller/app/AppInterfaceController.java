@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -67,6 +68,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jiguangtuisong.JpushClientUtil;
 import net.sf.json.JSONObject;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -145,10 +147,17 @@ public class AppInterfaceController {
 	
 	
 	@RequestMapping("/main")
-	public R main(HttpServletRequest request){
-		String key = request.getParameter("key").replace("&quot;", "\"");
+	public R main(HttpServletRequest request) throws Exception{
+		String key = (request.getParameter("key")==null || "".equals(request.getParameter("key")))?
+				getJSONObject(request):request.getParameter("key").replace("&quot;", "\"");
 		System.out.println("---"+key);
+		if(key == null || "".equals(key)){
+			return R.error("请求参数没到服务端");
+		}
 		JSONObject json = JSONObject.fromObject(key);//用户登录
+		if(json.get("type") == null || json.get("type") == "null" || "".equals(json.get("type"))){
+			return R.error("请求错误");
+		}
 		String type = json.getString("type");
 		if(json.get("token") == null || "".equals(json.get("token")) || "null".equals(json.get("token"))){
 			if(type.equals("userLogin")){//用户登录接口
@@ -224,7 +233,6 @@ public class AppInterfaceController {
 					//学校通知保存
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 					return schoolNoticeSave(json.getJSONObject("data"),multipartResolver,request);
-					
 				}else if(type.equals("updateheadportrait")){
 					//头像修改
 					CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -280,12 +288,51 @@ public class AppInterfaceController {
 				}else if(type.equals("getAccessToken")){
 					//获取设备的AccessToken
 					return getAccessToken(json.getJSONObject("data"));
+				}else if(type.equals("jiguangtuisong")){
+					//通知推送
+					return jiguangtuisong(json.getJSONObject("data"));
 				}
 			}else{
-//				return R.error("您的账号已在其它设备上登录，请重新登录。");
 				return R.error("您还未登录了");
 			}
 		}
+		return R.ok();
+	}
+	
+	private String getJSONObject(HttpServletRequest request){
+		InputStream intpu = null;
+		try {
+			intpu = request.getInputStream();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		BufferedReader reader = new BufferedReader(new InputStreamReader(intpu));   
+        StringBuilder sb = new StringBuilder();   
+        String line = null;   
+        try {   
+            while ((line = reader.readLine()) != null) {   
+                sb.append(line);   
+            }   
+        } catch (IOException e) {   
+            e.printStackTrace();   
+        } finally { 
+        }    
+        String result = "";
+        try {
+        	result = new String(sb.toString().getBytes("gbk"),"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return result;
+	}
+	
+	private R jiguangtuisong(JSONObject json){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", json.getString("type"));
+		map.put("id", json.get("id"));
+		System.out.println(JSONObject.fromObject(map).toString());
+		JpushClientUtil.sendToRegistrationId(json.getString("userId"), "通知内容标题", "消息内容标题",
+				"通知内容", JSONObject.fromObject(map).toString());
 		return R.ok();
 	}
 	
@@ -317,19 +364,12 @@ public class AppInterfaceController {
 		StudentEntity user = new StudentEntity();
 		user.setPhoen(phone);
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		user = this.studentService.selectOne(wrapper);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		if(user == null){
 			return R.error("该号码暂未绑定");
 		}else{
 			user.setPasswordd(new Sha256Hash(password).toHex());
 			studentService.update(user);
-			try {
-				MsgUtil.sendSms(phone, password,MsgUtil.YZMPASSWORD);
-			} catch (ClientException e) {
-				e.printStackTrace();
-			}
 		}
 		return R.ok().put(DATA, "密码为："+password);
 	}
@@ -341,11 +381,23 @@ public class AppInterfaceController {
 		leave.setStates(json.getString("states")); 
 		leave.setBeizhu(json.getString("beizhu"));
 		smartLeaveService.update(leave);
-		return R.ok().put(DATA, smartLeaveService.queryObject(id));
+		SmartLeaveEntity sle = smartLeaveService.queryObject(id);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("type", 5);
+		JpushClientUtil.sendToRegistrationId(sle.getUserid().toString(), "请假通知", "请假申请回复",
+				sle.getContent(), m.toString());
+		return R.ok().put(DATA, sle);
 	}
 	
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
+		StudentEntity user = new StudentEntity();//通过账号
+		user.setPhoen(phone);
+		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
+		user = this.studentService.selectOne(wrapper);
+		if(user != null){
+			return R.error("该手机号已绑定");
+		}
 		Integer userId = json.getInt("userId");
 		String code = json.getString("code");
 		String code2 = request.getSession().getAttribute("randow").toString();
@@ -367,7 +419,7 @@ public class AppInterfaceController {
 		}else if(!phone.matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")){
 			return R.error("手机号码有误，请重新输入");
 		}else{
-			try {System.out.println(randow+"---------------");
+			try {
 				MsgUtil.sendSms(phone, randow,MsgUtil.YZMBD);
 			} catch (ClientException e) {
 				e.printStackTrace();
@@ -440,6 +492,7 @@ public class AppInterfaceController {
 		return R.ok().put(DATA, smartLeaveService.queryList(map));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private R saveSmartLeave(JSONObject json){
 		SmartLeaveEntity smartLeave = new SmartLeaveEntity();
 		Integer id = json.getInt("userId");
@@ -453,7 +506,23 @@ public class AppInterfaceController {
 			e.printStackTrace();
 		}
 		smartLeave.setCalssid(student.getClassId());
-		smartLeaveService.save(smartLeave);
+		smartLeaveService.insert(smartLeave);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("type", 4);
+		m.put("id", smartLeave.getId());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("classid", student.getClassId());
+		map.put("sidx", null);
+		map.put("order", null);
+		map.put("offset", 0);
+		map.put("limit", 20);
+		map.put("userType", 2);
+		List<ClassInfoEntity> list = classInfoService.queryList(map);
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
+			JpushClientUtil.sendToRegistrationId(classInfoEntity.getUserId().toString(), "请假通知", "请假申请",
+					smartLeave.getContent(), m.toString());
+		}
 		return R.ok();
 	}
 	
@@ -504,6 +573,7 @@ public class AppInterfaceController {
 		return list;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private R classworkmsg(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		PhotoClassWorkMsgEntity pcwme = new PhotoClassWorkMsgEntity();
 		InputStream[] is;
@@ -527,6 +597,20 @@ public class AppInterfaceController {
 					ppwme.setName(FILEPATH+"smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_msg_pic/"));
 					photoPicWorkMsgService.save(ppwme);
 				}
+			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("classId", json.getString("classId"));
+			map.put("schoolId", null);
+			map.put("userType", 1);
+			map.put("begin", 0);
+			map.put("limit", 100);
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("type", 3);
+			List<StudentEntity> studentlist = studentService.queryList(map);
+			for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator2.next();
+				JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "班内消息", "班内消息",
+						pcwme.getContent(), m.toString());
 			}
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -612,18 +696,18 @@ public class AppInterfaceController {
 	}
 	
 	private boolean getToken(String token){
-//		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
+		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
 			TokenEntity tokens = tokenService.queryByToken(token);
 			if(tokens == null){
 				return false;
 			}else{
-//				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
-//				jedis.set(tokens.getToken(), tokens.getToken());
+				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				jedis.set(tokens.getToken(), tokens.getToken());
 				return true;
 			}
-//		}else{
-//			return true;
-//		}
+		}else{
+			return true;
+		}
 	}
 	
 	public R updateheadportrait(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -643,6 +727,7 @@ public class AppInterfaceController {
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public R schoolNoticeSave(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		try {
 			SchoolNoticeEntity schoolNotice = new SchoolNoticeEntity();
@@ -655,6 +740,26 @@ public class AppInterfaceController {
 				schoolNotice.setNoticepic(FILEPATH+"smart_notice_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_notice_pic/"));
 			}
 			schoolNoticeService.save(schoolNotice);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("type", 1);
+			map.put("schoolId", json.getString("schoolId"));
+			map.put("begin", 0);
+			map.put("limit", 100);
+			List<ClassEntity> classList = classService.queryList(map);//通过学校id查询所有的班级
+			for (Iterator iterator = classList.iterator(); iterator.hasNext();) {
+				ClassEntity classEntity = (ClassEntity) iterator.next();
+				map.put("classId", classEntity.getId());
+				map.put("schoolId", null);
+				map.put("userType", 1);
+				List<StudentEntity> studentlist = studentService.queryList(map);
+				for (Iterator iterator2 = studentlist.iterator(); iterator2
+						.hasNext();) {
+					StudentEntity studentEntity = (StudentEntity) iterator2
+							.next();
+					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "学校通知", schoolNotice.getTitle(),
+							schoolNotice.getContent(), map.toString());
+				}
+			}
 		} catch (Exception e) {
 			return R.error("失败");
 		}
@@ -680,6 +785,7 @@ public class AppInterfaceController {
 		return R.ok();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public R teacherNoticeSave(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		try {
 			ClassNoticeEntity classNotice = new ClassNoticeEntity();
@@ -693,6 +799,20 @@ public class AppInterfaceController {
 				classNotice.setNoticepic(FILEPATH+"smart_notice_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_notice_pic/"));
 			}
 			classNoticeService.insert(classNotice);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("classId", json.getString("classId"));
+			map.put("schoolId", null);
+			map.put("userType", 1);
+			map.put("begin", 0);
+			map.put("limit", 100);
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("type", 2);
+			List<StudentEntity> studentlist = studentService.queryList(map);
+			for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator2.next();
+				JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", classNotice.getTitle(),
+						classNotice.getContent(), m.toString());
+			}
 		} catch (Exception e) {
 			return R.error("失败");
 		}
@@ -958,9 +1078,12 @@ public class AppInterfaceController {
 	
 	public R login(JSONObject json){
 		StudentEntity student = (StudentEntity)JSONObject.toBean(json.getJSONObject("data"), StudentEntity.class);
-		
-		StudentEntity user = new StudentEntity();
-		user.setStudentNo(student.getStudentNo());
+		StudentEntity user = new StudentEntity();//通过账号
+		if(!student.getStudentNo().matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")){
+			user.setStudentNo(student.getStudentNo());
+		}else{
+			user.setPhoen(student.getStudentNo());
+		}
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		user = this.studentService.selectOne(wrapper);
@@ -985,8 +1108,8 @@ public class AppInterfaceController {
 					token.setUpdateTime(new Date());
 					tokenService.update(token);
 				}
-//				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
-//				jedis.set(tokening, tokening);
+				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				jedis.set(tokening, tokening);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);

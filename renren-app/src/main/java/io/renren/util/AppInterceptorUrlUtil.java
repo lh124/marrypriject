@@ -5,7 +5,10 @@ import java.util.regex.Pattern;
 public class AppInterceptorUrlUtil {
 
 	public static boolean authCheck(String url){
-		String[] annos = {".*/appInterface/main"};
+		String[] annos = {".*/appInterface/main", 
+						  ".*/appInterface/teacher/main",
+				          ".*/appInterface/student/main"		         
+		 };
 		boolean isMatch = false;
 		
 		for(int i = 0; i < annos.length; i++){
