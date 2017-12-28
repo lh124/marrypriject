@@ -9,54 +9,150 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
-<script type="text/javascript">
-    function init(){
-          $.ajax({
-				type: "POST",
-				url: "../weixin/cart/list",
-				dataType: "json",
-				success: function(result){
-					if(result.status == 'ok'){
-						var content = "";
-						for(var i = 0; i < result.list.length;i++){
-						    content += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
-						               '<div class="weui-media-box__hd">'+
-						               '<img style="display:block;width:60px;height:60px;" class="weui-media-box__thumb" src="'+result.list[i].pic+'"></div>'+
-						               '<div class="weui-media-box__bd"><h4 class="weui-media-box__title">'+result.list[i].title+'</h4>'+
-						               '<p class="weui-media-box__desc">'+result.list[i].author+'</p>'+
-						               '<p class="weui-media-box__desc">价格：￥'+result.list[i].price+'</p>'+
-						               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
-						               '<div class="weui-cell__hd"><input type="checkbox" class="weui-check" name="checkbox1">'+
-						               '<i class="weui-icon-checked"></i></div></label></div></div></a>';
-						}
-						$("#list").html(content);
-					}
-				}
-		});
-    }
-</script>
-<body ontouchstart style="background:#efefef;" onload="init()">
+<body ontouchstart style="background:#efefef;">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div style="flex:1;margin-bottom:2.8rem;">
 				<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">
 					<div class="cart_tit">
-						<p>伊人婚礼<span>全选</span></p>
+						<p><span class="shangjia">伊人婚礼</span><span class="check_part">全选</span></p>
 					</div>
-					<div class="weui-panel__bd" id="list">
+					<div class="weui-panel__bd">
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">100</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1">
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">1000</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1">
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
+		            </div>
+				</div>
+				<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">
+					<div class="cart_tit">
+						<p><span class="shangjia">伊人婚礼</span><span class="check_part">全选</span></p>
+					</div>
+					<div class="weui-panel__bd">
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">100000</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1"/>
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">1008</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1"/>
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
+		            </div>
+				</div>
+				<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">
+					<div class="cart_tit">
+						<p class="check_part"><span class="shangjia">伊人婚礼</span><span>全选</span></p>
+					</div>
+					<div class="weui-panel__bd">
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">1050</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1"/>
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
+		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+		                    <div class="weui-media-box__hd">
+		                        <img class="weui-media-box__thumb" src="${rc.contextPath}/statics/marry/img/theme1.png" alt="">
+		                    </div>
+		                    <div class="weui-media-box__bd">
+		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
+		                        <p class="weui-media-box__desc">设计师</p>
+		                        <p class="weui-media-box__desc">价格：<span class="sub">100</span></p>
+		                        <div class="weui-cells_checkbox">
+						            <label class="weui-check__label">
+						                <div class="weui-cell__hd">
+						                    <input type="checkbox" class="weui-check ck" name="checkbox1"/>
+						                    <i class="weui-icon-checked"></i>
+						                </div>
+						            </label>
+						        </div>
+		                    </div>
+		                </a>
 		            </div>
 				</div>
 			</div>
 			<div class="cart_total">
 				<div class="cart_total_money">
 					<div class="weui-cells weui-cells_checkbox cart_total_money_con">
-			            <label class="weui-cell weui-check__label" for="s11">
+			            <label class="weui-cell weui-check__label" for="ck_all">
 			                <div class="weui-cell__hd">
-			                    <input type="checkbox" class="weui-check" name="checkbox1" id="s11" checked="checked"/>
+			                    <input type="checkbox" class="weui-check" name="checkbox1" id="ck_all" />
 			                    <i class="weui-icon-checked"></i>
 			                </div>
 			                <div class="weui-cell__bd">
-			                    <p>全选<span>总金额：<i>￥300000</i></span></p>
+			                    <p>全选<span>总金额：<i class="total">￥0</i></span></p>
 			                </div>
 			            </label>
 			        </div>
@@ -67,5 +163,55 @@
 			</div>
 		</div>
 	</div>
+<script>
+	/*商家全选*/
+	$(".check_part").on("click",function(){
+		if($(this).parents(".cart_con").find("input").prop('checked')== false){
+			$(this).parents(".cart_con").find("input").prop('checked',true);
+		}else{
+			$(this).parents(".cart_con").find("input").prop('checked',false);
+		}
+		calcTotal();
+	});
+	/*单选*/
+	$(".ck").on("click",function(){
+		var status=$(this).prop("checked"); 
+		var len=$(".ck").length;
+		var a=0;
+		for(var i=0;i<len;i++){
+			if($(".ck").eq(i).prop("checked")==true){
+				a++;
+			}
+		}
+		if(a==len){
+			$("#ck_all").prop("checked", true);
+		}else{
+			$("#ck_all").prop("checked", false);
+		}
+		calcTotal();
+	});
+	/*全选*/
+	$("#ck_all").click(function(){
+		var status=$(this).prop("checked");
+		$(".ck").prop("checked",status);
+		calcTotal();
+	});
+	/*结算*/
+	$(".cart_total_pay").on("click",function(){
+		var shangjia = $(".ck:checked").parents(".cart_con").find(".shangjia");
+		var name = $(".ck:checked").parents(".cart_con").find(".weui-media-box__title");
+		var price = $(".ck:checked").parents(".cart_con").find(".sub");
+		var imgURL = $(".ck:checked").parents(".cart_con").find(".weui-media-box__thumb");
+	});
+	// 合计
+	function calcTotal() {
+		var element = $(".ck:checked").parents(".weui-media-box__bd").find(".sub");
+		var total = 0; // 总金额
+		element.each(function(i, e){
+			total += parseFloat($(e).text());
+		});
+		$(".total").text("￥"+total.toFixed(0));
+	}
+</script>
 </body>
 </html>
