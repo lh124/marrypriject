@@ -101,7 +101,7 @@
 				</div>
 				<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">
 					<div class="cart_tit">
-						<p class="check_part"><span class="shangjia">伊人婚礼</span><span>全选</span></p>
+						<p><span class="shangjia">伊人婚礼</span><span  class="check_part">全选</span></p>
 					</div>
 					<div class="weui-panel__bd">
 		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
@@ -163,19 +163,30 @@
 			</div>
 		</div>
 	</div>
-<script>
+<script type="text/javascript">
 	/*商家全选*/
 	$(".check_part").on("click",function(){
-		if($(this).parents(".cart_con").find("input").prop('checked')== false){
-			$(this).parents(".cart_con").find("input").prop('checked',true);
+		if($(this).parents(".cart_con").find(".ck").prop("checked")== false){
+			$(this).parents(".cart_con").find(".ck").prop("checked",true);
 		}else{
-			$(this).parents(".cart_con").find("input").prop('checked',false);
+			$(this).parents(".cart_con").find(".ck").prop("checked",false);
 		}
+		allCheck();
 		calcTotal();
 	});
 	/*单选*/
 	$(".ck").on("click",function(){
-		var status=$(this).prop("checked"); 
+		allCheck();
+		calcTotal();
+	});
+	/*全选*/
+	$("#ck_all").click(function(){
+		var status=$(this).prop("checked");
+		$(".ck").prop("checked",status);
+		calcTotal();
+	});
+	//全部选中
+	function allCheck(){
 		var len=$(".ck").length;
 		var a=0;
 		for(var i=0;i<len;i++){
@@ -188,21 +199,7 @@
 		}else{
 			$("#ck_all").prop("checked", false);
 		}
-		calcTotal();
-	});
-	/*全选*/
-	$("#ck_all").click(function(){
-		var status=$(this).prop("checked");
-		$(".ck").prop("checked",status);
-		calcTotal();
-	});
-	/*结算*/
-	$(".cart_total_pay").on("click",function(){
-		var shangjia = $(".ck:checked").parents(".cart_con").find(".shangjia");
-		var name = $(".ck:checked").parents(".cart_con").find(".weui-media-box__title");
-		var price = $(".ck:checked").parents(".cart_con").find(".sub");
-		var imgURL = $(".ck:checked").parents(".cart_con").find(".weui-media-box__thumb");
-	});
+	};
 	// 合计
 	function calcTotal() {
 		var element = $(".ck:checked").parents(".weui-media-box__bd").find(".sub");
