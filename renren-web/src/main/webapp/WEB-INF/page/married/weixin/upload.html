@@ -19,7 +19,7 @@
           var weddingDate = $("#weddingDate").val();
           var weddingAddress = $("#weddingAddress").val();
           var content = $("#content").val();
-          $.ajax({
+          $.ajax({ 
 				type: "POST",
 			    url: "../weixin/me/saveWedding?groomName="+groomName+"&brideName="+brideName+"&weddingDate="+
 			         weddingDate + "&weddingAddress="+weddingAddress+"&content="+content,
