@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/banner.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/banner.js"></script>
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_CSS}video.js"></script>
+  	<script src="${rc.contextPath}/statics/jstx/amazeui.min.js"></script>
 </head>
 <body ontouchstart style="background:white;">
 	<div class="container" id="container" style="padding:0;">
@@ -39,17 +40,17 @@
 				  </div>
 				</div>
 			</div>
-			<div class="banner interact_top" id="banner1" style="margin:0;z-index:222;display:none;">
-				<div class="banner-view"></div>
-				<div class="banner-btn" style="visibility:hidden;"></div>
-				<div class="banner-number"></div>
-				<div class="banner-progres"></div>
-			</div>
 			<div class="zy_media interact_top" id="theVedio" style="margin:0;z-index:224;display:none;">
 			    <video id="aa"  poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
 			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
 			        您的浏览器不支持HTML5视频
 			    </video>
+			</div>
+			<div class="banner interact_top" id="banner1" style="margin:0;z-index:222;display:none;">
+				<div class="banner-view"></div>
+				<div class="banner-btn" style="visibility:hidden;"></div>
+				<div class="banner-number"></div>
+				<div class="banner-progres"></div>
 			</div>
 			<div class="page__bd">
 		        <div class="weui-tab">
@@ -152,9 +153,21 @@
 			});
 		};
 		$(function(){
+			 var websocket = null;
+		     //判断当前浏览器是否支持WebSocket
+		     if ('WebSocket' in window) {
+		         websocket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/websocket");
+		     }
+		     else {
+		         alert('当前浏览器 Not support websocket')
+		     }
 			$(".screen_con dl").on("click",function(){
 				$(".screen_con dl").find('span').hide();
 				var id = $(this).attr("title");
+				var obj = JSON.stringify({
+		    		id:id
+		    	});
+				websocket.send(obj);
 				$(this).find("span").show();
 				$(".banner-number").html("");
 			});

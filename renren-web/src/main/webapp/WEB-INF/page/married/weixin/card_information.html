@@ -80,7 +80,7 @@
 	            <div class="weui-cell">
 	                <div class="weui-cell__hd"><label for="" class="weui-label">婚礼日期</label></div>
 	                <div class="weui-cell__bd">
-	                    <input class="weui-input" id="weddingDate" type="datetime-local" value="请选择婚礼日期" placeholder="请选择婚礼日期"/>
+	                    <input class="weui-input" id="weddingDate" type="datetime-local" value="" placeholder=""/>
 	                </div>
 	            </div>
 	        </div>
@@ -112,7 +112,7 @@
 	        </div>
 	        <div class="card_top weui-cells weui-cells_form">
 	            <div class="weui-cell">
-	                <a  id="save"  class="selectbg_next" href="./invite.html">保存</a>
+	                <a  id="save"  class="selectbg_next" href="javascript:void(0);">保存</a>
 	                <a id="preview" style="margin-left:0.2rem;" class="selectbg_next" href="#">预览效果</a>
 	            </div>
 	        </div>
@@ -273,19 +273,60 @@
 				var invite = {
 				 	"groomName":groomName,
 				 	"brideName":brideName,
+				 	"weddingDate":weddingDate,
 				 	"weddingAddress":weddingAddress,
+				 	"content":content,
 				 	"col":col,
 				 	"bg":bg,
-				 	"content":content
 				 };
 				 /*上传图片*/
 				 localStorage.removeItem("select_bg");
 				 localStorage.setItem("invite",JSON.stringify(invite));
-				 window.location.href = "./invite.html";
+				 //window.location.href = "./invite.html";
+				 saving(groomName,brideName,weddingDate,weddingAddress,content,col,bg);
 			}else{
 				alert("请填写完整的正确信息");
 			}
 		});
 	});
+	
+	/*上传图片*/
+	document.querySelector('#uploadImage').onclick = function () {
+    if (images.localId.length == 0) {
+      alert('请先使用 chooseImage 接口选择图片');
+      return;
+    }
+    var i = 0, length = images.localId.length;
+    images.serverId = [];
+    function upload() {
+      wx.uploadImage({
+        localId: images.localId[i],
+        success: function (res) {
+          i++;
+          alert('已上传：' + i + '/' + length);
+          images.serverId.push(res.serverId);
+          if (i < length) {
+            upload();
+          }
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      });
+    }
+    upload();
+  };
+	/*传数据到后台*/
+	function saving(a,b,c,d,e,f,g){
+		$.ajax({
+			type: "POST",
+		    url: serverURL+"me/saveWedding?groomName="+a+"&brideName="+b+"&weddingDate="+c+"&weddingAddress="+d+"&content="+e+"&fontcolor="+f+"&imgUrl="+g+"&photo="+11,
+		    dataType: "json",
+		    crossDomain: true,//是否跨域:是  
+		    success: function(result){
+				console.log(JSON.stringify(result));
+			}
+		});
+	}
 </script>
 </html>
