@@ -20,16 +20,15 @@
 		<div class="page" id="pageContainer">
 			<div class="invite_con">
 				<div style="padding-top:2.3rem;">
-					<img src="${rc.contextPath}/statics/marry/img/aa.png" />
+					<img src="" id="photo" />
 				</div>
-				<h3>新郎&新娘</h3>
-				<h4>2017.10.1/17.00</h4>
-				<p>发货的手机壳放声大哭割发代首六块腹肌圣诞快乐股份登记卡两个地方了南京开发的规划金卡戴珊发</p>
-				<p class="address">地址：放技能打开了司法解释看到了担惊受恐</p>
+				<h3 id="groomNameandbrideName"></h3>
+				<h4 id="weddingDate"></h4>
+				<p id="content"></p>
+				<p class="address" id="weddingAddress"></p>
 			</div>
 			<div class="card_top weui-cells weui-cells_form">
-	            <div class="weui-cell">
-	                <a class="selectbg_next" id="onMenuShareAppMessage" href="javascript:void(0);">邀请好友</a>
+	            <div class="weui-cell" id="yqhy">
 	            </div>
 	        </div>
 	        <div class="weui-share" onclick="$(this).fadeOut();$(this).removeClass('fadeOut')">
@@ -41,14 +40,30 @@
 	</div>
 </body>
 <script>
+         $.ajax({
+			type: "POST",
+		    url: "../weixin/me/findWedding",
+			dataType: "json",
+			success: function(result){
+			     if(result.status == 'ok'){
+			          $("#groomNameandbrideName").html(result.data.marryWedding.groomname+"&"+result.data.marryWedding.bridename);
+			          $("#weddingDate").html(result.data.marryWedding.weddingdate);
+			          $("#weddingAddress").html("地址："+result.data.marryWedding.weddingaddress);
+			          $("#content").html(result.data.marryWedding.content);
+			          var content = '<a class="selectbg_next" id="onMenuShareAppMessage">邀请好友</a>';
+			          $("#yqhy").html(content);
+			           $('#photo').prop('src',result.data.marryWedding.photo);
+			     }
+			}
+	 	});
 	wx.ready(function(){
 		document.querySelector('#onMenuShareAppMessage').onclick = function () {
 		   $('.weui-share').show().addClass('fadeIn');
 		   wx.onMenuShareAppMessage({
 		      title: '码上结婚',
 		      desc: '获取邀请函的留言',
-		      link: 'www.baidu.com',//invite_card.html
-		      imgUrl: '',
+		      link: 'http://192.168.1.107:8080/wrs/married/weixin/invite_card.html',
+		      imgUrl: 'http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tubiao/1_3.png',
 		      trigger: function (res) {
 		      	 $('.weui-share').show().addClass('fadeOut');
 		      },

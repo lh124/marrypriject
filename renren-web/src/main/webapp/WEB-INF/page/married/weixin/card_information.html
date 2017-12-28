@@ -12,25 +12,8 @@
     <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
 </head>
-<script type="text/javascript">
-     function save(){
-          var groomName = $("#groomName").val();
-          var brideName = $("#brideName").val();
-          var weddingDate = $("#weddingDate").val();
-          var weddingAddress = $("#weddingAddress").val();
-          var content = $("#content").val();
-          $.ajax({
-				type: "POST",
-			    url: "../weixin/me/saveWedding?groomName="+groomName+"&brideName="+brideName+"&weddingDate="+
-			         weddingDate + "&weddingAddress="+weddingAddress+"&content="+content,
-				dataType: "json",
-				success: function(result){
-				    window.location.href="invite_card.html"; 
-				}
-		 });
-     }
-</script>
 <body ontouchstart style="background:#efefef;" onload="init()">
+<input type="hidden" id="url" value="${request.getParameter('url')}">
 <div class="container" id="container">
 		<div class="page" id="pageContainer" style="display:block;">
 			<div class="card_top weui-cells weui-cells_form">
@@ -136,10 +119,15 @@
 				<p class="address">地址：放技能打开了司法解释看到了担惊受恐</p>
 			</div>
 			<i id="shut" style="text-align:center;font-size:30px;display:block;width:100%;line-height:1.4rem;background:white;" class="weui-icon-cancel"></i>
-	    </div>
     </div>
 </body>
+<script type="text/javascript" src="http://static.gykjewm.com/static-sources/plupload.full.min.js"></script>
+    <script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+	<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
+<script src="${rc.contextPath}/js/married/weixin/update.js?_${date.systemTime}"></script>
 <script type="text/javascript">
+    var localId;
+	 var serverId;
 	$(function(){
 		/*判断正确姓名新郎*/
 		function checkGroomName(val){
@@ -180,22 +168,84 @@
 		}
 		wx.ready(function(){
 		/*添加 图片*/
-			var images = {
-			    localId: [],
-			    serverId: []
-			  };
-			 var length = 0;
+		var images = {
+		    localId: [],
+		    serverId: []
+		  };
+	    var length = 0;
 			  //图片选择
 			 document.querySelector('#selectfiles1').onclick = function () {
 			    wx.chooseImage({
 			      count: 1, 
 			      success: function (res) {
 			        localId = res.localIds;
-			        length = localId.length
+			        length = localId.length;
 			        addNewContent(localId);
 			      }
 			    });
 			  };
+			  
+			  document.querySelector('#save').onclick = function () {
+              var groomName = $("#groomName").val();//新郎姓名
+	          var brideName = $("#brideName").val();//新娘姓名
+	          var weddingDate = $("#weddingDate").val();//婚礼日期
+	          var weddingAddress = $("#weddingAddress").val();//婚礼地址
+	          var content = $("#content").val();//婚礼留言
+	          var bg = $("#url").val();//背景图片
+	          var color = $("#color").val();//字体颜色
+	          $.ajax({
+					type: "POST",
+				    url: "../weixin/me/saveWedding?groomName="+groomName+"&color="+color.substring(1,color.length)+"&brideName="+brideName+"&weddingDate="+
+				         weddingDate + "&weddingAddress="+weddingAddress+"&content="+content+
+				         "&bg="+bg,
+					dataType: "json",
+					    success: function(r){
+						    var json = r;
+						    if(length > 0){
+			                    wx.uploadImage({
+						        	localId: localId[0],
+						        	success: function (res) {
+						        	     $.ajax({ 
+											url : "../../smart/shouye/uploadMedio?serverId="+res.serverId, 
+											type : 'POST', 
+				        					dataType:"json",  
+											contentType : false,
+											success : function(responseStr) { 
+											     var imgSrc = "http://192.168.1.107:8080/wrs/statics/video/"+responseStr.path;
+											     function getBase64(img){//传入图片路径，返回base64
+							        			    function getBase64Image(img,width,height) {//width、height调用时传入具体像素值，控制大小 ,不传则默认图像大小
+							          				   var canvas = document.createElement("canvas");
+											            canvas.width = width ? width : img.width;
+											            canvas.height = height ? height : img.height;
+											            var ctx = canvas.getContext("2d");
+											            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+											            var dataURL = canvas.toDataURL();
+											            return dataURL;
+											         }
+											        var image = new Image();
+											        image.crossOrigin = '';
+											        image.src = img;
+											        var deferred=$.Deferred();
+											        if(img){
+											          image.onload =function (){
+											            deferred.resolve(getBase64Image(image));//将base64传给done上传处理
+											          }
+											          return deferred.promise();//问题要让onload完成后再return sessionStorage['imgTest']
+											        }
+											      }
+											      getBase64(imgSrc).then(function(base64){
+											          set_upload_param(base64,30,json.id);
+											      });
+												}
+										});
+								    }
+						        });
+		                     }else{
+		                          window.location.href="invite.html";
+		                     }
+						}
+				});
+             };
 		});
 		var groom,bride;
 		/*失去焦点事件*/
@@ -257,33 +307,6 @@
 				$(".invite_con").find("p").css("color",col);
 				$(".invite_con").find("p").eq(0).text(content);
 				$(".invite_con").find("p").eq(1).text("地址："+weddingAddress);
-			}else{
-				alert("请填写完整的正确信息");
-			}
-		});
-		$("#save").on("click",function(){
-			var bg = localStorage.getItem("select_bg");
-			var groomName = $("#groomName").val();
-			var brideName = $("#brideName").val();
-			var weddingDate = $("#weddingDate").val();
-			var weddingAddress = $("#weddingAddress").val();
-			var col = $("#color").val();
-			var content = $("#content").val();
-			if(groom && bride && localId && weddingAddress){
-				var invite = {
-				 	"groomName":groomName,
-				 	"brideName":brideName,
-				 	"weddingDate":weddingDate,
-				 	"weddingAddress":weddingAddress,
-				 	"content":content,
-				 	"col":col,
-				 	"bg":bg,
-				 };
-				 /*上传图片*/
-				 localStorage.removeItem("select_bg");
-				 localStorage.setItem("invite",JSON.stringify(invite));
-				 //window.location.href = "./invite.html";
-				 saving(groomName,brideName,weddingDate,weddingAddress,content,col,bg);
 			}else{
 				alert("请填写完整的正确信息");
 			}

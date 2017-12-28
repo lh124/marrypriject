@@ -38,6 +38,47 @@
              $(".invite_manage_con").hide();
              $(".invite_manage_con").eq(index).show();
          });
+         $.ajax({
+				type: "POST",
+			    url: "../weixin/me/alljieshouattendawedding",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          var content0 = "";
+				          var content1 = "";
+				          var content2 = "";
+				          var content3 = "";
+				          for(var i = 0; i < result.userlist.length;i++){
+				              var time = result.userlist[i].createTime.substring(0,10);
+				              content3 += '<a href="invite_card.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              if(result.userlist[i].states == 0){
+				                  content0 += '<a href="invite_card.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }else if(result.userlist[i].states == 1){
+				                  content1 += '<a href="invite_card.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }else if(result.userlist[i].states == 2){
+				                  content2 += '<a href="invite_card.html?id='+result.userlist[i].id+'">'+
+				                          '<dl><dt><img src="'+result.userlist[i].pic+'" /></dt>'+
+				                          '<dd><h4 style="color:black;">'+result.userlist[i].nickname+'<span>'+time+'</span></h4>'+
+				                          '<p>'+result.userlist[i].content+'</p></dd></dl></a>';
+				              }
+				          }
+				          
+				          $("#list0").html(content0);
+				          $("#list1").html(content1);
+				          $("#list2").html(content2);
+				          $("#list3").html(content3);
+				     }
+				}
+		 });
          
     });
 </script>
