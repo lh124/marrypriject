@@ -27,7 +27,7 @@ public class TokenEntity implements Serializable {
 	private String token;
 	
 	@TableField(value="accessToken")
-	private String accessToken;
+	private String accessToken; 
 	
 	//过期时间
 	@TableField(value="expire_time")
