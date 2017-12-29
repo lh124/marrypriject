@@ -1,5 +1,6 @@
 package io.renren.controller.smart;
 
+import io.renren.entity.TokenEntity;
 import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.SchoolEntity;
@@ -7,6 +8,7 @@ import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartVideoDeviceEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
+import io.renren.service.TokenService;
 import io.renren.service.smart.ClassService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.SchoolService;
@@ -32,6 +34,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jiguangtuisong.JpushClientUtil2;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -64,6 +67,8 @@ public class SmartDataInpution {
 	private SmartExceptionService smartExceptionService;
 	@Autowired
 	private SmartVideoDeviceService smartVideoDeviceService;
+	@Autowired
+	private TokenService tokenService;
 	
 	private static final String DATA = "data";
 	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
@@ -120,11 +125,23 @@ public class SmartDataInpution {
 				//异常文件上传
 				CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 				obj = exceptionSaveFile(json,multipartResolver,request);
+			}else if(type.equals("getVideoDevice")){
+				//获取学校设备列表
+				return getAccessToken(json);
 			}
 			return (R)obj ;
 		}else{
 			return R.error("token错误");
 		}
+	}
+	
+	private R getAccessToken(JSONObject json){
+		Integer classId = json.getInt("classId");//班级id
+		ClassEntity classEntity = classService.queryObject(classId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("schoolId", classEntity.getSchoolId());
+		List<SmartVideoDeviceEntity> list = smartVideoDeviceService.queryList(map);
+		return R.ok().put(DATA, list);
 	}
 	
 	public Object exceptionSaveFile(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
@@ -178,7 +195,6 @@ public class SmartDataInpution {
 	public Object getonschool(JSONObject json){
 		Object obj = null;
 		String schoolName = json.getString("schoolName");
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
 		if(schoolEntity != null){
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -190,7 +206,6 @@ public class SmartDataInpution {
 		}else{
 			obj = R.error("暂无此学校");
 		}
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		return obj;
 	}
 	
@@ -219,7 +234,6 @@ public class SmartDataInpution {
 		try {
 			List<Object> list = new ArrayList<Object>();
 			JSONArray array = json.getJSONArray("list");
-			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 				JSONObject object = (JSONObject) iterator.next();
 				String epc = object.getString("epc");
@@ -233,8 +247,8 @@ public class SmartDataInpution {
 				io.setIoType(ioType);
 				io.setRfidId(rfidId);
 				io.setStudentId(Integer.parseInt(studentId));
-				if(object.get("vodeoId") != null && !"".equals(object.get("vodeoId"))){
-					Integer id = object.getInt("vodeoId");
+				if(object.get("videoId") != null && !"".equals(object.get("videoId"))){
+					Integer id = object.getInt("videoId");
 					SmartVideoDeviceEntity svde = smartVideoDeviceService.queryObject(id);
 					if(svde != null){
 						io.setCameraNo(svde.getCameraNo());
@@ -242,13 +256,18 @@ public class SmartDataInpution {
 						io.setVerificationCode(svde.getVerificationCode());
 					}
 				}
+				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 				ioService.save(io);
+				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				list.add(object.getString("id"));
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("type", 6);
+				TokenEntity token = tokenService.queryByUserId(new Long(studentId));
+				if(token != null){
+					if(!"".equals(token.getToken()) && token.getToken() != null)
+						JpushClientUtil2.sendToRegistrationId(studentId, "进出校通知", "进出校记录", ioType+"校门", m.toString());
+				}
 			}
-//			JpushClientUtil.sendToRegistrationId(studentId, "进出校通知", "进出校记录", ioType+"校门", m.toString());
-			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 			obj = R.ok().put(DATA, list);
 		} catch (Exception e) {
 			obj = R.error();
@@ -259,7 +278,6 @@ public class SmartDataInpution {
 	public Object getallclass(JSONObject json){
 		Object obj = null;
 		String schoolName = json.getString("schoolName");
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("schoolId", schoolEntity.getId());
@@ -268,7 +286,6 @@ public class SmartDataInpution {
 		map.put("begin", 0);
 		map.put("limit", 100);
 		List<ClassEntity> list = classService.queryList(map);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		obj = R.ok().put(DATA, list);
 		return obj;
 	}
@@ -276,7 +293,6 @@ public class SmartDataInpution {
 	public Object getallstudent(JSONObject json){
 		Object obj = null;
 		String classId = json.getString("classId");
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classId", classId);
 		map.put("userType", 1);
@@ -285,14 +301,12 @@ public class SmartDataInpution {
 		map.put("begin", 0);
 		map.put("limit", 150);
 		List<StudentEntity> list = studentService.queryList(map);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		obj = R.ok().put(DATA, list);
 		return obj;
 	}
 	
 	public Object deleteepc(JSONObject json){
 		Object obj = null;
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("epc", json.getString("epc").replace(" ", ""));
 		StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
@@ -300,14 +314,12 @@ public class SmartDataInpution {
 			obj = R.error("该epc数据没有绑定");
 		}
 		studentEpcService.delete(se.getId());
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		obj = R.ok();
 		return obj;
 	}
 	
 	public Object findallepcclassid(JSONObject json){
 		Object obj = null;
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("begin", 0);
 		map.put("page", 1);
@@ -326,14 +338,12 @@ public class SmartDataInpution {
 				epclist.add(studentEpcEntity);
 			}
 		}
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		obj = R.ok().put(DATA, epclist);
 		return obj;
 	}
 	
 	public Object saveepc(JSONObject json){
 		Object obj = null;
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		JSONArray array = json.getJSONArray("epclist");
 		List<String> list = new ArrayList<String>();
 		for (Iterator iterator = array.iterator(); iterator.hasNext();) {
@@ -353,7 +363,6 @@ public class SmartDataInpution {
 				studentEpcService.save(see);
 			}
 		}
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		if(list != null){
 			obj = R.ok().put(DATA, list);
 		}
@@ -363,7 +372,6 @@ public class SmartDataInpution {
 	public Object queryEpc(JSONObject json){
 		Object obj = null;
 		System.out.println(new Date());
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("epc", json.getString("epc").replace(" ", ""));
 		StudentEpcEntity se = studentEpcService.queryObjectIdEpc(map);
@@ -374,7 +382,6 @@ public class SmartDataInpution {
 			SchoolEntity school = schoolService.queryObject(classentity.getSchoolId());
 			data = "已被学校："+school.getSchoolName() +  classentity.getClassName()+" " +studnet.getStudentName()+"所绑定"; 
 		}
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		if(data != null && !data.equals("")){
 			obj = R.error("已被绑定").put(DATA, data);
 		}else{
