@@ -5,9 +5,9 @@
 		<version>${renren-version}</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>renren-app</artifactId>
+	<artifactId>renren-api</artifactId>
 	<packaging>jar</packaging>
-    <description>app接口模块</description>
+    <description>API接口模块</description>
 
 	<dependencies>
 		<dependency>
@@ -16,13 +16,8 @@
 			<version>${renren-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.renren</groupId>
-			<artifactId>renren-smart</artifactId>
-			<version>${renren-version}</version>
-		</dependency>
-		<dependency>
             <groupId>io.renren</groupId>
-            <artifactId>renren-api</artifactId>
+            <artifactId>renren-front</artifactId>
             <version>${renren-version}</version>
         </dependency>
 	</dependencies>
