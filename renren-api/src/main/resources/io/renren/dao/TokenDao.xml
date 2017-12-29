@@ -14,7 +14,7 @@
 	<insert id="save" parameterType="io.renren.entity.TokenEntity">
 		insert into tb_token
 		(
-			`user_id`, 
+			`user_id`,  
 			`token`, 
 			`accessToken`,
 			`expire_time`, 
