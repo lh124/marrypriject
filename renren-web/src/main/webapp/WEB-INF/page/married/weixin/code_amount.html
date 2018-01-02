@@ -18,12 +18,12 @@
 				success: function(result){
 				     if(result.status == 'ok'){
 				          var content ="";
-				          for(var i = 0; i < result.list.length;i++){
-				              content += '<dl><dt><img src="'+result.list[i].pic+'"></dt>'+
-				                          '<dd>'+result.list[i].nickname+'</dd></dl>';
+				          for(var i = 0; i < result.list.smtj.length;i++){
+				              content += '<dl><dt><img src="'+result.list.smtj[i].pic+'"></dt>'+
+				                          '<dd>'+result.list.smtj[i].nickname+'</dd></dl>';
 				          }
 				          $("#list").html(content);
-				          $("#total").html("扫码签到人数"+result.list.length+"人");
+				          $("#total").html("扫码签到人数"+result.list.smtj.length+"人");
 				     }
 				}
 		 });
@@ -36,26 +36,6 @@
 	            <p style="text-align:center;line-height:0.93rem;color:white;font-size:0.4rem;" id="total">扫码签到人数0人</p>
 	        </div>
 	        <div class="feedback_con" style="display: block;" id="list">
-				<dl>
-					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
-					<dd>李元芳</dd>
-				</dl>
-				<dl>
-					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
-					<dd>李元芳</dd>
-				</dl>
-				<dl>
-					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
-					<dd>李元芳</dd>
-				</dl>
-				<dl>
-					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
-					<dd>李元芳</dd>
-				</dl>
-				<dl>
-					<dt><img src="${rc.contextPath}/statics/marry/img/aa.png"></dt>
-					<dd>李元芳</dd>
-				</dl>
 	        </div>
 		</div>
 	</div>
