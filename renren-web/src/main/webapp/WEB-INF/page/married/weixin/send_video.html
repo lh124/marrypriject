@@ -10,6 +10,7 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
 </head>
 <body ontouchstart style="background:#fdf7f7;">
+    <input type="hidden" value="$request.getParameter('weddingId')" id="weddingId">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="weui-cells weui-cells_form">
@@ -32,6 +33,8 @@
                                 <dt><img src="${rc.contextPath}/statics/marry/img/video_left.png"></dt>
                                 <dd>录制视频<input id="luzhi" type="file" style="display:none;" accept="video/*" capture="camcorder"></dd>
                             </dl>
+                            <input type="hidden" id="myUserId" />
+                            <input type="hidden" id="selectfiles">
                             <dl class="bendi">
                                 <dt><img src="${rc.contextPath}/statics/marry/img/video_right.png"></dt>
                                 <dd>本机选择<input id="bendi" type="file" style="display:none;"></dd>
@@ -42,13 +45,48 @@
             </div>
             <div class="card_top weui-cells weui-cells_form">
                 <div class="weui-cell">
-                    <a class="selectbg_next" href="#">确定发送</a>
+                    <a class="selectbg_next" href="#" onclick="save()">确定发送</a>
                 </div>
             </div>
 		</div>
 	</div>
+	
+<script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/js/married/htgl/upload1.js?_${date.systemTime}"></script>
+<script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
+<script src="https://cdn.bootcss.com/Ladda/1.0.0/ladda.min.js"></script>
+<script type="text/javascript">
+    function myFormDateF(obj){
+		var mydete = new FormData();
+		mydete.append("type",31);
+		mydete.append("id", $("#myUserId").val());
+		return mydete;
+	}
+</script>
 </body>
 <script>
+
+    function save(){
+         var content = $("#content").val();
+         $.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveBlessing?content="+content+"&type=1&weddingId="+$("#weddingId").val(),
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          if(document.getElementById("luzhi").value != null && document.getElementById("luzhi").value != ""){
+				    			document.getElementById("myUserId").value = result.id;
+					    		getFile(document.getElementById("luzhi"));
+			    		  }
+			    		  if(document.getElementById("bendi").value != null && document.getElementById("bendi").value != ""){
+				    			document.getElementById("myUserId").value = result.id;
+					    		getFile(document.getElementById("bendi"));
+			    		  }
+				     }
+				}
+		 });
+    }
+
 	$(function(){
 		$(".luzhi").on("click",function(){
 			$("#luzhi").show();
