@@ -18,7 +18,7 @@
     <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_CSS}video.js"></script>
   	<script src="${rc.contextPath}/statics/jstx/amazeui.min.js"></script>
 </head>
-<body ontouchstart style="background:white;">
+<body ontouchstart style="background:white;" >
 	<div class="container" id="container" style="padding:0;">
 		<div class="page interact" id="pageContainer">
 			<div class="interact_top" style="margin:0;z-index:222;">
@@ -40,12 +40,11 @@
 				  </div>
 				</div>
 			</div>
-			<div class="zy_media interact_top" id="theVedio" style="margin:0;z-index:224;display:none;">
-			    <video id="aa"  poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
-			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
-			        您的浏览器不支持HTML5视频
-			    </video>
-			</div>
+			<video  id="theVedio" class="interact_top" style="margin:0;z-index:224;display:none;"controls="controls" >  
+	            你的浏览器不支持HTML5播放此视频  
+				<span style="white-space:pre">    </span><!-- 支持播放的文件格式 -->  
+			    <source id="aa" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type='video/mp4' />   
+			</video>
 			<div class="banner interact_top" id="banner1" style="margin:0;z-index:222;display:none;">
 				<div class="banner-view"></div>
 				<div class="banner-btn" style="visibility:hidden;"></div>
@@ -130,13 +129,15 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+	    var imgs=[];
+	    var video=[];
 		/*摄影展示*/
 		function sheying(){
 			var a = document.documentElement.clientWidth;
 			var b = a*1075/1920;
 			var banner = new FragmentBanner({
 				container : "#banner1",//选择容器 必选
-				imgs : ['${rc.contextPath}/statics/marry/img/in1.png','${rc.contextPath}/statics/marry/img/in2.png','${rc.contextPath}/statics/marry/img/in3.png','${rc.contextPath}/statics/marry/img/in4.png'],//图片集合 必选
+				imgs : imgs,//图片集合 必选
 				size : {
 					width : a,
 					height : b
@@ -178,11 +179,50 @@
 				$("#banner1").show();
 			});
 			$(".video").on("click",function(){
+			    if(video.length >0){
+				    $("#theVedio").attr("src",video[0]);
+				}
 				$(".interact_top").hide();
 				$("#theVedio").show();
 				$(".banner-number").html("");
 				//视频样式设置
-				zymedia('video',{autoplay: true});
+				video1.play();
+			});
+			
+			var vList = video; // 初始化播放列表    
+	        var vLen = vList.length;   
+	        var curr = 0;   
+	        var video1 = document.getElementById("theVedio");    
+	        video1.addEventListener('ended', function(){  
+	            play();  
+	        });    
+	           
+	        function play() {    
+	            video1.src = vList[curr];    
+	            video1.load();     
+	            video1.play();    
+	            curr++;    
+	            if(curr >= vLen){    
+	                curr = 0; //重新循环播放  
+	            }    
+	            
+	        }    
+			
+			$.ajax({
+				type: "POST",
+			    url: "../weixin/me/findAllWeddingPhoto",
+			    dataType: "json",
+			    success: function(result){
+			        if(result.status == 'ok'){
+			             for(var i = 0; i < result.list.length; i++){
+			                 if(result.list[i].type=='1'){
+			                     imgs.push(result.list[i].pic);
+			                 }else{
+			                     video.push(result.list[i].pic);
+			                 }
+			             }
+			        }
+				}
 			});
 		});
 	</script>
