@@ -45,8 +45,35 @@ public class MarryWeddingEntity implements Serializable {
 	//婚礼留言
 	@TableField(value="content")
 	private String content;
+	
+	@TableField(value="url")
+	private String url;
+	
+	@TableField(value="bgcolor")
+	private String bgcolor;
+	
+	@TableField(value="photo")
+	private String photo;
 			
 
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getBgcolor() {
+		return bgcolor;
+	}
+	public void setBgcolor(String bgcolor) {
+		this.bgcolor = bgcolor;
+	}
+	public String getPhoto() {
+		return photo;
+	}
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

@@ -1,5 +1,6 @@
 package io.renren.controller.married;
 
+import io.renren.controller.AbstractController;
 import io.renren.entity.married.MarryMainEntity;
 import io.renren.service.married.MarryMainService;
 import io.renren.utils.PageUtils;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("marrymain")
-public class MarryMainController {
+public class MarryMainController extends AbstractController{
 	@Autowired
 	private MarryMainService marryMainService;
 	
@@ -38,13 +39,13 @@ public class MarryMainController {
 	@RequiresPermissions("marrymain:list")
 	public R list(@RequestParam Map<String, Object> params){
 		//查询列表数据
+		if(Integer.parseInt(this.getUserId().toString()) != 1){
+			params.put("userId", this.getUserId().toString());
+		}
         Query query = new Query(params);
-
 		List<MarryMainEntity> marryMainList = marryMainService.queryList(query);
 		int total = marryMainService.queryTotal(query);
-		
 		PageUtils pageUtil = new PageUtils(marryMainList, total, query.getLimit(), query.getPage());
-		
 		return R.ok().put("page", pageUtil);
 	}
 	
@@ -56,7 +57,6 @@ public class MarryMainController {
 	@RequiresPermissions("marrymain:info")
 	public R info(@PathVariable("id") Integer id){
 		MarryMainEntity marryMain = marryMainService.queryObject(id);
-		
 		return R.ok().put("marryMain", marryMain);
 	}
 	
@@ -66,6 +66,7 @@ public class MarryMainController {
 	@RequestMapping("/save")
 	@RequiresPermissions("marrymain:save")
 	public R save(@RequestBody MarryMainEntity marryMain){
+		marryMain.setUserId(Integer.parseInt(this.getUserId().toString()));
 		marryMainService.insert(marryMain);
 		return R.ok().put("id", marryMain.getId());
 	}
@@ -76,6 +77,7 @@ public class MarryMainController {
 	@RequestMapping("/update")
 	@RequiresPermissions("marrymain:update")
 	public R update(@RequestBody MarryMainEntity marryMain){
+		marryMain.setUserId(Integer.parseInt(this.getUserId().toString()));
 		marryMainService.update(marryMain);
 		return R.ok().put("id", marryMain.getId());
 	}

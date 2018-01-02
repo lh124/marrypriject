@@ -13,6 +13,7 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/index/list",
 						  ".*/married/weixin/invite.html",
 						  ".*/married/weixin/sign_in.html",
+						  ".*/married/weixin/invite_card",
 						  ".*/married/weixin/me/findWedding",
 						  ".*/married/weixin/me/attendawedding",
 				          ".*/married/user/save"		

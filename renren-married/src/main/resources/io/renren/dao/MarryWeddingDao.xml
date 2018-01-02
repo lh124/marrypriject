@@ -6,11 +6,12 @@
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
 		id as id ,groomName as groomname ,brideName as bridename ,weddingDate as weddingdate ,
-		weddingAddress as weddingaddress ,content as content,userId as userId 		
+		weddingAddress as weddingaddress ,content as content,userId as userId,bgcolor as bgcolor,
+		url as url,photo as photo 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,groomName ,brideName ,weddingDate ,weddingAddress ,content ,userId		
+		id ,groomName ,brideName ,weddingDate ,weddingAddress ,content ,userId,bgcolor,url,photo		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.married.MarryWeddingEntity" id="marryWeddingMap">
@@ -21,6 +22,9 @@
 		        <result property="userId" column="userId"/>
 		        <result property="weddingaddress" column="weddingAddress"/>
 		        <result property="content" column="content"/>
+		        <result property="bgcolor" column="bgcolor"/>
+		        <result property="url" column="url"/>
+		        <result property="photo" column="photo"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryWeddingEntity">
@@ -54,6 +58,9 @@
 			`userId`, 
 			`weddingDate`, 
 			`weddingAddress`, 
+			`url`, 
+			`bgcolor`, 
+			`photo`, 
 			`content`
 		)
 		values
@@ -63,6 +70,9 @@
 			#{userId}, 
 			#{weddingdate}, 
 			#{weddingaddress}, 
+			#{url}, 
+			#{bgcolor}, 
+			#{photo}, 
 			#{content}
 		)
 	</insert>
@@ -75,6 +85,7 @@
 			<if test="bridename != null">`brideName` = #{bridename}, </if>
 			<if test="weddingdate != null">`weddingDate` = #{weddingdate}, </if>
 			<if test="weddingaddress != null">`weddingAddress` = #{weddingaddress}, </if>
+			<if test="photo != null">`photo` = #{photo}, </if>
 			<if test="content != null">`content` = #{content}</if>
 		</set>
 		where id = #{id}

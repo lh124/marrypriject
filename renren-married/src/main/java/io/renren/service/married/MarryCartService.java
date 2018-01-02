@@ -20,6 +20,8 @@ public interface MarryCartService extends IService<MarryCartEntity>{
 	
 	List<MarryCartEntity> queryList(Map<String, Object> map);
 	
+	List<MarryCartEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryCartEntity marryCart);

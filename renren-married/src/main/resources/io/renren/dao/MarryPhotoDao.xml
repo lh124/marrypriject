@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryPhotoDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,weddingId as weddingid ,pic as pic,type as type 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,weddingId ,pic,type 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryPhotoEntity" id="marryPhotoMap">
+		        <result property="id" column="id"/>
+		        <result property="weddingid" column="weddingId"/>
+		        <result property="pic" column="pic"/>
+		        <result property="type" column="type"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryPhotoEntity">
+		select <include refid="allColumns"></include> from marry_photo where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryPhotoEntity">
+		select <include refid="allColumns"></include> from marry_photo where weddingId=#{weddingId}
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_photo 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryPhotoEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_photo
+		(
+			`type`, 
+			`weddingId`,
+			`pic`
+		)
+		values
+		(
+			#{type}, 
+			#{weddingid}, 
+			#{pic}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryPhotoEntity">
+		update marry_photo 
+		<set>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="weddingid != null">`weddingId` = #{weddingid}, </if>
+			<if test="pic != null">`pic` = #{pic}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_photo where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_photo where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

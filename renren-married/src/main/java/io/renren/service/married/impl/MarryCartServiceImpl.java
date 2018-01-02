@@ -52,5 +52,10 @@ public class MarryCartServiceImpl extends ServiceImpl<MarryCartDao, MarryCartEnt
 	public void deleteBatch(Integer[] ids){
 		marryCartDao.deleteBatch(ids);
 	}
-	
+
+	@Override
+	public List<MarryCartEntity> queryListtongji(Map<String, Object> map) {
+		return marryCartDao.queryListtongji(map);
+	}
+
 }

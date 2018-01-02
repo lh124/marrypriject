@@ -58,6 +58,8 @@ public class MarriedWeixinUserController {
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, marriedUserEntity);
 				}
 			}
+			 MarriedUserEntity frontUser = (MarriedUserEntity) request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+			System.out.println(frontUser+"----------------------------");
 			total = marryCartService.queryList(map).size();
 		} catch (Exception e) {
 			e.printStackTrace();

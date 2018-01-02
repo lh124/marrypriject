@@ -52,5 +52,10 @@ public class MarryMainServiceImpl extends ServiceImpl<MarryMainDao, MarryMainEnt
 	public void deleteBatch(Integer[] ids){
 		marryMainDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<MarryMainEntity> queryListtongji(Map<String, Object> map) {
+		return marryMainDao.queryListtongji(map);
+	}
 	
 }

@@ -2,17 +2,21 @@ package io.renren.controller.married;
 
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
+import io.renren.entity.married.MarryBlessingEntity;
 import io.renren.entity.married.MarryParticipateEntity;
+import io.renren.entity.married.MarryPhotoEntity;
 import io.renren.entity.married.MarrySignEntity;
 import io.renren.entity.married.MarryWeddingEntity;
 import io.renren.service.married.MarriedUserService;
+import io.renren.service.married.MarryBlessingService;
+import io.renren.service.married.MarryImgService;
 import io.renren.service.married.MarryParticipateService;
+import io.renren.service.married.MarryPhotoService;
 import io.renren.service.married.MarrySignService;
 import io.renren.service.married.MarryWeddingService;
 import io.renren.util.WeixinUtil;
 import io.renren.utils.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +46,133 @@ public class WeixinMeController {
 	private MarriedUserService marriedUserService;
 	@Autowired
 	private MarrySignService marrySignService;
+	@Autowired
+	private MarryImgService marryImgService;
+	@Autowired
+	private MarryBlessingService marryBlessingService;
+	@Autowired
+	private MarryPhotoService marryPhotoService;
+	
+	/**
+	 * 保存所有的视频路径
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/saveWeddingPhoto")
+	public R saveWeddingPhoto(HttpServletRequest request){
+		String[] videos = request.getParameter("video").toString().split(",");
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity mw = new MarryWeddingEntity();
+		mw.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(mw);
+		mw = marryWeddingService.selectOne(wrapper);
+		MarryPhotoEntity marryPhoto = new MarryPhotoEntity();
+		String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?mw.getId().toString():request.getParameter("id");
+		for (int i = 0; i < videos.length; i++) {
+			marryPhoto.setWeddingid(Integer.parseInt(weddingId));
+			marryPhoto.setType(2);
+			marryPhoto.setPic(videos[i]);
+			marryPhotoService.save(marryPhoto);
+		}
+		return R.ok();
+	}
+	
+	/**
+	 * 通过婚礼id查询所有的摄影展图片
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/findAllWeddingPhoto")
+	public R findAllWeddingPhoto(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity mw = new MarryWeddingEntity();
+		mw.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(mw);
+		mw = marryWeddingService.selectOne(wrapper);
+		String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?mw.getId().toString():request.getParameter("id");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("weddingId", weddingId);
+		return R.ok().put("list", marryPhotoService.queryList(map));
+	}
+	
+	/**
+	 * 通过当前用户获取婚礼id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getWeddingId")
+	public R getWeddingId(HttpServletRequest request){
+		//获取当前登录用户
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity mw = new MarryWeddingEntity();
+		mw.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(mw);
+		mw = marryWeddingService.selectOne(wrapper);
+		if(mw == null){
+			return R.error();
+		}
+		return R.ok().put("id", mw.getId());
+	}
+	
+	/**
+	 * 祝福管理
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/blessManage")
+	public R blessManage(HttpServletRequest request){
+		//获取当前登录用户
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", user.getId());
+		map.put("offset", 0);
+		map.put("limit", 10);
+		map.put("blessingtype", 1);
+		List<MarryBlessingEntity> list1 = marryBlessingService.queryList(map);//普通祝福
+		map.put("blessingtype", 2);
+		List<MarryBlessingEntity> list2 = marryBlessingService.queryList(map);//红包祝福
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("list1", list1);
+		m.put("list2", list2);
+		return R.ok().put("list", m);
+	}
+	
+	/**
+	 * 保存祝福
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/saveBlessing")
+	public R saveBlessing(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryBlessingEntity mbe = new MarryBlessingEntity();
+		try {
+			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
+			mbe.setOpenid(openId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mbe.setContent(request.getParameter("content"));
+		mbe.setWeddingid(Integer.parseInt(request.getParameter("weddingId")));
+		mbe.setBlessingtype(Integer.parseInt(request.getParameter("type")));
+		marryBlessingService.insert(mbe);
+		return R.ok().put("id", mbe.getId());
+	}
+	
+	/**
+	 * 查询所有的婚礼背景图片
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/allweddingImg")
+	public R allweddingImg(HttpServletRequest request){
+		Integer page = Integer.parseInt(request.getParameter("page"));
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("imgType", 1);
+		map.put("offset", (page-1)*8);
+		map.put("limit", page*8);
+		return R.ok().put("list", marryImgService.queryList(map));
+	}
 	
 	/**
 	 * 查询所有签到记录
@@ -61,7 +192,23 @@ public class WeixinMeController {
 			map.put("weddingId", marryWedding.getId());
 			list = marriedUserService.queryListtongji(map);
 		}
-		return R.ok().put("list", list);
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = new HashMap<String, Object>();
+		map.put("weddingId", marryWedding.getId());
+		map.put("states",1);
+		m.put("totalPerson", marryParticipateService.queryList(map).size());//应到人数
+		m.put("personwd", marryParticipateService.queryList(map).size() - list.size());//未到人数
+		m.put("smtj", list);//扫码统计
+		map.put("userId", user.getId());
+		map.put("offset", 0);
+		map.put("limit", 10);
+		map.put("blessingtype", 1);
+		List<MarryBlessingEntity> list1 = marryBlessingService.queryList(map);//普通祝福
+		map.put("blessingtype", 2);
+		List<MarryBlessingEntity> list2 = marryBlessingService.queryList(map);//红包祝福
+		m.put("zftotal", list1.size());
+		m.put("moneytotal", list2);
+		return R.ok().put("list", m);
 	}
 	
 	/**
@@ -155,7 +302,8 @@ public class WeixinMeController {
 	@RequestMapping("/attendawedding")
 	public R attendawedding(HttpServletRequest request){
 		try {
-			String openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
+			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
 			Integer states = Integer.parseInt(request.getParameter("states"));
 			Integer id = Integer.parseInt(request.getParameter("id"));
 			MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
@@ -193,10 +341,12 @@ public class WeixinMeController {
 		String content = request.getParameter("content");
 		String groomname = request.getParameter("groomName");
 		String weddingaddress = request.getParameter("weddingAddress");
+		String url = request.getParameter("bg");
+		String color = "#"+request.getParameter("color");
 		Date weddingdate = new Date();
 		try {
 			weddingdate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(request.getParameter("weddingDate").replace("T", " "));
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		marryWedding.setBridename(bridename);
@@ -205,8 +355,10 @@ public class WeixinMeController {
 		marryWedding.setUserId(user.getId());
 		marryWedding.setWeddingaddress(weddingaddress);
 		marryWedding.setWeddingdate(weddingdate);
-		marryWeddingService.save(marryWedding);
-		return R.ok();
+		marryWedding.setBgcolor(color);
+		marryWedding.setUrl(url);
+		marryWeddingService.insert(marryWedding);
+		return R.ok().put("id", marryWedding.getId());
 	}
 	
 	/**
@@ -227,7 +379,6 @@ public class WeixinMeController {
 		marryWedding = this.marryWeddingService.selectOne(wrapper);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("marryWedding", marryWedding);
-		map.put("user", marriedUserService.queryObject(marryWedding.getUserId()));
 		return R.ok().put("data", map);
 	}
 

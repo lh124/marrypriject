@@ -23,6 +23,13 @@
 	<select id="queryObject" resultType="io.renren.entity.married.MarryCartEntity">
 		select <include refid="allColumns"></include> from marry_cart where id = #{value}
 	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
+		select DISTINCT(t2.userId) from  marry_cart t1,marry_main t2 where t1.main_id=t2.id 
+		<if test="userId != null and userId != ''">
+			 and t1.userId=#{userId} and t1.states=1
+		</if>
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryMainEntity">
 	    select t2.* from  marry_cart t1,marry_main t2 where t1.main_id=t2.id 

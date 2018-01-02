@@ -2,9 +2,15 @@ package io.renren.controller.married;
 
 import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
+import io.renren.entity.married.MarryBlessingEntity;
 import io.renren.entity.married.MarryMainEntity;
+import io.renren.entity.married.MarryPhotoEntity;
+import io.renren.entity.married.MarryWeddingEntity;
 import io.renren.enums.TypeEnum;
+import io.renren.service.married.MarryBlessingService;
 import io.renren.service.married.MarryMainService;
+import io.renren.service.married.MarryPhotoService;
+import io.renren.service.married.MarryWeddingService;
 import io.renren.utils.OssCallBackUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +35,12 @@ public class CallBackMarriedController {
 	
 	@Autowired
 	private MarryMainService marryMainService;
+	@Autowired
+	private MarryWeddingService marryWeddingService;
+	@Autowired
+	private MarryBlessingService marryBlessingService;
+	@Autowired
+	private MarryPhotoService marryPhotoService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -57,6 +69,21 @@ public class CallBackMarriedController {
 						marrymain(jsona);
 						return json;
 					}
+					//婚礼图片
+					if (type.equals(TypeEnum.MARRIED_WEDDING_PIC.getType())){
+						marrywedding(jsona);
+						return json;
+					}
+					//视频祝福
+					if (type.equals(TypeEnum.MARRIED_VIDEO_PIC.getType())){
+						video(jsona);
+						return json;
+					}
+					//婚礼图片
+					if (type.equals(TypeEnum.MARRIED_PHOTO_PIC.getType())){
+						photo(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -70,6 +97,60 @@ public class CallBackMarriedController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
+		}
+	}
+	
+	/**
+	 * 婚礼摄影图片
+	 * @param json
+	 */
+	private void photo(JSONObject json){
+		//信息图片
+    	Integer id = json.containsKey("id") ? json.getInt("id") : null;
+		if (id != null) {
+			MarryPhotoEntity marryPhotoEntity = new MarryPhotoEntity();
+			marryPhotoEntity.setWeddingid(id);
+			marryPhotoEntity.setType(1);
+			marryPhotoEntity.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+			marryPhotoService.insert(marryPhotoEntity);
+		}
+	}
+	
+	/**
+	 * 视频祝福上传
+	 * @param json
+	 */
+	private void video(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			MarryBlessingEntity mbe = this.marryBlessingService.selectById(id);
+			if (mbe != null) {
+				mbe.setVideoblessing(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.marryBlessingService.update(mbe);
+			} else {
+				logger.error("回调关联数据不存在");
+				logger.error(json.toString());
+			}
+		}
+	}
+	
+	/**
+	 * 婚礼图片上传
+	 * @param json
+	 */
+	private void marrywedding(JSONObject json){
+		//信息图片
+    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+		if (id != null) {
+			MarryWeddingEntity marryWeddingEntity = this.marryWeddingService.selectById(id);
+			if (marryWeddingEntity != null) {
+				marryWeddingEntity.setPhoto(ControllerConstant.CDN_URL + json.getString("filename"));
+				this.marryWeddingService.update(marryWeddingEntity);
+			} else {
+				logger.error("回调关联数据不存在");
+				logger.error(json.toString());
+			}
 		}
 	}
 	

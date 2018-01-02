@@ -41,8 +41,33 @@ public class MarryMainEntity implements Serializable {
 	//价格
 	@TableField(value="price")
 	private String price;
+	
+	@TableField(value="userId")
+	private Integer userId;	
+	
+	private String username;
+	
+	private Integer cartId;
 			
 
+	public Integer getCartId() {
+		return cartId;
+	}
+	public void setCartId(Integer cartId) {
+		this.cartId = cartId;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	public String getPrice() {
 		return price;
 	}

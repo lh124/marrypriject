@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.sqlserver.MarryImgDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,url as url ,img_type as imgType 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,url ,img_type 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.sqlserver.MarryImgEntity" id="marryImgMap">
+		        <result property="id" column="id"/>
+		        <result property="url" column="url"/>
+		        <result property="imgType" column="img_type"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.sqlserver.MarryImgEntity">
+		select <include refid="allColumns"></include> from marry_img where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.sqlserver.MarryImgEntity">
+		select <include refid="allColumns"></include> from marry_img
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_img 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.sqlserver.MarryImgEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_img
+		(
+			`url`, 
+			`img_type`
+		)
+		values
+		(
+			#{url}, 
+			#{imgType}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.sqlserver.MarryImgEntity">
+		update marry_img 
+		<set>
+			<if test="url != null">`url` = #{url}, </if>
+			<if test="imgType != null">`img_type` = #{imgType}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_img where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_img where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -56,8 +56,7 @@ public class MarriedInterfaceAuthorizationInterceptor extends HandlerInterceptor
     		return true;
         
         // 获取登录用户类型
-        MarriedUserEntity frontUser = (MarriedUserEntity) session.getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);;
-        
+        MarriedUserEntity frontUser = (MarriedUserEntity) request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);;
         
         if (frontUser == null) {
         	return errorTurnHandler(url,request,response,"请先登录");

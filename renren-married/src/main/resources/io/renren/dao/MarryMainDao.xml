@@ -5,11 +5,11 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,title as title ,author as author ,content as content ,pic as pic ,price as price		
+		id as id ,title as title ,author as author ,content as content ,pic as pic ,price as price,userId as userId		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,title ,author ,content ,pic ,price		
+		id ,title ,author ,content ,pic ,price,userId		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.married.MarryMainEntity" id="marryMainMap">
@@ -18,15 +18,29 @@
 		        <result property="author" column="author"/>
 		        <result property="content" column="content"/>
 		        <result property="price" column="price"/>
+		        <result property="userId" column="userId"/>
 		        <result property="pic" column="pic"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryMainEntity">
 		select <include refid="allColumns"></include> from marry_main where id = #{value}
 	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
+		select t4.*,t3.username from sys_user t3,(
+			select t2.*,t1.id as cartId from marry_cart t1,marry_main t2 where t1.main_id=t2.id 
+			and t1.states=1 and t1.userId=#{userId}
+			<if test="Id != null and Id != ''">
+				and t1.id=#{Id}
+		    </if>
+			)t4 where t3.user_id=t4.userId and t3.user_id=#{user_id}
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryMainEntity">
 		select <include refid="allColumns"></include> from marry_main
+		<if test="userId != null and userId != null">
+			where userId=#{userId}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -51,6 +65,7 @@
 			`author`, 
 			`content`, 
 			`price`, 
+			`userId`, 
 			`pic`
 		)
 		values
@@ -59,6 +74,7 @@
 			#{author}, 
 			#{content}, 
 			#{price}, 
+			#{userId}, 
 			#{pic}
 		)
 	</insert>
@@ -70,6 +86,7 @@
 			<if test="author != null">`author` = #{author}, </if>
 			<if test="content != null">`content` = #{content}, </if>
 			<if test="price != null">`price` = #{price}, </if>
+			<if test="userId != null">`userId` = #{userId}, </if>
 			<if test="pic != null">`pic` = #{pic}</if>
 		</set>
 		where id = #{id}

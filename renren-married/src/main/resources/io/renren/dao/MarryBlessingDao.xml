@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryBlessingDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,content as content ,videoblessing as videoblessing ,blessingtype as blessingtype ,weddingId as weddingid ,openId as openid 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,content ,videoblessing ,blessingtype ,weddingId ,openId 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryBlessingEntity" id="marryBlessingMap">
+		        <result property="id" column="id"/>
+		        <result property="content" column="content"/>
+		        <result property="videoblessing" column="videoblessing"/>
+		        <result property="blessingtype" column="blessingtype"/>
+		        <result property="weddingid" column="weddingId"/>
+		        <result property="openid" column="openId"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryBlessingEntity">
+		select <include refid="allColumns"></include> from marry_blessing where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryBlessingEntity">
+		select t4.*,t3.nickname,t3.pic from married_user t3,(
+			select * from marry_blessing where weddingId=(
+			select t2.id from married_user t1,marry_wedding t2 where t1.id = t2.userId and t1.id=#{userId})
+			) t4 where t3.openId=t4.openId and t4.blessingtype=#{blessingtype}
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_blessing 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryBlessingEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_blessing
+		(
+			`content`, 
+			`videoblessing`, 
+			`blessingtype`, 
+			`weddingId`, 
+			`openId`
+		)
+		values
+		(
+			#{content}, 
+			#{videoblessing}, 
+			#{blessingtype}, 
+			#{weddingid}, 
+			#{openid}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryBlessingEntity">
+		update marry_blessing 
+		<set>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="videoblessing != null">`videoblessing` = #{videoblessing}, </if>
+			<if test="blessingtype != null">`blessingtype` = #{blessingtype}, </if>
+			<if test="weddingid != null">`weddingId` = #{weddingid}, </if>
+			<if test="openid != null">`openId` = #{openid}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_blessing where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_blessing where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -20,6 +20,8 @@ public interface MarryMainService extends IService<MarryMainEntity>{
 	
 	List<MarryMainEntity> queryList(Map<String, Object> map);
 	
+	List<MarryMainEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryMainEntity marryMain);
