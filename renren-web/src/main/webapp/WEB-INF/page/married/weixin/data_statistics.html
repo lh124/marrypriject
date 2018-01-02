@@ -18,7 +18,16 @@
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
-				          $("#smtotal").html(result.list.length+"人");
+				          $("#smtotal").html(result.list.smtj.length+"人");
+				          $("#zftotal").html(result.list.zftotal+"条");
+				          $("#videototal").html(result.list.zftotal+"个");
+				          $("#moneytotal").html(result.list.moneytotal.length+"个");
+				          var content = 0;
+				          for(var i=0; i <result.list.moneytotal.length; i++){
+				              content += parseFloat(result.list.moneytotal[i].content);
+				          }
+				          $("#content").html("￥"+content+"元");
+				          getDate(result.list.totalPerson,result.list.personwd,result.list.smtj.length);
 				     }
 				}
 		 });
@@ -48,7 +57,7 @@
 					祝福统计
 				</div>
 				<div class="data_video_amount">
-					祝福总计<span>300条</span>
+					祝福总计<span id="zftotal">0条</span>
 				</div>
 			</div>
 			<div class="data_video">
@@ -57,7 +66,7 @@
 					视频统计
 				</div>
 				<div class="data_video_amount">
-					视频总计<span>300个</span>
+					视频总计<span id="videototal">0个</span>
 				</div>
 			</div>
 			<div class="data_packet">
@@ -66,10 +75,10 @@
 					红包统计
 				</div>
 				<div class="data_packet_amount" style="border-bottom: 1px solid #F4F4F4;">
-					红包总计<span>300个</span>
+					红包总计<span id="moneytotal">0个</span>
 				</div>
 				<div class="data_packet_amount" style="border-bottom: 1px solid #F4F4F4;">
-					红包金额<span>30000元</span>
+					红包金额<span id="content">0元</span>
 				</div>
 				<div class="data_packet_amount">
 					<button class="tixian" type="button">提现</button>
@@ -80,54 +89,57 @@
 </body>
 <script type="text/javascript">
 	var myChart = echarts.init(document.getElementById('mychart'));
-	option = {
-		title : {
-	        text: '邀请嘉宾总数',
-	        subtext: '500人',
-	        x:'center'
-	    },
-	    tooltip: {
-	        trigger: 'item',
-	        formatter: "{a} <br/>{b}: {c} ({d}%)"
-	    },
-	    legend: {
-	        orient: 'vertical',
-	        x: '10px',
-	        data:['应到人数','实到人数','未到人数']
-	    },
-	    series: [
-	        {
-	            name:'嘉宾',
-	            type:'pie',
-	            radius: ['50%', '70%'],
-	            center: ['50%','60%'],
-	            avoidLabelOverlap: false,
-	            label: {
-	                normal: {
-	                    show: false,
-	                    position: 'center'
-	                },
-	                emphasis: {
-	                    show: true,
-	                    textStyle: {
-	                        fontSize: '24',
-	                    }
-	                }
-	            },
-	            labelLine: {
-	                normal: {
-	                    show: false
-	                }
-	            },
-	            data:[
-	                {value:335, name:'应到人数'},
-	                {value:310, name:'实到人数'},
-	                {value:234, name:'未到人数'},
-	            ]
-	        }
-	    ]
-	};
-	myChart.setOption(option);
+	function getDate(totalPerson,personwd,smtj){
+	     option = {
+			title : {
+		        text: '邀请嘉宾总数',
+		        subtext: totalPerson+'人',
+		        x:'center'
+		    },
+		    tooltip: {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b}: {c} ({d}%)"
+		    },
+		    legend: {
+		        orient: 'vertical',
+		        x: '10px',
+		        data:['应到人数','实到人数','未到人数']
+		    },
+		    series: [
+		        {
+		            name:'嘉宾',
+		            type:'pie',
+		            radius: ['50%', '70%'],
+		            center: ['50%','60%'],
+		            avoidLabelOverlap: false,
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'center'
+		                },
+		                emphasis: {
+		                    show: true,
+		                    textStyle: {
+		                        fontSize: '24',
+		                    }
+		                }
+		            },
+		            labelLine: {
+		                normal: {
+		                    show: false
+		                }
+		            },
+		            data:[
+		                {value:totalPerson, name:'应到人数'},
+		                {value:smtj, name:'实到人数'},
+		                {value:personwd, name:'未到人数'},
+		            ]
+		        }
+		    ]
+		};
+		myChart.setOption(option);
+	}
+	
 
 </script>
 </html>
