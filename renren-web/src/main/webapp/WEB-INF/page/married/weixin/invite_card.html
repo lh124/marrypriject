@@ -26,11 +26,27 @@
 		          var content = '<a class="selectbg_next" id="onMenuShareAppMessage">邀请好友</a>';
 		          $("#yqhyid").html(content);
 		          $('#photo').prop('src',result.data.marryWedding.photo);
+		          $("#weddingId").val(result.data.marryWedding.id);
 		     }
 		}
  	});
+ 	
+ 	function update(states){
+ 	      var id = $("#weddingId").val();
+ 	      $.ajax({
+				type: "POST",
+			    url: "../weixin/me/attendawedding?states="+states+"&id="+id,
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				          window.location.href="send_bless.html?weddingId="+id; 
+				     }
+				}
+		 	});
+ 	}
 </script>
 <body ontouchstart style="background:#ffffff;" onload="init()">
+    <input type="hidden" id="weddingId">
 	<div class="container" id="container" >
 		<div class="page" id="pageContainer">
 			<div class="invite_con">
@@ -44,13 +60,13 @@
 			</div>
 			<div class="invite_sure weui-flex">
 				<div class="weui-flex__item">
-					<a href="send_bless.html">暂定</a>
+					<a href="#" onclick="update(0)">暂定</a>
 				</div>
 				<div class="weui-flex__item">
-					<a class="act" href="send_bless.html">接受</a>
+					<a class="act" href="#" onclick="update(1)">接受</a>
 				</div>
 				<div class="weui-flex__item">
-					<a href="send_bless.html">无法参加</a>
+					<a href="#" onclick="update(2)">无法参加</a>
 				</div>
 	        </div>
 		</div>
