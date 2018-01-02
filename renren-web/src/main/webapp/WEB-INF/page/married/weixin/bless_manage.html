@@ -15,7 +15,59 @@
 		#my-video{width:100%;height: 100%;}
 	</style>
 </head>
-<body ontouchstart style="background:white;">
+<script type="text/javascript">
+     function init(){
+          $.ajax({
+				type: "POST",
+			    url: "../weixin/me/blessManage",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				         var content1 = "";
+				         var content2 = "";
+				         var content3 = "";
+				         for(var i = 0 ; i < result.list.list1.length; i++){
+				              if(result.list.list1[i].videoblessing != null && result.list.list1[i].videoblessing != ""){
+				              		content1 += '<div class="friend_bless"><dl class="friend_bless_top">'+
+				                         '<dt><img src="'+result.list.list1[i].pic+'" /></dt>'+
+				                         '<dd>'+result.list.list1[i].nickname+'</dd>'+
+				                         '</dl>'+
+				                         '<div class="friend_bless_con"><p>'+result.list.list1[i].content+'</p>'+
+				                         '<p style="text-align:right;">2017.11.2</p></div></div>';
+				               }
+				              if(result.list.list1[i].videoblessing != null && result.list.list1[i].videoblessing != ""){
+				                   content2 += '<div class="friend_bless"><dl class="friend_bless_top">'+
+				                               '<dt><img src="'+result.list.list1[i].pic+'" /></dt>'+
+				                               '<dd>'+result.list.list1[i].nickname+'</dd>'+
+				                               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
+				                               '<div class="weui-cell__hd"><input type="checkbox" class="weui-check ck" name="checkbox1">'+
+				                               '<i class="weui-icon-checked"></i></div></label></div></dl>'+
+				                               '<div class="friend_bless_con"><dl class="video">'+
+				                               '<dt><img class="videoSrc" title="'+result.list.list1[i].videoblessing+'" src="'+result.list.list1[i].pic+'"></dt>'+
+				                               '<dd><p style="text-align:right;">2017.3.4</p></dd></dl></div></div>';
+				              }
+				         }
+				         $("#list1").html(content1);
+				         $("#list2").html(content2);
+				         var total = 0;
+				         for(var i = 0; i < result.list.list2.length; i++){
+				              total += parseFloat(result.list.list2[i].content);
+				              content3 += '<div class="person_packet"><dl>'+
+				                          '<dt><img src="'+result.list.list2[i].pic+'"></dt>'+
+				                          '<dd class="weui-flex"><div class="weui-flex__item">'+
+				                          '<p>'+result.list.list2[i].nickname+'</p><p>2017.12.25</p>'+
+				                          '</div><div class="weui-flex__item person_packet_right">'+
+				                          result.list.list2[i].content+'元</div></dd></dl></div>';
+				         }
+				         $("#list3").append(content3);
+				         $("#money").html("￥"+total+"元");
+				         $("#total").html(result.list.list2.length);
+				     }
+				}
+		 });
+     }
+</script>
+<body ontouchstart style="background:white;" onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer" style="display:flex;">
 			<div class="bless_tit">
@@ -28,165 +80,26 @@
 		</div>
         <div style="margin-top:1.06rem;margin-bottom:1.2rem;">
             <!-- 祝福短信 -->
-            <div class="bless_con" style="background: url(${rc.contextPath}/statics/marry/img/bless1.png) no-repeat center;background-size: cover;display:block;padding:1rem 0.4rem 2.2rem 0.4rem;">
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox" style="float:right;margin-top:0.2rem;">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <p>更好的反馈结果合法的进口回复大家看过对方即可好几款讽德诵功</p>
-                        <p>2017.11.32</p>
-                    </div>
-                </div>
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox" style="float:right;margin-top:0.2rem;">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <p>更好的反馈结果合法的进口回复大家看过对方即可好几款讽德诵功</p>
-                        <p>2017.11.32</p>
-                    </div>
-                </div>
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <p>更好的反馈结果合法的进口回复大家看过对方即可好几款讽德诵功</p>
-                        <p>2017.11.32</p>
-                    </div>
-                </div>
+            <div class="bless_con"id="list1" style="background: url(${rc.contextPath}/statics/marry/img/bless1.png) no-repeat center;background-size: cover;display:block;padding:1rem 0.4rem 2.2rem 0.4rem;">
             </div>
             <!-- 祝福视频 -->
             <div class="m">
 				<video id="my-video" class="video-js" controls preload="auto" 
-				  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-					<!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-					<source src="http://vjs.zencdn.net/v/oceans.webm" type="video/webm">
-					<source src="http://vjs.zencdn.net/v/oceans.ogv" type="video/ogg"> -->
+				  poster="${rc.contextPath}/statics/marry/img/MY_VIDEO_POSTER.jpg" data-setup="{}">
 				  </video>
 			</div>
-            <div class="bless_con">
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <dl class="video">
-                            <dt><img src="${rc.contextPath}/statics/marry/img/bless_video.png"></dt>
-                            <dd>
-                                <p>附件是的开发过的很快就你法国进口的国家的反馈jfk的不</p>
-                                <p>2017.3.45</p>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <dl class="video">
-                            <dt><img src="${rc.contextPath}/statics/marry/img/bless_video.png"></dt>
-                            <dd>
-                                <p>附件是的开发过的很快就你法国进口的国家的反馈jfk的不</p>
-                                <p>2017.3.45</p>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-                <div class="friend_bless">
-                    <dl class="friend_bless_top">
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png" /></dt>
-                        <dd>爱你的夏日</dd>
-                        <div class="weui-cells_checkbox">
-				            <label class="weui-check__label">
-				                <div class="weui-cell__hd">
-				                    <input type="checkbox" class="weui-check" name="checkbox1">
-				                    <i class="weui-icon-checked"></i>
-				                </div>
-				            </label>
-				        </div>
-                    </dl>
-                    <div class="friend_bless_con">
-                        <dl class="video">
-                            <dt><img src="${rc.contextPath}/statics/marry/img/bless_video.png"></dt>
-                            <dd>
-                                <p>附件是的开发过的很快就你法国进口的国家的反馈jfk的不</p>
-                                <p>2017.3.45</p>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
+            <div class="bless_con" id="list2">
+                
             </div>
             <!-- 祝福红包 -->
-            <div class="bless_con">
+            <div class="bless_con" id="list3">
                <dl class="person">
                     <dt><img src="${rc.contextPath}/statics/marry/img/bless_head.png"></dt>
                     <dd>
-                        <p style="margin-top:0.2rem;">累计收到<span style="color:#e33a37;">200</span>个红包</p>
-                        <p>共：<span style="font-size:0.6rem;color:#e33a37;">3089元</span></p>
+                        <p style="margin-top:0.2rem;">累计收到<span style="color:#e33a37;" id="total">0</span>个红包</p>
+                        <p>共：<span style="font-size:0.6rem;color:#e33a37;" id="money">0元</span></p>
                     </dd>
                </dl>
-               <div class="person_packet">
-                    <dl>
-                        <dt><img src="${rc.contextPath}/statics/marry/img/bless_video.png"></dt>
-                        <dd class="weui-flex">
-                            <div class="weui-flex__item">
-                            	<p>读书电话</p>
-                            	<p>2017.12.25</p>
-                            </div>
-                            <div class="weui-flex__item person_packet_right">
-                            	200元
-                            </div>
-                        </dd>
-                    </dl>
-               </div>
             </div>
         </div>
 	</div>
@@ -240,6 +153,22 @@
 			/*确定选择*/
 			$("#sure").on("click",function(){
 				$(".weui-cells_checkbox").hide();
+				var len = $(".ck").length;
+				var video = [];
+				for(var i=0;i<len;i++){
+					if($(".ck").eq(i).prop("checked")==true){
+						video.push($(".ck").eq(i).parents(".friend_bless").find(".videoSrc").attr("title"));
+					}
+				}
+				console.log(JSON.stringify(video));
+				$.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveWeddingPhoto?video="+video,
+			    dataType: "json",
+			    success: function(result){
+			       
+				}
+			});
 			});
         });
     </script>
