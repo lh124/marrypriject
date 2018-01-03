@@ -16,7 +16,7 @@
 		(
 			`user_id`,  
 			`token`, 
-			`accessToken`,
+			`accessToken`, 
 			`expire_time`, 
 			`update_time`
 		)
@@ -40,5 +40,9 @@
 		</set>
 		where user_id = #{userId}
 	</update>
+	
+	<delete id="delete">
+		delete from tb_token where user_id = #{value}
+	</delete>
 
 </mapper>
