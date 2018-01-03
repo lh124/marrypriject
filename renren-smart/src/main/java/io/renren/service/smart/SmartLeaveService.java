@@ -20,6 +20,8 @@ public interface SmartLeaveService extends IService<SmartLeaveEntity>{
 	
 	List<SmartLeaveEntity> queryList(Map<String, Object> map);
 	
+	List<SmartLeaveEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(SmartLeaveEntity smartLeave);
