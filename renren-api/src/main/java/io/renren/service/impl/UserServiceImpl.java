@@ -5,17 +5,20 @@ import io.renren.entity.UserEntity;
 import io.renren.service.UserService;
 import io.renren.utils.RRException;
 import io.renren.validator.Assert;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+
 
 
 @Service("userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 	@Autowired
 	private UserDao userDao;
 	
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService {
 	public List<UserEntity> queryList(Map<String, Object> map){
 		return userDao.queryList(map);
 	}
-	
+	 
 	@Override
 	public int queryTotal(Map<String, Object> map){
 		return userDao.queryTotal(map);

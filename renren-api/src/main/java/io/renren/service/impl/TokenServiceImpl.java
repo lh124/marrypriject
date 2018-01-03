@@ -3,6 +3,7 @@ package io.renren.service.impl;
 import io.renren.dao.TokenDao;
 import io.renren.entity.TokenEntity;
 import io.renren.service.TokenService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class TokenServiceImpl implements TokenService {
 	public TokenEntity queryByToken(String token) {
 		return tokenDao.queryByToken(token);
 	}
-
+ 
 	@Override
 	public void save(TokenEntity token){
 		tokenDao.save(token);
@@ -74,5 +75,10 @@ public class TokenServiceImpl implements TokenService {
 		map.put("expire", EXPIRE);
 
 		return map;
+	}
+
+	@Override
+	public void delete(Long userId) {
+		tokenDao.delete(userId);
 	}
 }
