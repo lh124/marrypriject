@@ -52,5 +52,10 @@ public class SmartLeaveServiceImpl extends ServiceImpl<SmartLeaveDao, SmartLeave
 	public void deleteBatch(Integer[] ids){
 		smartLeaveDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<SmartLeaveEntity> queryListtongji(Map<String, Object> map) {
+		return smartLeaveDao.queryListtongji(map);
+	}
 	
 }
