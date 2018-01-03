@@ -1,7 +1,7 @@
 package io.renren.controller.app;
 
 import io.renren.entity.app.SmartNewsEntity;
-import io.renren.service.SmartNewsService;
+import io.renren.service.smart.SmartNewsService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;

@@ -21,7 +21,6 @@ import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
 import io.renren.entity.smart.WeixinFunctionImgEntity;
-import io.renren.service.SmartNewsService;
 import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
@@ -38,6 +37,7 @@ import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartLeaveService;
+import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -69,7 +69,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jiguangtuisong.JpushClientUtil;
+import jiguangtuisong.JpushClientUtil2;
 import net.sf.json.JSONObject;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -213,6 +213,9 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("getallschool")){
 				//学校列表
 				return getallschool();
+			}else if(type.equals("photoPicWorkMsg")){
+				//班内消息
+				return photoPicWorkMsg(json.getJSONObject("data"));
 			}else if(type.equals("classworkmsgsave")){
 				//发布消息
 				CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -244,7 +247,7 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("updatePassword")){
 				//修改密码
 				return updatePassword(json.getJSONObject("data"));
-			}else if(type.equals("updateheadportrait")){
+			}else if(type.equals("updateHeadImage")){
 				//头像修改
 				CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 				return updateheadportrait(json.getJSONObject("data"),multipartResolver,request);
@@ -254,9 +257,58 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("updatephone")){
 				//绑定手机号
 				return updatePhone(json.getJSONObject("data"),request);
+			}else if(type.equals("updatesmartnewstates")){
+				//修改通知状态
+				return updatesmartnewstates(json.getJSONObject("data"));
+			}else if(type.equals("getAccessToken")){
+				//获取设备的AccessToken
+				return getAccessToken(json.getJSONObject("data"));
+			}else if(type.equals("outLogin")){
+				//退出登录
+				return outLogin(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R outLogin(JSONObject json){
+		tokenService.delete(new Long(json.getInt("teacherId")));
+		return R.ok();
+	}
+	
+	
+	private R getAccessToken(JSONObject json){
+		TokenEntity token = tokenService.queryByUserId(new Long(json.getInt("teacherId")));
+		String data = "";
+		if(token == null){
+			data = "该用户未登录";
+		}else{
+			if(new Date().getTime() > token.getExpireTime().getTime()){
+				JSONObject jso = getAccessToken("https://open.ys7.com/api/lapp/token/get");
+				token.setExpireTime(new Date(new Long(jso.getJSONObject("data").getString("expireTime"))));
+				token.setAccessToken(jso.getJSONObject("data").getString("accessToken"));
+				tokenService.update(token);
+			}
+			data = token.getAccessToken();
+		}
+		return R.ok().put(DATA, data);
+	}
+	
+	public R photoPicWorkMsg(JSONObject json){
+		Map<String, Object> map = getMap(json);
+		map.put("classId", json.getString("classId"));
+		return R.ok().put(DATA, photoClassWorkMsgService.queryList(map));
+	}
+	
+	public R updatesmartnewstates(JSONObject json){
+		Integer id = json.getInt("newsId");
+		SmartNewsEntity sme = smartNewsService.queryObject(id);
+		if(sme != null){
+			sme.setNewstype(1);
+			sme.setId(json.getInt("newsId"));
+			smartNewsService.update(sme);
+		}
+		return R.ok();
 	}
 	
 	@SuppressWarnings("resource")
@@ -277,7 +329,7 @@ public class TeacherAppInterfaceController {
 	
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
-		Integer userId = json.getInt("userId");
+		Integer userId = json.getInt("teacherId");
 		String code = json.getString("code");
 		String code2 = request.getSession().getAttribute("randow").toString();
 		if(!code.equals(code2)){
@@ -293,7 +345,7 @@ public class TeacherAppInterfaceController {
 	public R updateheadportrait(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		try {
 			StudentEntity student = new StudentEntity();
-			student.setId(Integer.parseInt(json.getString("studentId")));
+			student.setId(Integer.parseInt(json.getString("teacherId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
 				student.setPic(FILEPATH+"head_img/"+OssUploadUtil.uploadObject2OSS(is[0], "head_img/"));
@@ -341,14 +393,17 @@ public class TeacherAppInterfaceController {
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("type", 5);
 		m.put("id", id);
-		JpushClientUtil.sendToRegistrationId(sle.getUserid().toString(), "请假通知", "请假申请回复",
-				sle.getContent(), m.toString());
+		TokenEntity token = tokenService.queryByUserId(new Long(sle.getUserid()));
+		if(token != null){
+			JpushClientUtil2.sendToRegistrationId(sle.getUserid().toString(), "回复通知", "请假申请回复",
+					sle.getContent(), JSONObject.fromObject(m).toString());
+		}
 		return R.ok().put(DATA, sle);
 	}
 	
 	private R getSmartLeaveDetail(JSONObject json){
 		Map<String, Object> map = new HashMap<String, Object>();
-		SmartLeaveEntity leave = smartLeaveService.queryObject(json.getInt("leaveId"));
+		SmartLeaveEntity leave = smartLeaveService.queryObject(Integer.parseInt(json.getString("leaveId")));
 		StudentEntity student = new StudentEntity();
 		if(leave != null){
 			student = studentService.queryObject(leave.getUserid());
@@ -363,7 +418,7 @@ public class TeacherAppInterfaceController {
 		Integer id = Integer.parseInt(json.getString("studentId"));
 		map.put("studentId", id);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
-		List<IoEntity> list = ioService.queryList(map);
+		List<IoEntity> list = ioService.queryListtongji(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("list", list);
@@ -386,7 +441,8 @@ public class TeacherAppInterfaceController {
 		m.put("allstudent", list);//班级所有学生
 		m.put("zaixiaostudent", getStudentzaixiao(classId, 1));//在校学生
 		m.put("nozaixiaostudent", getStudentzaixiao(classId, 2));//不在校学生
-		m.put("leavestudent", getClassIdLeave(classId));//请假的学生
+		Integer id = json.getInt("teacherId");
+		m.put("leavestudent", getClassIdLeave(classId,id));//请假的学生
 		return R.ok().put(DATA, m);
 	}
 	
@@ -406,18 +462,20 @@ public class TeacherAppInterfaceController {
 		return list;
 	}
 	
-	private List<StudentEntity> getClassIdLeave(Integer classId){
+	private List<StudentEntity> getClassIdLeave(Integer classId,Integer teacherId){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("offset", 0);
 		map.put("limit", 100);
-		map.put("userId", null);
+		map.put("userId", teacherId);
 		map.put("classId", classId);
 		List<StudentEntity> list = new ArrayList<StudentEntity>();
-		List<SmartLeaveEntity> leaveList = smartLeaveService.queryList(map);
+		List<SmartLeaveEntity> leaveList = smartLeaveService.queryListtongji(map);
 		for (Iterator iterator = leaveList.iterator(); iterator.hasNext();) {
 			SmartLeaveEntity smartLeaveEntity = (SmartLeaveEntity) iterator.next();
 			StudentEntity student = studentService.queryObject(smartLeaveEntity.getUserid());
 			student.setId(smartLeaveEntity.getId());//将请假条的id设置给学生id便于后面查询请假条详情
+			student.setNewsId(smartLeaveEntity.getNewsId());
+			student.setNewsType(smartLeaveEntity.getNewsType());
 			list.add(student);
 		}
 		return list;
@@ -463,7 +521,7 @@ public class TeacherAppInterfaceController {
 		try {
 			is = uploadfile(multipartResolver, request);
 			pcwme.setClassId(json.getLong("classId"));
-			pcwme.setUserId(json.getLong("userId"));
+			pcwme.setUserId(json.getLong("teacherId"));
 			pcwme.setContent(json.getString("content"));
 			pcwme.setGmtCreate(new Date());
 			pcwme.setStatus(1);
@@ -498,8 +556,11 @@ public class TeacherAppInterfaceController {
 				sne.setNewstype(0);
 				sne.setUserId(studentEntity.getId());
 				smartNewsService.insert(sne);
-				JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "班内消息", "班内消息",
-						pcwme.getContent(), m.toString());
+				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
+				if(token != null){
+					JpushClientUtil2.sendToRegistrationId(studentEntity.getId().toString(), "班内消息通知", "班内消息有更新",
+							pcwme.getContent(), JSONObject.fromObject(m).toString());
+				}
 			}
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -725,8 +786,11 @@ public class TeacherAppInterfaceController {
 				smartNewsService.insert(sne);
 				m.put("newsId", sne.getId());
 				map.put("userId", studentEntity.getId());
-				JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", classNotice.getTitle(),
-						classNotice.getContent(), m.toString());
+				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
+				if(token != null){
+					JpushClientUtil2.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", "老师通知",
+							classNotice.getContent(), JSONObject.fromObject(m).toString());
+				}
 			}
 		} catch (Exception e) {
 			return R.error("失败");
@@ -764,7 +828,7 @@ public class TeacherAppInterfaceController {
 	private Map<String, Object> getMap(JSONObject json){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("offset", (Integer.parseInt(json.getString("offset"))-1) * Integer.parseInt(json.getString("limit")));
-		map.put("limit", Integer.parseInt(json.getString("offset")) * Integer.parseInt(json.getString("limit")));
+		map.put("limit", Integer.parseInt(json.getString("limit")));
 		map.put("sidx", "");
 		map.put("order", "");
 		return map;

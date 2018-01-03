@@ -19,7 +19,6 @@ import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
 import io.renren.entity.smart.WeixinFunctionImgEntity;
-import io.renren.service.SmartNewsService;
 import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
@@ -35,6 +34,7 @@ import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartLeaveService;
+import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -235,9 +235,37 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("updatesmartnewstates")){
 				//修改通知状态
 				return updatesmartnewstates(json.getJSONObject("data"));
+			}else if(type.equals("getAccessToken")){
+				//获取设备的AccessToken
+				return getAccessToken(json.getJSONObject("data"));
+			}else if(type.equals("outLogin")){
+				//退出登录
+				return outLogin(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R outLogin(JSONObject json){
+		tokenService.delete(new Long(json.getInt("studentId")));
+		return R.ok();
+	}
+	
+	private R getAccessToken(JSONObject json){
+		TokenEntity token = tokenService.queryByUserId(new Long(json.getInt("studentId")));
+		String data = "";
+		if(token == null){
+			data = "该用户未登录";
+		}else{
+			if(new Date().getTime() > token.getExpireTime().getTime()){
+				JSONObject jso = getAccessToken("https://open.ys7.com/api/lapp/token/get");
+				token.setExpireTime(new Date(new Long(jso.getJSONObject("data").getString("expireTime"))));
+				token.setAccessToken(jso.getJSONObject("data").getString("accessToken"));
+				tokenService.update(token);
+			}
+			data = token.getAccessToken();
+		}
+		return R.ok().put(DATA, data);
 	}
 	
 	@SuppressWarnings("resource")
@@ -390,8 +418,18 @@ public class StudentAppInterfaceController{
 		List<ClassInfoEntity> list = classInfoService.queryList(map);
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
-			JpushClientUtil.sendToRegistrationId(classInfoEntity.getUserId().toString(), "请假通知", "请假申请",
-					smartLeave.getContent(), m.toString());
+			SmartNewsEntity sne = new SmartNewsEntity();
+			sne.setNewsid(smartLeave.getId());
+			sne.setStates(4);
+			sne.setNewstype(0);
+			sne.setUserId(classInfoEntity.getUserId());
+			smartNewsService.insert(sne);
+			
+			TokenEntity token = tokenService.queryByUserId(new Long(classInfoEntity.getUserId()));
+			if(token != null){
+				JpushClientUtil.sendToRegistrationId(classInfoEntity.getUserId().toString(), "请假通知", "请假申请",
+						smartLeave.getContent(), JSONObject.fromObject(m).toString());
+			}
 		}
 		return R.ok();
 	}
@@ -440,7 +478,7 @@ public class StudentAppInterfaceController{
 	
 	public R getClassId(JSONObject json){
 		Integer id = json.getInt("classId");
-		return R.ok().put("list", classService.queryObject(id));
+		return R.ok().put(DATA, classService.queryObject(id));
 	}
 	
 	private R getallschool(){
@@ -575,7 +613,7 @@ public class StudentAppInterfaceController{
 	private Map<String, Object> getMap(JSONObject json){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("offset", (Integer.parseInt(json.getString("offset"))-1) * Integer.parseInt(json.getString("limit")));
-		map.put("limit", Integer.parseInt(json.getString("offset")) * Integer.parseInt(json.getString("limit")));
+		map.put("limit", Integer.parseInt(json.getString("limit")));
 		map.put("sidx", "");
 		map.put("order", "");
 		return map;
