@@ -1,15 +1,28 @@
 package io.renren.controller.smart;
 
+import io.renren.entity.TokenEntity;
+import io.renren.entity.app.SmartNewsEntity;
+import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
+import io.renren.entity.smart.StudentEntity;
+import io.renren.service.TokenService;
+import io.renren.service.smart.ClassService;
 import io.renren.service.smart.SchoolNoticeService;
+import io.renren.service.smart.SmartNewsService;
+import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import jiguangtuisong.JpushClientUtil;
+import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +45,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SchoolNoticeController {
 	@Autowired
 	private SchoolNoticeService schoolNoticeService;
+	@Autowired
+	private ClassService classService;
+	@Autowired
+	private StudentService studentService;
+	@Autowired
+	private TokenService tokenService;
+	@Autowired
+	private SmartNewsService smartNewsService;
 	
 	/**
 	 * 列表
@@ -65,11 +86,59 @@ public class SchoolNoticeController {
 	/**
 	 * 保存
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/save")
 	@RequiresPermissions("schoolnotice:save")
 	public R save(@RequestBody SchoolNoticeEntity schoolNotice){
 		schoolNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		schoolNoticeService.save(schoolNotice);
+		schoolNoticeService.insert(schoolNotice);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", 1);
+		map.put("schoolId", schoolNotice.getSchoolid());
+		map.put("begin", 0);
+		map.put("limit", 100);
+		List<ClassEntity> classList = classService.queryList(map);//通过学校id查询所有的班级
+		for (Iterator iterator = classList.iterator(); iterator.hasNext();) {
+			ClassEntity classEntity = (ClassEntity) iterator.next();
+			map.put("classId", classEntity.getId());
+			map.put("schoolId", null);
+			map.put("userType", 1);
+			List<StudentEntity> studentlist = studentService.queryList(map);
+			for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator2.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(schoolNotice.getId());
+				sne.setStates(1);
+				sne.setNewstype(0);
+				sne.setUserId(studentEntity.getId());
+				smartNewsService.insert(sne);
+				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
+				if(token != null){
+					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "学校通知", schoolNotice.getTitle(),
+							schoolNotice.getContent(), JSONObject.fromObject(map).toString());
+				}
+			}
+		}
+		
+		//发送给学校老师
+		map.put("classId", null);
+		map.put("schoolId", schoolNotice.getSchoolid());
+		map.put("userType", 2);
+		List<StudentEntity> studentlist = studentService.queryList(map);
+		for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+			StudentEntity studentEntity = (StudentEntity) iterator2.next();
+			SmartNewsEntity sne = new SmartNewsEntity();
+			sne.setNewsid(schoolNotice.getId());
+			sne.setStates(1);
+			sne.setNewstype(0);
+			sne.setUserId(studentEntity.getId());
+			smartNewsService.insert(sne);
+			TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
+			if(token != null){
+				JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "学校通知", schoolNotice.getTitle(),
+						schoolNotice.getContent(), JSONObject.fromObject(map).toString());
+			}
+		}
 		return R.ok();
 	}
 	
