@@ -19,7 +19,9 @@ public interface TokenService {
 	
 	void save(TokenEntity token);
 	
-	void update(TokenEntity token);
+	void update(TokenEntity token); 
+	
+	void delete(Long userId);
 
 	/**
 	 * 生成token

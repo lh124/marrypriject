@@ -5,6 +5,8 @@ import io.renren.entity.UserEntity;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.service.IService;
+
 /**
  * 用户
  * 
@@ -12,7 +14,7 @@ import java.util.Map;
  * @email sunlightcs@gmail.com
  * @date 2017-03-23 15:22:06
  */
-public interface UserService {
+public interface UserService extends IService<UserEntity>{
 
 	UserEntity queryObject(Long userId);
 	
@@ -20,7 +22,7 @@ public interface UserService {
 	
 	int queryTotal(Map<String, Object> map);
 	
-	void save(UserEntity user);
+	void save(UserEntity user); 
 	
 	void update(UserEntity user);
 	
