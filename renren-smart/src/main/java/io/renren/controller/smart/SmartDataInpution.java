@@ -264,8 +264,9 @@ public class SmartDataInpution {
 				m.put("type", 6);
 				TokenEntity token = tokenService.queryByUserId(new Long(studentId));
 				if(token != null){
-					if(!"".equals(token.getToken()) && token.getToken() != null)
-						JpushClientUtil2.sendToRegistrationId(studentId, "进出校通知", "进出校记录", ioType+"校门", m.toString());
+					if(!"1".equals(token.getToken()) && token.getToken() != null)
+						JpushClientUtil2.sendToRegistrationId(studentId, "进出校通知", "进出校记录", 
+								ioType+"校门", JSONObject.fromObject(m).toString());
 				}
 			}
 			obj = R.ok().put(DATA, list);
