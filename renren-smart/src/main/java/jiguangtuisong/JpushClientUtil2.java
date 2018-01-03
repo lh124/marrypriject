@@ -11,11 +11,11 @@ import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
  
  
-public class JpushClientUtil {
+public class JpushClientUtil2 {
  
-    private final static String appKey = "aecc535fc376fcb112949ee6";
+    private final static String appKey = "a1086030bcfba327bb428b50";
  
-    private final static String masterSecret = "436824de608a150e7e4105ce";
+    private final static String masterSecret = "7add2102266c90ee985e5ce1";
  
     private static JPushClient jPushClient = new JPushClient(masterSecret,appKey);
  
@@ -32,7 +32,7 @@ public class JpushClientUtil {
         int result = 0;
         try {
         	jPushClient = new JPushClient(masterSecret,appKey);
-            PushPayload pushPayload= JpushClientUtil.buildPushObject_all_registrationId_alertWithTitle(registrationId,notification_title,msg_title,msg_content,extrasparam);
+            PushPayload pushPayload= JpushClientUtil2.buildPushObject_all_registrationId_alertWithTitle(registrationId,notification_title,msg_title,msg_content,extrasparam);
             System.out.println(pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
@@ -57,7 +57,7 @@ public class JpushClientUtil {
     public static int sendToAllAndroid( String notification_title, String msg_title, String msg_content, String extrasparam) {
         int result = 0;
         try {
-            PushPayload pushPayload= JpushClientUtil.buildPushObject_android_all_alertWithTitle(notification_title,msg_title,msg_content,extrasparam);
+            PushPayload pushPayload= JpushClientUtil2.buildPushObject_android_all_alertWithTitle(notification_title,msg_title,msg_content,extrasparam);
             System.out.println(pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
@@ -83,7 +83,7 @@ public class JpushClientUtil {
         int result = 0;
         try {
         	jPushClient = new JPushClient(masterSecret,appKey);
-            PushPayload pushPayload= JpushClientUtil.buildPushObject_ios_all_alertWithTitle(notification_title,msg_title,msg_content,extrasparam);
+            PushPayload pushPayload= JpushClientUtil2.buildPushObject_ios_all_alertWithTitle(notification_title,msg_title,msg_content,extrasparam);
             System.out.println(pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
@@ -108,7 +108,7 @@ public class JpushClientUtil {
     public static int sendToAll( String notification_title, String msg_title, String msg_content, String extrasparam) {
         int result = 0;
         try {
-            PushPayload pushPayload= JpushClientUtil.buildPushObject_android_and_ios(notification_title,msg_title,msg_content,extrasparam);
+            PushPayload pushPayload= JpushClientUtil2.buildPushObject_android_and_ios(notification_title,msg_title,msg_content,extrasparam);
             System.out.println(pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
@@ -330,7 +330,7 @@ public class JpushClientUtil {
     }
  
     public static void main(String[] args){
-    	sendToRegistrationId("5345", "通知", "通知", "通知", "{\"type\":\"3\"}");
+    	sendToRegistrationId("4813", "通知", "通知", "通知", "{\"type\":\"3\"}");
 //        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
 //            System.out.println("success");
 //        }
