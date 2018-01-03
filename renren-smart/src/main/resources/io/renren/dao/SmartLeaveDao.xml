@@ -28,16 +28,22 @@
 		select <include refid="allColumns"></include> from smart_leave where id = #{value}
 	</select>
 
+   <select id="queryListtongji" resultType="io.renren.entity.smart.SmartLeaveEntity">
+		select t1.*,t2.newsType,t2.id as newsId from smart_leave t1,smart_news t2 
+		where t1.id = t2.newsId and t2.states=4 and t1.calssId=#{classId} and t2.userId=#{userId}
+		order by t2.newsType,t1.id desc
+		limit #{offset}, #{limit}
+	</select>
+
 	<select id="queryList" resultType="io.renren.entity.smart.SmartLeaveEntity">
 		select <include refid="allColumns"></include> from smart_leave
-		
 		<if test="userId != null and userId != ''">
 			where userId=#{userId}
 		</if>
 		<if test="classId != null and classId != ''">
-			where calssId=#{classId} and startDate &lt;= sysdate() and endDate &gt;= sysdate()
+			where calssId=#{classId} 
+			<!--and startDate &lt;= sysdate() and endDate &gt;= sysdate()  -->
 		</if>
-		
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
