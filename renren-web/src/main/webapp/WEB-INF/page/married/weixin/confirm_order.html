@@ -11,59 +11,43 @@
 </head>
 <script type="text/javascript">
     function init(){
+         $("#pricetotal").html($("#price").val()+"元");
          $.ajax({
 				type: "POST",
-				url: "../weixin/index/findObj?id="+$("#id").val(),
+				url: "../weixin/cart/submitCart?ids="+$("#ids").val(),
 				dataType: "json",
 				success: function(result){
 					if(result.status == 'ok'){
-						$("#title").html(result.obj.title);
-						$("#author").html(result.obj.author);
-						$("#pic").prop('src',result.obj.pic);
-						$("#price").html("价格￥"+result.obj.price);
-						$("#pricetotal").html("￥"+result.obj.price);
+						var content = "";
+						for(var i = 0; i < result.list.length;i++){
+						    content += '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
+						               '<div class="cart_tit"><p>'+result.list[i].username+'</p>'+
+						               '</div><div class="weui-panel__bd">'
+						               for(var j = 0; j < result.list[i].list.length;j++){
+						                     content += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
+										               '<div class="weui-media-box__hd">'+
+										               '<img style="display:block;width:60px;height:60px;" class="weui-media-box__thumb" src="'+result.list[i].list[j].pic+'"></div>'+
+										               '<div class="weui-media-box__bd"><h4 class="weui-media-box__title">'+result.list[i].list[j].title+'</h4>'+
+										               '<p class="weui-media-box__desc">'+result.list[i].list[j].author+'</p>'+
+										               '<p class="weui-media-box__desc">价格：￥<span class="sub">'+result.list[i].list[j].price+'</span></p>'+
+										               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
+										               '<div class="weui-cell__hd">'+
+										               '</div></label></div></div></a>';
+						                }
+						               content += '</div></div>';
+						}
+						$("#list").html(content);
 					}
 				}
 		});
     }
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
-    <input type="hidden" id="id" value="${request.getParameter('id')}">
+    <input type="hidden" id="ids" value="${request.getParameter('goodsId')}">
+    <input type="hidden" id="price" value="${request.getParameter('price')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
-			<div style="flex:1;margin-bottom:2.8rem;">
-				<div class="order_con weui-panel weui-panel_access" style="margin-top:10px;">
-					<div class="weui-panel__bd">
-						<div class="cart_tit">
-							<p>伊人婚礼</p>
-						</div>
-		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-		                    <div class="weui-media-box__hd">
-		                        <img class="weui-media-box__thumb" src="img/theme1.png" alt="">
-		                    </div>
-		                    <div class="weui-media-box__bd">
-		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
-		                        <p class="weui-media-box__desc">价格：10000</p>
-		                    </div>
-	                	</a>
-		            </div>
-				</div>
-				<div class="order_con weui-panel weui-panel_access" style="margin-top:10px;">
-					<div class="weui-panel__bd">
-						<div class="cart_tit">
-							<p>伊人婚礼</p>
-						</div>
-		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-		                    <div class="weui-media-box__hd">
-		                        <img class="weui-media-box__thumb" src="img/theme1.png" alt="">
-		                    </div>
-		                    <div class="weui-media-box__bd">
-		                        <h4 class="weui-media-box__title">粉蓝密爱</h4>
-		                        <p class="weui-media-box__desc">价格：10000</p>
-		                    </div>
-	                	</a>
-		            </div>
-				</div>
+			<div style="flex:1;margin-bottom:2.8rem;" id="list">
 			</div>
 			<div class="order_total">
 				<div class="order_total_money">
