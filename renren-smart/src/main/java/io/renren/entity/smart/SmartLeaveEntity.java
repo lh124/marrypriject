@@ -49,8 +49,24 @@ public class SmartLeaveEntity implements Serializable {
 	
 	@TableField(value="beizhu")
 	private String beizhu;
+	
+	private Integer newsType;
+	
+	private Integer newsId;
 			
 
+	public Integer getNewsType() {
+		return newsType;
+	}
+	public void setNewsType(Integer newsType) {
+		this.newsType = newsType;
+	}
+	public Integer getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(Integer newsId) {
+		this.newsId = newsId;
+	}
 	public String getBeizhu() {
 		return beizhu;
 	}

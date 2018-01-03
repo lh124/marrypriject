@@ -61,6 +61,24 @@ public class StudentEntity implements Serializable {
 	@TableField(value="open_id")
 	private String openId;
 	
+	@TableField(value="newsType")
+	private Integer newsType;
+	
+	@TableField(value="newsId")
+	private Integer newsId;
+	
+	public Integer getNewsType() {
+		return newsType;
+	}
+	public void setNewsType(Integer newsType) {
+		this.newsType = newsType;
+	}
+	public Integer getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(Integer newsId) {
+		this.newsId = newsId;
+	}
 	/**
 	 * 经度
 	 */
