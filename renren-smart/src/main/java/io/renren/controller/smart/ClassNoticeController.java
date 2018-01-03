@@ -1,15 +1,26 @@
 package io.renren.controller.smart;
 
+import io.renren.entity.TokenEntity;
+import io.renren.entity.app.SmartNewsEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
+import io.renren.entity.smart.StudentEntity;
+import io.renren.service.TokenService;
 import io.renren.service.smart.ClassNoticeService;
+import io.renren.service.smart.SmartNewsService;
+import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import jiguangtuisong.JpushClientUtil;
+import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +43,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClassNoticeController {
 	@Autowired
 	private ClassNoticeService classNoticeService;
+	@Autowired
+	private StudentService studentService;
+	@Autowired
+	private TokenService tokenService;
+	@Autowired
+	private SmartNewsService smartNewsService;
 	
 	/**
 	 * 列表
@@ -64,12 +81,36 @@ public class ClassNoticeController {
 	/**
 	 * 保存
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/save")
 	@RequiresPermissions("classnotice:save")
 	public R save(@RequestBody ClassNoticeEntity classNotice){
 		classNotice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		classNoticeService.save(classNotice);
-		
+		classNoticeService.insert(classNotice);
+		Map<String, Object> map = new HashMap<String, Object>();
+		//发送给班级学生
+		map.put("classId", classNotice.getClassId());
+		map.put("schoolId", null);
+		map.put("userType", 1);
+		map.put("begin", 0);
+		map.put("limit", 100);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("type", 2);
+		List<StudentEntity> studentlist = studentService.queryList(map);
+		for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator2.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(classNotice.getId());
+				sne.setStates(2);
+				sne.setNewstype(0);
+				sne.setUserId(studentEntity.getId());
+				smartNewsService.insert(sne);
+				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
+				if(token != null){
+					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "学校通知", classNotice.getTitle(),
+						classNotice.getContent(),JSONObject.fromObject(m).toString());
+				}
+			}
 		return R.ok();
 	}
 	
