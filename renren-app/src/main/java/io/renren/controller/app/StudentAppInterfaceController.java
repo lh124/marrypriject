@@ -19,6 +19,8 @@ import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
 import io.renren.entity.smart.WeixinFunctionImgEntity;
+import io.renren.entity.tombstone.TombstoneDeadEntity;
+import io.renren.entity.tombstone.TombstoneUserEntity;
 import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
@@ -40,6 +42,8 @@ import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.WeixinFunctionImgService;
 import io.renren.service.smart.WeixinFunctionService;
+import io.renren.service.tombstone.TombstoneDeadService;
+import io.renren.service.tombstone.TombstoneUserService;
 import io.renren.util.MsgUtil;
 import io.renren.util.OssUploadUtil;
 import io.renren.utils.Query;
@@ -133,9 +137,27 @@ public class StudentAppInterfaceController{
 	private SmartNewsService smartNewsService;
 	@Autowired
 	private SmartVideoDeviceService smartVideoDeviceService;
+	@Autowired
+	private TombstoneUserService tombstoneUserService;
+	@Autowired
+	private TombstoneDeadService tombstoneDeadService;
 	
+	@SuppressWarnings("resource")
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request) throws Exception{
+		List<SmartNewsEntity> list = smartNewsService.queryListStudent(null);
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			SmartNewsEntity smartNewsEntity = (SmartNewsEntity) iterator.next();
+			TombstoneUserEntity user = new TombstoneUserEntity();
+			user.setId(smartNewsEntity.getId());
+			user.setPic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
+			tombstoneUserService.update(user);
+			TombstoneDeadEntity dead = new TombstoneDeadEntity();
+			dead.setId(smartNewsEntity.getId());
+			dead.setImage("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
+			tombstoneDeadService.update(dead);
+		}
+		
 		String key = (request.getParameter("key")==null || "".equals(request.getParameter("key")))?
 				getJSONObject(request):request.getParameter("key").replace("&quot;", "\"");
 	    System.out.println("---student-------"+key);
@@ -157,6 +179,8 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("updatepasswrodtophone")){
 				//忘记密码：通过手机号找回密码
 				return updatepasswrodtophone(json.getJSONObject("data"),request);
+			}else{
+				return R.error("请重新登录");
 			}
 		}else{
 			if(!getToken(json.getString("token"))){
@@ -240,6 +264,8 @@ public class StudentAppInterfaceController{
 				return getAccessToken(json.getJSONObject("data"));
 			}else if(type.equals("outLogin")){
 				//退出登录
+				Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+				jedis.set(json.getString("token"), "");
 				return outLogin(json.getJSONObject("data"));
 			}
 		}
@@ -270,12 +296,12 @@ public class StudentAppInterfaceController{
 	
 	@SuppressWarnings("resource")
 	private boolean getToken(String token){
-		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
+		if(new Jedis(JEDISPATH,6379,10000).get(token) == null || "".equals(new Jedis(JEDISPATH,6379,10000).get(token))){
 			TokenEntity tokens = tokenService.queryByToken(token);
 			if(tokens == null){
 				return false;
 			}else{
-				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
 				jedis.set(tokens.getToken(), tokens.getToken());
 				return true;
 			}
@@ -424,10 +450,10 @@ public class StudentAppInterfaceController{
 			sne.setNewstype(0);
 			sne.setUserId(classInfoEntity.getUserId());
 			smartNewsService.insert(sne);
-			
+			m.put("newsId", sne.getId());
 			TokenEntity token = tokenService.queryByUserId(new Long(classInfoEntity.getUserId()));
 			if(token != null){
-				JpushClientUtil.sendToRegistrationId(classInfoEntity.getUserId().toString(), "请假通知", "请假申请",
+				JpushClientUtil.sendToRegistrationId(classInfoEntity.getUserId().toString(), "请假申请通知", "请假申请",
 						smartLeave.getContent(), JSONObject.fromObject(m).toString());
 			}
 		}
@@ -742,6 +768,9 @@ public class StudentAppInterfaceController{
 		if(user == null){
 			return R.error("用户不存在");
 		}else{
+			if("2".equals(user.getUserType())){
+				return R.error("老师账号不能登录学生APP");
+			}
 			if(user.getPasswordd().equals(new Sha256Hash(student.getPasswordd()).toString())){
 				TokenEntity token = tokenService.queryByUserId(new Long(user.getId()));
 				String tokening = new Sha256Hash(user.getPasswordd()+new Date()).toString();
@@ -764,7 +793,7 @@ public class StudentAppInterfaceController{
 					token.setUpdateTime(new Date());
 					tokenService.update(token);
 				}
-				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
 				jedis.set(tokening, tokening);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());

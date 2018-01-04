@@ -140,6 +140,7 @@ public class TeacherAppInterfaceController {
 	private final static String DATA = "data";
 	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
 	
+	@SuppressWarnings("resource")
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request) throws Exception{
 		String key = (request.getParameter("key")==null || "".equals(request.getParameter("key")))?
@@ -163,6 +164,8 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("updatepasswrodtophone")){
 				//忘记密码：通过手机号找回密码
 				return updatepasswrodtophone(json.getJSONObject("data"),request);
+			}else{
+				return R.error("请重新登录");
 			}
 		}else{
 			if(!getToken(json.getString("token"))){
@@ -265,6 +268,8 @@ public class TeacherAppInterfaceController {
 				return getAccessToken(json.getJSONObject("data"));
 			}else if(type.equals("outLogin")){
 				//退出登录
+				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
+				jedis.set(json.getString("token"), "");
 				return outLogin(json.getJSONObject("data"));
 			}
 		}
@@ -301,7 +306,7 @@ public class TeacherAppInterfaceController {
 	}
 	
 	public R updatesmartnewstates(JSONObject json){
-		Integer id = json.getInt("newsId");
+		Integer id = json.get("newsId")==null?0:json.getInt("newsId");
 		SmartNewsEntity sme = smartNewsService.queryObject(id);
 		if(sme != null){
 			sme.setNewstype(1);
@@ -313,7 +318,7 @@ public class TeacherAppInterfaceController {
 	
 	@SuppressWarnings("resource")
 	private boolean getToken(String token){
-		if(new Jedis(JEDISPATH,6379,30000).get(token) == null){
+		if(new Jedis(JEDISPATH,6379,30000).get(token) == null || "".equals(new Jedis(JEDISPATH,6379,30000).get(token))){
 			TokenEntity tokens = tokenService.queryByToken(token);
 			if(tokens == null){
 				return false;
@@ -384,6 +389,7 @@ public class TeacherAppInterfaceController {
 	
 	private R updateLeaveType(JSONObject json){
 		Integer id = Integer.parseInt(json.getString("id"));
+		updatesmartnewstates(json);
 		SmartLeaveEntity leave = new SmartLeaveEntity();
 		leave.setId(id);
 		leave.setStates(json.getString("states")); 
@@ -395,7 +401,7 @@ public class TeacherAppInterfaceController {
 		m.put("id", id);
 		TokenEntity token = tokenService.queryByUserId(new Long(sle.getUserid()));
 		if(token != null){
-			JpushClientUtil2.sendToRegistrationId(sle.getUserid().toString(), "回复通知", "请假申请回复",
+			JpushClientUtil2.sendToRegistrationId(sle.getUserid().toString(), "请假申请回复", "请假申请回复",
 					sle.getContent(), JSONObject.fromObject(m).toString());
 		}
 		return R.ok().put(DATA, sle);
@@ -535,7 +541,7 @@ public class TeacherAppInterfaceController {
 					ppwme.setGmtCreate(new Date());
 					ppwme.setRelatedId(pcwme.getId());
 					ppwme.setPicType(1);
-					ppwme.setName(FILEPATH+"smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_msg_pic/"));
+					ppwme.setName(FILEPATH+"smart_msg_pic/"+OssUploadUtil.uploadObject2OSS(is[i], "smart_msg_pic/"));
 					photoPicWorkMsgService.save(ppwme);
 				}
 			}
@@ -975,6 +981,9 @@ public class TeacherAppInterfaceController {
 		if(user == null){
 			return R.error("用户不存在");
 		}else{
+			if("1".equals(user.getUserType())){
+				return R.error("学生账号不能登录老师APP");
+			}
 			if(user.getPasswordd().equals(new Sha256Hash(student.getPasswordd()).toString())){
 				TokenEntity token = tokenService.queryByUserId(new Long(user.getId()));
 				String tokening = new Sha256Hash(user.getPasswordd()+new Date()).toString();
@@ -999,6 +1008,7 @@ public class TeacherAppInterfaceController {
 				}
 				Jedis jedis =  new Jedis(JEDISPATH,6379,30000);
 				jedis.set(tokening, tokening);
+				jedis.expire(tokening, 24*60*60*365);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);
