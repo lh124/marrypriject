@@ -44,7 +44,7 @@ function init(){
 					length = 3;
 				}
 				for(var i = 0; i < length; i++){
-					content += '<img style="flex:1;margin-left:0.1rem;" src="'+ result.list.img[i].pic +'"/>';
+					content += '<img style="margin-left:0.1rem;" src="'+ result.list.img[i].pic +'"/>';
 				}
 				$("#content").html(result.list.user.content);
 				$("#experience").html(result.list.user.experience);
