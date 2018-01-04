@@ -84,8 +84,11 @@ public class SmartDataInpution {
 	@RequestMapping("/getData")
 	@ResponseBody
 	public R getData(HttpServletRequest request,HttpServletResponse response){
-		String key = request.getParameter("key").replace("&quot;", "\"");
-		JSONObject json = JSONObject.fromObject(key);
+		String key = request.getParameter("key");
+		if(key == null || "".equals(key)){
+			return R.error("暂无任何数据至服务器端");
+		}
+		JSONObject json = JSONObject.fromObject(key.replace("&quot;", "\""));
 		System.out.println(json);
 		String type = json.getString("type");
 		String token = json.getString("token");
