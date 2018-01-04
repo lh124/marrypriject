@@ -45,7 +45,7 @@
 /*购物车*/
 .cart_tit{height:1.2rem;background: white;padding:0 0.4rem;border-bottom: 1px solid #f2f2f2;}
 .cart_tit p{text-align: left;line-height: 1.2rem;color: #ff4367;font-size: 0.45rem;}
-.cart_tit p span{float: right;}
+.cart_tit p .check_part{float: right;}
 .cart_con  h4{font-size: 0.4rem;}
 .cart_con .weui-cells_checkbox{position: absolute;top:40%;right: 3%;}
 .cart_total{height: 2.5rem;width: 100%;position: fixed;bottom: 0;border-top: 1px solid #f2f2f2;}
@@ -159,6 +159,7 @@ input::-webkit-input-placeholder {
 .mine_con a:nth-child(7){background: #f5effd;}
 .mine_con a:nth-child(8){background: #effdfd;}
 .mine_con a:nth-child(9){background: #fdeff5;}
+.mine_con a:nth-child(10){background: #fbf2fe;}
 .mine_foot{background: #fe4567;height: 0.93rem; margin-top: 0.4rem;}
 
 
