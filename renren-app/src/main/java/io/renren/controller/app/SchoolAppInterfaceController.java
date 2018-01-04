@@ -31,9 +31,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 @RequestMapping("appInterface/school")
 public class SchoolAppInterfaceController {
 	
-	private final static String JEDISPATH = "127.0.0.1";
+//	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
-	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
+//	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
 	
 	@Autowired
     private UserService userService;
