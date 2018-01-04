@@ -52,5 +52,10 @@ public class SmartNewsServiceImpl extends ServiceImpl<SmartNewsDao, SmartNewsEnt
 	public void deleteBatch(Integer[] ids){
 		smartNewsDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<SmartNewsEntity> queryListStudent(Map<String, Object> map) {
+		return smartNewsDao.queryListStudent(map);
+	}
 	
 }
