@@ -33,7 +33,7 @@ public class JpushClientUtil2 {
         try {
         	jPushClient = new JPushClient(masterSecret,appKey);
             PushPayload pushPayload= JpushClientUtil2.buildPushObject_all_registrationId_alertWithTitle(registrationId,notification_title,msg_title,msg_content,extrasparam);
-            System.out.println(pushPayload);
+            System.out.println("--------------"+pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
             if(pushResult.getResponseCode()==200){
@@ -109,7 +109,6 @@ public class JpushClientUtil2 {
         int result = 0;
         try {
             PushPayload pushPayload= JpushClientUtil2.buildPushObject_android_and_ios(notification_title,msg_title,msg_content,extrasparam);
-            System.out.println(pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
             if(pushResult.getResponseCode()==200){
@@ -330,7 +329,7 @@ public class JpushClientUtil2 {
     }
  
     public static void main(String[] args){
-    	sendToRegistrationId("4813", "通知", "通知", "通知", "{\"type\":\"3\"}");
+    	sendToRegistrationId("5353", "通知", "通知", "通知", "{\"type\":\"1\"}");
 //        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
 //            System.out.println("success");
 //        }
