@@ -22,6 +22,7 @@ import io.renren.utils.dataSource.DbContextHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -151,18 +152,18 @@ public class SmartDataInpution {
 		String schoolName = json.getString("schoolName");
 		String modularName = json.getString("modularName");
 		SmartExceptionEntity exception = new SmartExceptionEntity();
-		exception.setCreatetime(new Date());
 		exception.setSchoolname(schoolName);
 		exception.setModularname(modularName);
 		InputStream[] is;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			is = uploadfile(multipartResolver, request);
 			if(is != null){
 				exception.setExceptioninformation(FILEPATH+"exception/"+uploadObject2OSS(is[0], "exception/"));
 			}
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			Date createTime = json.get("createtime")==null?new Date():dateFormat.parse(json.getString("createtime"));
+			exception.setCreatetime(createTime);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		smartExceptionService.save(exception);
@@ -187,7 +188,13 @@ public class SmartDataInpution {
 		String modularName = json.getString("modularName");
 		String exceptionInformation = json.getString("exceptionInformation");
 		SmartExceptionEntity exception = new SmartExceptionEntity();
-		exception.setCreatetime(new Date());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Date createTime = json.get("createtime")==null?new Date():dateFormat.parse(json.getString("createtime"));
+			exception.setCreatetime(createTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		exception.setSchoolname(schoolName);
 		exception.setModularname(modularName);
 		exception.setExceptioninformation(exceptionInformation);
