@@ -20,6 +20,8 @@ public interface SmartNewsService extends IService<SmartNewsEntity>{
 	
 	List<SmartNewsEntity> queryList(Map<String, Object> map);
 	
+	List<SmartNewsEntity> queryListStudent(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(SmartNewsEntity smartNews);
