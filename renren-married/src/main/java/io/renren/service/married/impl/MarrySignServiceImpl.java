@@ -52,5 +52,10 @@ public class MarrySignServiceImpl extends ServiceImpl<MarrySignDao, MarrySignEnt
 	public void deleteBatch(Integer[] ids){
 		marrySignDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<MarrySignEntity> queryListtongji(Map<String, Object> map) {
+		return marrySignDao.queryListtongji(map);
+	}
 	
 }
