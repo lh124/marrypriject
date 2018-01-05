@@ -15,7 +15,11 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/sign_in.html",
 						  ".*/married/weixin/invite_card",
 						  ".*/married/weixin/me/findWedding",
+						  ".*/married/xianchang/hongbao.html",
+						  ".*/married/xianchang/index.html",
+						  ".*/married/xianchang/photoShow.html",
 						  ".*/married/weixin/me/attendawedding",
+						  ".*/married/weixin/me/saveSign",
 				          ".*/married/user/save"		
 		};
 		boolean isMatch = false;
