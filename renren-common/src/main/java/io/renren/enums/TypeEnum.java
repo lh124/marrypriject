@@ -5,7 +5,7 @@ package io.renren.enums;
  * @author Administrator
  *
  */
-public enum TypeEnum {
+public enum TypeEnum { 
 	
 	PHOTO_USER_HEAD(1, "head_img_", "头像图标","头像上传成功","头像上传失败", 6, "head_img/","http://wrs.gykjewm.com/sys/aliOss/callBack"),
 	PHOTO_SCHOOL(2, "school_", "学校照片", "学校照片上传成功", "学校照片上传失败", 6, "photo/","http://wrs.gykjewm.com/sys/aliOss/callBack"),
@@ -52,6 +52,12 @@ public enum TypeEnum {
 	SMART_TEACHER_PIC(28, "teacher_pic_", "老师头像", "老师头像上传成功", "老师头像上传失败", 6, "teacher/",
 			"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
 	MARRIED_MAIN_PIC(29, "married_main_", "码上结婚产品图片", "码上结婚产品图片上传成功", "码上结婚产品图片上传失败", 6, "married/main/",
+			"http://wrs.gykjewm.com/married/callBack/msgPic" ),
+	MARRIED_WEDDING_PIC(30, "married_wedding_", "婚礼图片", "婚礼图片上传成功", "婚礼图片上传失败", 6, "married/wedding/",
+			"http://wrs.gykjewm.com/married/callBack/msgPic" ),
+	MARRIED_VIDEO_PIC(31, "married_video_", "祝福视频", "祝福视频上传成功", "祝福视频上传失败", 6, "married/video/",
+			"http://wrs.gykjewm.com/married/callBack/msgPic" ),
+	MARRIED_PHOTO_PIC(32, "married_photo_", "婚礼图片", "婚礼图片上传成功", "婚礼图片上传失败", 6, "married/photo/",
 			"http://wrs.gykjewm.com/married/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
