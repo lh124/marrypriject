@@ -19,8 +19,6 @@ import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
 import io.renren.entity.smart.WeixinFunctionImgEntity;
-import io.renren.entity.tombstone.TombstoneDeadEntity;
-import io.renren.entity.tombstone.TombstoneUserEntity;
 import io.renren.service.TokenService;
 import io.renren.service.smart.ClassInfoService;
 import io.renren.service.smart.ClassNoticeService;
