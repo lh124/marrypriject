@@ -45,8 +45,10 @@ public class MarryMainEntity implements Serializable {
 	@TableField(value="userId")
 	private Integer userId;	
 	
+	@TableField(value="username")
 	private String username;
 	
+	@TableField(value="cartId")
 	private Integer cartId;
 			
 
