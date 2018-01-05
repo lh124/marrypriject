@@ -88,7 +88,7 @@ public class OssUploadUtil {
 			String fileName = null;
 			try {
 				//文件名
-				fileName = UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
+				fileName = "smart_head_pic_"+UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
 				//文件大小
 //	            Long fileSize = file.length(); 
 	            //创建上传Object的Metadata  
