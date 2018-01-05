@@ -35,10 +35,10 @@
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryParticipateEntityDo">
-		select t4.*,t3.nickname,t3.pic from married_user t3,(
-          select t2.id,t1.states,t2.userId,t2.content,t2.weddingDate as createTime from marry_participate t1,marry_wedding t2 
-          where t1.weddingId = t2.id and t2.userId=#{userId}
-         )t4 where t3.id = t4.userId
+         select t4.*,t3.nickname,t3.pic from married_user t3,( 
+		select t2.id,t1.states,t2.userId,t2.content,t2.weddingDate as createTime from marry_participate t1,marry_wedding t2 where t1.weddingId = t2.id
+		and t1.openId=#{userId}
+		)t4 where t3.id = t4.userId  
 	</select>
 	
  	<select id="queryTotal" resultType="int">

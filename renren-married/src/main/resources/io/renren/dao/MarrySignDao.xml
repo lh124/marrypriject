@@ -21,6 +21,10 @@
 	<select id="queryObject" resultType="io.renren.entity.married.MarrySignEntity">
 		select <include refid="allColumns"></include> from marry_sign where id = #{value}
 	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.married.MarryWeddingEntity">
+		select t2.* from marry_sign t1,marry_wedding t2 where t1.weddingId=t2.id and t1.userId=#{userId}
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarriedUserEntity">
 		select t2.* from marry_sign t1,married_user t2 where t2.id = t1.userId and t1.weddingId=#{weddingId}

@@ -5,11 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,title as title ,author as author ,content as content ,pic as pic ,price as price,userId as userId		
+		id as id ,title as title ,author as author ,content as content ,pic as pic ,price as price,
+		userId as userId,cartId as cartId,username as username		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,title ,author ,content ,pic ,price,userId		
+		id ,title ,author ,content ,pic ,price,userId,username,	cartId	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.married.MarryMainEntity" id="marryMainMap">
@@ -20,6 +21,8 @@
 		        <result property="price" column="price"/>
 		        <result property="userId" column="userId"/>
 		        <result property="pic" column="pic"/>
+		        <result property="cartId" column="cartId"/>
+		        <result property="username" column="username"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryMainEntity">
@@ -28,7 +31,7 @@
 	
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
 		select t4.*,t3.username from sys_user t3,(
-			select t2.*,t1.id as cartId from marry_cart t1,marry_main t2 where t1.main_id=t2.id 
+			select t2.id,t2.title,t2.author,t2.content,t2.pic,t2.price,t2.userId,t1.id as cartId from marry_cart t1,marry_main t2 where t1.main_id=t2.id 
 			and t1.states=1 and t1.userId=#{userId}
 			<if test="Id != null and Id != ''">
 				and t1.id=#{Id}
