@@ -55,9 +55,13 @@ $(function () {
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
+		q:{
+			nickname: null
+		},
 		showList: true,
 		title: null,
 		tombstoneUser: {}
+		
 	},
 	methods: {
 		query: function () {
@@ -143,6 +147,7 @@ var vm = new Vue({
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
 			$("#jqGrid").jqGrid('setGridParam',{ 
+				postData:{'nickname': vm.q.nickname},
                 page:page
             }).trigger("reloadGrid");
 		}
