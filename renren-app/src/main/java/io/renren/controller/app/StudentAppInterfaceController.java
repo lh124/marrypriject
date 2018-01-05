@@ -94,7 +94,7 @@ public class StudentAppInterfaceController{
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
-	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
+	private final static String FILEPATH = "http://static.gykjewm.com/";
 	@Autowired
 	private StudentService studentService;
 	@Autowired
@@ -145,18 +145,18 @@ public class StudentAppInterfaceController{
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request) throws Exception{
-		List<SmartNewsEntity> list = smartNewsService.queryListStudent(null);
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			SmartNewsEntity smartNewsEntity = (SmartNewsEntity) iterator.next();
-			TombstoneUserEntity user = new TombstoneUserEntity();
-			user.setId(smartNewsEntity.getId());
-			user.setPic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
-			tombstoneUserService.update(user);
-			TombstoneDeadEntity dead = new TombstoneDeadEntity();
-			dead.setId(smartNewsEntity.getId());
-			dead.setImage("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
-			tombstoneDeadService.update(dead);
-		}
+//		List<SmartNewsEntity> list = smartNewsService.queryListStudent(null);
+//		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+//			SmartNewsEntity smartNewsEntity = (SmartNewsEntity) iterator.next();
+//			TombstoneUserEntity user = new TombstoneUserEntity();
+//			user.setId(smartNewsEntity.getId());
+//			user.setPic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
+//			tombstoneUserService.update(user);
+//			TombstoneDeadEntity dead = new TombstoneDeadEntity();
+//			dead.setId(smartNewsEntity.getId());
+//			dead.setImage("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/tombstoneewm/"+smartNewsEntity.getTitle());
+//			tombstoneDeadService.update(dead);
+//		}
 		
 		String key = (request.getParameter("key")==null || "".equals(request.getParameter("key")))?
 				getJSONObject(request):request.getParameter("key").replace("&quot;", "\"");
@@ -342,7 +342,7 @@ public class StudentAppInterfaceController{
 			student.setId(Integer.parseInt(json.getString("studentId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
-				student.setPic(FILEPATH+"head_img/"+OssUploadUtil.uploadObject2OSS(is[0], "head_img/"));
+				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
 				studentService.update(student);
 				return R.ok().put(DATA, studentService.queryObject(student.getId()));
 			}else{
