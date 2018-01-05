@@ -138,7 +138,7 @@ public class TeacherAppInterfaceController {
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
-	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
+	private final static String FILEPATH = "http://static.gykjewm.com/";
 	
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
@@ -353,7 +353,7 @@ public class TeacherAppInterfaceController {
 			student.setId(Integer.parseInt(json.getString("teacherId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
-				student.setPic(FILEPATH+"head_img/"+OssUploadUtil.uploadObject2OSS(is[0], "head_img/"));
+				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
 				studentService.update(student);
 				return R.ok().put(DATA, studentService.queryObject(student.getId()));
 			}else{
@@ -424,7 +424,7 @@ public class TeacherAppInterfaceController {
 		Integer id = Integer.parseInt(json.getString("studentId"));
 		map.put("studentId", id);
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
-		List<IoEntity> list = ioService.queryListtongji(map);
+		List<IoEntity> list = ioService.queryList(map);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("list", list);
