@@ -37,14 +37,19 @@
 
 	<select id="queryList" resultType="io.renren.entity.tombstone.TombstoneUserEntity">
 		select <include refid="allColumns"></include> from tombstone_user
-        <choose>
-            <when test="sidx != null and sidx.trim() != ''">
-                order by ${sidx} ${order}
-            </when>
+       <where>
+			<if test="nickname != null and nickname.trim() != ''">
+				and `nickname` like concat('%',#{nickname},'%') 
+			</if>
+		</where>
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
 			<otherwise>
-                order by id desc
+				order by id desc
 			</otherwise>
-        </choose>
+		</choose>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
@@ -52,7 +57,16 @@
 	
  	<select id="queryTotal" resultType="int">
 		select count(*) from tombstone_user 
+		<where>
+			<if test="nickname != null and nickname.trim() != ''">
+				and `nickname` like concat('%',#{nickname},'%') 
+			</if>
+			
+		</where>
+		
 	</select>
+	 
+	 
 	 
 	<insert id="save" parameterType="io.renren.entity.tombstone.TombstoneUserEntity" useGeneratedKeys="true" keyProperty="id">
 		insert into tombstone_user
