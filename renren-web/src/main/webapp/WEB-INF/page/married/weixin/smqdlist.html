@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<script type="text/javascript">
+    function init(){
+          $.ajax({
+				type: "POST",
+			    url: "../weixin/me/allMeSign",
+				dataType: "json",
+				success: function(result){
+				     if(result.status == 'ok'){
+				         var content = "";
+				         var con = "";
+				         for(var i = 0; i < result.list.length; i++){
+				             con += '<a class="weui-cell weui-cell_access js_item" data-id="input" href="interact.html?weddingId='+result.list[i].id+'" style="background:#fdf7f7;margin-top:0.3rem;">'+
+				                    '<div class="weui-cell__bd send">'+
+				                    '<img style="display:block;width:1.2rem;height:1.2rem;border-radius:50%;" src="'+result.list[i].photo+'">'+
+				                    '<p style="margin-top:0.28rem;text-indent:20px;">'+result.list[i].groomname+'&'+result.list[i].bridename+'</p>'+
+				                    '</div><div class="weui-cell__ft"></div></a>';
+				         }
+				         $("#list").html(con);
+				     }
+				}
+		 });
+    }
+</script>
+<body ontouchstart style="background:white;" onload="init()">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer">
+			<div class="page__category js_categoryInner">
+                    <div class="weui-cells page__category-content" id="list">
+                        
+                    </div>
+            </div>
+		</div>
+	</div>
+</body>
+</html>
