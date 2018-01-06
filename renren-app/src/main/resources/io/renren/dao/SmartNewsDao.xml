@@ -24,6 +24,10 @@
 	<select id="queryObject" resultType="io.renren.entity.app.SmartNewsEntity">
 		select <include refid="allColumns"></include> from smart_news where id = #{value}
 	</select>
+	
+	<select id="queryListStudent" resultType="io.renren.entity.app.SmartNewsEntity">
+		select image_id as id,name as title from image where position=1
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.app.SmartNewsEntity">
 		select <include refid="allColumns"></include> from smart_news
