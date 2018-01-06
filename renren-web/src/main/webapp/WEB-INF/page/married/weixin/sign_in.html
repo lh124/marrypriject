@@ -27,20 +27,26 @@
      }
      
      function saveqiandao(id){
+         var code = GetQueryString("code");
          $.ajax({
 				type: "POST",
-			    url: "../weixin/me/saveSign?id="+id,
+			    url: "../weixin/me/saveSign?id="+id+"&code="+code,
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
 				         alert(result.msg);
-				         window.location.href = "mine.html";
+				         //window.location.href = "mine.html";
 				     }else{
 				         alert(result.msg);
 				     }
 				}
 		 });
      }
+     function GetQueryString(name){
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+	}
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
 <input type="hidden" id="id" value="${request.getParameter('id')}">
@@ -50,7 +56,7 @@
 			<div class="sign_in_con">
 				<dl>
 					<dt>
-						<img src="" id="pic"/>
+						<img style="border-radius:50%;" src="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png" id="pic"/>
 					</dt>
 					<dd id="nickname">
 					</dd>

@@ -26,7 +26,7 @@
             <h3>QQ咨询：</h3>
             <a class="middle_bot" href="http://wpa.qq.com/msgrd?v=3&uin=1628650565&site=qq&menu=yes">
                 <img src="${rc.contextPath}/statics/marry/img/qq.png" />
-                <span>1628650565</span>
+                <span>1477631547</span>
             </a>
         </div>
         <div class="empty"></div>
@@ -38,8 +38,13 @@
             </a>
         </div>
         <div class="empty"></div>
+        <div class="con">
+            <h3>微信咨询：</h3>
+            <img class="weixin" src="http://static.gykjewm.com/business_card_pic/business_card_pic_1509432666000.jpg">
+        </div>
+        <div class="empty"></div>
         <div class="card_top weui-cells weui-cells_form">
-			<div class="weui-cell">婚礼留言</div>
+			<div class="weui-cell">帮助留言</div>
 	        <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
@@ -47,14 +52,30 @@
                 </div>
 	        </div>
         </div>
-        <div class="empty"></div>
-        <div class="con">
-            <h3>微信咨询：</h3>
-            <img class="weixin" src="${rc.contextPath}/statics/marry/img/phone.png">
-        </div>
+        <div class="weui-btn-area">
+		            <a class="weui-btn weui-btn_primary" href="javascript:void(0)" onclick="saveHelp()">确定</a>
+		</div>
     </div>
 </body>
 <script>
+     function saveHelp(){
+            var content = $("#content").val();
+            if(content == null || content == ""){
+                alert("请填写需要提交的意见");
+                return false;
+            }
+            $.ajax({
+				type: "POST",
+			    url: "../weixin/me/saveHelp?content="+content,
+			    dataType: "json",
+			    success: function(result){
+			        if(result.status == 'ok'){
+			             $("#content").val("");
+			             alert("提交成功");
+			        }
+				}
+			});
+      }
 	 var max = 79;
 	 $("#content").on("input", function(){
 	     var text = $(this).val();

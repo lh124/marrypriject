@@ -20,14 +20,14 @@
 				     if(result.status == 'ok'){
 				          $("#smtotal").html(result.list.smtj.length+"人");
 				          $("#zftotal").html(result.list.zftotal+"条");
-				          $("#videototal").html(result.list.zftotal+"个");
+				          $("#videototal").html(result.list.videototal+"个");
 				          $("#moneytotal").html(result.list.moneytotal.length+"个");
 				          var content = 0;
 				          for(var i=0; i <result.list.moneytotal.length; i++){
 				              content += parseFloat(result.list.moneytotal[i].content);
 				          }
 				          $("#content").html("￥"+content+"元");
-				          getDate(result.list.totalPerson,result.list.personwd,result.list.smtj.length);
+				          getDate(result.list.personwd,result.list.smtj.length);
 				     }
 				}
 		 });
@@ -89,11 +89,11 @@
 </body>
 <script type="text/javascript">
 	var myChart = echarts.init(document.getElementById('mychart'));
-	function getDate(totalPerson,personwd,smtj){
+	function getDate(personwd,smtj){
 	     option = {
 			title : {
-		        text: '邀请嘉宾总数',
-		        subtext: totalPerson+'人',
+		        text: '已签到总人数',
+		        subtext: smtj+'人',
 		        x:'center'
 		    },
 		    tooltip: {
@@ -103,7 +103,7 @@
 		    legend: {
 		        orient: 'vertical',
 		        x: '10px',
-		        data:['应到人数','实到人数','未到人数']
+		        data:['已到人数','未到人数']
 		    },
 		    series: [
 		        {
@@ -130,8 +130,7 @@
 		                }
 		            },
 		            data:[
-		                {value:totalPerson, name:'应到人数'},
-		                {value:smtj, name:'实到人数'},
+		                {value:smtj, name:'已到人数'},
 		                {value:personwd, name:'未到人数'},
 		            ]
 		        }

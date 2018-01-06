@@ -20,6 +20,20 @@
 </head>
 <script type="text/javascript">
 	$(function(){
+	    var pic = $("#pic").val();
+	    var websocket2 = null;
+		//判断当前浏览器是否支持WebSocket
+		if ('WebSocket' in window) {
+		    websocket2 = new WebSocket("ws://192.168.1.107:8080/wrs/smart/chatwebsocket");
+		}else {
+		     alert('当前浏览器 Not support websocket')
+		}
+	    websocket2.onmessage=function(ev){
+	    	var obj1 = eval(   '('+ev.data+')'   );
+	    	var node = '<dl style="height:0.8rem;"><dt style="float:left;width:0.8rem;height:0.8rem;"><img style="display;block;width:100%;height:100%;" src="'+obj1.pic+'"/></dt><dd style="float:left;text-indent:0.1rem;line-height:0.8rem;">'+obj1.content+'</dd></dl>';
+	    	if(obj1.weddingId == $("#weddingId").val())
+	    	$(".interact_mid").prepend(node);
+	    }
 		var value = null;
 		$("#danmu").on("blur",function(){
 			value = $("#danmu").val();
@@ -27,7 +41,14 @@
 		$(".btn").on("click",function(){
 			var node='<p>"'+value+'"</p>';
 			value = null;
-			$(".interact_mid").prepend(node);
+			var obj = JSON.stringify({
+					id:$("#id").val(),
+			        content:$("#danmu").val(),
+		    		pic:pic,
+		    		weddingId:$("#weddingId").val()
+		    	});
+			websocket2.send(obj);
+
 			$("#danmu").val("");
 		});
 		$('.carousel').carousel();
@@ -35,6 +56,9 @@
 </script>
 
 <body ontouchstart style="background:white;">
+    <input type="hidden" id="pic" value="$session.getAttribute('user_married').pic">
+    <input type="hidden" id="id" value="$session.getAttribute('user_married').id">
+    <input type="hidden" id="weddingId" value="${request.getParameter('weddingId')}">
 	<div class="container" id="container" style="padding:0;">
 		<div class="page interact" id="pageContainer">
 			<div class="interact_top" title="1" style="margin:0;">

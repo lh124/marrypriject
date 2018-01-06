@@ -13,40 +13,49 @@
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript">
-    $.ajax({
-		type: "POST",
-	    url: "../user/save",
-	    dataType: "json",
-	    success: function(result){
-	        if(result.status == 'ok'){
-	             $("#total").html(result.total);
-	        }
-		}
-	});
-
-    $.ajax({
-		type: "POST",
-	    url: "../weixin/index/list?page=1&limit=10&order=&sdix=",
-	    dataType: "json",
-	    crossDomain: true,//是否跨域:是  
-	    success: function(result){
-			if(result.status == 'ok'){
-			    var content = "";
-			    var length = result.list.length;
-			    if(length > 3){
-			        length = 3;
-			    }
-			    for(var i = 0; i < length; i++){
-			        content += '<a href="theme_details.html?id='+result.list[i].id+'"><dl><dt>'+
-			                   '<img src="'+result.list[i].pic+'"/></dt><dd>'+
-			                   '<p>'+result.list[i].title+'<span>￥'+result.list[i].price+
-			                   '</span></p></dd></dl></a>';
-			    }
-			    content += '<div class="more"><a href="./theme.html">查看更多'+
-			               '<img src="${rc.contextPath}/statics/marry/img/right.png" alt="">'+
-			               '</a></div>';
-			    $("#list").html(content);
+    $(function(){
+	    var code = GetQueryString("code");
+	    $.ajax({
+			type: "POST",
+		    url: "../user/save?code="+code,
+		    dataType: "json",
+		    success: function(result){
+		        if(result.status == 'ok'){
+		             $("#total").html(result.total);
+		        }
 			}
+		});
+	
+	    $.ajax({
+			type: "POST",
+		    url: "../weixin/index/list?page=1&limit=10&order=&sdix=",
+		    dataType: "json",
+		    crossDomain: true,//是否跨域:是  
+		    success: function(result){
+				if(result.status == 'ok'){
+				    var content = "";
+				    var length = result.list.length;
+				    if(length > 3){
+				        length = 3;
+				    }
+				    for(var i = 0; i < length; i++){
+				        content += '<a href="theme_details.html?id='+result.list[i].id+'"><dl><dt>'+
+				                   '<img src="'+result.list[i].pic+'"/></dt><dd>'+
+				                   '<p>'+result.list[i].title+'<span>￥'+result.list[i].price+
+				                   '</span></p></dd></dl></a>';
+				    }
+				    content += '<div class="more"><a href="./theme.html">查看更多'+
+				               '<img src="${rc.contextPath}/statics/marry/img/right.png" alt="">'+
+				               '</a></div>';
+				    $("#list").html(content);
+				}
+			}
+		});
+		
+		function GetQueryString(name){
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
 		}
 	});
     </script>
