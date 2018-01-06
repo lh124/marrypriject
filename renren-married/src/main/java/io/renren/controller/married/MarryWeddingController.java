@@ -43,7 +43,9 @@ public class MarryWeddingController {
 	
 	@RequestMapping("/dowloadClassQrCodemb")
 	public void dowloadClassQrCodemb(Long id, HttpServletResponse response) throws IOException{
-		String url = "http://192.168.1.107:8080/wrs/married/weixin/sign_in.html?id=" + id;
+		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri="
+				+ "http://wrs.gykjewm.com/married/weixin/sign_in.html?id="+id
+				+ "&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 		ByteArrayOutputStream baos = ZXingCodeUtil.getQRCodeByteArray(url);
 		byte[] data = baos.toByteArray();
 		response.reset();  

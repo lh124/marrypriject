@@ -3,12 +3,14 @@ package io.renren.controller.married;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryBlessingEntity;
+import io.renren.entity.married.MarryHelpEntity;
 import io.renren.entity.married.MarryParticipateEntity;
 import io.renren.entity.married.MarryPhotoEntity;
 import io.renren.entity.married.MarrySignEntity;
 import io.renren.entity.married.MarryWeddingEntity;
 import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryBlessingService;
+import io.renren.service.married.MarryHelpService;
 import io.renren.service.married.MarryImgService;
 import io.renren.service.married.MarryParticipateService;
 import io.renren.service.married.MarryPhotoService;
@@ -52,6 +54,24 @@ public class WeixinMeController {
 	private MarryBlessingService marryBlessingService;
 	@Autowired
 	private MarryPhotoService marryPhotoService;
+	@Autowired
+	private MarryHelpService marryHelpService;
+	
+	/**
+	 * 保存用户帮助记录
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/saveHelp")
+	public R saveHelp(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryHelpEntity marryHelp = new MarryHelpEntity();
+		marryHelp.setUserid(user.getId());
+		marryHelp.setContent(request.getParameter("content"));
+		marryHelp.setCreateTime(new Date());
+		marryHelpService.save(marryHelp);
+		return R.ok();
+	}
 	
 	/**
 	 * 保存所有的视频路径
@@ -221,7 +241,6 @@ public class WeixinMeController {
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", user.getId());
-		System.out.println(marrySignService.queryListtongji(map)+"----------------------------");
 		return R.ok().put("list", marrySignService.queryListtongji(map));
 	}
 	
@@ -232,8 +251,12 @@ public class WeixinMeController {
 	 */
 	@RequestMapping("/saveSign")
 	public R saveSign(HttpServletRequest request){
-//		String openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
-		String openId = "o7__rjjocXdATM4sz0rYbt2z7SRw";
+		String openId = "";
+		try {
+			openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		MarriedUserEntity u = new MarriedUserEntity();
 		u.setOpenid(openId);
 		EntityWrapper<MarriedUserEntity> wrapper1 = new EntityWrapper<MarriedUserEntity>(u);
