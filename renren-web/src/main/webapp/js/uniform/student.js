@@ -313,7 +313,7 @@ function bindEpc(id){
 }
 
 function deleteepc(epc,id){
-	var url = "http://wrs.gykjewm.com/smart/datainpution/getData?key={type:'deleteepc',epc:'" + epc +"',token:'bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a'}";
+	var url = "../smart/datainpution/getData?key={type:'deleteepc',epc:'" + epc +"',token:'bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a'}";
 	$.ajax({
 		type: "POST",
 	    url: url,
