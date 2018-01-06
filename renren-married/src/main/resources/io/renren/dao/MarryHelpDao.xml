@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryHelpDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,userName as username ,userId as userid ,pic as pic ,content as content,createTime as createTime 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,userName ,userId ,pic ,content,createTime 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryHelpEntity" id="marryHelpMap">
+		        <result property="id" column="id"/>
+		        <result property="username" column="userName"/>
+		        <result property="userid" column="userId"/>
+		        <result property="pic" column="pic"/>
+		        <result property="content" column="content"/>
+		        <result property="createTime" column="createTime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryHelpEntity">
+		select <include refid="allColumns"></include> from marry_help where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryHelpEntity">
+		select t1.id,t1.createTime,t2.nickname as userName,t2.pic,t1.content from marry_help t1,married_user t2 where t1.userId=t2.id 
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by t1.id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_help 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryHelpEntity">
+		insert into marry_help
+		(
+			`id`, 
+			`userName`, 
+			`userId`, 
+			`createTime`, 
+			`pic`, 
+			`content`
+		)
+		values
+		(
+			#{id}, 
+			#{username}, 
+			#{userid}, 
+			#{createTime}, 
+			#{pic}, 
+			#{content}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryHelpEntity">
+		update marry_help 
+		<set>
+			<if test="username != null">`userName` = #{username}, </if>
+			<if test="userid != null">`userId` = #{userid}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="content != null">`content` = #{content}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_help where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_help where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
