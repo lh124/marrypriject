@@ -513,10 +513,14 @@ public class ShouyeController {
 		for (int i = 0; i < ids.length; i++) {
 			if(!ids[i].equals("")){
 				params.put("classid",ids[i] );
-				if(Integer.parseInt(ids[i]) == student.getClassId()){
+				if(student.getUserType().equals("2")){
 					params.put("type", null);
 				}else{
-					params.put("type", 1);
+					if(Integer.parseInt(ids[i]) == student.getClassId()){
+						params.put("type", null);
+					}else{
+						params.put("type", 1);
+					}
 				}
 				query = new Query(params);
 				List<SmartCoursewareEntity> smartCoursewareList = smartCoursewareService.queryList(query);
