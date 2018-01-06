@@ -18,6 +18,7 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/xianchang/hongbao.html",
 						  ".*/married/xianchang/index.html",
 						  ".*/married/xianchang/photoShow.html",
+						  ".*/married/htgl/marryhelp.html",
 						  ".*/married/weixin/me/attendawedding",
 						  ".*/married/weixin/me/saveSign",
 				          ".*/married/user/save"		
