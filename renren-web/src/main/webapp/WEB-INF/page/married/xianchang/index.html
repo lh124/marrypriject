@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/marry/xianchang/css/banner.css">
+	<title>banner图碎片化</title>
+	<link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/marry/xianchang/static/css/bootstrap.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/marry/xianchang/static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/marry/xianchang/dist/css/barrager.css">
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/statics/marry/xianchang/css/zy.media.min.css">
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/xianchang/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/xianchang/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/xianchang/static/js/tinycolor-0.9.15.min.js"></script>  
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/xianchang/dist/js/jquery.barrager.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/xianchang/js/zy.media.min.js"></script>
+	<style type="text/css">
+		.hongbao{position: fixed;bottom:50px;left:30%;color: white;font-size: 30px;z-index: 9999;}
+		.photo{position: fixed;bottom:50px;left:40%;color: white;font-size: 30px;z-index: 9999;}
+		.hongbao1{position: fixed;bottom:50px;left:50%;color: white;font-size: 30px;z-index: 9999;}
+	</style>
+</head>
+<script type="text/javascript">
+     function init(){
+         var weddingId = $("#weddingId").val();
+         
+     }
+</script>
+<body style="background-color:#F1F1F1" class="bb-js" onload="init()">
+    <input type="hidden" id="weddingId" value="${request.getParameter('weddingId')}">
+	<div class="zy_media" id="theVedio" style="margin:0;z-index:224;display:none;">
+			    <video poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495257128452&di=e47e76193976650d5b6bdf61bf50a061&imgtype=0&src=http%3A%2F%2Fp3.gexing.com%2FG1%2FM00%2FCE%2F80%2FrBACFFO5DIvgwQEZAAOnGl9ELEc532.jpg" data-config='{"mediaTitle": "码上结婚"}' webkit-playsinline>
+			        <source id="vedioSrc" src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4" >
+			    </video>
+			</div>
+	<div class="htmleaf-container">
+		<div class="container">
+		</div>
+	</div>
+	<div class="banner" id="banner1">
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+			  <!-- Indicators -->
+			  <ol class="carousel-indicators">
+			    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+			  </ol>
+
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner" role="listbox">
+			    <div class="item active">
+			      <img src="${rc.contextPath}/statics/marry/xianchang/images/in1.png" alt="...">
+			    </div>
+			    <div class="item">
+			      <img src="${rc.contextPath}/statics/marry/xianchang/images/in2.png" alt="...">
+			    </div>
+			    <div class="item">
+			      <img src="${rc.contextPath}/statics/marry/xianchang/images/in3.png" alt="...">
+			    </div>
+			    <div class="item">
+			      <img src="${rc.contextPath}/statics/marry/xianchang/images/in4.png" alt="...">
+			    </div>   
+			  </div>
+
+			  <!-- Controls -->
+			  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			    <span class="sr-only">Previous</span>
+			  </a>
+			  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			    <span class="sr-only">Next</span>
+			  </a>
+			</div>
+		</div>
+	</div>
+	<a class="hongbao" href="hongbao.html">红包</a>
+	<a class="hongbao1" href="javascript:void(0);">视频</a>
+	<a class="photo" href="photoShow.html">摄影展示</a>
+<script type="text/javascript">
+	var websocket = null;
+     //判断当前浏览器是否支持WebSocket
+     if ('WebSocket' in window) {
+         websocket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/websocket");
+     }
+     else {
+         alert('当前浏览器 Not support websocket')
+     }
+     var index;
+    websocket.onmessage=function(ev){
+    	console.log("1");
+    	var obj = eval(   '('+ev.data+')'   );
+    	if(index == 0){
+    		window.location.href = "./hongbao.html";
+    	}if(index == 1){
+    		window.location.href = "./hongbao1.html";
+    	}if(index == 2){
+    		window.location.href = "./photoShow.html";
+    	}
+    }
+	/*
+	** 只填两个必要参数也是可以的
+	*/
+	var a=document.documentElement.clientWidth;
+	var b=document.documentElement.clientHeight;
+	$(".item img").css({"width":a,"height":b});
+	String.prototype.format = function(args) {
+        var result = this;
+        if (arguments.length < 1) {
+            return result;
+        }
+        var data = arguments;        
+        if (arguments.length == 1 && typeof (args) == "object") {
+            data = args;
+        }
+        for (var key in data) {
+            var value = data[key];
+            if (undefined != value) {
+                result = result.replace("{" + key + "}", value);
+            }
+        }
+        return result;
+    }
+    $(function() {
+        var item={'img':'${rc.contextPath}/statics/marry/xianchang/static/img/heisenberg.png','href':'javascript:void(0);','info':'Jquery.barrager.js 专业的网页弹幕插件','color':'red','background':'green'};
+        
+        var websocket = null;
+	     //判断当前浏览器是否支持WebSocket
+	     if ('WebSocket' in window) {
+	         websocket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/chatwebsocket");
+	     }
+	     else {
+	         alert('当前浏览器 Not support websocket')
+	     }
+	    websocket.onmessage=function(ev){
+	    	var obj = eval(   '('+ev.data+')'   );
+	    	//alert(obj.content);
+	    }
+        
+        
+        
+        
+        
+        //item1={'href':'http://www.baidu.com','info':'这是一条很长很长的字幕','close':false};
+        $('body').barrager(item);
+        $(".barrage_box").css("background","green");
+         //每条弹幕发送间隔
+        var looper_time=3*1000;
+        //是否首次执行
+        var run_once=true;
+       // do_barrager();
+
+        function do_barrager(){
+            if(run_once ){
+                //如果是首次执行,则设置一个定时器,并且把首次执行置为false
+                looper=setInterval(do_barrager,looper_time);                
+                run_once=false;
+            }
+            //获取
+            $.getJSON('server.php?mode=1',function(data){
+                //是否有数据
+                if(data.info){
+
+                     $('body').barrager(data);
+                }
+
+            });
+        }
+        $('.carousel').carousel();
+        $(".hongbao1").on("click",function(){
+        	$("#banner1").hide();
+        	$("#theVedio").show();
+        	$("#theVedio").css({"width":a,"height":b});
+			//视频样式设置
+			zymedia('video',{autoplay: true});
+        });
+    });
+</script>
+</body>
+</html>
