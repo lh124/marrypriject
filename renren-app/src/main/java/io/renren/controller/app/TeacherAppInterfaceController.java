@@ -689,10 +689,7 @@ public class TeacherAppInterfaceController {
 	}
 	
 	public R psychological(JSONObject json){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sidx", null);
-		map.put("offset", 0);
-		map.put("limit", 100);
+		Map<String, Object> map = getMap(json);
 		map.put("schoolId", json.getString("schoolId"));
 		List<PsychologicalCounselingEntity> psychologicalCounselingList = psychologicalCounselingService.queryList(map);
 		return R.ok().put(DATA, psychologicalCounselingList);
@@ -707,11 +704,8 @@ public class TeacherAppInterfaceController {
 	}
 	
 	public R smartActivites(JSONObject json){
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = getMap(json);
 		map.put("schoolid", json.getString("schoolId"));
-		map.put("sidx", null);
-		map.put("offset", 0);
-		map.put("limit", 100);
 		List<SmartActivitiesEntity> smartActivitiesList = smartActivitiesService.queryList(map);
 		return R.ok().put(DATA, smartActivitiesList);
 	}

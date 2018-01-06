@@ -310,7 +310,7 @@ public class StudentAppInterfaceController{
 	
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
-		Integer userId = json.getInt("userId");
+		Integer userId = json.getInt("studentId");
 		String code = json.getString("code");
 		String code2 = request.getSession().getAttribute("randow").toString();
 		if(!code.equals(code2)){
@@ -416,7 +416,7 @@ public class StudentAppInterfaceController{
 	
 	private R saveSmartLeave(JSONObject json){
 		SmartLeaveEntity smartLeave = new SmartLeaveEntity();
-		Integer id = json.getInt("student");
+		Integer id = json.getInt("studentId");
 		StudentEntity student = studentService.queryObject(id);
 		smartLeave.setUserid(id);
 		smartLeave.setContent(json.getString("content"));
@@ -568,10 +568,7 @@ public class StudentAppInterfaceController{
 	}
 	
 	public R psychological(JSONObject json){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sidx", null);
-		map.put("offset", 0);
-		map.put("limit", 100);
+		Map<String, Object> map = getMap(json);
 		map.put("schoolId", json.getString("schoolId"));
 		List<PsychologicalCounselingEntity> psychologicalCounselingList = psychologicalCounselingService.queryList(map);
 		return R.ok().put(DATA, psychologicalCounselingList);
