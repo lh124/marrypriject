@@ -206,13 +206,17 @@ public class PhotoTypeController {
 		user.setAccount("");
 		user.setId(0L);
 		user.setPerm("");
-		user.setPhone("");
+		user.setPhone(user.getPhone());
+		user.setNickname(user.getNickname());
+		user.setStudentQq(user.getStudentQq());
+		user.setStudentWeixin(user.getStudentWeixin());
+		user.setStudentWhereabouts(user.getStudentWhereabouts());
 		user.setStatus(0);
 		user.setRoleId(0);
 		user.setSex(0);
 		
 		R r = R.ok().put("list", list).put("url", PostObjectPolicyController.CDN_URL).put("user", user);
-		
+		System.out.println(r);
 		return r;
 	}
 	
