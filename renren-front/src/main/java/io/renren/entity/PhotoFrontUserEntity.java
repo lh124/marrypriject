@@ -84,7 +84,34 @@ public class PhotoFrontUserEntity implements Serializable  {
 	@TableField(value="student_no")
 	private String studentNo;
 	
+	@TableField(value="student_qq")
+	private String studentQq;
 	
+	@TableField(value="student_weixin")
+	private String studentWeixin;
+	
+	@TableField(value="student_whereabouts")
+	private String studentWhereabouts;
+	
+	
+	public String getStudentQq() {
+		return studentQq;
+	}
+	public void setStudentQq(String studentQq) {
+		this.studentQq = studentQq;
+	}
+	public String getStudentWeixin() {
+		return studentWeixin;
+	}
+	public void setStudentWeixin(String studentWeixin) {
+		this.studentWeixin = studentWeixin;
+	}
+	public String getStudentWhereabouts() {
+		return studentWhereabouts;
+	}
+	public void setStudentWhereabouts(String studentWhereabouts) {
+		this.studentWhereabouts = studentWhereabouts;
+	}
 	/**
 	 * 经度
 	 */
