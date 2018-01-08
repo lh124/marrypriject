@@ -1012,6 +1012,7 @@ public class TeacherAppInterfaceController {
 				map.put("studentNo", user.getStudentNo());
 				map.put("phone", user.getPhoen());
 				map.put("accessToken", token.getAccessToken());
+				map.put("bindingType", user.getBindingType() == null ? 1:user.getBindingType());
 				return R.ok().put(DATA, map);
 			}else{
 				return R.error("密码错误");
