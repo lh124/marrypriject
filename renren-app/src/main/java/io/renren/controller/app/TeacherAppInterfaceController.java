@@ -423,12 +423,12 @@ public class TeacherAppInterfaceController {
 		Map<String, Object> map = getMap(json);
 		Integer id = Integer.parseInt(json.getString("studentId"));
 		map.put("studentId", id);
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
-		List<IoEntity> list = ioService.queryList(map);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("list", list);
-		m.put("student", studentService.queryObject(id));
+		List<IoEntity> list = ioService.queryListmysql(map);
+		if(list.size() == 0){
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
+			list = ioService.queryList(map);
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		}
 		return R.ok().put(DATA, list);
 	}
 	

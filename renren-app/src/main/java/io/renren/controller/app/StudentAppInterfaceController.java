@@ -462,9 +462,12 @@ public class StudentAppInterfaceController{
 		Map<String, Object> map = getMap(json);
 		Integer id = Integer.parseInt(json.getString("studentId"));
 		map.put("studentId", id);
-		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
-		List<IoEntity> list = ioService.queryList(map);
-		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		List<IoEntity> list = ioService.queryListmysql(map);
+		if(list.size() == 0){
+			DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
+			list = ioService.queryList(map);
+			DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		}
 		return R.ok().put(DATA, list);
 	}
 	
