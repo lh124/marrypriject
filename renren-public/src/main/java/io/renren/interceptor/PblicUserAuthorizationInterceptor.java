@@ -72,11 +72,14 @@ public class PblicUserAuthorizationInterceptor extends HandlerInterceptorAdapter
     	// 学生相册系统
     	if (session.getAttribute(ControllerConstant.USER_SESSION_KEY) != null)
     		return true;
+    	//码上结婚
+    	if (session.getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY) != null)
+    		return true;
     	//登录管理系统
     	if (ShiroUtil.isLogin())
     		return true;
     	
-    	RRException e = new RRException("请先登录");
+    	RRException e = new RRException("请先登录"); 
     	throw e;
     }
 }
