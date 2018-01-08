@@ -312,7 +312,8 @@ public class StudentAppInterfaceController{
 		String phone = json.getString("phone");
 		Integer userId = json.getInt("studentId");
 		String code = json.getString("code");
-		String code2 = request.getSession().getAttribute("randow").toString();
+		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
+			       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
@@ -676,7 +677,8 @@ public class StudentAppInterfaceController{
 		String  phone = json.getString("phone");
 		String  password = json.getString("password");
 		String code = json.getString("code");
-		String code2 = request.getSession().getAttribute("randow").toString();
+		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
+				       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
