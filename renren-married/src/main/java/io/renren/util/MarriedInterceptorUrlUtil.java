@@ -14,18 +14,20 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/invite.html",
 						  ".*/married/weixin/sign_in.html",
 						  ".*/married/weixin/invite_card",
+						  ".*/married/weixin/invite_card.html",
 						  ".*/married/weixin/me/findWedding",
 						  ".*/married/xianchang/hongbao.html",
 						  ".*/married/xianchang/index.html",
 						  ".*/married/xianchang/photoShow.html",
 						  ".*/married/htgl/marryhelp.html",
+						  ".*/married/weixin/invite_main.html",
 						  ".*/married/weixin/me/attendawedding",
 						  ".*/married/weixin/me/saveSign",
 				          ".*/married/user/save"		
 		};
 		boolean isMatch = false;
 		
-		for(int i = 0; i < annos.length; i++){
+		for(int i = 0; i < annos.length; i++){ 
 			
 			isMatch = Pattern.matches(annos[i], url);
 			if (isMatch) return true;
