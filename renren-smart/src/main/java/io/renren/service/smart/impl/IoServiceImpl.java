@@ -67,5 +67,10 @@ public class IoServiceImpl extends ServiceImpl<IoDao, IoEntity>  implements IoSe
 	public List<IoEntity> queryListtongjiimgxf(Map<String, Object> map) {
 		return ioDao.queryListtongjiimgxf(map);
 	}
+
+	@Override
+	public List<IoEntity> queryListmysql(Map<String, Object> map) {
+		return ioDao.queryListmysql(map);
+	}
 	
 }
