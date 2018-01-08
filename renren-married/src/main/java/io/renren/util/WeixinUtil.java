@@ -7,8 +7,8 @@ import net.sf.json.JSONObject;
 public class WeixinUtil {
 	
 	public static String GET_TOCKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
-	public static String WECHAT_APPID = "wx948285e688ee8d66";
-	public static String WECHAT_SECRTE = "5c6f611bf5db5df293ead71e802a4896";
+	public static String WECHAT_APPID = "wxb9072ff1ebcf745c";
+	public static String WECHAT_SECRTE = "b298e38e02eb3d45ca5cc22c68e9bae5";
 	
 	/**
 	 * 获取微信的openid
