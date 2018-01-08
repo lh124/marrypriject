@@ -8,12 +8,12 @@
 		id as id ,student_code as studentCode ,student_no as studentNo ,user_type as type,
 		student_name as studentName ,sex as sex ,student_type as studentType ,
 		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,school_id as schoolId
-		longitude, latitude,phoen as phoen,newsType as newsType,newsId as newsId		
+		longitude, latitude,phoen as phoen,newsType as newsType,newsId as newsId,bindingType as bindingType		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,pic ,class_id ,passwordd , open_id,
-		longitude, latitude,school_id,phoen,newsType,newsId	
+		longitude, latitude,school_id,phoen,newsType,newsId,bindingType	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.StudentEntity" id="studentMap">
@@ -34,6 +34,7 @@
 		        <result property="longitude" column="longitude"/>
 		        <result property="userType" column="user_type"/>
 		        <result property="latitude" column="latitude"/>
+		        <result property="bindingType" column="bindingType"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEntity">
@@ -107,6 +108,7 @@
 			`passwordd`,
 			`open_id`,
 			`latitude`,
+			`bindingType`,
 			`user_type`,
 			`longitude`
 		)
@@ -123,6 +125,7 @@
 			#{passwordd},
 			#{openId},
 			#{latitude},
+			#{bindingType},
 			#{userType},
 			#{longitude}
 			
@@ -136,6 +139,7 @@
 	<update id="update" parameterType="io.renren.entity.smart.StudentEntity">
 		update student 
 		<set>
+			<if test="bindingType != null">bindingType = #{bindingType}, </if>
 			<if test="studentCode != null">student_code = #{studentCode}, </if>
 			<if test="schoolId != null">school_id = #{schoolId}, </if>
 			<if test="studentNo != null">student_no = #{studentNo}, </if>
