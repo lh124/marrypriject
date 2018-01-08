@@ -12,8 +12,8 @@ public class ControllerConstant {
 	public static final String SESSION_MARRIED_USER_KEY = "user_married";
 	/**  *用户注册后默认密码  */
 	public static String DEFAULT_PASSWORD = "000000";
-	/**  *等待审核  */
-	public static Integer USER_CLASS_STATUS_WAIT = 1;
+	/**  *等待审核  */ 
+	public static Integer USER_CLASS_STATUS_WAIT = 1; 
 	/**  *审核通过  */
 	public static Integer USER_CLASS_STATUS_NORMAL = 2;
 	/**  *删除出班级  */
