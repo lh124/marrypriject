@@ -53,8 +53,18 @@ public class IoEntity implements Serializable {
 	//序列号
 	@TableField(value="serial_number")
 	private String serialNumber;
+	
+	//图片
+	@TableField(value="pic")
+	private String pic;
 			
 
+	public String getPic() {
+		return pic;
+	}
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
 	public Integer getCameraNo() {
 		return cameraNo;
 	}
