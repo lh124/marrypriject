@@ -34,7 +34,6 @@ public class MarriedWeixinUserController {
 	public R save(HttpServletRequest request){
 		int total = 0;
 		try {
-			System.out.println(request.getParameter("code") + "--------------------------999");
 			MarriedUserEntity us = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			String openId = (us == null) ? WeixinUtil.getWeixinOpenId(request.getParameter("code")):us.getOpenid();
 //			String openId = "o7__rjjocXdATM4sz0rYbt2z7SRw";
