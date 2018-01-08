@@ -5,11 +5,15 @@
 	
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,account as account ,password as password , latitude, longitude, openid,phone as phone ,status as status ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,head_img as headImg ,nickname as nickname ,sex as sex 		
+		id as id ,account as account ,password as password , latitude, longitude, 
+		openid,phone as phone ,status as status ,gmt_create as gmtCreate ,gmt_modified as gmtModified ,
+		head_img as headImg ,nickname as nickname ,sex as sex,
+		student_whereabouts as student_whereabouts, student_weixin as student_weixin,student_qq as student_qq		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,account ,password ,phone ,status , latitude, longitude,gmt_create, openid,gmt_modified ,head_img ,nickname ,sex 		
+		id ,account ,password ,phone ,status , latitude, longitude,gmt_create, openid,gmt_modified ,head_img ,
+		nickname ,sex,student_whereabouts,student_weixin, student_qq		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.PhotoFrontUserEntity" id="photoFrontUserMap">
@@ -26,10 +30,13 @@
         <result property="openid" column="openid"/>
         <result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
+        <result property="studentQq" column="student_qq"/>
+        <result property="studentWeixin" column="student_weixin"/>
+        <result property="studentWhereabouts" column="student_whereabouts"/>
     </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.PhotoFrontUserEntity">
-		select <include refid="allColumns"></include> from photo_front_user where id = #{value}
+		select * from photo_front_user where id = #{value}
 	</select>
 	
 	<select id="queryClassUser" resultType="io.renren.entity.PhotoFrontUserEntity">
@@ -86,6 +93,9 @@
 		<result property="openid" column="openid"/>
 		<result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
+        <result property="studentQq" column="student_qq"/>
+        <result property="studentWeixin" column="student_weixin"/>
+        <result property="studentWhereabouts" column="student_whereabouts"/>
 		<collection property="authList" resultMap="queryUserByAccountParaMap"></collection>
 	</resultMap>
 	<resultMap type="io.renren.entity.PhotoFunctionModulesEntity" id="queryUserByAccountParaMap">
@@ -115,6 +125,9 @@
 		<result property="openid" column="openid"/>
 		<result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
+        <result property="studentQq" column="student_qq"/>
+        <result property="studentWeixin" column="student_weixin"/>
+        <result property="studentWhereabouts" column="student_whereabouts"/>
 		<association property="userClass" resultMap="queryUserClass"></association>
 	</resultMap>
 	<resultMap type="io.renren.entity.PhotoUserClassEntity" id="queryUserClass">
@@ -147,6 +160,9 @@
 			`sex`,
 			`openid`,
 			`latitude`,
+			`student_whereabouts`,
+			`student_qq`,
+			`student_weixin`,
 			`longitude`
 		)
 		values
@@ -162,6 +178,9 @@
 			#{sex},
 			#{openid},
 			#{latitude},
+			#{studentWhereabouts},
+			#{studentQq},
+			#{studentWeixin},
 			#{longitude}
 		)
 	</insert>
@@ -180,6 +199,9 @@
 			<if test="sex != null">`sex` = #{sex},</if>
 			<if test="openid != null">`openid` = #{openid},</if>
 			<if test="latitude != null">`latitude` = #{latitude},</if>
+			<if test="studentWhereabouts != null">`student_whereabouts` = #{studentWhereabouts},</if>
+			<if test="studentWeixin != null">`student_weixin` = #{studentWeixin},</if>
+			<if test="studentQq != null">`student_qq` = #{studentQq},</if>
 			<if test="longitude != null">`longitude` = #{longitude}</if>
 		</set>
 		where id = #{id}
