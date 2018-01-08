@@ -14,8 +14,9 @@
 	<insert id="save" parameterType="io.renren.entity.TokenEntity">
 		insert into tb_token
 		(
-			`user_id`, 
+			`user_id`,  
 			`token`, 
+			`accessToken`,
 			`expire_time`, 
 			`update_time`
 		)
@@ -23,6 +24,7 @@
 		(
 			#{userId}, 
 			#{token}, 
+			#{accessToken}, 
 			#{expireTime}, 
 			#{updateTime}
 		)
@@ -33,9 +35,14 @@
 		<set>
 			<if test="token != null">`token` = #{token}, </if>
 			<if test="expireTime != null">`expire_time` = #{expireTime}, </if>
+			<if test="accessToken != null">`accessToken` = #{accessToken}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}</if>
 		</set>
 		where user_id = #{userId}
 	</update>
+	
+	<delete id="delete">
+		delete from tb_token where user_id = #{value}
+	</delete>
 
 </mapper>
