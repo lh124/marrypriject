@@ -199,6 +199,7 @@ public class WeixinMeController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/allSign")
 	public R allSign(HttpServletRequest request){
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
@@ -224,9 +225,21 @@ public class WeixinMeController {
 		map.put("limit", 10);
 		map.put("blessingtype", 1);
 		List<MarryBlessingEntity> list1 = marryBlessingService.queryList(map);//普通祝福
+		int zftotal = 0;
+		int videototal = 0;
+		for (Iterator iterator = list1.iterator(); iterator.hasNext();) {
+			MarryBlessingEntity marryBlessingEntity = (MarryBlessingEntity) iterator.next();
+			if(marryBlessingEntity.getContent() != null && !"".equals(marryBlessingEntity.getContent())){
+				zftotal++;
+			}
+			if(marryBlessingEntity.getVideoblessing() != null && !"".equals(marryBlessingEntity.getVideoblessing())){
+				videototal++;
+			}
+		}
 		map.put("blessingtype", 2);
 		List<MarryBlessingEntity> list2 = marryBlessingService.queryList(map);//红包祝福
-		m.put("zftotal", list1.size());
+		m.put("zftotal", zftotal);
+		m.put("videototal", videototal);
 		m.put("moneytotal", list2);
 		return R.ok().put("list", m);
 	}
