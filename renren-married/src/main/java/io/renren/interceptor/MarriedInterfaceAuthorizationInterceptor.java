@@ -25,9 +25,11 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 @Component(value="marriedInterfaceAuthorizationInterceptor")
 public class MarriedInterfaceAuthorizationInterceptor extends HandlerInterceptorAdapter {
 	
-	public String LOGIN_URL = "/married/weixin/index.html"; 
+	public String LOGIN_URL  = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri="
+			+ "http://wrs.gykjewm.com/married/weixin/index.html"
+			+ "&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 	
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") 
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     	//判断是页面请求还是ajax请求
