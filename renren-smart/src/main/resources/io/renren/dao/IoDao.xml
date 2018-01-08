@@ -7,16 +7,17 @@
 	<sql id="allColumnsAlias">
 		id as id ,epc as epc ,io_type as ioType ,io_date as ioDate ,rfid_id as rfidId,
 		student_id as studentId,cameraNo as cameraNo,verification_code as  verificationCode,
-		serial_number as serialNumber	
+		serial_number as serialNumber,pic as pic	
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,epc ,io_type ,io_date ,rfid_id,student_id,cameraNo,verification_code ,serial_number		
+		id ,epc ,io_type ,io_date ,rfid_id,student_id,cameraNo,verification_code ,serial_number,pic		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.IoEntity" id="ioMap">
 		        <result property="id" column="id"/>
 		        <result property="epc" column="epc"/>
+		        <result property="pic" column="pic"/>
 		        <result property="ioType" column="io_type"/>
 		        <result property="ioDate" column="io_date"/>
 		        <result property="rfidId" column="rfid_id"/>
@@ -57,19 +58,23 @@
 			select id from class where school_id = #{schoolId}
 			) t2 where t1.class_id = t2.id
 	</select>
+	
+	<select id="queryListmysql" resultType="io.renren.entity.smart.IoEntity">
+		select * from io where student_id=#{studentId} order by io_date desc limit ${offset},10
+	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.IoEntity">
         select top 
 		<choose>
             <when test="limit != null">${limit}</when><otherwise>10</otherwise>
         </choose> 
-        marry.id, marry.epc, marry.io_type, marry.io_date, marry.rfid_id,marry.cameraNo,marry.verification_code ,marry.serial_number from (select row_number() over(
+        marry.id, marry.epc, marry.io_type, marry.io_date, marry.rfid_id,marry.cameraNo,marry.verification_code ,marry.serial_number,marry.pic from (select row_number() over(
         <choose>
             <when test="sidx != null and sidx.trim() != ''"> order by ${sidx} ${order} </when>
 			<otherwise> order by io_date desc </otherwise>
         </choose>) as rownumber,
 		<include refid="allColumns"></include> 
-		from(SELECT theio.id , theio.epc, theio.io_type, theio.io_date, theio.rfid_id,theio.student_id,theio.cameraNo,theio.verification_code ,theio.serial_number FROM 
+		from(SELECT theio.id ,theio.pic , theio.epc, theio.io_type, theio.io_date, theio.rfid_id,theio.student_id,theio.cameraNo,theio.verification_code ,theio.serial_number FROM 
 		io as theio where student_id= #{studentId}) as harry) as marry where rownumber > 
 		<choose>
             <when test="offset != null"> ${offset} </when>
@@ -89,6 +94,7 @@
 			io_date,
 			student_id,
 			cameraNo,
+			pic,
 			verification_code,
 			serial_number,
 			rfid_id
@@ -100,6 +106,7 @@
 			#{ioDate}, 
 			#{studentId},
 			#{cameraNo},
+			#{pic},
 			#{verificationCode},
 			#{serialNumber},
 			#{rfidId}
