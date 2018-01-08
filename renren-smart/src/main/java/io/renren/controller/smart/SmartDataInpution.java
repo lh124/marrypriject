@@ -17,8 +17,6 @@ import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.R;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +70,8 @@ public class SmartDataInpution {
 	private TokenService tokenService;
 	
 	private static final String DATA = "data";
-	private final static String FILEPATH = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/";
+	//路径前缀
+	private final static String FILEPATH = "http://static.gykjewm.com/";
 	//阿里云API的内或外网域名
 	private static String ENDPOINT = "oss-cn-hangzhou.aliyuncs.com";;
 	//阿里云API的密钥Access Key ID
@@ -250,12 +249,14 @@ public class SmartDataInpution {
 				String ioType = object.getString("ioType");
 				String rfidId = object.getString("rfidId");
 				String studentId = object.getString("userId");
+				String pic = object.get("pic")==null?"":object.getString("pic");
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				IoEntity io = new IoEntity();
+				IoEntity io = new IoEntity(); 
 				io.setEpc(epc);
 				io.setIoDate(sdf.parse(object.getString("ioDate").replace("T", " ")));
 				io.setIoType(ioType);
 				io.setRfidId(rfidId);
+				io.setPic(pic);
 				io.setStudentId(Integer.parseInt(studentId));
 				if(object.get("videoId") != null && !"".equals(object.get("videoId"))){
 					Integer id = object.getInt("videoId");
@@ -266,9 +267,7 @@ public class SmartDataInpution {
 						io.setVerificationCode(svde.getVerificationCode());
 					}
 				}
-				DbContextHolder.setDbType(DBTypeEnum.SQLSERVER2);
 				ioService.save(io);
-				DbContextHolder.setDbType(DBTypeEnum.MYSQL);
 				list.add(object.getString("id"));
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("type", 6);
