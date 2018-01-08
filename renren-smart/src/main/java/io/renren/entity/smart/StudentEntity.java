@@ -67,6 +67,16 @@ public class StudentEntity implements Serializable {
 	@TableField(value="newsId")
 	private Integer newsId;
 	
+	//是否强制绑定手机号（0不绑定，1绑定）
+	@TableField(value="bindingType")
+	private Integer bindingType;
+	
+	public Integer getBindingType() {
+		return bindingType;
+	}
+	public void setBindingType(Integer bindingType) {
+		this.bindingType = bindingType;
+	}
 	public Integer getNewsType() {
 		return newsType;
 	}
