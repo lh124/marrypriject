@@ -21,6 +21,7 @@
 						$("#author").html(result.obj.author);
 						$("#content").html(result.obj.content);
 						$("#pic").prop('src',result.obj.pic);
+						$("#prices").val(result.obj.price);
 						$("#price").html("￥"+result.obj.price);
 					}
 				}
@@ -39,9 +40,15 @@
 				}
 		});
     }
+    
+    function savedingdan(id){
+         var price = $("#prices").val();
+         window.location.href="confirm_order1.html?goodsId="+id;
+    }
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
 <input type="hidden" id="id" value="${request.getParameter('id')}">
+<input type="hidden" id="prices" >
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="theme_top">
@@ -60,7 +67,7 @@
 				</div>
 				<div class="details_foot_mid">
 					<a href="#" onclick="savecart(${request.getParameter('id')})">加入购物车</a>
-					<a href="confirm_order.html?id=${request.getParameter('id')}" style="margin-left:6%;">立即下单</a>
+					<a onclick="savedingdan(${request.getParameter('id')})" href="#" style="margin-left:6%;">立即下单</a>
 				</div>
 	        </div>
 		</div>
