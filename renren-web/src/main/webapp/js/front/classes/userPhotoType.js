@@ -18,15 +18,23 @@ function loadData(){
 					content +='<tr><td>电话</td><td>'+r.user.phone+
 					 '&nbsp;&nbsp;<a href="tel://'+r.user.phone+'" class="weui-dialog__btn weui-dialog__btn_primary" >拨打</a>'+
 					   '</td></tr>';
+				}else{
+					content +='<tr><td>电话</td><td></td></tr>';
 				}
 				if(r.user.studentQq != null && r.user.studentQq != ''){
 					content +='<tr><td>QQ</td><td>'+r.user.studentQq+'</td></tr>';
+				}else{
+					content +='<tr><td>QQ</td><td></td></tr>';
 				}
 				if(r.user.studentWeixin != null && r.user.studentWeixin != ''){
 					content +='<tr><td>微信</td><td>'+r.user.studentWeixin+'</td></tr>';
+				}else{
+					content +='<tr><td>微信</td><td></td></tr>';
 				}
 				if(r.user.studentWhereabouts != null && r.user.studentWhereabouts != ''){
 					content +='<tr><td>去向</td><td>'+r.user.studentWhereabouts+'</td></tr>';
+				}else{
+					content +='<tr><td>去向</td><td></td></tr>';
 				}
 				$("#totalestudent").html(content);
 				// 渲染界面
