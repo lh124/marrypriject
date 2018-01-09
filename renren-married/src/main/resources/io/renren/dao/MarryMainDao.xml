@@ -26,7 +26,8 @@
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryMainEntity">
-		select <include refid="allColumns"></include> from marry_main where id = #{value}
+		select t1.id,t1.title,t1.author,t1.content,t1.pic,t1.price,t1.userId,t2.username from 
+		marry_main t1,sys_user t2 where t1.userId=t2.user_id and t1.id = #{value}
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
