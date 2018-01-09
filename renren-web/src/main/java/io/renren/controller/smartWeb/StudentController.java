@@ -1,14 +1,22 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.app.SmartNewsEntity;
 import io.renren.entity.smart.ClassEntity;
+import io.renren.entity.smart.ClassNoticeEntity;
+import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.SchoolEntity;
+import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
 import io.renren.entity.smart.Studenttongji;
 import io.renren.entity.smart.Tongji;
 import io.renren.model.json.ResponseDTJson;
+import io.renren.service.smart.ClassNoticeService;
 import io.renren.service.smart.ClassService;
+import io.renren.service.smart.PhotoClassWorkMsgService;
+import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
+import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.POIMvcUtil;
@@ -61,6 +69,14 @@ public class StudentController {
 	private ClassService classService;
 	@Autowired
 	private SchoolService schoolService;
+	@Autowired
+	private SmartNewsService smartNewsService;
+	@Autowired
+	private ClassNoticeService classNoticeService;
+	@Autowired
+	private SchoolNoticeService schoolNoticeService;
+	@Autowired
+	private PhotoClassWorkMsgService photoClassWorkMsgService;
 	
 	//老师
 	public final static String USER_TYPE_TEACHER = "2";
@@ -228,6 +244,7 @@ public class StudentController {
 	/**
 	 * 保存
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/save")
 	@RequiresPermissions("uniform_student:save")
 	public R save(@RequestBody StudentEntity student){
@@ -240,7 +257,69 @@ public class StudentController {
 		}
 		String newPassword = new Sha256Hash("000000").toHex();
 		student.setPasswordd(newPassword);
-		studentService.save(student);
+		studentService.insert(student);
+		if(student.getUserType().equals("1")){
+			ClassEntity classEntity = classService.queryObject(student.getClassId());//通过学生id获取班级信息
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("offset", 0);
+			map.put("limit", 99999999);
+			map.put("sidx", null);
+			map.put("order", null);
+			map.put("classId", classEntity.getId());
+			List<ClassNoticeEntity> classNoticeList = classNoticeService.queryList(map);
+			for (Iterator iterator = classNoticeList.iterator(); iterator.hasNext();) {
+				ClassNoticeEntity classNoticeEntity = (ClassNoticeEntity) iterator.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(classNoticeEntity.getId());
+				sne.setNewstype(0);
+				sne.setStates(2);
+				sne.setUserId(student.getId());
+				smartNewsService.save(sne);
+			}
+			
+			List<PhotoClassWorkMsgEntity> photoClassWorkList = photoClassWorkMsgService.queryList(map);
+			for (Iterator iterator = photoClassWorkList.iterator(); iterator.hasNext();) {
+				PhotoClassWorkMsgEntity classNoticeEntity = (PhotoClassWorkMsgEntity) iterator.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(Integer.parseInt(classNoticeEntity.getId().toString()));
+				sne.setNewstype(0);
+				sne.setStates(3);
+				sne.setUserId(student.getId());
+				smartNewsService.save(sne);
+			}
+			
+			SchoolEntity schoolEntity = schoolService.queryObject(classEntity.getSchoolId());//通过班级id获取学校信息
+			map.put("schoolid", schoolEntity.getId());
+			List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryList(map);
+			for (Iterator iterator = schoolNoticeList.iterator(); iterator.hasNext();) {
+				SchoolNoticeEntity schoolNoticeEntity = (SchoolNoticeEntity) iterator.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(schoolNoticeEntity.getId());
+				sne.setNewstype(0);
+				sne.setStates(1);
+				sne.setUserId(student.getId());
+				smartNewsService.save(sne);
+			}
+			
+		}else{
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("offset", 0);
+			map.put("limit", 99999999);
+			map.put("sidx", null);
+			map.put("order", null);
+			SchoolEntity schoolEntity = schoolService.queryObject(student.getSchoolId());//通过学校id获取学校信息
+			map.put("schoolid", schoolEntity.getId());
+			List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryList(map);
+			for (Iterator iterator = schoolNoticeList.iterator(); iterator.hasNext();) {
+				SchoolNoticeEntity schoolNoticeEntity = (SchoolNoticeEntity) iterator.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(schoolNoticeEntity.getId());
+				sne.setNewstype(0);
+				sne.setStates(1);
+				sne.setUserId(student.getId());
+				smartNewsService.save(sne);
+			}
+		}
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL); 
 		return R.ok().put("fail", "操作成功");
 	}
