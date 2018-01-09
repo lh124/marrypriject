@@ -32,6 +32,30 @@
 						</div>
 						<div class="weui-cell__ft" id="nickname"></div>
 					</a>
+					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterPhone">
+						<div class="weui-cell__bd">
+							<p>电话</p>
+						</div>
+						<div class="weui-cell__ft" id="phone"></div>
+					</a>
+					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterQq">
+						<div class="weui-cell__bd">
+							<p>QQ</p>
+						</div>
+						<div class="weui-cell__ft" id="studentQq"></div>
+					</a>
+					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterWeixin">
+						<div class="weui-cell__bd">
+							<p>微信</p>
+						</div>
+						<div class="weui-cell__ft" id="studentWeixin"></div>
+					</a>
+					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterWhereabouts">
+						<div class="weui-cell__bd">
+							<p>去向</p>
+						</div>
+						<div class="weui-cell__ft" id="studentWhereabouts"></div>
+					</a>
 					<a class="weui-cell weui-cell_access" href="javascript:;" id="alterPassword">
 						<div class="weui-cell__bd">
 							<p>修改密码</p>
@@ -109,6 +133,66 @@
             </div>
         </div>
         <!--END dialog1-->  
+        <!--BEGIN dialog3-->
+        <div class="js_dialog" id="iosDialog3" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入新号码</strong></div>
+                <div class="weui-dialog__bd">
+                	<input class="weui-input" type="text" id="newphone" placeholder="输入新号码">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmPhone">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
+        <!--BEGIN dialog4-->
+        <div class="js_dialog" id="iosDialog4" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入QQ号</strong></div>
+                <div class="weui-dialog__bd">
+                	<input class="weui-input" type="text" id="studentQqs" placeholder="输入QQ号码">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmQq">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
+        <!--BEGIN dialog5-->
+        <div class="js_dialog" id="iosDialog5" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入微信</strong></div>
+                <div class="weui-dialog__bd">
+                	<input class="weui-input" type="text" id="newWeixin" placeholder="输入微信号">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmWeixin">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
+        <!--BEGIN dialog6-->
+        <div class="js_dialog" id="iosDialog6" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入新去向</strong></div>
+                <div class="weui-dialog__bd">
+                	<input class="weui-input" type="text" id="newWhereabouts" placeholder="输入新去向">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" id="cancel">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" id="comfirmWhereabouts">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
 	</div>
 </body>
 <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
@@ -116,7 +200,9 @@
 	// 提示面板
 	var $iosDialog1 = $('#iosDialog1'),cancel = $('#cancel'),
 	comfirm = $("#comfirm"),$loadingToast = $('#loadingToast')
-	iosDialog2 = $('#iosDialog2');
+	iosDialog2 = $('#iosDialog2'),iosDialog3 = $('#iosDialog3'),
+	iosDialog4 = $('#iosDialog4'),iosDialog5 = $('#iosDialog5')
+	iosDialog6 = $('#iosDialog6');
 	
 	$(function(){
 		// 初始化用户信息
@@ -125,29 +211,160 @@
 		$("#alterNickname").on("click",function (){
 			 $iosDialog1.fadeIn(200);
 		});
+		$("#alterPhone").on("click",function (){
+			 iosDialog3.fadeIn(200);
+		});
+		$("#alterQq").on("click",function (){
+			 iosDialog4.fadeIn(200);
+		});
+		$("#alterWeixin").on("click",function (){
+			 iosDialog5.fadeIn(200);
+		});
+		$("#alterWhereabouts").on("click",function (){
+			 iosDialog6.fadeIn(200);
+		});
 		//取消
 		$('.weui-dialog__btn_default').on("click", function(){
 			$(this).parents('.js_dialog').fadeOut(200);
 		});
 		// 确认
 		$("#comfirm").on("click", function(){
-			
 			$(this).parents('.js_dialog').fadeOut(200);
 			alterUserInfo();
-			
 		});
-		
-		
+		$("#comfirmPhone").on("click", function(){
+			$(this).parents('.js_dialog').fadeOut(200);
+			alterUserInfophone();
+		});
+		$("#comfirmQq").on("click", function(){
+			$(this).parents('.js_dialog').fadeOut(200);
+			alterUserqq();
+		});
+	//studentQq
+	function alterUserqq(){
+		var studentQq = $("#studentQqs").val();
+		$.ajax({
+		  type: 'POST',
+		  url: '../Photofrontuser/updateUser?studentQq='+studentQq,
+		  beforeSend: function(){
+				if ($loadingToast.css('display') == 'none')
+				$loadingToast.fadeIn(100);
+		  },
+		  dataType: "json",
+		  success: function(result){
+		  		$loadingToast.fadeOut(100);
+				if(result.status === "ok"){
+					// 回显成功
+					var $toast = $('#toast');
+					if ($toast.css('display') != 'none') return;
+	
+		            $toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+					getUserInfo();
+				}else{
+					forWarm(null,"操作错误");				
+				}
+				
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  }
+		});
+	}
+	
+	
+	$("#comfirmWhereabouts").on("click", function(){
+			$(this).parents('.js_dialog').fadeOut(200);
+			alterUserWhereabouts();
+		});
+	//studentQq
+	function alterUserWhereabouts(){
+		var studentWhereabouts = $("#newWhereabouts").val();
+		$.ajax({
+		  type: 'POST',
+		  url: '../Photofrontuser/updateUser?studentWhereabouts='+studentWhereabouts,
+		  beforeSend: function(){
+				if ($loadingToast.css('display') == 'none')
+				$loadingToast.fadeIn(100);
+		  },
+		  dataType: "json",
+		  success: function(result){
+		  		$loadingToast.fadeOut(100);
+				if(result.status === "ok"){
+					// 回显成功
+					var $toast = $('#toast');
+					if ($toast.css('display') != 'none') return;
+	
+		            $toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+					getUserInfo();
+				}else{
+					forWarm(null,"操作错误");				
+				}
+				
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  }
+		});
+	}
+	
+	$("#comfirmWeixin").on("click", function(){
+			$(this).parents('.js_dialog').fadeOut(200);
+			alterUserWeixin();
+		});
+	//studentQq
+	function alterUserWeixin(){
+		var studentWeixin = $("#newWeixin").val();
+		$.ajax({
+		  type: 'POST',
+		  url: '../Photofrontuser/updateUser?studentWeixin='+studentWeixin,
+		  beforeSend: function(){
+				if ($loadingToast.css('display') == 'none')
+				$loadingToast.fadeIn(100);
+		  },
+		  dataType: "json",
+		  success: function(result){
+		  		$loadingToast.fadeOut(100);
+				if(result.status === "ok"){
+					// 回显成功
+					var $toast = $('#toast');
+					if ($toast.css('display') != 'none') return;
+	
+		            $toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+					getUserInfo();
+				}else{
+					forWarm(null,"操作错误");				
+				}
+				
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  }
+		});
+	}
+	
+	
+	
+	
 		//弹出输入框
 		$("#alterPassword").on("click",function (){
 			 iosDialog2.fadeIn(200);
 		});
 		// 确认
 		$("#comfirmPassword").on("click", function(){
-			
 			$(this).parents('.js_dialog').fadeOut(200);
 			alterUserPassword();
-			
 		});
 		
 	});
@@ -161,6 +378,10 @@
 			  success: function(result){
 			  		$("#nickname").text(result.user.nickname);
 					$("#account").text(result.user.account);
+					$("#phone").text(result.user.phone == null ? "":result.user.phone);
+					$("#studentQq").text(result.user.studentQq == null ? "":result.user.studentQq);
+					$("#studentWeixin").text(result.user.studentWeixin == null ? "":result.user.studentWeixin);
+					$("#studentWhereabouts").text(result.user.studentWhereabouts == null ? "":result.user.studentWhereabouts);
 					$("#headImg").attr("src",'http://static.gykjewm.com/' + result.user.headImg);
 			  },
 			  error: function(){
@@ -168,10 +389,45 @@
 			  }
 			});
 	}
+	//修改手机号studentQq
+	function alterUserInfophone(){
+		var phone = $("#newphone").val();
+		$.ajax({
+		  type: 'POST',
+		  url: '../Photofrontuser/updateUser?phone='+phone,
+		  beforeSend: function(){
+				if ($loadingToast.css('display') == 'none')
+				$loadingToast.fadeIn(100);
+		  },
+		  dataType: "json",
+		  success: function(result){
+		  		$loadingToast.fadeOut(100);
+				if(result.status === "ok"){
+					// 回显成功
+					var $toast = $('#toast');
+					if ($toast.css('display') != 'none') return;
+	
+		            $toast.fadeIn(100);
+		            setTimeout(function () {
+		                $toast.fadeOut(100);
+		            }, 2000);
+					getUserInfo();
+				}else{
+					forWarm(null,"操作错误");				
+				}
+				
+		  },
+		  error: function(){
+		  		$loadingToast.fadeOut(100);
+		  		forWarm(null,"操作错误");
+		  }
+		});
+	}
+	
 	// 修改用户信息
 	function alterUserInfo(){
-		
 		var nickname = $('#newNickname').val();
+		var phone = $("#newphone").val();
 		$.ajax({
 		  type: 'POST',
 		  url: '../Photofrontuser/update',
@@ -183,7 +439,7 @@
 		  },
 		  success: function(result){
 		  		$loadingToast.fadeOut(100);
-				if(result.status === "ok"){
+				if(result.status == "ok"){
 					// 回显成功
 					var $toast = $('#toast');
 					if ($toast.css('display') != 'none') return;
@@ -208,7 +464,6 @@
 	}
 	// 修改用户信息
 	function alterUserPassword(){
-		
 		var oldPassword = $('#oldPassword').val();
 		var newPassword = $('#newPassword').val();
 		$.ajax({
