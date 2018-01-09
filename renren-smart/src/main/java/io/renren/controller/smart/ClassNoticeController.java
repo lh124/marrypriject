@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jiguangtuisong.JpushClientUtil;
+import jiguangtuisong.JpushClientUtil2;
 import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -107,7 +107,7 @@ public class ClassNoticeController {
 				smartNewsService.insert(sne);
 				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
 				if(token != null){
-					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", classNotice.getTitle(),
+					JpushClientUtil2.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", classNotice.getTitle(),
 						classNotice.getContent(),JSONObject.fromObject(m).toString());
 				}
 			}
