@@ -69,7 +69,6 @@ public class PhotoFrontUserController {
 	 * 列表
 	 */
 	@RequestMapping("/userFunction")
-	@CheckAuth(needAuth = "user:logined")
 	public R userFunctions(HttpServletRequest request, HttpSession session){
 		
 		// 相册用户
@@ -107,6 +106,30 @@ public class PhotoFrontUserController {
 	@CheckAuth(needAuth="user:forbidden")
 	public R save(@RequestBody PhotoFrontUserEntity photoFrontUser){
 		photoFrontUserService.save(photoFrontUser);
+		
+		return R.ok();
+	}
+	
+	/**
+	 * 修改
+	 */
+	@RequestMapping("/updateUser")
+	@CheckAuth(needAuth="user:logined")
+	public R updateUser(HttpServletRequest request){
+		PhotoFrontUserEntity user = (PhotoFrontUserEntity)request.getSession().getAttribute(ControllerConstant.USER_SESSION_KEY);
+		PhotoFrontUserEntity userNew = photoFrontUserService.queryObject(user.getId());
+		String phone = request.getParameter("phone");
+		String studentQq = request.getParameter("studentQq");
+		String studentWeixin = request.getParameter("studentWeixin");
+		String studentWhereabouts = request.getParameter("studentWhereabouts");
+		userNew.setPhone((phone == null || "".equals(phone))?userNew.getPhone():phone);
+		userNew.setStudentQq((studentQq==null || "".equals(studentQq))?userNew.getStudentQq():studentQq);
+		userNew.setStudentWeixin((studentWeixin == null || "".equals(studentWeixin))?userNew.getStudentWeixin():studentWeixin);
+		userNew.setStudentWhereabouts((studentWhereabouts==null||"".equals(studentWhereabouts))?userNew.getStudentWhereabouts():studentWhereabouts);
+		photoFrontUserService.update(userNew);
+		
+		// 刷新session
+		reflashUserSession(request, photoFrontUserService);
 		
 		return R.ok();
 	}
