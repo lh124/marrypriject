@@ -107,7 +107,7 @@
 	</resultMap>
 	
 	<select id="queryUserByAccount" resultMap="queryUserByAccountMap">
-		select fu.id as userId, fu.account, latitude, longitude,openid, fu.password, fu.status, fu.phone, fu.head_img,
+		select fu.id as userId,fu.student_qq,fu.student_weixin,fu.student_whereabouts, fu.account, latitude, longitude,openid, fu.password, fu.status, fu.phone, fu.head_img,
 		fu.nickname, sex ,fm.url ,fm.function_order ,fm.icon,fm.perm,fm.name as functionName  from photo_front_user fu 
 		left join photo_user_function uf on fu.id=uf.user_id left 
 		join photo_function_modules fm on fm.id = uf.function_modules_id where fu.account= #{account} or 
