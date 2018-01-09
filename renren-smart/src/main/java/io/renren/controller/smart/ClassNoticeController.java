@@ -107,7 +107,7 @@ public class ClassNoticeController {
 				smartNewsService.insert(sne);
 				TokenEntity token = tokenService.queryByUserId(new Long(studentEntity.getId()));
 				if(token != null){
-					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "学校通知", classNotice.getTitle(),
+					JpushClientUtil.sendToRegistrationId(studentEntity.getId().toString(), "老师通知", classNotice.getTitle(),
 						classNotice.getContent(),JSONObject.fromObject(m).toString());
 				}
 			}
