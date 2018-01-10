@@ -332,15 +332,17 @@ public class TeacherAppInterfaceController {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
 		Integer userId = json.getInt("teacherId");
 		String code = json.getString("code");
-		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
-			       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		String code2 = jedis.get(phone);
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
+		jedis.del(phone);
 		StudentEntity studnet = new StudentEntity();
 		studnet.setId(userId);
 		studnet.setPhoen(phone);
@@ -884,15 +886,17 @@ public class TeacherAppInterfaceController {
 		return R.ok().put(DATA, list);
 	}
 	
+	@SuppressWarnings("resource")
 	private R updatepasswrodtophone(JSONObject json,HttpServletRequest request){
 		String  phone = json.getString("phone");
 		String  password = json.getString("password");
 		String code = json.getString("code");
-		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
-			       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		String code2 = jedis.get(phone);
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
+		jedis.del(phone);
 		StudentEntity user = new StudentEntity();
 		user.setPhoen(phone);
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
@@ -904,6 +908,7 @@ public class TeacherAppInterfaceController {
 		return R.ok().put(DATA, "密码为："+password);
 	}
 	
+	@SuppressWarnings("resource")
 	private R sendMsg2(JSONObject json,HttpServletRequest request){
 		String randow = getRandow();
 		String phone = json.getString("phone");
@@ -925,10 +930,12 @@ public class TeacherAppInterfaceController {
 				e.printStackTrace();
 			}
 		}
-		request.getSession().setAttribute("randow", randow);
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		jedis.set(phone, randow);
 		return R.ok().put(DATA, randow);
 	}
 	
+	@SuppressWarnings("resource")
 	private R sendMsg(JSONObject json,HttpServletRequest request){
 		String randow = getRandow();
 		String phone = json.getString("phone");
@@ -950,7 +957,8 @@ public class TeacherAppInterfaceController {
 				e.printStackTrace();
 			}
 		}
-		request.getSession().setAttribute("randow", randow);
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		jedis.set(phone, randow);
 		return R.ok().put(DATA, randow);
 	}
 	

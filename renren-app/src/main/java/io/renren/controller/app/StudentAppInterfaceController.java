@@ -308,15 +308,17 @@ public class StudentAppInterfaceController{
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private R updatePhone(JSONObject json,HttpServletRequest request){
 		String phone = json.getString("phone");
 		Integer userId = json.getInt("studentId");
 		String code = json.getString("code");
-		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
-			       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		String code2 = jedis.get(phone);
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
+		jedis.del(phone);
 		StudentEntity studnet = new StudentEntity();
 		studnet.setId(userId);
 		studnet.setPhoen(phone);
@@ -343,9 +345,13 @@ public class StudentAppInterfaceController{
 			if(is != null){
 				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
 				studentService.update(student);
-				return R.ok().put(DATA, studentService.queryObject(student.getId()));
+				StudentEntity studentEntity = studentService.queryObject(student.getId());
+				studentEntity.setSchoolId(classService.queryObject(student.getClassId()).getSchoolId());
+				return R.ok().put(DATA, studentEntity);
 			}else{
-				return R.ok().put(DATA, studentService.queryObject(student.getId()));
+				StudentEntity studentEntity = studentService.queryObject(student.getId());
+				studentEntity.setSchoolId(classService.queryObject(student.getClassId()).getSchoolId());
+				return R.ok().put(DATA, studentEntity);
 			}
 		} catch (Exception e) {
 			return R.error("失败");
@@ -673,15 +679,17 @@ public class StudentAppInterfaceController{
 		return R.ok().put(DATA, list);
 	}
 	
+	@SuppressWarnings("resource")
 	private R updatepasswrodtophone(JSONObject json,HttpServletRequest request){
 		String  phone = json.getString("phone");
 		String  password = json.getString("password");
 		String code = json.getString("code");
-		String code2 = (request.getSession().getAttribute("randow")==null||"".equals(request.getSession().getAttribute("randow")))?
-				       ((json.get("code1") == null)?code:json.getString("code1")):request.getSession().getAttribute("randow").toString();
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		String code2 = jedis.get(phone);
 		if(!code.equals(code2)){
 			return R.error("验证码错误");
 		}
+		jedis.del(phone);
 		StudentEntity user = new StudentEntity();
 		user.setPhoen(phone);
 		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
@@ -693,6 +701,7 @@ public class StudentAppInterfaceController{
 		return R.ok().put(DATA, "密码为："+password);
 	}
 	
+	@SuppressWarnings("resource")
 	private R sendMsg2(JSONObject json,HttpServletRequest request){
 		String randow = getRandow();
 		String phone = json.getString("phone");
@@ -714,10 +723,12 @@ public class StudentAppInterfaceController{
 				e.printStackTrace();
 			}
 		}
-		request.getSession().setAttribute("randow", randow);
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		jedis.set(phone, randow);
 		return R.ok().put(DATA, randow);
 	}
 	
+	@SuppressWarnings("resource")
 	private R sendMsg(JSONObject json,HttpServletRequest request){
 		String randow = getRandow();
 		String phone = json.getString("phone");
@@ -739,7 +750,8 @@ public class StudentAppInterfaceController{
 				e.printStackTrace();
 			}
 		}
-		request.getSession().setAttribute("randow", randow);
+		Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
+		jedis.set(phone, randow);
 		return R.ok().put(DATA, randow);
 	}
 	
