@@ -17,7 +17,7 @@
 				dataType: "json",
 				success: function(result){
 					if(result.status == 'ok'){
-					    $("#pricetotal").html(result.obj.price+"元");
+					    $("#pricetotal").html("￥"+result.obj.price+"元");
 						var content = "";
 						    content += '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
 						               '<div class="cart_tit"><p>'+result.obj.username+'</p>'+
