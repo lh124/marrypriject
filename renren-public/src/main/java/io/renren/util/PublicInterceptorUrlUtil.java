@@ -5,8 +5,9 @@ import java.util.regex.Pattern;
 public class PublicInterceptorUrlUtil {
 
 	public static boolean authCheck(String url){
-		
-		String[] annos = {};
+		String[] annos = {
+				".*/publicModule/common/getWeChatSign"
+		};
 		boolean isMatch = false;
 		
 		for(int i = 0; i < annos.length; i++){
