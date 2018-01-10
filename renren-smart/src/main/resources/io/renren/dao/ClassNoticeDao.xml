@@ -51,7 +51,7 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from class_notice 
+		select count(*) from class_notice where classId = #{classId}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.ClassNoticeEntity" useGeneratedKeys="true" keyProperty="id">

@@ -40,7 +40,7 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from smart_activities 
+		select count(*) from smart_activities where schoolid = #{schoolid}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.SmartActivitiesEntity" useGeneratedKeys="true" keyProperty="id">
