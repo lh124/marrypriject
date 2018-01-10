@@ -5,7 +5,10 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '账号', name: 'account', index: 'account', width: 80 }, 			
-			{ label: '手机号码', name: 'phone', index: 'phone', width: 80 }, 			
+			{ label: '手机号码', name: 'phone', index: 'phone', width: 80 }, 
+			{ label: 'QQ号码', name: 'studentQq', index: 'studentQq', width: 80 }, 
+			{ label: '个人微信', name: 'studentWeixin', index: 'studentWeixin', width: 80 }, 
+			{ label: '毕业去向', name: 'studentWhereabouts', index: 'studentWhereabouts', width: 80 }, 
 			{ label: '用户状态', name: 'status', index: 'status', width: 80 }, 			
 			{ label: '', name: 'gmtCreate', index: 'gmt_create', width: 80 }, 			
 			{ label: '', name: 'gmtModified', index: 'gmt_modified', width: 80 }, 			
