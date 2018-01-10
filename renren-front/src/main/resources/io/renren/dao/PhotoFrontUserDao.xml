@@ -49,7 +49,7 @@
 
 	<select id="queryList" resultType="io.renren.entity.PhotoFrontUserEntity">
 		<if test="classId != null ">
-			select pfu.id ,pfu.account ,pfu.password , latitude, longitude,pfu.phone ,pfu.status ,pfu.gmt_create ,
+			select pfu.student_whereabouts as studentWhereabouts,pfu.student_qq as studentQq,pfu.student_weixin as studentWeixin,pfu.id ,pfu.account ,pfu.password , latitude, longitude,pfu.phone ,pfu.status ,pfu.gmt_create ,
 			pfu.gmt_modified ,pfu.head_img ,pfu.nickname ,pfu.sex , puc.class_role_type as roleId 
 			 from photo_front_user  pfu 
 			left join photo_user_class puc on pfu.id = puc.front_user_id where 
