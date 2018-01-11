@@ -346,11 +346,13 @@ public class StudentAppInterfaceController{
 				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
 				studentService.update(student);
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
-				studentEntity.setSchoolId(classService.queryObject(student.getClassId()).getSchoolId());
+				Integer id = studentEntity.getClassId();
+				studentEntity.setSchoolId(classService.queryObject(id).getSchoolId());
 				return R.ok().put(DATA, studentEntity);
 			}else{
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
-				studentEntity.setSchoolId(classService.queryObject(student.getClassId()).getSchoolId());
+				Integer id = studentEntity.getClassId();
+				studentEntity.setSchoolId(classService.queryObject(id).getSchoolId());
 				return R.ok().put(DATA, studentEntity);
 			}
 		} catch (Exception e) {
