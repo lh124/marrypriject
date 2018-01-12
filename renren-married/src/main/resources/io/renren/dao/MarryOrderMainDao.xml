@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryOrderMainDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		order_id as orderId ,main_id as mainId 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		order_id ,main_id 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryOrderMainEntity" id="marryOrderMainMap">
+		        <result property="orderId" column="order_id"/>
+		        <result property="mainId" column="main_id"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryOrderMainEntity">
+		select <include refid="allColumns"></include> from marry_order_main where order_id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryOrderMainEntity">
+		select <include refid="allColumns"></include> from marry_order_main where order_id=#{orderId}
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_order_main 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryOrderMainEntity">
+		insert into marry_order_main
+		(
+			`order_id`, 
+			`main_id`
+		)
+		values
+		(
+			#{orderId}, 
+			#{mainId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryOrderMainEntity">
+		update marry_order_main 
+		<set>
+			<if test="mainId != null">`main_id` = #{mainId}</if>
+		</set>
+		where order_id = #{orderId}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_order_main where order_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_order_main where order_id in 
+		<foreach item="orderId" collection="array" open="(" separator="," close=")">
+			#{orderId}
+		</foreach>
+	</delete>
+
+</mapper>

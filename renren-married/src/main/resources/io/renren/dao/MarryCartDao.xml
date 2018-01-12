@@ -5,11 +5,11 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,main_id as mainId ,states as states ,createTime as createtime,userId as userId 		
+		id as id ,main_id as mainId ,states as states ,createTime as createtime,userId as userId,businessId as businessId 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,main_id ,states ,createTime ,userId		
+		id ,main_id ,states ,createTime ,userId	,businessId	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.married.MarryCartEntity" id="marryCartMap">
@@ -17,6 +17,7 @@
 		        <result property="mainId" column="main_id"/>
 		        <result property="states" column="states"/>
 		        <result property="userId" column="userId"/>
+		        <result property="businessId" column="businessId"/>
 		        <result property="createtime" column="createTime"/>
 	    </resultMap>
 
@@ -62,6 +63,7 @@
 			`main_id`, 
 			`states`, 
 			`userId`,
+			`businessId`,
 			`createTime`
 		)
 		values
@@ -69,6 +71,7 @@
 			#{mainId}, 
 			1, 
 			#{userId}, 
+			#{businessId}, 
 			#{createtime}
 		)
 	</insert>
