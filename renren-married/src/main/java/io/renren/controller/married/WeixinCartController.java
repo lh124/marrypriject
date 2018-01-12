@@ -117,11 +117,13 @@ public class WeixinCartController {
 		if(list.size() > 0){
 			return R.error("该商品已存在购物车");
 		}
+		MarryMainEntity marryMain = marryMainService.queryObject(main_id);
 		MarryCartEntity marryCartEntity = new MarryCartEntity();
 		marryCartEntity.setMainId(main_id);
 		marryCartEntity.setCreatetime(new Date());
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		marryCartEntity.setUserId(user.getId());
+		marryCartEntity.setBusinessId(marryMain.getUserId());
 		marryCartService.save(marryCartEntity);
 		return R.ok();
 	}

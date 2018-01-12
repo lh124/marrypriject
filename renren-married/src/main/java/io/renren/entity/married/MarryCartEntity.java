@@ -30,15 +30,25 @@ public class MarryCartEntity implements Serializable {
 	@TableField(value="userId")
 	private Integer userId;
 			
-	//该商品状态（0为付款，1为未付款）
+	//该商品状态（0为已下单，1为未下单）
 	@TableField(value="states")
 	private Integer states;
 			
 	//
 	@TableField(value="createTime")
 	private Date createtime;
+	
+	//商户id
+	@TableField(value="businessId")
+	private Integer businessId;
 			
 
+	public Integer getBusinessId() {
+		return businessId;
+	}
+	public void setBusinessId(Integer businessId) {
+		this.businessId = businessId;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

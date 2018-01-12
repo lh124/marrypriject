@@ -1,6 +1,9 @@
 package io.renren.controller.married;
 
+import io.renren.entity.married.MarryOrdersEntity;
+import io.renren.service.married.MarryOrdersService;
 import io.renren.util.WeixinPayUtil;
+import io.renren.utils.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,72 +13,111 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+@RestController
+@RequestMapping("married/weixin")
 public class PayController {
 	
-	public static void main(String[] args) {
-		payparm(null, null);
-	}
+	@Autowired
+	private MarryOrdersService marryOrdersService;
 	
-    public static void payparm(HttpServletRequest request, HttpServletResponse response){  
+	//支付接口
+	@RequestMapping("/pay")
+    public R payparm(HttpServletRequest request, HttpServletResponse response){  
+		String sb = "";
         try {  
-            // 获取openid  
-            String openId = "o7__rjjocXdATM4sz0rYbt2z7SRw";  
-            String appid = WeixinPayUtil.appid;  
-            String paternerKey = WeixinPayUtil.appsecret;  
-            String out_trade_no = "201701547842";  //订单号
-            Map<String, String> paraMap = new HashMap<String, String>();  
-            paraMap.put("appid", appid);  
-            paraMap.put("attach", "支付测试");  
-            paraMap.put("body", "测试购买支付");  
-            paraMap.put("mch_id", WeixinPayUtil.partner);//商户号 
-            paraMap.put("nonce_str", "234234242342342");//随机数  
-            paraMap.put("openid", openId);  
-            paraMap.put("out_trade_no", out_trade_no);  
-            paraMap.put("spbill_create_ip", "123.12.12.123");//终端IP  APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。  
-            paraMap.put("total_fee", "1");  //订单价格
-            paraMap.put("trade_type", "JSAPI");  //交易类型取值如下：JSAPI，NATIVE，APP等，说明详见参数规定
-            paraMap.put("notify_url", WeixinPayUtil.notify_url);// 此路径是微信服务器调用支付结果通知路径  
-            String sign = WeixinPayUtil.generateSignature(paraMap, paternerKey);  
-            paraMap.put("sign", sign);  
-            String xml = WeixinPayUtil.mapToXml(paraMap);  
-            String xmlStr = post(WeixinPayUtil.createOrderURL, xml);
-            System.out.println("--------"+xmlStr);
-            // 预付商品id  
-            String prepay_id = "";  
-            if (xmlStr.indexOf("SUCCESS") != -1) {  
-                Map<String, String> map = WeixinPayUtil.xmlToMap(xmlStr);  
-                prepay_id = (String) map.get("prepay_id");  
-            }  
-            String timeStamp = System.currentTimeMillis()/1000+"";  
-            String nonceStr = "423423424242";  
-            Map<String, String> payMap = new HashMap<String, String>();  
-            payMap.put("appId", appid);  
-            payMap.put("timeStamp", timeStamp);  
-            payMap.put("nonceStr", nonceStr);  
-            payMap.put("signType", "MD5");  
-            payMap.put("package", "prepay_id=" + prepay_id);  
-            String paySign = WeixinPayUtil.generateSignature(payMap, paternerKey);  
-            payMap.put("pg", prepay_id);  
-            payMap.put("paySign", paySign);  
-            // 拼接并返回json  
-            StringBuilder sBuilder = new StringBuilder("[{");  
-            sBuilder.append("appId:'").append(appid).append("',")  
-                        .append("timeStamp:'").append(timeStamp).append("',")  
-                        .append("nonceStr:'").append(nonceStr).append("',")  
-                        .append("pg:'").append(prepay_id).append("',")  
-                        .append("signType:'MD5',")  
-                        .append("paySign:'").append(paySign).append("'");  
-            sBuilder.append("}]");  
-            response.getWriter().print(sBuilder.toString());  
-            response.getWriter().close();  
+        	Integer id = Integer.parseInt(request.getParameter("id"));
+            Map<String, String> paraMap = getSign(id);  
+            Map<String, Object> payMap = getPayData(paraMap);
+            sb = JSONObject.fromObject(payMap).toString();
+            System.out.println(sb);
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
+        return R.ok().put("data", sb);
     }  
+	
+	
+	/**
+	 * 获取支付所需要的所有参数
+	 * @throws Exception 
+	 */
+	public Map<String, Object> getPayData(Map<String, String> paraMap) throws Exception{
+		String appid = WeixinPayUtil.appid; 
+		//将map转为String
+        String xml = WeixinPayUtil.mapToXml(paraMap); 
+        xml = new String(xml.toString().getBytes("UTF-8"));  
+        String xmlStr = post(WeixinPayUtil.createOrderURL, xml);
+        // 预付商品id  
+        String prepay_id = "";  
+        xmlStr = new String(xmlStr.toString().getBytes("GBK"));
+        System.out.println(xmlStr);
+        if (xmlStr.indexOf("SUCCESS") != -1) {  
+            Map<String, String> map = WeixinPayUtil.xmlToMap(xmlStr);  
+            prepay_id = (String) map.get("prepay_id");  
+        }  
+        String timeStamp = System.currentTimeMillis()/1000+"";  
+        String nonceStr = UUID.randomUUID().toString().replace("-", "");  
+        Map<String, String> payMap = new HashMap<String, String>();  
+        payMap.put("appId", appid);  
+        payMap.put("timeStamp", timeStamp);  
+        payMap.put("nonceStr", nonceStr);  
+        payMap.put("signType", "MD5");  
+        payMap.put("package", "prepay_id=" + prepay_id);  
+        String paySign = WeixinPayUtil.generateSignature(payMap, WeixinPayUtil.partnerkey);  
+        payMap.put("pg", prepay_id);  
+        payMap.put("paySign", paySign);  
+        // 拼接并返回json  
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("timeStamp", timeStamp);
+        map.put("nonceStr", nonceStr);
+        map.put("package", "prepay_id="+prepay_id);
+        map.put("paySign", paySign);
+        map.put("signType", "MD5");
+        map.put("appId", appid);
+        return map;
+	}
+	
+	/**
+	 * 统一下单
+	 * @throws Exception 
+	 */
+	public Map<String, String> getSign(Integer id) throws Exception{
+		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
+		String attach = "";
+		String body = "";
+		float total_fee = 0;
+		if(marryOrders.getOrderType() == 1){//直接下单的情况
+			attach = marryOrders.getBusiness();
+			body = marryOrders.getMainDescribe();
+			total_fee = Integer.valueOf(marryOrders.getMainPrice())*100;
+		}
+		String appid = WeixinPayUtil.appid;  
+        Map<String, String> paraMap = new HashMap<String, String>();  
+        paraMap.put("appid", appid);  
+        paraMap.put("attach", attach);  
+        paraMap.put("body", body);  
+        paraMap.put("mch_id", WeixinPayUtil.partner);//商户号 
+        paraMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数  
+        paraMap.put("sign_type", "MD5"); 
+        paraMap.put("out_trade_no", marryOrders.getOrderNumber());  //订单号
+        paraMap.put("spbill_create_ip", "47.92.117.143");//服务器IP地址  
+        paraMap.put("total_fee", total_fee+"");  //订单价格
+        paraMap.put("trade_type", "JSAPI");  //交易类型取值如下：JSAPI，NATIVE，APP等，说明详见参数规定
+        paraMap.put("notify_url", WeixinPayUtil.notify_url);// 此路径是微信服务器调用支付结果通知路径  
+        String sign = WeixinPayUtil.generateSignature(paraMap, WeixinPayUtil.partnerkey);  
+        paraMap.put("sign", sign);
+		return paraMap;
+	}
     
     public static String post(String url,String param) {
         PrintWriter out = null;
@@ -101,7 +143,7 @@ public class PayController {
             out.flush();
             // 定义BufferedReader输入流来读取URL的响应
             in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+                    new InputStreamReader(conn.getInputStream(),"utf-8"));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;

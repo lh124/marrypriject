@@ -29,39 +29,61 @@ public class MarriedWeixinUserController {
 	private MarriedUserService marriedUserService;
 	@Autowired
 	private MarryCartService marryCartService;
-	
+	/**
+	 * 微信首页授权用户登录保存用户信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/save")
 	public R save(HttpServletRequest request){
 		int total = 0;
 		try {
 			MarriedUserEntity us = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-			String openId = (us == null) ? WeixinUtil.getWeixinOpenId(request.getParameter("code")):us.getOpenid();
-//			String openId = "o7__rjjocXdATM4sz0rYbt2z7SRw";
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("sidx", null);
-			map.put("order", null);
-			map.put("offset", 0);
-			map.put("limit", 100);
-			map.put("states", 1);
-			MarriedUserEntity u = new MarriedUserEntity();
-			u.setOpenid(openId);
-			EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
-			u = this.marriedUserService.selectOne(wrapper);
-			if(u == null){
-				JSONObject jsonObject = WeixinUtil.getUserInfo(openId);
-				MarriedUserEntity user = new MarriedUserEntity();
-				user.setCreatetime(new Date());
-				user.setNickname(jsonObject.getString("nickname"));
-				user.setPic(jsonObject.getString("headimgurl"));
-				user.setOpenid(openId);
-				marriedUserService.insert(user);
-				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, user);
-				map.put("userId", user.getId());
+			String code = request.getParameter("code");
+			if(code != null && !"".equals(code) && !"null".equals(code)){
+				String openId = WeixinUtil.getWeixinOpenId(code);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("sidx", null);
+				map.put("order", null);
+				map.put("offset", 0);
+				map.put("limit", 100);
+				map.put("states", 1);
+				MarriedUserEntity u = new MarriedUserEntity();
+				u.setOpenid(openId);
+				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
+				u = this.marriedUserService.selectOne(wrapper);
+				if(u == null){
+					JSONObject jsonObject = WeixinUtil.getUserInfo(openId);
+					MarriedUserEntity user = new MarriedUserEntity();
+					user.setCreatetime(new Date());
+					user.setNickname(jsonObject.getString("nickname"));
+					user.setPic(jsonObject.getString("headimgurl"));
+					user.setOpenid(openId);
+					marriedUserService.insert(user);
+					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, user);
+					map.put("userId", user.getId());
+				}else{
+					map.put("userId", u.getId());
+					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+				}
+				total = marryCartService.queryList(map).size();
+			}else if(us != null){
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("sidx", null);
+				map.put("order", null);
+				map.put("offset", 0);
+				map.put("limit", 100);
+				map.put("states", 1);
+				map.put("userId", us.getId());
+				total = marryCartService.queryList(map).size();
 			}else{
-				map.put("userId", u.getId());
+				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
+				MarriedUserEntity u = new MarriedUserEntity();
+				u.setOpenid(openId);
+				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
+				u = this.marriedUserService.selectOne(wrapper);
 				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
 			}
-			total = marryCartService.queryList(map).size();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

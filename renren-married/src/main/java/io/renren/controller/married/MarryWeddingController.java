@@ -57,7 +57,7 @@ public class MarryWeddingController {
 	}
 	
 	/**
-	 * 列表
+	 * 婚礼列表
 	 */
 	@RequestMapping("/list")
 	@RequiresPermissions("marrywedding:list")
@@ -75,7 +75,7 @@ public class MarryWeddingController {
 	
 	
 	/**
-	 * 信息
+	 * 婚礼信息
 	 */
 	@RequestMapping("/info/{id}")
 	@RequiresPermissions("marrywedding:info")
@@ -86,7 +86,7 @@ public class MarryWeddingController {
 	}
 	
 	/**
-	 * 保存
+	 * 婚礼保存
 	 */
 	@RequestMapping("/save")
 	@RequiresPermissions("marrywedding:save")
@@ -97,7 +97,7 @@ public class MarryWeddingController {
 	}
 	
 	/**
-	 * 修改
+	 * 婚礼修改
 	 */
 	@RequestMapping("/update")
 	@RequiresPermissions("marrywedding:update")
@@ -108,7 +108,7 @@ public class MarryWeddingController {
 	}
 	
 	/**
-	 * 删除
+	 * 婚礼删除
 	 */
 	@RequestMapping("/delete")
 	@RequiresPermissions("marrywedding:delete")

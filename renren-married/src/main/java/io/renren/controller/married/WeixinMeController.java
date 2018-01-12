@@ -109,9 +109,13 @@ public class WeixinMeController {
 		mw.setUserId(user.getId());
 		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(mw);
 		mw = marryWeddingService.selectOne(wrapper);
-		String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?mw.getId().toString():request.getParameter("id");
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("weddingId", weddingId);
+		if(mw != null){
+			String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?mw.getId().toString():request.getParameter("id");
+			map.put("weddingId", weddingId);
+		}else{
+			map.put("weddingId", 0);
+		}
 		return R.ok().put("list", marryPhotoService.queryList(map));
 	}
 	
@@ -446,7 +450,7 @@ public class WeixinMeController {
 		marryWedding = this.marryWeddingService.selectOne(wrapper);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("marryWedding", marryWedding);
-		map.put("user", marriedUserService.queryObject(marryWedding.getUserId()));
+		map.put("user", marriedUserService.queryObject(marryWedding==null?0:marryWedding.getUserId()));
 		return R.ok().put("data", map);
 	}
 

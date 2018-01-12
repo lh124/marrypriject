@@ -19,14 +19,16 @@ public class WeixinIndexController {
 	@Autowired
 	private MarryMainService marryMainService;
 	
+	//微信查询商品接口
 	@RequestMapping("/findObj")
 	public R findObj(HttpServletRequest request){
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		return R.ok().put("obj", marryMainService.queryObject(id));
 	}
 	
+	//首页查询商品列表
 	@RequestMapping("/list")
-	public R save(HttpServletRequest request){
+	public R list(HttpServletRequest request){
 		Integer offset = (Integer.parseInt(request.getParameter("page"))-1)*10;
 		Integer limit = Integer.parseInt(request.getParameter("page"))*10;
 		Map<String, Object> map = new HashMap<String, Object>();

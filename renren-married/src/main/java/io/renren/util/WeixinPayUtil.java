@@ -21,13 +21,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class WeixinPayUtil {  
-    public static final String appid = "wx10479abb9ebf90f4";//在微信开发平台登记的app应用  
-    public static final String appsecret = "c1cc856b646c5cd654d958b36c992b28";  
-    public static final String partner = "1230000109";//商户号  
-    public static final String partnerkey ="XXXXXXXXXXXXXXXXXXXXXXXXXXXXX";//不是商户登录密码，是商户在微信平台设置的32位长度的api秘钥，  
+    public static final String appid = "wxb9072ff1ebcf745c";//在微信开发平台登记的app应用  
+    public static final String appsecret = "b298e38e02eb3d45ca5cc22c68e9bae5";  
+    public static final String partner = "1447493102";//商户号  
+    public static final String partnerkey ="guizhouguanyukejiyouxiangongsi88";//不是商户登录密码，是商户在微信平台设置的32位长度的api秘钥，  
     public static final String createOrderURL="https://api.mch.weixin.qq.com/pay/unifiedorder";  
-    public static final String backUri="http://XXXXXXXX/api/weixin/topay.jhtml";//微信支付下单地址  
-    public static final String notify_url="http://XXXXXXXXXX/api/weixin/notify.jhtml";//异步通知地址  
+    public static final String notify_url="http://wrs.gykjewm.com/married/weixin/pay_success.html";//异步通知地址  
+    
+    
+    
+    
     
     /**
      * XML格式字符串转换为Map
