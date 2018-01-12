@@ -33,7 +33,6 @@ public class JpushClientUtil2 {
         try {
         	jPushClient = new JPushClient(masterSecret,appKey);
             PushPayload pushPayload= JpushClientUtil2.buildPushObject_all_registrationId_alertWithTitle(registrationId,notification_title,msg_title,msg_content,extrasparam);
-            System.out.println("--------------"+pushPayload);
             PushResult pushResult=jPushClient.sendPush(pushPayload);
             System.out.println(pushResult);
             if(pushResult.getResponseCode()==200){
@@ -166,7 +165,7 @@ public class JpushClientUtil2 {
  
                 .setOptions(Options.newBuilder()
                         //此字段的值是用来指定本推送要推送的apns环境，false表示开发，true表示生产；对android和自定义消息无意义
-                        .setApnsProduction(false)
+                        .setApnsProduction(true)
                         //此字段是给开发者自己给推送编号，方便推送者分辨推送记录
                         .setSendno(1)
                         //此字段的值是用来指定本推送的离线保存时长，如果不传此字段则默认保存一天，最多指定保留十天，单位为秒
@@ -232,7 +231,7 @@ public class JpushClientUtil2 {
  
                 .setOptions(Options.newBuilder()
                         //此字段的值是用来指定本推送要推送的apns环境，false表示开发，true表示生产；对android和自定义消息无意义
-                        .setApnsProduction(false)
+                        .setApnsProduction(true)
                         //此字段是给开发者自己给推送编号，方便推送者分辨推送记录
                         .setSendno(1)
                         //此字段的值是用来指定本推送的离线保存时长，如果不传此字段则默认保存一天，最多指定保留十天；
@@ -273,7 +272,7 @@ public class JpushClientUtil2 {
  
                 .setOptions(Options.newBuilder()
                         //此字段的值是用来指定本推送要推送的apns环境，false表示开发，true表示生产；对android和自定义消息无意义
-                        .setApnsProduction(false)
+                        .setApnsProduction(true)
                         //此字段是给开发者自己给推送编号，方便推送者分辨推送记录
                         .setSendno(1)
                         //此字段的值是用来指定本推送的离线保存时长，如果不传此字段则默认保存一天，最多指定保留十天，单位为秒
@@ -319,7 +318,7 @@ public class JpushClientUtil2 {
  
                 .setOptions(Options.newBuilder()
                         //此字段的值是用来指定本推送要推送的apns环境，false表示开发，true表示生产；对android和自定义消息无意义
-                        .setApnsProduction(false)
+                        .setApnsProduction(true)
                         //此字段是给开发者自己给推送编号，方便推送者分辨推送记录
                         .setSendno(1)
                         //此字段的值是用来指定本推送的离线保存时长，如果不传此字段则默认保存一天，最多指定保留十天，单位为秒
@@ -329,7 +328,7 @@ public class JpushClientUtil2 {
     }
  
     public static void main(String[] args){
-    	sendToRegistrationId("5353", "通知", "通知", "通知", "{\"type\":\"1\"}");
+    	sendToRegistrationId("5367", "通知", "通知", "通知", "{\"type\":\"1\"}");
 //        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
 //            System.out.println("success");
 //        }
