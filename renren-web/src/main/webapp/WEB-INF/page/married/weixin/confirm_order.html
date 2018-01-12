@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="${rc.contextPath}/statics/marry/js/common.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
 </head>
 <script type="text/javascript">
-    function init(){
+    $(function(){
          $("#pricetotal").html($("#price").val()+"元");
          $.ajax({
 				type: "POST",
@@ -40,7 +42,7 @@
 					}
 				}
 		});
-    }
+    });
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
     <input type="hidden" id="ids" value="${request.getParameter('goodsId')}">
@@ -59,11 +61,33 @@
 			            </label>
 			        </div>
 				</div>
-				<div class="cart_total_pay">
+				<div class="cart_total_pay" id="chooseWXPay">
 					立即支付
 				</div>
 			</div>
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+    wx.ready(function () {
+	    document.querySelector('#chooseWXPay').onclick = function () {
+	         $.ajax({
+					type: "POST",
+					url: "../weixin/pay",
+					dataType: "json",
+					success: function(result){
+					    if(result.status == 'ok'){
+					       wx.chooseWXPay({
+						      timestamp: result.timeStamp,
+						      nonceStr: result.nonceStr,
+						      package: "prepay_id="+result.packAge,
+						      paySign: result.paySign
+						    });
+					    }
+					
+					}
+			 });
+	    }
+     });
+</script>
 </html>

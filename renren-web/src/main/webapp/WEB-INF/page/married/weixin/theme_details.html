@@ -28,7 +28,10 @@
 		});
     }
     function savecart(id){
-         $.ajax({
+         if(isNaN($("#userId").val())){
+              window.location.href="index.html";
+         }else{
+             $.ajax({
 				type: "POST",
 				url: "../weixin/cart/save?id="+id,
 				dataType: "json",
@@ -38,16 +41,27 @@
 						
 					}
 				}
-		});
+			});
+         }
     }
     
     function savedingdan(id){
          var price = $("#prices").val();
-         window.location.href="confirm_order1.html?goodsId="+id;
+         $.ajax({
+				type: "POST",
+				url: "../weixin/order/saveOrder?mainId="+id+"&type=1",//传的是商品id
+				dataType: "json",
+				success: function(result){
+					if(result.status == 'ok'){
+						window.location.href="confirm_order1.html?orderId="+result.id;//将订单id传过去
+					}
+				}
+			});
     }
 </script>
 <body ontouchstart style="background:#efefef;" onload="init()">
 <input type="hidden" id="id" value="${request.getParameter('id')}">
+<input id="userId" type="hidden" value="$session.getAttribute('user_married').id" >
 <input type="hidden" id="prices" >
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">

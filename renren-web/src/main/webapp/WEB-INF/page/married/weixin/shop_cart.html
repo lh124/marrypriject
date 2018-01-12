@@ -164,7 +164,16 @@
 				}
 			}
 			if(goodsId.length){
-                window.location.href="confirm_order.html?goodsId="+goodsId+"&price="+price;
+			     $.ajax({
+						type: "POST",
+						url: "../weixin/order/saveOrder?mainId="+goodsId+"&type=2",
+						dataType: "json",
+						success: function(result){
+							if(result.status == 'ok'){
+								//window.location.href="confirm_order.html?goodsId="+goodsId+"&price="+price;
+							}
+						}
+				});
 			}else{
 				alert("亲，请先选择您需要购买的商品");
 			}
