@@ -328,7 +328,7 @@ public class JpushClientUtil2 {
     }
  
     public static void main(String[] args){
-    	sendToRegistrationId("5367", "通知", "通知", "通知", "{\"type\":\"1\"}");
+    	sendToRegistrationId("5367", "老师通知", "消息内容标题", "消息内容", "{\"type\":\"5\",\"id\":\"1\"}");
 //        if(JpushClientUtil.sendToAllIos("进出校通知","进出校记录","进校门","")==1){
 //            System.out.println("success");
 //        }
