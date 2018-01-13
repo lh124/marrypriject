@@ -8,27 +8,8 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/mine.js"></script>
 </head>
-<script type="text/javascript">
-    function hunlihudong(){
-        $.ajax({
-				type: "POST",
-			    url: "../weixin/me/allMeSign",
-				dataType: "json",
-				success: function(result){
-				     if(result.status == 'ok'){
-				         if(result.list.length == 0){
-				             alert("暂无");
-				         }else if(result.list.length == 1){
-				             window.location.href = "interact.html?weddingId="+result.list[0].id;
-				         }else{
-				             window.location.href = "smqdlist.html";
-				         }
-				     }
-				}
-		 });
-    }
-</script>
 <body ontouchstart style="background:white;" onload="init()">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
@@ -97,7 +78,7 @@
                 </a>
                 <a href="my_order.html" class="weui-grid">
                     <div class="weui-grid__icon">
-                        <img src="http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/married/success/mine11.png" alt="">
+                        <img src="http://static.gykjewm.com/married/success/mine11.png" alt="">
                     </div>
                     <p class="weui-grid__label" style="color:#fb6666;">我的订单</p>
                 </a>
@@ -132,46 +113,12 @@
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/common.js"></script>
 <script type="text/javascript">
- 	$.ajax({
-		type: "POST",
-	    url: "../user/save",
-	    dataType: "json",
-	    success: function(result){
-	        if(result.status == 'ok'){
-	             $("#total").html(result.total);
-	        }
-		}
-	});
-    $.ajax({
-		type: "POST",
-	    url: "../weixin/index/list?page=1",
-	    dataType: "json",
-	    success: function(result){
-			if(result.status == 'ok'){
-			    var content = "";
-			    var length = result.list.length;
-			    if(length > 3){
-			        length = 3;
-			    }
-			    for(var i = 0; i < length; i++){
-			        content += '<a href="theme_details.html?id='+result.list[i].id+'"><dl><dt>'+
-			                   '<img src="'+result.list[i].pic+'"/></dt><dd>'+
-			                   '<p>'+result.list[i].title+'<span>￥'+result.list[i].price+
-			                   '</span></p></dd></dl></a>';
-			    }
-			    content += '<div class="more"><a href="./theme.html">查看更多'+
-			               '<img src="${rc.contextPath}/statics/marry/img/right.png" alt="">'+
-			               '</a></div>';
-			    $("#list").html(content);
-			}
-		}
-	});
-	wx.ready(function(){
-		document.querySelector('#scanQRCode').onclick = function () {
-		    wx.scanQRCode({
-		      desc: 'scanQRCode desc'
-		    });
-		 };
-	});
-	</script>
+  wx.ready(function(){
+	document.querySelector('#scanQRCode').onclick = function () {
+	    wx.scanQRCode({
+	      desc: 'scanQRCode desc'
+	    });
+	 };
+});
+</script>
 </html>
