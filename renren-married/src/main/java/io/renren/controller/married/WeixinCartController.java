@@ -106,8 +106,10 @@ public class WeixinCartController {
 	@RequestMapping("/save")
 	public R save(HttpServletRequest request){
 		Integer main_id = Integer.parseInt(request.getParameter("id"));
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("main_id", main_id);
+		map.put("user_id", user.getId());
 		map.put("states", 1);
 		map.put("sidx", null);
 		map.put("order", null);
@@ -121,7 +123,6 @@ public class WeixinCartController {
 		MarryCartEntity marryCartEntity = new MarryCartEntity();
 		marryCartEntity.setMainId(main_id);
 		marryCartEntity.setCreatetime(new Date());
-		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		marryCartEntity.setUserId(user.getId());
 		marryCartEntity.setBusinessId(marryMain.getUserId());
 		marryCartService.save(marryCartEntity);
