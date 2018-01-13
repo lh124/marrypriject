@@ -7,6 +7,7 @@ public class AppInterceptorUrlUtil {
 	public static boolean authCheck(String url){
 		String[] annos = {".*/appInterface/main", 
 						  ".*/appInterface/teacher/main",
+						  ".*/appInterface/test/main",
 				          ".*/appInterface/student/main"		         
 		 };
 		boolean isMatch = false;
