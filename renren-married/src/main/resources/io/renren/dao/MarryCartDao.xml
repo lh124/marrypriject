@@ -35,7 +35,7 @@
 	<select id="queryList" resultType="io.renren.entity.married.MarryMainEntity">
 	    select t2.* from  marry_cart t1,marry_main t2 where t1.main_id=t2.id 
 		<if test="main_id != null and main_id != ''">
-			 and t1.main_id=#{main_id} and t1.states=#{states}
+			 and t1.main_id=#{main_id} and t1.states=#{states} and t1.userId=#{user_id}
 		</if>
 		<if test="userId != null and userId != ''">
 			 and t1.userId=#{userId} and t1.states=#{states}
