@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.app.SmartAppDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,edition as edition ,equipment_type as equipmentType ,update_type as updateType ,equipment_path as equipmentPath 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,edition ,equipment_type ,update_type ,equipment_path 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.app.SmartAppEntity" id="smartAppMap">
+		        <result property="id" column="id"/>
+		        <result property="edition" column="edition"/>
+		        <result property="equipmentType" column="equipment_type"/>
+		        <result property="updateType" column="update_type"/>
+		        <result property="equipmentPath" column="equipment_path"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.app.SmartAppEntity">
+		select <include refid="allColumns"></include> from smart_app where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.app.SmartAppEntity">
+		select <include refid="allColumns"></include> from smart_app
+		<if test="equipmentType != null and equipmentType != ''">
+			where equipment_type=#{equipmentType}
+		</if>
+		order by id desc
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_app 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.app.SmartAppEntity">
+		insert into smart_app
+		(
+			`id`, 
+			`edition`, 
+			`equipment_type`, 
+			`update_type`, 
+			`equipment_path`
+		)
+		values
+		(
+			#{id}, 
+			#{edition}, 
+			#{equipmentType}, 
+			#{updateType}, 
+			#{equipmentPath}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.app.SmartAppEntity">
+		update smart_app 
+		<set>
+			<if test="edition != null">`edition` = #{edition}, </if>
+			<if test="equipmentType != null">`equipment_type` = #{equipmentType}, </if>
+			<if test="updateType != null">`update_type` = #{updateType}, </if>
+			<if test="equipmentPath != null">`equipment_path` = #{equipmentPath}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_app where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_app where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
