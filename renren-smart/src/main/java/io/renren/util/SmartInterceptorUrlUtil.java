@@ -11,9 +11,10 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/shouye/handler",
 				".*/smart/shouye/uploadMedio",
 				".*/smart/datainpution/getData",
+				".*/smart/interface_test.html",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
-		boolean isMatch = false;
+		boolean isMatch = false; 
 		
 		for(int i = 0; i < annos.length; i++){
 			
