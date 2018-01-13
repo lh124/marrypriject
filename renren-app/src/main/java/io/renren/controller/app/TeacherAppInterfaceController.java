@@ -2,6 +2,7 @@ package io.renren.controller.app;
 
 import io.renren.entity.TokenEntity;
 import io.renren.entity.app.ClassAppEntity;
+import io.renren.entity.app.SmartAppEntity;
 import io.renren.entity.app.SmartNewsEntity;
 import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
@@ -35,6 +36,7 @@ import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
+import io.renren.service.smart.SmartAppService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
@@ -126,6 +128,8 @@ public class TeacherAppInterfaceController {
 	private WeixinFunctionImgService weixinFunctionImgService;
 	@Autowired
 	private WeixinFunctionService weixinFunctionService;
+	@Autowired
+	private SmartAppService smartAppService;
 	
 	@Autowired
 	private PhotoPicWorkMsgService photoPicWorkMsgService;
@@ -135,6 +139,7 @@ public class TeacherAppInterfaceController {
 	private SmartLeaveService smartLeaveService;
 	@Autowired
 	private SmartNewsService smartNewsService;
+	
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
@@ -973,6 +978,26 @@ public class TeacherAppInterfaceController {
 	
 	@SuppressWarnings("resource")
 	public R login(JSONObject json){
+		Integer updateType = 0;//是否强制更新
+		Integer updateIf = 0;//是否有更新0否1是
+		String appPath = "";
+		if(json.getJSONObject("data").get("equipmentType") != null){
+			Integer equipmentType = json.getJSONObject("data").getInt("equipmentType");
+			Integer edition = Integer.parseInt(json.getJSONObject("data").getString("edition").replace(".", ""));
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("equipmentType", equipmentType);
+			List<SmartAppEntity> list = smartAppService.queryList(map);
+			SmartAppEntity smartApp = new SmartAppEntity();
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				SmartAppEntity smartAppEntity = (SmartAppEntity) iterator.next();
+				smartApp = smartAppEntity;
+			}
+			appPath = smartApp.getEquipmentPath();
+			updateType = smartApp.getUpdateType();
+			if(edition < smartApp.getEdition()){
+				updateIf = 1;
+			}
+		}
 		StudentEntity student = (StudentEntity)JSONObject.toBean(json.getJSONObject("data"), StudentEntity.class);
 		StudentEntity user = new StudentEntity();
 		if(!student.getStudentNo().matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")){
@@ -1021,6 +1046,9 @@ public class TeacherAppInterfaceController {
 				map.put("studentName", user.getStudentName());
 				map.put("studentNo", user.getStudentNo());
 				map.put("phone", user.getPhoen());
+				map.put("updateType", updateType);
+				map.put("updateIf", updateIf);
+				map.put("appPath", appPath);
 				map.put("accessToken", token.getAccessToken());
 				map.put("bindingType", user.getBindingType() == null ? 1:user.getBindingType());
 				return R.ok().put(DATA, map);
