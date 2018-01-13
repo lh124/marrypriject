@@ -7,12 +7,57 @@
 <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
 </head>
 <script type="text/javascript">
-    
+    function save(userType){
+        var type= $("#type").val();
+        if(userType == 1 && type == 4){
+            alert("不能给学生推送请假申请消息");
+            return false;
+        }
+        if(userType == 2 && type == 2){
+            alert("不能给老师推送老师通知");
+            return false;
+        }
+        if(userType == 2 && type == 5){
+            alert("不能给老师推送申请回复");
+            return false;
+        }
+        if(userType == 2 && type == 6){
+            alert("不能给老师推送进出校记录通知");
+            return false;
+        }
+        if($("#userId").val() == null || $("#userId").val() == ""){
+            alert("用户id不能为空");
+            return false;
+        }
+        var url= "http://192.168.1.107:8080/wrs/appInterface/test/main?key="+'{'+
+                 '"type":"test","newsType":"'+type+'","userType":"'+userType+'","userId":"'+$("#userId").val()+'"'+
+                 '}';
+        $.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				success: function(result){
+				    alert(result.msg);
+				}
+		});
+    }
 </script>
 <body>
    <div style="width: 50%;padding-top: 2%;padding-left: 3%;">
-      地址：<input type="text" class="form-control" placeholder="地址" id="url"/><br>
-      参数：<textarea rows="5" cols="" class="form-control" placeholder="参数"></textarea>
+      用户id：<input type="text" class="form-control" placeholder="用户id" id="userId"/><br>
+      推送类型：
+      <select id="type" class="form-control" >
+          <option value="1">学校通知</option>
+          <option value="2">老师通知</option>
+          <option value="3">班内消息</option>
+          <option value="4">请假申请</option>
+          <option value="5">申请回复</option>
+          <option value="6">进出校通知</option>
+      </select>
+      <br><br>
+      <button onclick="save(1)" >给学生推送</button>
+      <button onclick="save(2)" >给老师推送</button>
    </div>
+   <
 </body>
 </html>
