@@ -2,6 +2,7 @@ package io.renren.controller.smart;
 
 import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
+import io.renren.entity.app.SmartAppEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
@@ -22,6 +23,7 @@ import io.renren.service.smart.PhotoPicWorkMsgService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SmartActivitiesService;
+import io.renren.service.smart.SmartAppService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -81,6 +83,8 @@ public class CallBackController {
 	private WeixinFunctionImgService weixinFunctionImgService;
 	@Autowired
 	private WeixinFunctionService weixinFunctionService;
+	@Autowired
+	private SmartAppService smartAppService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -165,6 +169,11 @@ public class CallBackController {
 						uploadtubiao(jsona);
 						return json;
 					}
+					// APP软件上传
+					if (type.equals(TypeEnum.SMART_APP_PATH.getType())){
+						smartAppUplown(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -178,6 +187,21 @@ public class CallBackController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
+		}
+	}
+	
+	/**
+	 * APP软件上传
+	 * @param json
+	 */
+	private void smartAppUplown(JSONObject json){
+		Integer id = json.containsKey("id") ? json.getInt("id") : null;
+		if (id != null) {
+			SmartAppEntity smartAppEntity = smartAppService.queryObject(id);
+			if(smartAppEntity != null){
+				smartAppEntity.setEquipmentPath(ControllerConstant.CDN_URL + json.getString("filename"));
+				smartAppService.update(smartAppEntity);
+			}
 		}
 	}
 	
