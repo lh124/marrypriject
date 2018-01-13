@@ -269,9 +269,40 @@ public class StudentAppInterfaceController{
 				Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
 				jedis.set(json.getString("token"), "");
 				return outLogin(json.getJSONObject("data"));
+			}else if(type.equals("checkVersion")){
+				//检查版本
+				return checkVersion(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R checkVersion(JSONObject json){
+		Integer updateType = 0;//是否强制更新
+		Integer updateIf = 0;//是否有更新0否1是
+		String appPath = "";
+		if(json.get("equipmentType") != null){
+			Integer equipmentType = json.getInt("equipmentType");
+			Integer edition = Integer.parseInt(json.getString("edition").replace(".", ""));
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("equipmentType", equipmentType);
+			List<SmartAppEntity> list = smartAppService.queryList(map);
+			SmartAppEntity smartApp = new SmartAppEntity();
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				SmartAppEntity smartAppEntity = (SmartAppEntity) iterator.next();
+				smartApp = smartAppEntity;
+			}
+			appPath = smartApp.getEquipmentPath();
+			updateType = smartApp.getUpdateType();
+			if(edition < smartApp.getEdition()){
+				updateIf = 1;
+			}
+		}
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("updateType", updateType);
+		map.put("updateIf", updateIf);
+		map.put("appPath", appPath);
+		return R.ok().put(DATA, map);
 	}
 	
 	private R outLogin(JSONObject json){
