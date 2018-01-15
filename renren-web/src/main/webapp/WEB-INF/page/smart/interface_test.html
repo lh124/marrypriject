@@ -41,9 +41,44 @@
 				}
 		});
     }
+    function chaxun(){
+        var schoolName = $("#schoolName").val();
+        var url= "http://192.168.1.107:8080/wrs/appInterface/test/main?key="+'{'+
+                 '"type":"exceptionList","schoolName":"'+schoolName+'"}';
+        $.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				success: function(result){
+				    if(result.status == 'ok'){
+				         var tables = "<tr><td><h4>名称</h4></td><td><h4>时间</h4></td><td><h4>操作</h4></td></tr>";
+				         for(var i = 0; i < result.list.length;i++){
+				             tables += '<tr><td>'+result.list[i].schoolname+'</td><td>'+result.list[i].createtime+
+				                       '</td><td><button onclick="chakan('+result.list[i].id+')">查看</button></td></tr>';
+				         }
+				         $("#tables").html(tables);
+				    }
+				}
+		});
+    }
+    function chakan(id){
+        var url= "http://192.168.1.107:8080/wrs/appInterface/test/main?key="+'{'+
+                 '"type":"exceptionFind","id":"'+id+'"}';
+        $.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				success: function(result){
+				    if(result.status == 'ok'){
+				         alert(result.obj.exceptioninformation);
+				    }
+				}
+		});
+    }
 </script>
 <body>
    <div style="width: 50%;padding-top: 2%;padding-left: 3%;">
+      <h3>通知测试</h3>
       用户id：<input type="text" class="form-control" placeholder="用户id" id="userId"/><br>
       推送类型：
       <select id="type" class="form-control" >
@@ -54,10 +89,23 @@
           <option value="5">申请回复</option>
           <option value="6">进出校通知</option>
       </select>
-      <br><br>
+      <br>
       <button onclick="save(1)" >给学生推送</button>
       <button onclick="save(2)" >给老师推送</button>
    </div>
-   <
+   <div style="width: 50%;padding-top: 2%;padding-left: 3%;">
+       <h3>异常日志查询</h3>
+       <select id="schoolName" class="form-control">
+           <option value="安卓学生端">安卓学生端</option>
+           <option value="安卓老师端">安卓老师端</option>
+           <option value="苹果学生端">苹果学生端</option>
+           <option value="苹果老师端">苹果老师端</option>
+       </select>
+       <br>
+       <button onclick="chaxun()" >查询异常日志信息</button>
+       <br>
+       <table id="tables" border="1" cellspacing="0" bordercolor="#000000" width = "100%" style="text-align: center;">
+       </table>
+   </div>
 </body>
 </html>
