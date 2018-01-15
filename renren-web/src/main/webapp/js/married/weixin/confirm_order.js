@@ -65,7 +65,14 @@ wx.ready(function () {
 			           "paySign":json.paySign //微信签名
 						},
 			                function(res){
-			                    //alert(JSON.stringify(res));
+								$.ajax({
+									type: "POST",
+									url: "../weixin/order/findOrder?id="+$("#orderId").val()+"&type=1",
+									dataType: "json",
+									success: function(result){
+										
+									}
+								});
 			                }
 			            );
 				    }
