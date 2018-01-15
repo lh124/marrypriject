@@ -4,14 +4,17 @@ import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryBlessingEntity;
 import io.renren.entity.married.MarryHelpEntity;
+import io.renren.entity.married.MarryOrdersEntity;
 import io.renren.entity.married.MarryParticipateEntity;
 import io.renren.entity.married.MarryPhotoEntity;
 import io.renren.entity.married.MarrySignEntity;
 import io.renren.entity.married.MarryWeddingEntity;
 import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryBlessingService;
+import io.renren.service.married.MarryCartService;
 import io.renren.service.married.MarryHelpService;
 import io.renren.service.married.MarryImgService;
+import io.renren.service.married.MarryOrdersService;
 import io.renren.service.married.MarryParticipateService;
 import io.renren.service.married.MarryPhotoService;
 import io.renren.service.married.MarrySignService;
@@ -56,6 +59,39 @@ public class WeixinMeController {
 	private MarryPhotoService marryPhotoService;
 	@Autowired
 	private MarryHelpService marryHelpService;
+	@Autowired
+	private MarryCartService marryCartService;
+	@Autowired
+	private MarryOrdersService marryOrdersService;
+	
+	/**
+	 * 权限管理和查看购物车数据
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/jurisdiction")
+	public R jurisdiction(HttpServletRequest request){
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sidx", null);
+		map.put("order", null);
+		map.put("offset", 0);
+		map.put("limit", 100);
+		map.put("states", 1);
+		map.put("userId", user.getId());
+		int total = marryCartService.queryList(map).size();
+		map.put("userId", user.getId());
+		map.put("offset", 0);
+		map.put("limit", 10);
+		map.put("states", 1);
+		List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
+		if(list.size()==0){
+			request.getSession().setAttribute("jurisdiction", 0);
+		}else{
+			request.getSession().setAttribute("jurisdiction", 1);
+		}
+		return R.ok().put("total", total);
+	}
 	
 	/**
 	 * 保存用户帮助记录
