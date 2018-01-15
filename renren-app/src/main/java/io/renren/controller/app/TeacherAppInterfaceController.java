@@ -176,6 +176,9 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("exceptionSave")){
 				//异常日志
 				return exception(json.getJSONObject("data"));
+			}else if(type.equals("checkVersion")){
+				//检查版本
+				return checkVersion(json.getJSONObject("data"));
 			}else{
 				return R.error("请重新登录");
 			}

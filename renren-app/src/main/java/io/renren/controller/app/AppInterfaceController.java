@@ -3,6 +3,7 @@ package io.renren.controller.app;
 import io.renren.entity.TokenEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.service.TokenService;
+import io.renren.service.smart.SmartExceptionService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.R;
 
@@ -27,6 +28,8 @@ public class AppInterfaceController {
 	private TokenService tokenService;
 	@Autowired
 	private StudentService studentService;
+	@Autowired
+	private SmartExceptionService smartExceptionService;
 	
 	
 	@RequestMapping("/main")
@@ -34,7 +37,32 @@ public class AppInterfaceController {
 		String key = request.getParameter("key").replace("&quot;", "\"");
 	    System.out.println(key);
 	    JSONObject json = JSONObject.fromObject(key);
-	    Integer userType = json.getInt("userType");//用户类型
+	    String type = json.getString("type");
+	    if("test".equals(type)){
+	    	return testTongzhi(json);
+	    }else if("exceptionList".equals(type)){
+	    	return exceptionList(json);
+	    }else if("exceptionFind".equals(type)){
+	    	return exceptionFind(json);
+	    }
+		return null;
+	}
+	
+	private R exceptionFind(JSONObject json){
+		return R.ok().put("obj", smartExceptionService.queryObject(json.getInt("id")));
+	}
+	
+	private R exceptionList(JSONObject json){
+		String schoolName = json.getString("schoolName"); 
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("offset", 0);
+		map.put("limit", 1000);
+		map.put("schoolName", schoolName);
+		return R.ok().put("list", smartExceptionService.queryList(map));
+	}
+	
+	private R testTongzhi(JSONObject json){
+		Integer userType = json.getInt("userType");//用户类型
 	    Integer newsType = json.getInt("newsType");//消息类型
 	    Map<String, Object> m = new HashMap<String, Object>();
 	    m.put("type", newsType);
@@ -44,7 +72,7 @@ public class AppInterfaceController {
 	    if(studentEntity == null){
 	    	return R.error("该用户不存在");
 	    }
-	    String title = "";
+		String title = "";
 	    if(newsType == 1){
 	    	title = "学校通知";
 	    }else if(newsType == 2){
@@ -81,7 +109,7 @@ public class AppInterfaceController {
 					"", JSONObject.fromObject(m).toString());
 	    	return R.ok("推送通知成功");
 	    }
-		return null;
+		return R.ok();
 	}
 
 }
