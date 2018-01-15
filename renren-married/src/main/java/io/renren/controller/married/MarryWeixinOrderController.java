@@ -100,18 +100,33 @@ public class MarryWeixinOrderController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("/findOrder")
 	public R findOrder(HttpServletRequest request){
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
+		if(request.getParameter("type") != null && !"null".equals(request.getParameter("type")) || !"".equals(request.getParameter("type"))){
+			marryOrders.setStates(1);
+			marryOrdersService.update(marryOrders);
+		}
 		Integer type = marryOrders.getOrderType();
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(type==1){//直接下单
 			MarryOrderMainEntity marryOrderMain = marryOrderMainService.queryObject(id);
 			MarryMainEntity marryMain = marryMainService.queryObject(marryOrderMain.getMainId());
-			map.put("marryOrders", marryOrders);
 			map.put("marryMain", marryMain);
+		}else{
+			List<MarryMainEntity> marryMainList = new ArrayList<MarryMainEntity>();
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("orderId", marryOrders.getId());
+			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
+			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
+				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
+				marryMainList.add(marryMainService.queryObject(marryOrderMainEntity.getMainId()));
+			}
+			marryOrders.setMarryMainList(marryMainList);
 		}
+		map.put("marryOrders", marryOrders);
 		map.put("type", type);
 		return R.ok().put("map", map);
 	}

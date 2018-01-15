@@ -1,6 +1,12 @@
 package io.renren.controller.married;
 
+import io.renren.constant.ControllerConstant;
+import io.renren.entity.married.MarriedUserEntity;
+import io.renren.entity.married.MarryMainEntity;
+import io.renren.entity.married.MarryOrderMainEntity;
 import io.renren.entity.married.MarryOrdersEntity;
+import io.renren.service.married.MarryMainService;
+import io.renren.service.married.MarryOrderMainService;
 import io.renren.service.married.MarryOrdersService;
 import io.renren.util.WeixinPayUtil;
 import io.renren.utils.R;
@@ -11,7 +17,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,6 +38,10 @@ public class PayController {
 	
 	@Autowired
 	private MarryOrdersService marryOrdersService;
+	@Autowired
+	private MarryOrderMainService marryOrderMainService;
+	@Autowired
+	private MarryMainService marryMainService;
 	
 	//支付接口
 	@RequestMapping("/pay")
@@ -36,7 +49,7 @@ public class PayController {
 		String sb = "";
         try {  
         	Integer id = Integer.parseInt(request.getParameter("id"));
-            Map<String, String> paraMap = getSign(id);  
+            Map<String, String> paraMap = getSign(id,request);  
             Map<String, Object> payMap = getPayData(paraMap);
             sb = JSONObject.fromObject(payMap).toString();
             System.out.println(sb);
@@ -60,7 +73,6 @@ public class PayController {
         // 预付商品id  
         String prepay_id = "";  
         xmlStr = new String(xmlStr.toString().getBytes("GBK"));
-        System.out.println(xmlStr);
         if (xmlStr.indexOf("SUCCESS") != -1) {  
             Map<String, String> map = WeixinPayUtil.xmlToMap(xmlStr);  
             prepay_id = (String) map.get("prepay_id");  
@@ -91,15 +103,28 @@ public class PayController {
 	 * 统一下单
 	 * @throws Exception 
 	 */
-	public Map<String, String> getSign(Integer id) throws Exception{
+	@SuppressWarnings("rawtypes")
+	public Map<String, String> getSign(Integer id,HttpServletRequest request) throws Exception{
 		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		String attach = "";
 		String body = "";
-		float total_fee = 0;
+		Integer total_fee = 0;
 		if(marryOrders.getOrderType() == 1){//直接下单的情况
-			attach = marryOrders.getBusiness();
-			body = marryOrders.getMainDescribe();
-			total_fee = Integer.valueOf(marryOrders.getMainPrice())*100;
+			body = URLEncoder.encode(marryOrders.getMainDescribe(), "UTF-8");
+			attach = URLEncoder.encode(marryOrders.getBusiness(), "UTF-8");
+			total_fee = (new  Double(Double.valueOf(marryOrders.getMainPrice())*100)).intValue();
+		}else{
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("orderId", marryOrders.getId());
+			body = URLEncoder.encode("婚礼商品的购买", "UTF-8");
+			attach = URLEncoder.encode("商品购买", "UTF-8");
+			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
+			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
+				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
+				MarryMainEntity marryMain = marryMainService.queryObject(marryOrderMainEntity.getMainId());
+				total_fee += (new  Double(Double.valueOf(marryMain.getPrice())*100)).intValue();
+			}
 		}
 		String appid = WeixinPayUtil.appid;  
         Map<String, String> paraMap = new HashMap<String, String>();  
@@ -109,11 +134,12 @@ public class PayController {
         paraMap.put("mch_id", WeixinPayUtil.partner);//商户号 
         paraMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数  
         paraMap.put("sign_type", "MD5"); 
+        paraMap.put("openid", user.getOpenid()); 
         paraMap.put("out_trade_no", marryOrders.getOrderNumber());  //订单号
         paraMap.put("spbill_create_ip", "47.92.117.143");//服务器IP地址  
         paraMap.put("total_fee", total_fee+"");  //订单价格
         paraMap.put("trade_type", "JSAPI");  //交易类型取值如下：JSAPI，NATIVE，APP等，说明详见参数规定
-        paraMap.put("notify_url", WeixinPayUtil.notify_url);// 此路径是微信服务器调用支付结果通知路径  
+        paraMap.put("notify_url", WeixinPayUtil.notify_url+"?id="+id);// 此路径是微信服务器调用支付结果通知路径  
         String sign = WeixinPayUtil.generateSignature(paraMap, WeixinPayUtil.partnerkey);  
         paraMap.put("sign", sign);
 		return paraMap;
