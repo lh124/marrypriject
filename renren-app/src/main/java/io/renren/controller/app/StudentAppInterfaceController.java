@@ -15,6 +15,7 @@ import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
+import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
@@ -35,6 +36,7 @@ import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartAppService;
 import io.renren.service.smart.SmartCoursewareService;
+import io.renren.service.smart.SmartExceptionService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartVideoDeviceService;
@@ -143,6 +145,8 @@ public class StudentAppInterfaceController{
 	private TombstoneDeadService tombstoneDeadService;
 	@Autowired
 	private SmartAppService smartAppService;
+	@Autowired
+	private SmartExceptionService smartExceptionService;
 	
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
@@ -181,6 +185,9 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("updatepasswrodtophone")){
 				//忘记密码：通过手机号找回密码
 				return updatepasswrodtophone(json.getJSONObject("data"),request);
+			}else if(type.equals("exceptionSave")){
+				//异常日志
+				return exception(json.getJSONObject("data"));
 			}else{
 				return R.error("请重新登录");
 			}
@@ -272,9 +279,25 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("checkVersion")){
 				//检查版本
 				return checkVersion(json.getJSONObject("data"));
+			}else if(type.equals("exceptionSave")){
+				//异常日志
+				return exception(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R exception(JSONObject json){
+		Integer type = json.getInt("equipmentType");//11安卓学生端，21苹果学生端
+		String exceptioninformation = json.get("exceptioninformation")==null?"":json.getString("exceptioninformation");//异常具体信息
+		String modularname = json.get("modularname")==null?"":json.getString("modularname");//模块名
+		SmartExceptionEntity smartException = new SmartExceptionEntity();
+		smartException.setSchoolname(type==11?"安卓学生端":"苹果学生端");
+		smartException.setExceptioninformation(exceptioninformation);
+		smartException.setModularname(modularname);
+		smartException.setCreatetime(new Date());
+		smartExceptionService.save(smartException);
+		return R.ok();
 	}
 	
 	private R checkVersion(JSONObject json){
