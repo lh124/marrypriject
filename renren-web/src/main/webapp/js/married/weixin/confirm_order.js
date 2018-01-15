@@ -65,7 +65,7 @@ wx.ready(function () {
 			           "paySign":json.paySign //微信签名
 						},
 			                function(res){
-			                    alert(JSON.stringify(res));
+			                    //alert(JSON.stringify(res));
 			                }
 			            );
 				    }
