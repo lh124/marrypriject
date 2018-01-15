@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/pay_success.js"></script>
 </head>
 <body ontouchstart style="background:#efefef;">
+<input type="hidden" id="id" value="${request.getParameter('id')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<!-- 全部 -->
@@ -22,7 +24,7 @@
 		                    </div>
 		                    <div class="weui-media-box__bd">
 		                        <p class="weui-media-box__title" style="font-size:0.4rem;">支付方式：微信支付</p>
-		                        <p class="weui-media-box__title" style="font-size:0.4rem;">订单金额：<span class="sub">￥100.00</span></p>
+		                        <p class="weui-media-box__title" style="font-size:0.4rem;">订单金额：<span class="sub" id="price">￥0.00</span></p>
 		                    </div>
 		                </a>
 		                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
