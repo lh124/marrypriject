@@ -1,3 +1,16 @@
+$(function(){
+	$.ajax({
+		type: "POST",
+	    url: "../weixin/me/jurisdiction",
+		dataType: "json",
+		success: function(result){
+		     if(result.status == 'ok'){
+		    	 $("#total").html(result.total);
+		     }
+		}
+	});
+});
+
 function hunlihudong(){
         $.ajax({
 				type: "POST",
