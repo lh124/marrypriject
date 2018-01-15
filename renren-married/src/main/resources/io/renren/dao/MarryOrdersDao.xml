@@ -31,6 +31,9 @@
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryOrdersEntity">
 		select <include refid="allColumns"></include> from marry_orders where user_id=#{userId}
+		<if test="states != null and states != ''">
+			and states=#{states}
+		</if>
         order by id desc
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
