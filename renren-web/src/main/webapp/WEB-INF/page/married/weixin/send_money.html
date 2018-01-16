@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/send_money.js"></script>
+</head>
+<body ontouchstart style="background:#fff7f8;">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer" style="padding:0 15px;">
+			<div class="weui-cells weui-cells_form">
+	            <div class="weui-cell weui-cell_vcode">
+	                <div class="weui-cell__hd">
+	                    <label class="weui-label">红包金额</label>
+	                </div>
+	                <div class="weui-cell__bd">
+	                    <input class="weui-input" id="total_fee" style="text-align:right;" type="tel" placeholder="0.00"/>
+	                </div>
+	                <div class="weui-cell__ft">
+	                    <button class="weui-vcode-btn"  disabled="disabled" style="color:black;">元</button>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="weui-cells weui-cells_form">
+	             <div class="weui-cell weui-cell_vcode">
+	                <div class="weui-cell__hd">
+	                    <label class="weui-label">红包个数</label>
+	                </div>
+	                <div class="weui-cell__bd">
+	                    <input class="weui-input" id="total" style="text-align:right;" type="tel" placeholder="填写个数"/>
+	                </div>
+	                <div class="weui-cell__ft">
+	                    <button class="weui-vcode-btn" disabled="disabled" style="color:black;">个</button>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="weui-cells weui-cells_form">
+	            <div class="weui-cell">
+	                <div class="weui-cell__hd"><label class="weui-label">留言</label></div>
+	                <div class="weui-cell__bd">
+	                    <input class="weui-input" id="content" placeholder="恭喜发财，大吉大利"/>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="card_top" style="margin-top:0.2rem;font-size:0.4rem;">
+	            <div class="weui-cell">
+	                <a class="selectbg_next" href="#" onclick="chooseWXPay()">塞钱进红包</a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+</body>
+</html>
