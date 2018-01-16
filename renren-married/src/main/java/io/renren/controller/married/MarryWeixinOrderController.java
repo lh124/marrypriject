@@ -57,7 +57,7 @@ public class MarryWeixinOrderController {
 			marryOrders.setOrderNumber(orderNumber);//订单号
 			marryOrders.setUserId(user.getId());
 			marryOrders.setGmtModifiedtime(new Date());
-			marryOrders.setStates(0);
+			marryOrders.setStates(0); 
 			Integer mainId = Integer.parseInt(request.getParameter("mainId"));
 			MarryMainEntity marryMain = marryMainService.queryObject(mainId);
 			SysUserEntity u = sysUserService.queryObject(new Long(marryMain.getUserId()));
@@ -105,10 +105,6 @@ public class MarryWeixinOrderController {
 	public R findOrder(HttpServletRequest request){
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
-		if(request.getParameter("type") != null && !"null".equals(request.getParameter("type")) || !"".equals(request.getParameter("type"))){
-			marryOrders.setStates(1);
-			marryOrdersService.update(marryOrders);
-		}
 		Integer type = marryOrders.getOrderType();
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(type==1){//直接下单
