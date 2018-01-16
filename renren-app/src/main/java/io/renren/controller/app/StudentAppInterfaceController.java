@@ -307,6 +307,8 @@ public class StudentAppInterfaceController{
 		Integer updateType = 0;//是否强制更新
 		Integer updateIf = 0;//是否有更新0否1是
 		String appPath = "";
+		String remark = "";
+		String editions = "";
 		if(json.get("equipmentType") != null){
 			Integer equipmentType = json.getInt("equipmentType");
 			Integer edition = Integer.parseInt(json.getString("edition").replace(".", ""));
@@ -319,6 +321,8 @@ public class StudentAppInterfaceController{
 				smartApp = smartAppEntity;
 			}
 			appPath = smartApp.getEquipmentPath();
+			editions = smartApp.getEdition().toString().replace("", ".").substring(1,6);
+			remark = smartApp.getRemark();
 			updateType = smartApp.getUpdateType();
 			if(edition < smartApp.getEdition()){
 				updateIf = 1;
@@ -328,6 +332,8 @@ public class StudentAppInterfaceController{
 		map.put("updateType", updateType);
 		map.put("updateIf", updateIf);
 		map.put("appPath", appPath);
+		map.put("remark", remark);
+		map.put("edition", editions);
 		return R.ok().put(DATA, map);
 	}
 	
