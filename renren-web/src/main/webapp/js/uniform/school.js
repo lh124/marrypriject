@@ -6,6 +6,13 @@ $(function () {
 			{ label: 'id', name: 'school.id', index: 'id', width: 50, key: true },
 			{ label: '学校名', name: 'school.schoolName', index: 'school_name', width: 80 }, 			
 			{ label: 'pw', name: 'school.pw', index: 'pw', width: 80 },
+			{ label: '是否强制绑定手机号', name: 'school.bindingType', index: 'bindingType', width: 80,formatter :function(r){
+				 if(r == 0 ){
+					 return '否';
+				 }else{
+					 return '是';
+				 }
+			} },
 			{ label: '所属城市id', name: 'school.cityId', index: 'city_id', width: 80 }
         ],
 		viewrecords: true,
