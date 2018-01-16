@@ -5,6 +5,11 @@ $(function(){
 				dataType: "json",
 				success: function(result){
 					if(result.status == 'ok'){
+						if(result.map.marryOrders.states == '1'){
+							$("#zhifu").html("订单状态：支付成功");
+						}else{
+							$("#zhifu").html("订单状态：未支付");
+						}
 					    if(result.map.type == 1){
 					        $("#price").html("￥"+result.map.marryMain.price);
 					    }else if(result.map.type == 2){
