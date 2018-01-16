@@ -22,8 +22,9 @@ $(function () {
 				 }else{
 					 return '否';
 				 }
-			} }, 			
-			{ label: '下载路径', name: 'equipmentPath', index: 'equipment_path', width: 80 }			
+			} },
+			{ label: '下载路径', name: 'equipmentPath', index: 'equipment_path', width: 80 },
+			{ label: '更新说明', name: 'remark', index: 'remark', width: 80 }
         ],
 		viewrecords: true,
         height: 385,
