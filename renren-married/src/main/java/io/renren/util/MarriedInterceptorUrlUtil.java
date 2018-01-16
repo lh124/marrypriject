@@ -23,6 +23,7 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/me/findWedding",//通过id查询婚礼记录接口
 						  
 						  ".*/married/weixin/notify",//支付接口回调接口
+						  ".*/married/weixin/moneyNotify",//支付接口回调接口
 						  
 						  //PC端现场页面需要屏蔽掉
 						  ".*/married/xianchang/hongbao.html",

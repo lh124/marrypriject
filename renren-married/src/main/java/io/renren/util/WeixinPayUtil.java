@@ -17,6 +17,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.sf.json.JSONObject;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -30,6 +32,33 @@ public class WeixinPayUtil {
     
     
     
+    public static void main(String[] args) {
+		String xml = "<xml>"+
+					"<appid><![CDATA[wxb9072ff1ebcf745c]]></appid>/n"+
+					"<attach><![CDATA[admin]]></attach>/n"+
+					"<bank_type><![CDATA[CFT]]></bank_type>/n"+
+					"<cash_fee><![CDATA[1]]></cash_fee>/n"+
+					"<fee_type><![CDATA[CNY]]></fee_type>/n"+
+					"<id><![CDATA[22]]></id>/n"+
+					"<is_subscribe><![CDATA[Y]]></is_subscribe>/n"+
+					"<mch_id><![CDATA[1447493102]]></mch_id>/n"+
+					"<nonce_str><![CDATA[47942af9b3c54de183169dcb539b2e06]]></nonce_str>/n"+
+					"<openid><![CDATA[oZSiWxOxNIVH7s8wxiORTchfGxEo]]></openid>/n"+
+					"<out_trade_no><![CDATA[4949551516081108059]]></out_trade_no>/n"+
+					"<result_code><![CDATA[SUCCESS]]></result_code>/n"+
+					"<return_code><![CDATA[SUCCESS]]></return_code>/n"+
+					"<sign><![CDATA[F9B43E1EDBA575A2149FDFC3DCB99FF1]]></sign>/n"+
+					"<time_end><![CDATA[20180116133839]]></time_end>/n"+
+					"<total_fee>1</total_fee>/n"+
+					"<trade_type><![CDATA[JSAPI]]></trade_type>/n"+
+					"<transaction_id><![CDATA[4200000069201801165007914044]]></transaction_id>/n"+
+					"</xml>/n";
+		try {
+			System.out.println(JSONObject.fromObject(xmlToMap(xml.replace(">/n", ">"))));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
     
     
     /**
