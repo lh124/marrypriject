@@ -26,7 +26,7 @@ public class WeixinPayUtil {
     public static final String partner = "1447493102";//商户号  
     public static final String partnerkey ="guizhouguanyukejiyouxiangongsi88";//不是商户登录密码，是商户在微信平台设置的32位长度的api秘钥，  
     public static final String createOrderURL="https://api.mch.weixin.qq.com/pay/unifiedorder";  
-    public static final String notify_url="http://wrs.gykjewm.com/married/weixin/pay_success.html";//异步通知地址  
+    public static final String notify_url="http://wrs.gykjewm.com/married/weixin/notify";//异步通知地址  
     
     
     
