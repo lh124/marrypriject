@@ -1116,7 +1116,7 @@ public class TeacherAppInterfaceController {
 				map.put("updateIf", updateIf);
 				map.put("appPath", appPath);
 				map.put("accessToken", token.getAccessToken());
-				map.put("bindingType", user.getBindingType() == null ? 1:user.getBindingType());
+				map.put("bindingType", schoolService.queryObject(user.getSchoolId()).getBindingType());
 				return R.ok().put(DATA, map);
 			}else{
 				return R.error("密码错误");

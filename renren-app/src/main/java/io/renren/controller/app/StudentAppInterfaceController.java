@@ -909,7 +909,7 @@ public class StudentAppInterfaceController{
 				map.put("updateType", updateType);
 				map.put("updateIf", updateIf);
 				map.put("appPath", appPath);
-				map.put("bindingType", user.getBindingType() == null ? 1:user.getBindingType());
+				map.put("bindingType", schoolService.queryObject(classService.queryObject(user.getClassId()).getSchoolId()).getBindingType());
 				return R.ok().put(DATA, map);
 			}else{
 				return R.error("密码错误");
