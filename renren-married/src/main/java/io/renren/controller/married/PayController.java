@@ -57,7 +57,6 @@ public class PayController {
             Map<String, String> paraMap = getSign(id,request);  
             Map<String, Object> payMap = getPayData(id,paraMap);
             sb = JSONObject.fromObject(payMap).toString();
-            System.out.println(sb);
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
@@ -214,13 +213,19 @@ public class PayController {
             if ("SUCCESS".equals(json.getString("result_code"))) {
             	Integer id = json.getInt("id");
             	MarryOrdersEntity marryOrdersEntity = marryOrdersService.queryObject(id);
-            	marryOrdersEntity.setStates(1);
-            	marryOrdersService.update(marryOrdersEntity);
-                resultState.setErrcode(0);// 表示成功
-                resultState.setErrmsg("支付成功");
-                /**** 业务逻辑  保存openid之类的****/
-                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
-                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            	if(!marryOrdersEntity.getOrderNumber().equals(json.getString("out_trade_no"))){
+            		 resultState.setErrcode(-1);// 支付失败
+                     resultState.setErrmsg("支付失败");
+                     resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
+            	}else{
+            		marryOrdersEntity.setStates(1);
+                	marryOrdersService.update(marryOrdersEntity);
+                    resultState.setErrcode(0);// 表示成功
+                    resultState.setErrmsg("支付成功");
+                    /**** 业务逻辑  保存openid之类的****/
+                    // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            	}
             } else {
                 resultState.setErrcode(-1);// 支付失败
                 resultState.setErrmsg("支付失败");
