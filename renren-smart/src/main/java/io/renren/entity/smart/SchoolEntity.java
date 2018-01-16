@@ -33,8 +33,17 @@ public class SchoolEntity implements Serializable {
 	//
 	@TableField(value="city_id")
 	private Integer cityId;
+	
+	@TableField(value="bindingType")
+	private Integer bindingType;
 			
 
+	public Integer getBindingType() {
+		return bindingType;
+	}
+	public void setBindingType(Integer bindingType) {
+		this.bindingType = bindingType;
+	}
 	/**
 	 * 设置：
 	 */
