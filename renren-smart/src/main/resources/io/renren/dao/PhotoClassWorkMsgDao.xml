@@ -47,6 +47,10 @@
 			SELECT pcm.id,pcm.content,pcm.gmt_create,ppwm.name ,pcm.voice,pcm.user_id FROM photo_class_work_msg pcm left JOIN
 			 photo_pic_work_msg ppwm ON pcm.id = ppwm.related_id WHERE pcm.class_id=#{classId}
 			)t1,smart_news t2 where t2.userId = #{userId} and t1.id = t2.newsId
+			
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
 	</select>
 	
 	<select id="queryList" resultMap="queryListMap">
