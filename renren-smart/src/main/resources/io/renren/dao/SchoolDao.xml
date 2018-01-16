@@ -5,17 +5,18 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,school_name as schoolName ,pw as pw , city_id as cityId 
+		id as id ,school_name as schoolName ,pw as pw , city_id as cityId,bindingType as bindingType 
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,school_name ,pw , city_id 
+		id ,school_name ,pw , city_id,bindingType 
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SchoolEntity" id="schoolMap">
 		        <result property="id" column="id"/>
 		        <result property="schoolName" column="school_name"/>
 		        <result property="pw" column="pw"/>
+		        <result property="bindingType" column="bindingType"/>
 	    </resultMap>  
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SchoolEntity">
@@ -51,12 +52,14 @@
 		(
 			`school_name`, 
 			`pw`,
+			`bindingType`,
 			`city_id`
 		)
 		values
 		(
 			#{schoolName}, 
 			#{pw},
+			#{bindingType},
 			#{cityId}
 		)
 	</insert>
@@ -66,7 +69,8 @@
 		<set>
 			<if test="schoolName != null">`school_name` = #{schoolName}, </if>
 			<if test="pw != null">`pw` = #{pw},</if>
-			<if test="pw != null">`city_id` = #{cityId}</if>
+			<if test="bindingType != null">`bindingType` = #{bindingType},</if>
+			<if test="cityId != null">`city_id` = #{cityId}</if>
 		</set>
 		where id = #{id}
 	</update>
