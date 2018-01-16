@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryGetmoneyDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,openId as openid ,total_fee as totalFee ,gmt_modifiedtime as gmtModifiedtime 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,openId ,total_fee ,gmt_modifiedtime 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryGetmoneyEntity" id="marryGetmoneyMap">
+		        <result property="id" column="id"/>
+		        <result property="openid" column="openId"/>
+		        <result property="totalFee" column="total_fee"/>
+		        <result property="gmtModifiedtime" column="gmt_modifiedtime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryGetmoneyEntity">
+		select <include refid="allColumns"></include> from marry_getmoney where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryGetmoneyEntity">
+		select <include refid="allColumns"></include> from marry_getmoney
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_getmoney 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryGetmoneyEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_getmoney
+		(
+			`openId`, 
+			`total_fee`, 
+			`gmt_modifiedtime`
+		)
+		values
+		(
+			#{openid}, 
+			#{totalFee}, 
+			#{gmtModifiedtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryGetmoneyEntity">
+		update marry_getmoney 
+		<set>
+			<if test="openid != null">`openId` = #{openid}, </if>
+			<if test="totalFee != null">`total_fee` = #{totalFee}, </if>
+			<if test="gmtModifiedtime != null">`gmt_modifiedtime` = #{gmtModifiedtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_getmoney where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_getmoney where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryRedmoneyDetailDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,user_id as userId ,total_fee as totalFee ,states as states ,wedding_id as weddingId ,gmt_modifiedtime as gmtModifiedtime 		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,user_id ,total_fee ,states ,wedding_id ,gmt_modifiedtime 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.married.MarryRedmoneyDetailEntity" id="marryRedmoneyDetailMap">
+		        <result property="id" column="id"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="totalFee" column="total_fee"/>
+		        <result property="states" column="states"/>
+		        <result property="weddingId" column="wedding_id"/>
+		        <result property="gmtModifiedtime" column="gmt_modifiedtime"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.married.MarryRedmoneyDetailEntity">
+		select <include refid="allColumns"></include> from marry_redmoney_detail where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryRedmoneyDetailEntity">
+		select <include refid="allColumns"></include> from marry_redmoney_detail
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from marry_redmoney_detail 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.married.MarryRedmoneyDetailEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into marry_redmoney_detail
+		(
+			`user_id`, 
+			`total_fee`, 
+			`states`, 
+			`wedding_id`, 
+			`gmt_modifiedtime`
+		)
+		values
+		(
+			#{userId}, 
+			#{totalFee}, 
+			#{states}, 
+			#{weddingId}, 
+			#{gmtModifiedtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.married.MarryRedmoneyDetailEntity">
+		update marry_redmoney_detail 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="totalFee != null">`total_fee` = #{totalFee}, </if>
+			<if test="states != null">`states` = #{states}, </if>
+			<if test="weddingId != null">`wedding_id` = #{weddingId}, </if>
+			<if test="gmtModifiedtime != null">`gmt_modifiedtime` = #{gmtModifiedtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from marry_redmoney_detail where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from marry_redmoney_detail where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
