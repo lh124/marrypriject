@@ -37,8 +37,18 @@ public class SmartAppEntity implements Serializable {
 	//下载路径
 	@TableField(value="equipment_path")
 	private String equipmentPath;
+	
+	//版本说明
+	@TableField(value="remark")
+	private String remark;
 			
 
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	/**
 	 * 设置：1.0.1(100)
 	 */
