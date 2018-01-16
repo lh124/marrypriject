@@ -86,7 +86,7 @@ public class WeixinMeController {
 		map.put("states", 1);
 		List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
 		if(list.size()==0){
-			request.getSession().setAttribute("jurisdiction", 0);
+			request.getSession().setAttribute("jurisdiction", 1);//无权限就不让其显示相关模块
 		}else{
 			request.getSession().setAttribute("jurisdiction", 1);
 		}

@@ -5,14 +5,17 @@ import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryMainEntity;
 import io.renren.entity.married.MarryOrderMainEntity;
 import io.renren.entity.married.MarryOrdersEntity;
+import io.renren.entity.married.ResultState;
 import io.renren.service.married.MarryMainService;
 import io.renren.service.married.MarryOrderMainService;
 import io.renren.service.married.MarryOrdersService;
 import io.renren.util.WeixinPayUtil;
 import io.renren.utils.R;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -31,7 +34,9 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping("married/weixin")
 public class PayController {
@@ -50,7 +55,7 @@ public class PayController {
         try {  
         	Integer id = Integer.parseInt(request.getParameter("id"));
             Map<String, String> paraMap = getSign(id,request);  
-            Map<String, Object> payMap = getPayData(paraMap);
+            Map<String, Object> payMap = getPayData(id,paraMap);
             sb = JSONObject.fromObject(payMap).toString();
             System.out.println(sb);
         } catch (Exception e) {  
@@ -64,7 +69,7 @@ public class PayController {
 	 * 获取支付所需要的所有参数
 	 * @throws Exception 
 	 */
-	public Map<String, Object> getPayData(Map<String, String> paraMap) throws Exception{
+	public Map<String, Object> getPayData(Integer id,Map<String, String> paraMap) throws Exception{
 		String appid = WeixinPayUtil.appid; 
 		//将map转为String
         String xml = WeixinPayUtil.mapToXml(paraMap); 
@@ -96,6 +101,7 @@ public class PayController {
         map.put("paySign", paySign);
         map.put("signType", "MD5");
         map.put("appId", appid);
+        map.put("id", id);
         return map;
 	}
 	
@@ -139,9 +145,10 @@ public class PayController {
         paraMap.put("spbill_create_ip", "47.92.117.143");//服务器IP地址  
         paraMap.put("total_fee", total_fee+"");  //订单价格
         paraMap.put("trade_type", "JSAPI");  //交易类型取值如下：JSAPI，NATIVE，APP等，说明详见参数规定
-        paraMap.put("notify_url", WeixinPayUtil.notify_url+"?id="+id);// 此路径是微信服务器调用支付结果通知路径  
+        paraMap.put("notify_url", WeixinPayUtil.notify_url);// 此路径是微信服务器调用支付结果通知路径  
         String sign = WeixinPayUtil.generateSignature(paraMap, WeixinPayUtil.partnerkey);  
         paraMap.put("sign", sign);
+        request.getSession().setAttribute("sign", sign);
 		return paraMap;
 	}
     
@@ -194,5 +201,63 @@ public class PayController {
         }
         return result;
 	}
+    
+    @ResponseBody
+    @RequestMapping("notify")
+    public ResultState notify(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ResultState resultState = new ResultState();
+        String resXml = ""; // 反馈给微信服务器
+        String notifyXml = convertStreamToString(request.getInputStream());// 微信支付系统发送的数据（<![CDATA[product_001]]>格式）
+        // 验证签名
+        JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
+        if (json.getString("sign").equals(request.getSession().getAttribute("sign"))) {
+            if ("SUCCESS".equals(json.getString("result_code"))) {
+            	Integer id = json.getInt("id");
+            	MarryOrdersEntity marryOrdersEntity = marryOrdersService.queryObject(id);
+            	marryOrdersEntity.setStates(1);
+            	marryOrdersService.update(marryOrdersEntity);
+                resultState.setErrcode(0);// 表示成功
+                resultState.setErrmsg("支付成功");
+                /**** 业务逻辑  保存openid之类的****/
+                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            } else {
+                resultState.setErrcode(-1);// 支付失败
+                resultState.setErrmsg("支付失败");
+                resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
+            }
+        } else {
+            resultState.setErrcode(-1);// 支付失败
+            resultState.setErrmsg("签名验证错误");
+            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[签名验证错误]]></return_msg>" + "</xml> ";
+        }
+ 
+        BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
+        out.write(resXml.getBytes());
+        out.flush();
+        out.close();
+        return resultState;
+    }
+    
+    public String convertStreamToString(InputStream is) {   
+    	   BufferedReader reader = new BufferedReader(new InputStreamReader(is));   
+    	        StringBuilder sb = new StringBuilder();   
+    	        String line = null;   
+    	        try {   
+    	            while ((line = reader.readLine()) != null) {   
+    	                sb.append(line + "/n");   
+    	            }   
+    	        } catch (IOException e) {   
+    	            e.printStackTrace();   
+    	        } finally {   
+    	            try {   
+    	                is.close();   
+    	            } catch (IOException e) {   
+    	                e.printStackTrace();   
+    	            }   
+
+    	        }   
+    	        return sb.toString();   
+    	    }    
     
 }

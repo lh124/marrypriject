@@ -2,13 +2,16 @@ package io.renren.controller.married;
 
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
+import io.renren.entity.married.MarryOrdersEntity;
 import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryCartService;
+import io.renren.service.married.MarryOrdersService;
 import io.renren.util.WeixinUtil;
 import io.renren.utils.R;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +32,8 @@ public class MarriedWeixinUserController {
 	private MarriedUserService marriedUserService;
 	@Autowired
 	private MarryCartService marryCartService;
+	@Autowired
+	private MarryOrdersService marryOrdersService;
 	/**
 	 * 微信首页授权用户登录保存用户信息
 	 * @param request
@@ -67,6 +72,12 @@ public class MarriedWeixinUserController {
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
 				}
 				total = marryCartService.queryList(map).size();
+				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
+				if(list.size()==0){
+					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
+				}else{
+					request.getSession().setAttribute("jurisdiction", 1);
+				}
 			}else if(us != null){
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("sidx", null);
@@ -76,6 +87,13 @@ public class MarriedWeixinUserController {
 				map.put("states", 1);
 				map.put("userId", us.getId());
 				total = marryCartService.queryList(map).size();
+				
+				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
+				if(list.size()==0){
+					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
+				}else{
+					request.getSession().setAttribute("jurisdiction", 1);
+				}
 			}else{
 				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
 				MarriedUserEntity u = new MarriedUserEntity();
