@@ -26,7 +26,8 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryRedmoneyDetailEntity">
-		select <include refid="allColumns"></include> from marry_redmoney_detail
+		select <include refid="allColumns"></include> from marry_redmoney_detail where wedding_id=#{weddingId}
+			and states=0
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
