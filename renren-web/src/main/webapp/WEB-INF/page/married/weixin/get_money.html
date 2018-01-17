@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>“码”上结婚</title>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/get_money.js"></script>
+    <style type="text/css">
+		.get_money{width: 2.5rem;margin:0 auto;padding-top:40px;}
+		.get_money dt{width: 2.0rem;height:2.0rem;margin:0 auto;}
+		.get_money dt img{display: block;width: 100%;height: 100%;}
+		.get_money dd{text-align: center;line-height: 28px;}
+    </style>
+</head>
+<body ontouchstart style="background:white;" onload="init()">
+    <input type="hidden" id="id">
+	<div class="container" id="container">
+		<div class="page" id="pageContainer" style="padding:0 15px;">
+			<dl class="get_money">
+				<dt><img src="${rc.contextPath}/statics/tombstone/img/1.png" id="bgmusic"></dt>
+				<dd>
+					<p style="font-size:0.4rem;">账号余额</p>
+					<p style="font-size:0.5rem;" id="totalFee">￥0.00元</p>
+				</dd>
+			</dl>
+			<div class="card_top" style="margin-top:0.2rem;font-size:0.4rem;">
+	            <div class="weui-cell">
+	                <a class="selectbg_next" href="#" onclick="topay()">提现</a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+</body>
+</html>

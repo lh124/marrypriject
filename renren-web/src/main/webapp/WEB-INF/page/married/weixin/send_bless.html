@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/send_bless.js"></script>
 </head>
 <body ontouchstart style="background:white;">
+    <input type="hidden" id="weddingId" value="${request.getParameter('weddingId')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="page__category js_categoryInner">
@@ -20,10 +23,10 @@
                             </div>
                             <div class="weui-cell__ft"></div>
                         </a>
-                        <a class="weui-cell weui-cell_access js_item" data-id="input" href="javascript:;" style="background:#fdf7f7;margin-top:0.5rem;">
+                        <a class="weui-cell weui-cell_access js_item" onclick="topay()" data-id="input" href="javascript:;" style="background:#fdf7f7;margin-top:0.5rem;">
                             <div class="weui-cell__bd send">
                                 <img src="${rc.contextPath}/statics/marry/img/send_video.png">
-                                <p style="margin-top:12px;">发送礼金</p>
+                                <p style="margin-top:12px;">发送红包</p>
                             </div>
                             <div class="weui-cell__ft"></div>
                         </a>
@@ -31,5 +34,21 @@
             </div>
 		</div>
 	</div>
+	
+	   <!--BEGIN dialog1-->
+        <div class="js_dialog" id="iosDialog1" style="display: none;">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入红包金额</strong></div>
+                <div class="weui-dialog__bd">
+                	<input class="weui-input" type="text" id="totalFee" placeholder="输入金额">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="closedialog()">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="saveTotalFee()">确认</a>
+                </div>
+            </div>
+        </div>
+        <!--END dialog1-->
 </body>
 </html>
