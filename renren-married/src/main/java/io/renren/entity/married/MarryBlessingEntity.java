@@ -42,11 +42,34 @@ public class MarryBlessingEntity implements Serializable {
 	@TableField(value="openId")
 	private String openid;
 	
+	//nickname
+	@TableField(value="nickname")
 	private String nickname;
 	
+	@TableField(value="pic")
 	private String pic;
+	
+	//红包祝福时的订单号
+	@TableField(value="ordernumber")
+	private String ordernumber;
+	
+	//红包时的状态（0为未付款，1为已付款）
+	@TableField(value="states")
+	private Integer states;
 			
 
+	public Integer getStates() {
+		return states;
+	}
+	public void setStates(Integer states) {
+		this.states = states;
+	}
+	public String getOrdernumber() {
+		return ordernumber;
+	}
+	public void setOrdernumber(String ordernumber) {
+		this.ordernumber = ordernumber;
+	}
 	public String getNickname() {
 		return nickname;
 	}
