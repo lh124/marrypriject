@@ -31,7 +31,18 @@
 							alert(JSON.stringify(res));
 									if(res.err_msg == "get_brand_wcpay_request:ok" ) {
 										alert('支付成功');
-							            window.location.replace("pay_success.html?id="+id);
+										var websocket = null;
+										if ('WebSocket' in window) {
+									         websocket = new WebSocket("ws://192.168.1.107:8080/wrs/smart/websocket");
+									     }
+									     else {
+									         alert('当前浏览器 Not support websocket')
+									     }
+										var obj = JSON.stringify({
+								    		id:1
+								    	});
+										websocket.send(obj);
+							            window.location.replace("hongbao.html?weddingId="+id);
 							        }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
 							            alert('支付取消');
 							        }else if(res.err_msg == "get_brand_wcpay_request:fail" ){
