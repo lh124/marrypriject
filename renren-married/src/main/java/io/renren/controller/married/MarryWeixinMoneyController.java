@@ -2,6 +2,7 @@ package io.renren.controller.married;
 
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
+import io.renren.entity.married.MarryGetmoneyEntity;
 import io.renren.entity.married.MarryRedmoneyDetailEntity;
 import io.renren.entity.married.MarryRedmoneyMainEntity;
 import io.renren.entity.married.MarryWeddingEntity;
@@ -15,6 +16,9 @@ import io.renren.utils.R;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,23 +26,35 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+@SuppressWarnings("deprecation")
 @RestController
 @RequestMapping("married/weixin")
 public class MarryWeixinMoneyController {
@@ -51,6 +67,173 @@ public class MarryWeixinMoneyController {
 	private MarryRedmoneyMainService marryRedmoneyMainService;//红包的主表
 	@Autowired
 	private MarryWeddingService marryWeddingService;
+	
+	/**
+	 * 将自己账号余额提现
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/get_money_tome")
+	public R get_money(HttpServletRequest request){
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		MarryGetmoneyEntity mg = marryGetmoneyService.queryObject(id);
+		try {
+			String xml = WeixinPayUtil.mapToXml(pay(mg));
+			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return R.ok();
+	}
+	
+	public static void main(String[] args) {
+		MarryGetmoneyEntity mg = new MarryGetmoneyEntity();
+		mg.setOpenid("o7__rjj8Iq1k8Uu52TnNP2YIUa04");
+		mg.setTotalFee(0.01);
+		try {
+			String xml = WeixinPayUtil.mapToXml(pay(mg));
+			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 获取当前婚礼下的所有红包记录
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/findAllredmoneydetail")
+	public R findAllredmoneydetail(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("weddingId", request.getParameter("weddingId"));
+		map.put("offset", 0);
+		map.put("limit", 200);
+		map.put("states", 0);
+		return R.ok().put("list", marryRedmoneyDetailService.queryList(map));
+	}
+	
+	/**
+	 * 根据id查询红包且放入自己的账号中
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/findredmoneydetail")
+	public R findredmoneydetail(HttpServletRequest request){
+		if("undefined".equals(request.getParameter("id"))){
+			return R.error("下手太慢了，已被别人领取了");
+		}
+		Integer id= Integer.parseInt(request.getParameter("id"));
+		MarryRedmoneyDetailEntity marryRedmoneyDetail = marryRedmoneyDetailService.queryObject(id);
+		if(marryRedmoneyDetail.getStates()==1){
+			return R.error("下手太慢了，已被别人领取了");
+		}else{
+			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+			MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
+			marryGetmoney.setOpenid(user.getOpenid());
+			EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
+			MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
+			if(mg == null){
+				MarryGetmoneyEntity mgm = new MarryGetmoneyEntity();
+				mgm.setOpenid(user.getOpenid());
+				mgm.setTotalFee(marryRedmoneyDetail.getTotalFee());
+				mgm.setGmtModifiedtime(new Date());
+				marryGetmoneyService.save(mgm);
+			}else{
+				mg.setGmtModifiedtime(new Date());
+				mg.setTotalFee(mg.getTotalFee()+marryRedmoneyDetail.getTotalFee());
+				marryGetmoneyService.update(mg);
+			}
+			marryRedmoneyDetail.setUserId(user.getId());
+			marryRedmoneyDetail.setStates(1);
+			marryRedmoneyDetailService.update(marryRedmoneyDetail);
+		}
+		return R.ok().put("totalFee", marryRedmoneyDetail.getTotalFee());
+	}
+	
+	public static String creaCa(String url,String postDataXML) throws Exception {
+		String result = "";
+        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+        FileInputStream instream = new FileInputStream(new File("D:/tool/cert/apiclient_cert.p12"));
+        try {
+            keyStore.load(instream, WeixinPayUtil.partner.toCharArray());
+        } finally {
+            instream.close();
+        }
+        SSLContext sslcontext = SSLContexts.custom()
+                .loadKeyMaterial(keyStore, WeixinPayUtil.partner.toCharArray())
+                .build();
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                sslcontext,
+                new String[] { "TLSv1" },
+                null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .build();
+        try {
+        	HttpPost httpget = new HttpPost(url);
+            // 得指明使用UTF-8编码，否则到API服务器XML的中文不能被成功识别
+            StringEntity postEntity = new StringEntity(postDataXML, "UTF-8");
+            httpget.setEntity(postEntity);
+            CloseableHttpResponse response = httpclient.execute(httpget);
+            try {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    BufferedReader bufferedReader = new BufferedReader(
+                    		           new InputStreamReader(entity.getContent(),"utf-8"));
+                    String text;
+                    while ((text = bufferedReader.readLine()) != null) {
+                    	result += text + "\n";
+                    }
+                   
+                }
+                EntityUtils.consume(entity);
+            } finally {
+                response.close();
+            }
+        } finally {
+            httpclient.close();
+        }
+        return result;
+    }
+	
+	public static Map<String, String> pay(MarryGetmoneyEntity marryGetmoney) throws Exception{ 
+		 Map<String, String> payMap = new HashMap<String, String>(); 
+		 payMap.put("mch_appid", WeixinPayUtil.appid);
+		 payMap.put("mchid", WeixinPayUtil.partner);
+		 payMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数
+		 payMap.put("partner_trade_no", "494955"+new Date().getTime());//商户订单号
+		 payMap.put("openid", marryGetmoney.getOpenid());
+		 payMap.put("check_name", "NO_CHECK");//NO_CHECK：不校验真实姓名FORCE_CHECK：强校验真实姓名
+		 payMap.put("amount", (new  Double(Double.valueOf(marryGetmoney.getTotalFee())*100)).intValue()+"");//金额
+		 payMap.put("desc", "红包提现");
+		 payMap.put("spbill_create_ip", "47.92.117.143");
+		 String sign = WeixinPayUtil.generateSignature(payMap, WeixinPayUtil.partnerkey);
+		 payMap.put("sign", sign);
+		return payMap;
+	}
+	
+	/**
+	 * 查询自己账号余额
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/findAllgetMoney")
+	public R findAllgetMoney(HttpServletRequest request, HttpServletResponse response){  
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);  
+		MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
+		marryGetmoney.setOpenid(user.getOpenid());
+		EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
+		MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pic", user.getPic());
+		map.put("obj", mg);
+		return R.ok().put("map", map);
+	}
 	
 	/**
 	 * 用户发送红包时将钱放入对公账号里面
@@ -67,8 +250,11 @@ public class MarryWeixinMoneyController {
 		Integer id = saveMoneyMain(total_fee, request, totalNum);//将红包主表数据进行添加
 		try {
 			Map<String, String> paraMap = getSign(request,id,request.getParameter("content"));
-			System.out.println("-------paraMap---"+paraMap);
-			Map<String, Object> payMap = getPayData(id,paraMap);
+			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+			MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+			marryWedding.setUserId(user.getId());
+			EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
+			Map<String, Object> payMap = getPayData(marryWeddingService.selectOne(wrapper).getId(),paraMap);
 			sb = JSONObject.fromObject(payMap).toString();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,7 +303,7 @@ public class MarryWeixinMoneyController {
         return map;
 	}
 	
-	public static String post(String url,String param) {
+	public static String post(String url,String param) throws FileNotFoundException {
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -144,7 +330,7 @@ public class MarryWeixinMoneyController {
                     new InputStreamReader(conn.getInputStream(),"utf-8"));
             String line;
             while ((line = in.readLine()) != null) {
-                result += line;
+                result += line+"\n";
             }
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！"+e);

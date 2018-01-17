@@ -207,8 +207,23 @@ public class WeixinMeController {
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		MarryBlessingEntity mbe = new MarryBlessingEntity();
 		try {
-			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
-			mbe.setOpenid(openId);
+			if(user != null){
+				mbe.setNickname(user.getNickname());
+				mbe.setOpenid(user.getOpenid());
+				mbe.setPic(user.getPic());
+			}else{
+				String code = request.getParameter("code");
+				String openId;
+				try {
+					openId = WeixinUtil.getWeixinOpenId(code);
+					JSONObject jsonObject = WeixinUtil.getUserInfo(openId);
+					mbe.setNickname(jsonObject.getString("nickname"));
+					mbe.setOpenid(openId);
+					mbe.setPic(jsonObject.getString("headimgurl"));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -379,10 +394,11 @@ public class WeixinMeController {
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			MarryParticipateEntity marryParticipateEntity = (MarryParticipateEntity) iterator.next();
 			JSONObject jsonObject = WeixinUtil.getUserInfo(marryParticipateEntity.getOpenid());
+			System.out.println(jsonObject);
 			MarriedUserEntity marrieduser = new MarriedUserEntity();
-			marrieduser.setNickname(jsonObject.getString("nickname"));
+			marrieduser.setNickname("随安");
 			marrieduser.setId(marryWedding.getId());
-			marrieduser.setPic(jsonObject.getString("headimgurl"));
+			marrieduser.setPic("http://wx.qlogo.cn/mmopen/EAhblLib81gbHYCFz1icvPBZnAViaW7HtibHeTxqBRGp2kCOAsgKQsQzLaZmXNIMvjFNFwQUic8LxpN7dias4ZgRtOPDRIJIiaN8U3h/0");
 			marrieduser.setOpenid(marryParticipateEntity.getOpenid());
 			list3.add(marrieduser);
 			if(marryParticipateEntity.getStates() == 0){
