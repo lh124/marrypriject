@@ -40,9 +40,18 @@ public class SmartAppEntity implements Serializable {
 	
 	//版本说明
 	@TableField(value="remark")
-	private String remark;
+	private String remark; 
+	
+	@TableField(value="package_size")
+	private String packageSize;
 			
 
+	public String getPackageSize() {
+		return packageSize;
+	}
+	public void setPackageSize(String packageSize) {
+		this.packageSize = packageSize;
+	}
 	public String getRemark() {
 		return remark;
 	}
