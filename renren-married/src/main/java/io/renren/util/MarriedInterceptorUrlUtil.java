@@ -21,6 +21,11 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/invite_card.html",//接收邀请页面
 						  ".*/married/weixin/me/attendawedding",//保存是否接受参加婚礼接口
 						  ".*/married/weixin/me/findWedding",//通过id查询婚礼记录接口
+						  ".*/married/weixin/send_bless.html",//进入祝福页面
+						  ".*/married/weixin/send_video.html",//保存祝福页面
+						  ".*/married/weixin/me/saveBlessing",//保存普通祝福接口
+						  ".*/married/weixin/blessing/pay",//保存红包祝福接口
+						  ".*/married/weixin/blessing/notify",//支付回调接口
 						  
 						  ".*/married/weixin/notify",//支付接口回调接口
 						  ".*/married/weixin/moneyNotify",//支付接口回调接口
