@@ -5,12 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,edition as edition ,equipment_type as equipmentType ,
+		id as id ,edition as edition ,equipment_type as equipmentType ,package_size as packageSize
 		update_type as updateType ,equipment_path as equipmentPath,remark as remark 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,edition ,equipment_type ,update_type ,equipment_path,remark 		
+		id ,edition ,equipment_type ,update_type ,equipment_path,remark,package_size 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.app.SmartAppEntity" id="smartAppMap">
@@ -20,6 +20,7 @@
 		        <result property="updateType" column="update_type"/>
 		        <result property="equipmentPath" column="equipment_path"/>
 		        <result property="remark" column="remark"/>
+		        <result property="packageSize" column="package_size"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.app.SmartAppEntity">
@@ -46,6 +47,7 @@
 			`equipment_type`,
 			`update_type`, 
 			`remark`, 
+			`package_size`, 
 			`equipment_path`
 		)
 		values
@@ -55,6 +57,7 @@
 			#{equipmentType}, 
 			#{updateType}, 
 			#{remark}, 
+			#{packageSize}, 
 			#{equipmentPath}
 		)
 	</insert>
@@ -66,6 +69,7 @@
 			<if test="equipmentType != null">`equipment_type` = #{equipmentType}, </if>
 			<if test="updateType != null">`update_type` = #{updateType}, </if>
 			<if test="remark != null">`remark` = #{remark}, </if>
+			<if test="packageSize != null">`package_size` = #{packageSize}, </if>
 			<if test="equipmentPath != null">`equipment_path` = #{equipmentPath}</if>
 		</set>
 		where id = #{id}
