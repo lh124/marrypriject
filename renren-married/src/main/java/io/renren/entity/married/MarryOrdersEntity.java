@@ -60,6 +60,8 @@ public class MarryOrdersEntity implements Serializable {
 	@TableField(value="main_describe")
 	private String mainDescribe;
 	
+	private List<MarryMainEntity> marryMainList;
+	
 	public Integer getOrderType() {
 		return orderType;
 	}
@@ -72,8 +74,6 @@ public class MarryOrdersEntity implements Serializable {
 	public void setMainDescribe(String mainDescribe) {
 		this.mainDescribe = mainDescribe;
 	}
-	private List<MarryMainEntity> marryMainList;
-			
 
 	public List<MarryMainEntity> getMarryMainList() {
 		return marryMainList;
