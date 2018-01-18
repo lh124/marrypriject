@@ -3,8 +3,10 @@ package io.renren.controller.married;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryBlessingEntity;
+import io.renren.entity.married.MarryGetmoneyEntity;
 import io.renren.entity.married.ResultState;
 import io.renren.service.married.MarryBlessingService;
+import io.renren.service.married.MarryGetmoneyService;
 import io.renren.util.WeixinPayUtil;
 import io.renren.util.WeixinUtil;
 import io.renren.utils.R;
@@ -32,11 +34,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
 @RestController
 @RequestMapping("married/weixin/blessing")
 public class MarryWeixinBlessingController {
 	@Autowired
 	private MarryBlessingService marryBlessingService;
+	@Autowired
+	private MarryGetmoneyService marryGetmoneyService;
 	/**
 	 * 发送红包祝福时的接口
 	 * @param request
@@ -72,6 +78,7 @@ public class MarryWeixinBlessingController {
 		marryBlessing.setOrdernumber("494955"+new Date().getTime());
 		marryBlessing.setWeddingid(weddingId);
 		marryBlessing.setStates(0);
+		marryBlessing.setGmtModifiedtime(new Date());
 		marryBlessingService.insert(marryBlessing);
         try {  
             Map<String, String> paraMap = getSign(marryBlessing.getId(),request);  
@@ -222,6 +229,23 @@ public class MarryWeixinBlessingController {
             	}else{
             		marryBlessing.setStates(1);
             		marryBlessingService.update(marryBlessing);
+            		
+            		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+        			MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
+        			marryGetmoney.setOpenid(user.getOpenid());
+        			EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
+        			MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
+        			if(mg == null){
+        				MarryGetmoneyEntity mgm = new MarryGetmoneyEntity();
+        				mgm.setOpenid(user.getOpenid());
+        				mgm.setTotalFee(Double.valueOf(marryBlessing.getContent()));
+        				mgm.setGmtModifiedtime(new Date());
+        				marryGetmoneyService.save(mgm);
+        			}else{
+        				mg.setGmtModifiedtime(new Date());
+        				mg.setTotalFee(mg.getTotalFee()+Double.valueOf(marryBlessing.getContent()));
+        				marryGetmoneyService.update(mg);
+        			}
                     resultState.setErrcode(0);// 表示成功
                     resultState.setErrmsg("支付成功");
                     /**** 业务逻辑  保存openid之类的****/

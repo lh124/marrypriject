@@ -86,7 +86,7 @@ public class WeixinMeController {
 		map.put("states", 1);
 		List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
 		if(list.size()==0){
-			request.getSession().setAttribute("jurisdiction", 1);//无权限就不让其显示相关模块
+			request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
 		}else{
 			request.getSession().setAttribute("jurisdiction", 1);
 		}
@@ -183,13 +183,22 @@ public class WeixinMeController {
 	public R blessManage(HttpServletRequest request){
 		//获取当前登录用户
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+		marryWedding.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
+		marryWedding = marryWeddingService.selectOne(wrapper);
+		if(marryWedding == null){
+			return R.error("暂无婚礼记录");
+		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", user.getId());
 		map.put("offset", 0);
 		map.put("limit", 10);
+		map.put("weddingId", marryWedding.getId());
 		map.put("blessingtype", 1);
 		List<MarryBlessingEntity> list1 = marryBlessingService.queryList(map);//普通祝福
 		map.put("blessingtype", 2);
+		map.put("states", 1);
 		List<MarryBlessingEntity> list2 = marryBlessingService.queryList(map);//红包祝福
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("list1", list1);
@@ -230,6 +239,7 @@ public class WeixinMeController {
 		mbe.setContent(request.getParameter("content"));
 		mbe.setWeddingid(Integer.parseInt(request.getParameter("weddingId")));
 		mbe.setBlessingtype(Integer.parseInt(request.getParameter("type")));
+		mbe.setGmtModifiedtime(new Date());
 		marryBlessingService.insert(mbe);
 		return R.ok().put("id", mbe.getId());
 	}
@@ -279,6 +289,7 @@ public class WeixinMeController {
 		map.put("offset", 0);
 		map.put("limit", 10);
 		map.put("blessingtype", 1);
+		map.put("states",null);
 		List<MarryBlessingEntity> list1 = marryBlessingService.queryList(map);//普通祝福
 		int zftotal = 0;
 		int videototal = 0;
@@ -291,6 +302,7 @@ public class WeixinMeController {
 				videototal++;
 			}
 		}
+		map.put("states",1);
 		map.put("blessingtype", 2);
 		List<MarryBlessingEntity> list2 = marryBlessingService.queryList(map);//红包祝福
 		m.put("zftotal", zftotal);
@@ -425,6 +437,7 @@ public class WeixinMeController {
 	@RequestMapping("/attendawedding")
 	public R attendawedding(HttpServletRequest request){
 		try {
+			System.out.println(request.getParameter("code")+"--------------------");
 			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
 			Integer states = Integer.parseInt(request.getParameter("states"));

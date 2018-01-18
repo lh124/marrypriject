@@ -2,11 +2,13 @@ package io.renren.controller.married;
 
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
+import io.renren.entity.married.MarryBlessingEntity;
 import io.renren.entity.married.MarryGetmoneyEntity;
 import io.renren.entity.married.MarryRedmoneyDetailEntity;
 import io.renren.entity.married.MarryRedmoneyMainEntity;
 import io.renren.entity.married.MarryWeddingEntity;
 import io.renren.entity.married.ResultState;
+import io.renren.service.married.MarryBlessingService;
 import io.renren.service.married.MarryGetmoneyService;
 import io.renren.service.married.MarryRedmoneyDetailService;
 import io.renren.service.married.MarryRedmoneyMainService;
@@ -29,6 +31,7 @@ import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -67,6 +70,8 @@ public class MarryWeixinMoneyController {
 	private MarryRedmoneyMainService marryRedmoneyMainService;//红包的主表
 	@Autowired
 	private MarryWeddingService marryWeddingService;
+	@Autowired
+	private MarryBlessingService marryBlessingService;
 	
 	/**
 	 * 将自己账号余额提现
@@ -89,7 +94,7 @@ public class MarryWeixinMoneyController {
 	
 	public static void main(String[] args) {
 		MarryGetmoneyEntity mg = new MarryGetmoneyEntity();
-		mg.setOpenid("o7__rjj8Iq1k8Uu52TnNP2YIUa04");
+		mg.setOpenid("oZSiWxOxNIVH7s8wxiORTchfGxEo");
 		mg.setTotalFee(0.01);
 		try {
 			String xml = WeixinPayUtil.mapToXml(pay(mg));
@@ -156,7 +161,7 @@ public class MarryWeixinMoneyController {
 	public static String creaCa(String url,String postDataXML) throws Exception {
 		String result = "";
         KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-        FileInputStream instream = new FileInputStream(new File("D:/tool/cert/apiclient_cert.p12"));
+        FileInputStream instream = new FileInputStream(new File("E:/web/webroot/wrs/statics/marry/apiclient_cert.p12"));
         try {
             keyStore.load(instream, WeixinPayUtil.partner.toCharArray());
         } finally {
@@ -232,6 +237,21 @@ public class MarryWeixinMoneyController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pic", user.getPic());
 		map.put("obj", mg);
+		
+		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+		marryWedding.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> w = new EntityWrapper<MarryWeddingEntity>(marryWedding);
+		marryWedding = marryWeddingService.selectOne(w);
+		if(marryWedding == null){
+			map.put("blessing", null);
+		}else{
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("weddingId", marryWedding.getId());
+			m.put("states",1);
+			m.put("blessingtype", 2);
+			List<MarryBlessingEntity> list2 = marryBlessingService.queryList(m);//红包祝福
+			map.put("blessing", list2);
+		}
 		return R.ok().put("map", map);
 	}
 	

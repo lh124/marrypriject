@@ -69,6 +69,15 @@ public class MarriedWeixinUserController {
 					map.put("userId", user.getId());
 				}else{
 					map.put("userId", u.getId());
+					map.put("offset", 0);
+					map.put("limit", 10);
+					map.put("states", 1);
+					List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
+					if(list.size()==0){
+						request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
+					}else{
+						request.getSession().setAttribute("jurisdiction", 1);
+					}
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
 				}
 				total = marryCartService.queryList(map).size();
@@ -101,6 +110,20 @@ public class MarriedWeixinUserController {
 				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
 				u = this.marriedUserService.selectOne(wrapper);
 				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+				
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("sidx", null);
+				map.put("order", null);
+				map.put("offset", 0);
+				map.put("limit", 100);
+				map.put("states", 1);
+				map.put("userId", u.getId());
+				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
+				if(list.size()==0){
+					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
+				}else{
+					request.getSession().setAttribute("jurisdiction", 1);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
