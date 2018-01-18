@@ -7,11 +7,11 @@
 	<sql id="allColumnsAlias">
 		id as id ,content as content ,videoblessing as videoblessing ,
 		blessingtype as blessingtype ,weddingId as weddingid ,openId as openid,ordernumber as ordernumber,
-		states as states,pic as pic,nickname as nickname	
+		states as states,pic as pic,nickname as nickname,gmt_modifiedtime as gmtModifiedtime	
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,content ,videoblessing ,blessingtype ,weddingId ,openId,ordernumber,states,pic,nickname 		
+		id ,content ,videoblessing ,blessingtype ,weddingId ,openId,ordernumber,states,pic,nickname,gmt_modifiedtime 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.married.MarryBlessingEntity" id="marryBlessingMap">
@@ -24,6 +24,7 @@
 		        <result property="pic" column="pic"/>
 		        <result property="nickname" column="nickname"/>
 		        <result property="states" column="states"/>
+		        <result property="gmtModifiedtime" column="gmt_modifiedtime"/>
 		        <result property="openid" column="openId"/>
 	    </resultMap>
 
@@ -32,10 +33,10 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryBlessingEntity">
-		select t4.*,t3.nickname,t3.pic from married_user t3,(
-			select * from marry_blessing where weddingId=(
-			select t2.id from married_user t1,marry_wedding t2 where t1.id = t2.userId and t1.id=#{userId})
-			) t4 where t3.openId=t4.openId and t4.blessingtype=#{blessingtype}
+		select * from  marry_blessing where blessingtype=#{blessingtype} and weddingId=#{weddingId}
+		<if test="states != null and states != ''">
+			and states=#{states}
+		</if>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
@@ -56,6 +57,7 @@
 			`pic`, 
 			`nickname`, 
 			`states`, 
+			`gmt_modifiedtime`,
 			`openId`
 		)
 		values
@@ -68,6 +70,7 @@
 			#{pic},
 			#{nickname},
 			#{states},
+			#{gmtModifiedtime},
 			#{openid}
 		)
 	</insert>
@@ -83,6 +86,7 @@
 			<if test="pic != null">`pic` = #{pic}, </if>
 			<if test="nickname != null">`nickname` = #{nickname}, </if>
 			<if test="states != null">`states` = #{states}, </if>
+			<if test="gmtModifiedtime != null">`gmt_modifiedtime` = #{gmtModifiedtime}, </if>
 			<if test="openid != null">`openId` = #{openid}</if>
 		</set>
 		where id = #{id}
