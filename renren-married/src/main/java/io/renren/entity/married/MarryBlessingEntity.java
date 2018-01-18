@@ -1,6 +1,7 @@
 package io.renren.entity.married;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -56,8 +57,17 @@ public class MarryBlessingEntity implements Serializable {
 	//红包时的状态（0为未付款，1为已付款）
 	@TableField(value="states")
 	private Integer states;
+	
+	@TableField(value="gmt_modifiedtime")
+	private Date gmtModifiedtime;
 			
 
+	public Date getGmtModifiedtime() {
+		return gmtModifiedtime;
+	}
+	public void setGmtModifiedtime(Date gmtModifiedtime) {
+		this.gmtModifiedtime = gmtModifiedtime;
+	}
 	public Integer getStates() {
 		return states;
 	}
