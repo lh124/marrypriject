@@ -45,7 +45,7 @@ public class MarriedWeixinUserController {
 		try {
 			MarriedUserEntity us = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			String code = request.getParameter("code");
-			if(code != null && !"".equals(code) && !"null".equals(code)){
+			if(code != null && !"".equals(code) && !"null".equals(code) && us==null){
 				String openId = WeixinUtil.getWeixinOpenId(code);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("sidx", null);
@@ -97,27 +97,6 @@ public class MarriedWeixinUserController {
 				map.put("userId", us.getId());
 				total = marryCartService.queryList(map).size();
 				
-				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
-				if(list.size()==0){
-					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
-				}else{
-					request.getSession().setAttribute("jurisdiction", 1);
-				}
-			}else{
-				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
-				MarriedUserEntity u = new MarriedUserEntity();
-				u.setOpenid(openId);
-				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
-				u = this.marriedUserService.selectOne(wrapper);
-				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
-				
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("sidx", null);
-				map.put("order", null);
-				map.put("offset", 0);
-				map.put("limit", 100);
-				map.put("states", 1);
-				map.put("userId", u.getId());
 				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
 				if(list.size()==0){
 					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块

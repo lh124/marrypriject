@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+
 @RestController
 @RequestMapping("married/weixin")
 public class PayController {
@@ -209,34 +211,25 @@ public class PayController {
         String notifyXml = convertStreamToString(request.getInputStream());// 微信支付系统发送的数据（<![CDATA[product_001]]>格式）
         // 验证签名
         JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
-        if (json.getString("sign").equals(request.getSession().getAttribute("sign"))) {
             if ("SUCCESS".equals(json.getString("result_code"))) {
-            	Integer id = json.getInt("id");
-            	MarryOrdersEntity marryOrdersEntity = marryOrdersService.queryObject(id);
-            	if(!marryOrdersEntity.getOrderNumber().equals(json.getString("out_trade_no"))){
-            		 resultState.setErrcode(-1);// 支付失败
-                     resultState.setErrmsg("支付失败");
-                     resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
-            	}else{
-            		marryOrdersEntity.setStates(1);
-                	marryOrdersService.update(marryOrdersEntity);
-                	request.getSession().setAttribute("jurisdiction", 1);
-                    resultState.setErrcode(0);// 表示成功
-                    resultState.setErrmsg("支付成功");
-                    /**** 业务逻辑  保存openid之类的****/
-                    // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
-                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
-            	}
+            	String out_trade_no = json.getString("out_trade_no");
+            	MarryOrdersEntity marryOrdersEntity = new MarryOrdersEntity();
+            	marryOrdersEntity.setOrderNumber(out_trade_no);
+            	EntityWrapper<MarryOrdersEntity> wrapper = new EntityWrapper<MarryOrdersEntity>(marryOrdersEntity);
+            	marryOrdersEntity = marryOrdersService.selectOne(wrapper);
+            	marryOrdersEntity.setStates(1);
+                marryOrdersService.update(marryOrdersEntity);
+                request.getSession().setAttribute("jurisdiction", 1);
+                resultState.setErrcode(0);// 表示成功
+                resultState.setErrmsg("支付成功");
+                /**** 业务逻辑  保存openid之类的****/
+                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
             } else {
                 resultState.setErrcode(-1);// 支付失败
                 resultState.setErrmsg("支付失败");
                 resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
             }
-        } else {
-            resultState.setErrcode(-1);// 支付失败
-            resultState.setErrmsg("签名验证错误");
-            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[签名验证错误]]></return_msg>" + "</xml> ";
-        }
  
         BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
         out.write(resXml.getBytes());

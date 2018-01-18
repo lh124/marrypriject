@@ -85,7 +85,11 @@ public class MarryWeixinMoneyController {
 		try {
 			String xml = WeixinPayUtil.mapToXml(pay(mg));
 			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
-			System.out.println(result);
+			JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(result.replace(">/n", ">")));
+			if("SUCCESS".equals(json.getString("result_code"))){
+				mg.setTotalFee(0.00);
+				marryGetmoneyService.update(mg);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,6 +103,7 @@ public class MarryWeixinMoneyController {
 		try {
 			String xml = WeixinPayUtil.mapToXml(pay(mg));
 			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
+			
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -408,23 +413,22 @@ public class MarryWeixinMoneyController {
         String notifyXml = convertStreamToString(request.getInputStream());// 微信支付系统发送的数据（<![CDATA[product_001]]>格式）
         // 验证签名
         JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
-        if (json.getString("sign").equals(request.getSession().getAttribute("sign"))) {
-            if ("SUCCESS".equals(json.getString("result_code"))) {
-            	saveMoneyDetail(json.getInt("id"));//按红包个数保存详细红包
-                resultState.setErrcode(0);// 表示成功
-                resultState.setErrmsg("支付成功");
-                /**** 业务逻辑  保存openid之类的****/
-                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
-                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
-            } else {
-                resultState.setErrcode(-1);// 支付失败
-                resultState.setErrmsg("支付失败");
-                resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
-            }
+        if ("SUCCESS".equals(json.getString("result_code"))) {
+        	String out_trade_no = json.getString("out_trade_no");
+        	MarryRedmoneyMainEntity marryRedmoneyMain = new MarryRedmoneyMainEntity();
+        	marryRedmoneyMain.setOutTradeNo(out_trade_no);;
+        	EntityWrapper<MarryRedmoneyMainEntity> wrapper = new EntityWrapper<MarryRedmoneyMainEntity>(marryRedmoneyMain);
+        	marryRedmoneyMain = marryRedmoneyMainService.selectOne(wrapper);
+            saveMoneyDetail(marryRedmoneyMain.getId());//按红包个数保存详细红包
+            resultState.setErrcode(0);// 表示成功
+            resultState.setErrmsg("支付成功");
+            /**** 业务逻辑  保存openid之类的****/
+            // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+            resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
         } else {
             resultState.setErrcode(-1);// 支付失败
-            resultState.setErrmsg("签名验证错误");
-            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[签名验证错误]]></return_msg>" + "</xml> ";
+            resultState.setErrmsg("支付失败");
+            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
         }
  
         BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
