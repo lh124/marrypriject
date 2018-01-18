@@ -191,6 +191,9 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("checkVersion")){
 				//检查版本
 				return checkVersion(json.getJSONObject("data"));
+			}else if(type.equals("getAccessToken")){
+				//获取设备的AccessToken
+				return getAccessToken(json.getJSONObject("data"));
 			}else{
 				return R.error("请重新登录");
 			}
@@ -309,20 +312,18 @@ public class StudentAppInterfaceController{
 		String appPath = "";
 		String remark = "";
 		String editions = "";
+		String packageSize="";
 		if(json.get("equipmentType") != null){
 			Integer equipmentType = json.getInt("equipmentType");
 			Integer edition = Integer.parseInt(json.getString("edition").replace(".", ""));
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("equipmentType", equipmentType);
-			List<SmartAppEntity> list = smartAppService.queryList(map);
 			SmartAppEntity smartApp = new SmartAppEntity();
-			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-				SmartAppEntity smartAppEntity = (SmartAppEntity) iterator.next();
-				smartApp = smartAppEntity;
-			}
+			smartApp.setEquipmentType(equipmentType);
+			EntityWrapper<SmartAppEntity> wrapper = new EntityWrapper<SmartAppEntity>(smartApp);
+			smartApp = smartAppService.selectOne(wrapper);
 			appPath = smartApp.getEquipmentPath();
 			editions = smartApp.getEdition().toString().replace("", ".").substring(1,6);
 			remark = smartApp.getRemark();
+			packageSize = smartApp.getPackageSize();
 			updateType = smartApp.getUpdateType();
 			if(edition < smartApp.getEdition()){
 				updateIf = 1;
@@ -333,6 +334,7 @@ public class StudentAppInterfaceController{
 		map.put("updateIf", updateIf);
 		map.put("appPath", appPath);
 		map.put("remark", remark);
+		map.put("packageSize", packageSize);
 		map.put("edition", editions);
 		return R.ok().put(DATA, map);
 	}
