@@ -18,10 +18,11 @@
 </head>
 <body ontouchstart style="background:white;" onload="init()">
     <input type="hidden" id="id">
+    <input type="hidden" id="totalfeetotal">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer" style="padding:0 15px;">
 			<dl class="get_money">
-				<dt><img src="${rc.contextPath}/statics/tombstone/img/1.png" id="bgmusic"></dt>
+				<dt><img src="$session.getAttribute('user_married').pic" id="bgmusic"></dt>
 				<dd>
 					<p style="font-size:0.4rem;">账户总余额</p>
 					<p style="font-size:0.5rem;" id="totalFee">￥0.00元</p>
