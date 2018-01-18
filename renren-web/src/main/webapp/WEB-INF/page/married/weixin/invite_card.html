@@ -10,48 +10,8 @@
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>   
     <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script> 
+    <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/invite_card.js"></script>
 </head>
-<script type="text/javascript">
-    $(function() {
-	    $.ajax({
-			type: "POST",
-		    url: "../weixin/me/findWedding?id="+$("#weddingId").val(),
-			dataType: "json",
-			success: function(result){
-			     if(result.status == 'ok'){
-			          if(result.data.marryWedding != null){
-				          $("#groomNameandbrideName").html(result.data.marryWedding.groomname+"&"+result.data.marryWedding.bridename);
-				          $("#weddingDate").html(result.data.marryWedding.weddingdate);
-				          $("#weddingAddress").html("地址："+result.data.marryWedding.weddingaddress);
-				          $("#content").html(result.data.marryWedding.content);
-				          $('#photo').prop('src',result.data.marryWedding.photo);
-			          }
-			     }
-			}
-	 	});
- 	});
- 	
- 	function GetQueryString(name){
-		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-		     var r = window.location.search.substr(1).match(reg);
-		     if(r!=null)return  unescape(r[2]); return null;
-		}
- 	
- 	function update(states){
- 	      var id = $("#weddingId").val();
- 	      var code = GetQueryString("code");
- 	      $.ajax({
-				type: "POST",
-			    url: "../weixin/me/attendawedding?states="+states+"&id="+id+"&code="+code,
-				dataType: "json",
-				success: function(result){
-				     if(result.status == 'ok'){
-				          window.location.href="send_bless.html?weddingId="+id; 
-				     }
-				}
-		 	});
- 	}
-</script>
 <body ontouchstart style="background:#ffffff;">
     <input type="hidden" id="weddingId" value="${request.getParameter('id')}">
 	<div class="container" id="container" >
