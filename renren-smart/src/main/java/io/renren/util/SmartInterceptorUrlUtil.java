@@ -12,6 +12,7 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/shouye/uploadMedio",
 				".*/smart/datainpution/getData",
 				".*/smart/interface_test.html",
+				".*/smart/yinsishengming.html",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
 		boolean isMatch = false; 
