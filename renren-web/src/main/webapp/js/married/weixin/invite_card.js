@@ -36,7 +36,7 @@
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){
-				          window.location.href="send_bless.html?weddingId="+id+"&openId="+openId; 
+				          window.location.href="send_bless.html?weddingId="+id+"&openId="+result.openId; 
 				     }
 				}
 		 	});
