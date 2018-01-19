@@ -234,10 +234,8 @@ public class WeixinMeController {
 				mbe.setOpenid(user.getOpenid());
 				mbe.setPic(user.getPic());
 			}else{
-				String code = request.getParameter("code");
-				String openId;
+				String openId=request.getParameter("openId");
 				try {
-					openId = WeixinUtil.getWeixinOpenId(code);
 					JSONObject jsonObject = WeixinUtil.getUserInfo(openId);
 					mbe.setNickname(jsonObject.getString("nickname"));
 					mbe.setOpenid(openId);
@@ -449,9 +447,10 @@ public class WeixinMeController {
 	 */
 	@RequestMapping("/attendawedding")
 	public R attendawedding(HttpServletRequest request){
+		String openId  = "";
 		try {
 			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
+			openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
 			Integer states = Integer.parseInt(request.getParameter("states"));
 			Integer id = Integer.parseInt(request.getParameter("id"));
 			MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
@@ -472,7 +471,7 @@ public class WeixinMeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return R.ok();
+		return R.ok().put("openId",  openId );
 	}
 	
 	
