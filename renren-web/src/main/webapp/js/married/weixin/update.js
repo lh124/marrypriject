@@ -151,7 +151,6 @@ function set_upload_param(path,type,id,type2){
 	    		},
 	    		success : function(responseStr) { 
 	    			if(responseStr.Status=='OK'){
-	    				alert("上传成功");
 	    				if(type2 == '1'){
 	    					window.location.href="invite.html";
 	    				}else if(type2 == '2'){
