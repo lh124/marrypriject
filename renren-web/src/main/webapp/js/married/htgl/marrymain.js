@@ -1,4 +1,5 @@
 $(function () {
+	var ue = UE.getEditor('editor');
     $("#jqGrid").jqGrid({
         url: '../../marrymain/list',
         datatype: "json",
@@ -42,6 +43,9 @@ $(function () {
         }
     });
 });
+$("#errorHandler1").on("change",function(){
+	alert("123");
+});
 
 var vm = new Vue({
 	el:'#rrapp',
@@ -70,8 +74,10 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
+			var arr = [];
+		    arr.push(UE.getEditor('editor').getContent());
+		    vm.marryMain.content=arr.join("\n");
 			var url = vm.marryMain.id == null ? "../../marrymain/save" : "../../marrymain/update";
-			
 			if(vm.marryMain.id == null && (document.getElementById("fileimg").value == null || document.getElementById("fileimg").value == "")){
 				alert("请选择需要上传的图片");
 				return false;
@@ -123,6 +129,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get("../../marrymain/info/"+id, function(r){
                 vm.marryMain = r.marryMain;
+                UE.getEditor('editor').setContent(r.marryMain.content)
             });
 		},
 		reload: function (event) {
