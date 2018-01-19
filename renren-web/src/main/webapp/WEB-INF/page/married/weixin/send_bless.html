@@ -12,11 +12,12 @@
 </head>
 <body ontouchstart style="background:white;">
     <input type="hidden" id="weddingId" value="${request.getParameter('weddingId')}">
+    <input type="hidden" id="openId" value="${request.getParameter('openId')}">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="page__category js_categoryInner">
                     <div class="weui-cells page__category-content">
-                        <a class="weui-cell weui-cell_access js_item" data-id="button" href="send_video.html?weddingId=$request.getParameter('weddingId')" style="background:#fdf7f7;">
+                        <a class="weui-cell weui-cell_access js_item" data-id="button" href="send_video.html?weddingId=$request.getParameter('weddingId')&openId=$request.getParameter('openId')" style="background:#fdf7f7;">
                             <div class="weui-cell__bd send">
                                 <img src="${rc.contextPath}/statics/marry/img/send_message.png">
                                 <p style="margin-top:12px;">发送祝福</p>
