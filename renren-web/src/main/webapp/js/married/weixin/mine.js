@@ -7,7 +7,7 @@ $(function(){
 		     if(result.status == 'ok'){
 		    	 $("#total").html(result.map.total);
 		    	 if(result.map.obj != null){
-		    		 $("#weddingId").val(result.map.obj.id);
+		    		 $("#weddingId").val(result.map.obj);
 		    	 }else{
 		    		 $("#weddingId").val("qwe");
 		    	 }
