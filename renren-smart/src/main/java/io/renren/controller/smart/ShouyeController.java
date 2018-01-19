@@ -399,7 +399,7 @@ public class ShouyeController {
 	 */
 	@RequestMapping("/uploadMedio")
 	public R uploadMedio(HttpServletRequest request){
-		String accessToken = CommonUtil.getToken("wx10479abb9ebf90f4", "c1cc856b646c5cd654d958b36c992b28").getAccessToken();
+		String accessToken = CommonUtil.getToken("wxb9072ff1ebcf745c", "b298e38e02eb3d45ca5cc22c68e9bae5").getAccessToken();
 		String path = AdvancedUtil.getMedia(accessToken, request.getParameter("serverId"), request.getSession().getServletContext().getRealPath("statics/video"));
 		return R.ok().put("path", path);
 	}
