@@ -11,6 +11,7 @@
     <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/mine.js"></script>
 </head>
 <body ontouchstart style="background:white;" onload="init()">
+    <input type="hidden" id="weddingId">
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div class="mine_banner"></div>
@@ -37,7 +38,7 @@
                 </a>
                 #end
                 #if($session.getAttribute('jurisdiction') == "1")
-                <a href="bless_manage.html" class="weui-grid">
+                <a href="#" class="weui-grid" onclick="toWeddingId(1)">
                     <div class="weui-grid__icon">
                         <img src="${rc.contextPath}/statics/marry/img/mine4.png" alt="">
                     </div>
@@ -45,7 +46,7 @@
                 </a>
                 #end
                 #if($session.getAttribute('jurisdiction') == "1")
-                <a href="screen_management.html" class="weui-grid">
+                <a href="#" class="weui-grid" onclick="toWeddingId(3)">
                     <div class="weui-grid__icon">
                         <img src="${rc.contextPath}/statics/marry/img/mine5.png" alt="">
                     </div>
@@ -53,7 +54,7 @@
                 </a>
                 #end
                 #if($session.getAttribute('jurisdiction') == "1")
-                <a href="data_statistics.html" class="weui-grid">
+                <a href="#" class="weui-grid" onclick="toWeddingId(4)">
                     <div class="weui-grid__icon">
                         <img src="${rc.contextPath}/statics/marry/img/mine6.png" alt="">
                     </div>
@@ -67,7 +68,7 @@
                     <p class="weui-grid__label" style="color:#ffb118;">扫码签到</p>
                 </a>
                 #if($session.getAttribute('jurisdiction') == "1")
-                <a href="feedback.html" class="weui-grid">
+                <a href="#" class="weui-grid" onclick="toWeddingId(2)">
                     <div class="weui-grid__icon">
                         <img src="${rc.contextPath}/statics/marry/img/mine8.png" alt="">
                     </div>
@@ -75,7 +76,7 @@
                 </a>
                 #end
                 #if($session.getAttribute('jurisdiction') == "1")
-                <a href="upload.html" class="weui-grid">
+                <a href="#" class="weui-grid" onclick="toWeddingId(5)">
                     <div class="weui-grid__icon">
                         <img src="${rc.contextPath}/statics/marry/img/mine9.png" alt="">
                     </div>
@@ -126,6 +127,18 @@
             </div>
 		</div>
 	</div>
+	
+	
+	<div class="js_dialog" id="iosDialog1" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">温馨提示</strong></div>
+            <div class="weui-dialog__bd" style="padding-top:20px;">您自己暂无婚礼记录!!!</div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary sure" onclick="closeCk()">知道了</a>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
