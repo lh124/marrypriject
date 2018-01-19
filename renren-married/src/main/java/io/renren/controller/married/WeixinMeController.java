@@ -515,11 +515,26 @@ public class WeixinMeController {
 	 */
 	@RequestMapping("/findWedding")
 	public R findWedding(HttpServletRequest request){
+		Integer type = 0;
 		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
 		if(request.getParameter("id") == null || "null".equals(request.getParameter("id"))){
 			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			marryWedding.setUserId(user.getId());
 		}else{
+			if(request.getParameter("code")!=null&& !"".equals(request.getParameter("code")) && !"null".equals(request.getParameter("code"))){
+				try {
+					String openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
+					MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
+					marryParticipate.setOpenid(openId);
+					marryParticipate.setWeddingid(Integer.parseInt(request.getParameter("id")));
+					EntityWrapper<MarryParticipateEntity> wrapper = new EntityWrapper<MarryParticipateEntity>(marryParticipate);
+					if(marryParticipateService.selectOne(wrapper) != null){
+						type = 1;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			marryWedding.setId(Integer.parseInt(request.getParameter("id")));
 		}
 		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
@@ -527,6 +542,7 @@ public class WeixinMeController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("marryWedding", marryWedding);
 		map.put("user", marriedUserService.queryObject(marryWedding==null?0:marryWedding.getUserId()));
+		map.put("type", type);
 		return R.ok().put("data", map);
 	}
 
