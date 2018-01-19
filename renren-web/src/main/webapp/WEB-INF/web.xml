@@ -162,5 +162,4 @@
 		<servlet-name>dataServlet</servlet-name>
 		<url-pattern>/dataServlet</url-pattern>
 	</servlet-mapping>
-    
 </web-app>
