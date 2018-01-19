@@ -1,10 +1,15 @@
 	$(function() {
+		var code = GetQueryString("code");
 	    $.ajax({
 			type: "POST",
-		    url: "../weixin/me/findWedding?id="+$("#weddingId").val(),
+		    url: "../weixin/me/findWedding?id="+$("#weddingId").val()+"&code="+code,
 			dataType: "json",
 			success: function(result){
 			     if(result.status == 'ok'){
+			    	  if(result.data.type==1 || result.data.type == "1"){
+			    		  window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
+			    		  return false;
+			    	  }
 			          if(result.data.marryWedding != null){
 				          $("#groomNameandbrideName").html(result.data.marryWedding.groomname+"&"+result.data.marryWedding.bridename);
 				          $("#weddingDate").html(result.data.marryWedding.weddingdate);
