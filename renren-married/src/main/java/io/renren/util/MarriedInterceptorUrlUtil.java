@@ -10,6 +10,8 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/index.html",//首页页面
 				          ".*/married/user/save",//首页用户授权微信登录保存和查询微信用户记录的接口以及查询当前购物车商品数量
 				          ".*/married/weixin/index/list",//首页商品列表接口
+				          ".*/married/weixin/theme.html",//首页商品列表接口
+				          ".*/married/weixin/marriing.html",//首页商品列表接口
 				          
 				          ".*/married/weixin/theme_details.html",//商品详情页面
 				          ".*/married/weixin/index/findObj",//获取商品详情接口
@@ -21,7 +23,7 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/weixin/invite_card.html",//接收邀请页面
 						  ".*/married/weixin/me/attendawedding",//保存是否接受参加婚礼接口
 						  ".*/married/weixin/me/findWedding",//通过id查询婚礼记录接口
-						  ".*/married/weixin/send_bless.html",//进入祝福页面
+						  ".*/married/weixin/send_bless.html",//进入祝福页面 
 						  ".*/married/weixin/send_video.html",//保存祝福页面
 						  ".*/married/weixin/me/saveBlessing",//保存普通祝福接口
 						  ".*/married/weixin/blessing/pay",//保存红包祝福接口
