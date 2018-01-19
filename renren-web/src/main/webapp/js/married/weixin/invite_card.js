@@ -11,6 +11,10 @@
 				          $("#weddingAddress").html("地址："+result.data.marryWedding.weddingaddress);
 				          $("#content").html(result.data.marryWedding.content);
 				          $('#photo').prop('src',result.data.marryWedding.photo);
+				          $(".invite_con").css("background-image","url("+result.data.marryWedding.url+")");
+				          $(".invite_con").find("h4").css("color",result.data.marryWedding.bgcolor);
+						  $(".invite_con").find("p").css("color",result.data.marryWedding.bgcolor);
+						  $(".invite_con").find("h3").css("color",result.data.marryWedding.bgcolor);
 			          }
 			     }
 			}

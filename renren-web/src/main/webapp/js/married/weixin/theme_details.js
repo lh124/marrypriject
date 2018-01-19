@@ -8,7 +8,6 @@ function init(){
 						$("#title").html(result.obj.title);
 						$("#author").html(result.obj.author);
 						$("#content").html(result.obj.content);
-						$("#pic").prop('src',result.obj.pic);
 						$("#prices").val(result.obj.price);
 						$("#price").html("￥"+result.obj.price);
 					}
@@ -16,8 +15,9 @@ function init(){
 		});
     }
     function savecart(id){
-         if(isNaN($("#userId").val())){
-              window.location.href="index.html";
+         if(isNaN($("#userId").val())){//将商品加入购物车时判断是否登录
+              window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
+              return false;
          }else{
              $.ajax({
 				type: "POST",
@@ -34,6 +34,10 @@ function init(){
     }
     
     function savedingdan(id){
+    	if(isNaN($("#userId").val())){//立即下单时判断是否登录
+            window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
+            return false;
+    	}
          var price = $("#prices").val();
          $.ajax({
 				type: "POST",
