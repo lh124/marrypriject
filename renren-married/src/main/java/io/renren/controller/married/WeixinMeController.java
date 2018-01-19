@@ -90,7 +90,18 @@ public class WeixinMeController {
 		}else{
 			request.getSession().setAttribute("jurisdiction", 1);
 		}
-		return R.ok().put("total", total);
+		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+		marryWedding.setUserId(user.getId());
+		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("total", total);
+		if(marryWeddingService.selectOne(wrapper) == null){
+			m.put("obj", null);
+		}else{
+			System.out.println(marryWeddingService.selectOne(wrapper).getId()+"--------------------------");
+			m.put("obj", marryWeddingService.selectOne(wrapper).getId());
+		}
+		return R.ok().put("map", m);
 	}
 	
 	/**
@@ -103,6 +114,8 @@ public class WeixinMeController {
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		MarryHelpEntity marryHelp = new MarryHelpEntity();
 		marryHelp.setUserid(user.getId());
+		marryHelp.setUsername(user.getNickname());
+		marryHelp.setPic(user.getPic());
 		marryHelp.setContent(request.getParameter("content"));
 		marryHelp.setCreateTime(new Date());
 		marryHelpService.save(marryHelp);
@@ -437,7 +450,6 @@ public class WeixinMeController {
 	@RequestMapping("/attendawedding")
 	public R attendawedding(HttpServletRequest request){
 		try {
-			System.out.println(request.getParameter("code")+"--------------------");
 			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			String openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
 			Integer states = Integer.parseInt(request.getParameter("states"));

@@ -104,6 +104,14 @@ public class MarriedWeixinUserController {
 					request.getSession().setAttribute("jurisdiction", 1);
 				}
 			}
+//			else{
+//				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
+//				MarriedUserEntity u = new MarriedUserEntity();
+//				u.setOpenid(openId);
+//				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
+//				u = this.marriedUserService.selectOne(wrapper);
+//				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

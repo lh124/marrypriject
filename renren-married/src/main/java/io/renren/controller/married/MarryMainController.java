@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("marrymain")
 public class MarryMainController extends AbstractController{
+	
 	@Autowired
 	private MarryMainService marryMainService;
 	
