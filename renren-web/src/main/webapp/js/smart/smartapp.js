@@ -23,6 +23,7 @@ $(function () {
 					 return '否';
 				 }
 			} },
+			{ label: '软件大小', name: 'packageSize', index: 'package_size', width: 80 },
 			{ label: '下载路径', name: 'equipmentPath', index: 'equipment_path', width: 80 },
 			{ label: '更新说明', name: 'remark', index: 'remark', width: 80 }
         ],
