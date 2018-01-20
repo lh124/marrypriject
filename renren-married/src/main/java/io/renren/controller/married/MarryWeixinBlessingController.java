@@ -218,50 +218,53 @@ public class MarryWeixinBlessingController {
         String notifyXml = convertStreamToString(request.getInputStream());// 微信支付系统发送的数据（<![CDATA[product_001]]>格式）
         // 验证签名
         JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
-        if (json.getString("sign").equals(request.getSession().getAttribute("sign"))) {
-            if ("SUCCESS".equals(json.getString("result_code"))) {
-            	Integer id = json.getInt("id");
-            	MarryBlessingEntity marryBlessing = marryBlessingService.queryObject(id);
-            	if(!marryBlessing.getOrdernumber().equals(json.getString("out_trade_no"))){
+         if ("SUCCESS".equals(json.getString("result_code"))) {
+        	 String out_trade_no = json.getString("out_trade_no");
+            	MarryBlessingEntity marryBlessing = new MarryBlessingEntity();
+            	marryBlessing.setOrdernumber(out_trade_no);
+            	EntityWrapper<MarryBlessingEntity> w = new EntityWrapper<MarryBlessingEntity>(marryBlessing);
+            	marryBlessing = marryBlessingService.selectOne(w);
+            	if(marryBlessing == null){
             		 resultState.setErrcode(-1);// 支付失败
                      resultState.setErrmsg("支付失败");
                      resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
             	}else{
-            		marryBlessing.setStates(1);
-            		marryBlessingService.update(marryBlessing);
-            		
-            		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-        			MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
-        			marryGetmoney.setOpenid(user.getOpenid());
-        			EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
-        			MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
-        			if(mg == null){
-        				MarryGetmoneyEntity mgm = new MarryGetmoneyEntity();
-        				mgm.setOpenid(user.getOpenid());
-        				mgm.setTotalFee(Double.valueOf(marryBlessing.getContent()));
-        				mgm.setGmtModifiedtime(new Date());
-        				marryGetmoneyService.save(mgm);
-        			}else{
-        				mg.setGmtModifiedtime(new Date());
-        				mg.setTotalFee(mg.getTotalFee()+Double.valueOf(marryBlessing.getContent()));
-        				marryGetmoneyService.update(mg);
-        			}
-                    resultState.setErrcode(0);// 表示成功
-                    resultState.setErrmsg("支付成功");
-                    /**** 业务逻辑  保存openid之类的****/
-                    // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
-                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            		if(!marryBlessing.getContent().equals(json.getInt("total_fee")/100)){
+            			resultState.setErrcode(-1);// 支付失败
+                        resultState.setErrmsg("支付失败");
+                        resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
+            		}else{
+            			marryBlessing.setStates(1);
+                		marryBlessingService.update(marryBlessing);
+                		
+                		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+            			MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
+            			marryGetmoney.setOpenid(user.getOpenid());
+            			EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
+            			MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
+            			if(mg == null){
+            				MarryGetmoneyEntity mgm = new MarryGetmoneyEntity();
+            				mgm.setOpenid(user.getOpenid());
+            				mgm.setTotalFee(Double.valueOf(marryBlessing.getContent()));
+            				mgm.setGmtModifiedtime(new Date());
+            				marryGetmoneyService.save(mgm);
+            			}else{
+            				mg.setGmtModifiedtime(new Date());
+            				mg.setTotalFee(mg.getTotalFee()+Double.valueOf(marryBlessing.getContent()));
+            				marryGetmoneyService.update(mg);
+            			}
+                        resultState.setErrcode(0);// 表示成功
+                        resultState.setErrmsg("支付成功");
+                        /**** 业务逻辑  保存openid之类的****/
+                        // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                        resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            		}
             	}
             } else {
                 resultState.setErrcode(-1);// 支付失败
                 resultState.setErrmsg("支付失败");
                 resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
             }
-        } else {
-            resultState.setErrcode(-1);// 支付失败
-            resultState.setErrmsg("签名验证错误");
-            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[签名验证错误]]></return_msg>" + "</xml> ";
-        }
  
         BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
         out.write(resXml.getBytes());

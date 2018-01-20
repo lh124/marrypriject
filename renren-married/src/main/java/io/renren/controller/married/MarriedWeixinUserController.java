@@ -42,6 +42,8 @@ public class MarriedWeixinUserController {
 	@RequestMapping("/save")
 	public R save(HttpServletRequest request){
 		int total = 0;
+		Map<String, Object> m = new HashMap<String, Object>();
+		int userId=0;
 		try {
 			MarriedUserEntity us = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 			String code = request.getParameter("code");
@@ -67,6 +69,7 @@ public class MarriedWeixinUserController {
 					marriedUserService.insert(user);
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, user);
 					map.put("userId", user.getId());
+					userId=1;
 				}else{
 					map.put("userId", u.getId());
 					map.put("offset", 0);
@@ -79,6 +82,7 @@ public class MarriedWeixinUserController {
 						request.getSession().setAttribute("jurisdiction", 1);
 					}
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+					userId=1;
 				}
 				total = marryCartService.queryList(map).size();
 				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
@@ -96,25 +100,28 @@ public class MarriedWeixinUserController {
 				map.put("states", 1);
 				map.put("userId", us.getId());
 				total = marryCartService.queryList(map).size();
-				
 				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
 				if(list.size()==0){
 					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
 				}else{
 					request.getSession().setAttribute("jurisdiction", 1);
 				}
+				userId=1;
+				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, us);
 			}
-//			else{
-//				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
-//				MarriedUserEntity u = new MarriedUserEntity();
-//				u.setOpenid(openId);
-//				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
-//				u = this.marriedUserService.selectOne(wrapper);
-//				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
-//			}
+			else{
+				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
+				MarriedUserEntity u = new MarriedUserEntity();
+				u.setOpenid(openId);
+				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
+				u = this.marriedUserService.selectOne(wrapper);
+				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return R.ok().put("total", total);
+		m.put("total", total);
+		m.put("userId", userId);
+		return R.ok().put("map", m);
 	}
 }

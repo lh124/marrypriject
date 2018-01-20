@@ -416,7 +416,7 @@ public class MarryWeixinMoneyController {
         if ("SUCCESS".equals(json.getString("result_code"))) {
         	String out_trade_no = json.getString("out_trade_no");
         	MarryRedmoneyMainEntity marryRedmoneyMain = new MarryRedmoneyMainEntity();
-        	marryRedmoneyMain.setOutTradeNo(out_trade_no);;
+        	marryRedmoneyMain.setOutTradeNo(out_trade_no);
         	EntityWrapper<MarryRedmoneyMainEntity> wrapper = new EntityWrapper<MarryRedmoneyMainEntity>(marryRedmoneyMain);
         	marryRedmoneyMain = marryRedmoneyMainService.selectOne(wrapper);
             saveMoneyDetail(marryRedmoneyMain.getId());//按红包个数保存详细红包

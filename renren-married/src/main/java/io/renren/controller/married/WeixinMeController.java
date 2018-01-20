@@ -516,13 +516,18 @@ public class WeixinMeController {
 	public R findWedding(HttpServletRequest request){
 		Integer type = 0;
 		String openId = "";
+		System.out.println(request.getParameter("id")+"-----------------");
 		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		if(user != null){
-			marryWedding.setId(Integer.parseInt(request.getParameter("id")));
+			if(request.getParameter("id") == null || "".equals(request.getParameter("id")) || "null".equals(request.getParameter("id"))){
+				marryWedding.setUserId(user.getId());//邀请好友时通过当前用户id查询婚礼记录
+			}else{
+				marryWedding.setId(Integer.parseInt(request.getParameter("id")));//参加婚礼模块中通过婚礼id查询婚礼记录
+			}
 		}else{
 			if(request.getParameter("code")!=null&& !"".equals(request.getParameter("code")) && !"null".equals(request.getParameter("code"))){
-				try {
+				try {//好友通过邀请函中带的婚礼id查询婚礼记录
 					openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
 					MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
 					marryParticipate.setOpenid(openId);
@@ -531,6 +536,7 @@ public class WeixinMeController {
 					if(marryParticipateService.selectOne(wrapper) != null){
 						type = 1;
 					}
+					marryWedding.setId(Integer.parseInt(request.getParameter("id")));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
