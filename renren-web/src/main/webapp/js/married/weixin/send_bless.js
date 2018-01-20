@@ -8,6 +8,10 @@ function closedialog(){
 
 function saveTotalFee(){
 	var totalFee = $("#totalFee").val();
+	if(totalFee == null || totalFee == ""){
+		alert("金额不能为空");
+		return false;
+	}
 	if(isNaN(totalFee)){
 		alert("金额不正确");
 		return false;
