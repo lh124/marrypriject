@@ -232,14 +232,13 @@ public class MarryWeixinBlessingController {
             			marryBlessing.setStates(1);
                 		marryBlessingService.update(marryBlessing);
                 		
-                		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
             			MarryGetmoneyEntity marryGetmoney = new MarryGetmoneyEntity();
-            			marryGetmoney.setOpenid(user.getOpenid());
+            			marryGetmoney.setOpenid(json.getString("openid"));
             			EntityWrapper<MarryGetmoneyEntity> wrapper = new EntityWrapper<MarryGetmoneyEntity>(marryGetmoney);
             			MarryGetmoneyEntity mg = marryGetmoneyService.selectOne(wrapper);
             			if(mg == null){
             				MarryGetmoneyEntity mgm = new MarryGetmoneyEntity();
-            				mgm.setOpenid(user.getOpenid());
+            				mgm.setOpenid(json.getString("openid"));
             				mgm.setTotalFee(Double.valueOf(marryBlessing.getContent()));
             				mgm.setGmtModifiedtime(new Date());
             				marryGetmoneyService.save(mgm);

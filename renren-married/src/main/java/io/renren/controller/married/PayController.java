@@ -20,7 +20,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -118,14 +117,14 @@ public class PayController {
 		String body = "";
 		Integer total_fee = 0;
 		if(marryOrders.getOrderType() == 1){//直接下单的情况
-			body = URLEncoder.encode(marryOrders.getMainDescribe(), "UTF-8");
-			attach = URLEncoder.encode(marryOrders.getBusiness(), "UTF-8");
+			body = marryOrders.getMainDescribe();
+			attach = marryOrders.getBusiness();
 			total_fee = (new  Double(Double.valueOf(marryOrders.getMainPrice())*100)).intValue();
 		}else{
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("orderId", marryOrders.getId());
-			body = URLEncoder.encode("婚礼商品的购买", "UTF-8");
-			attach = URLEncoder.encode("商品购买", "UTF-8");
+			body = "婚礼商品的购买";
+			attach = "商品购买";
 			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
 			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
 				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();

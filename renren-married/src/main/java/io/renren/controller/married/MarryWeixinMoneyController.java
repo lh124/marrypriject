@@ -271,7 +271,7 @@ public class MarryWeixinMoneyController {
 		Integer totalNum = Integer.parseInt(request.getParameter("total"));//红包个数
 		double total_fee = 0.00;
 		String sb = "";
-		total_fee = (new  Double(Double.valueOf(request.getParameter("total_fee"))*100)).intValue();
+		total_fee = (new  Double(Double.valueOf(request.getParameter("total_fee")))).intValue();
 		Integer id = saveMoneyMain(total_fee, request, totalNum);//将红包主表数据进行添加
 		try {
 			Map<String, String> paraMap = getSign(request,id,request.getParameter("content"));
@@ -419,12 +419,22 @@ public class MarryWeixinMoneyController {
         	marryRedmoneyMain.setOutTradeNo(out_trade_no);
         	EntityWrapper<MarryRedmoneyMainEntity> wrapper = new EntityWrapper<MarryRedmoneyMainEntity>(marryRedmoneyMain);
         	marryRedmoneyMain = marryRedmoneyMainService.selectOne(wrapper);
-            saveMoneyDetail(marryRedmoneyMain.getId());//按红包个数保存详细红包
-            resultState.setErrcode(0);// 表示成功
-            resultState.setErrmsg("支付成功");
-            /**** 业务逻辑  保存openid之类的****/
-            // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
-            resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+        	if(marryRedmoneyMain != null){
+        		marryRedmoneyMain.setStates(1);
+        		marryRedmoneyMainService.update(marryRedmoneyMain);
+        		saveMoneyDetail(marryRedmoneyMain.getId());//按红包个数保存详细红包
+                resultState.setErrcode(0);// 表示成功
+                resultState.setErrmsg("支付成功");
+                /**** 业务逻辑  保存openid之类的****/
+                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+        	}else{
+                resultState.setErrcode(-1);// 表示成功
+                resultState.setErrmsg("支付失败");
+                /**** 业务逻辑  保存openid之类的****/
+                // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+        	}
         } else {
             resultState.setErrcode(-1);// 支付失败
             resultState.setErrmsg("支付失败");
