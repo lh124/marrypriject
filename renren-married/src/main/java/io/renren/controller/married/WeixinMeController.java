@@ -98,7 +98,6 @@ public class WeixinMeController {
 		if(marryWeddingService.selectOne(wrapper) == null){
 			m.put("obj", null);
 		}else{
-			System.out.println(marryWeddingService.selectOne(wrapper).getId()+"--------------------------");
 			m.put("obj", marryWeddingService.selectOne(wrapper).getId());
 		}
 		return R.ok().put("map", m);
@@ -450,7 +449,7 @@ public class WeixinMeController {
 		String openId  = "";
 		try {
 			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-			openId = user == null ?WeixinUtil.getWeixinOpenId(request.getParameter("code")):user.getOpenid();
+			openId = user == null ?request.getParameter("openId"):user.getOpenid();
 			Integer states = Integer.parseInt(request.getParameter("states"));
 			Integer id = Integer.parseInt(request.getParameter("id"));
 			MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
@@ -516,14 +515,15 @@ public class WeixinMeController {
 	@RequestMapping("/findWedding")
 	public R findWedding(HttpServletRequest request){
 		Integer type = 0;
+		String openId = "";
 		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
-		if(request.getParameter("id") == null || "null".equals(request.getParameter("id"))){
-			MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-			marryWedding.setUserId(user.getId());
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		if(user != null){
+			marryWedding.setId(Integer.parseInt(request.getParameter("id")));
 		}else{
 			if(request.getParameter("code")!=null&& !"".equals(request.getParameter("code")) && !"null".equals(request.getParameter("code"))){
 				try {
-					String openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
+					openId = WeixinUtil.getWeixinOpenId(request.getParameter("code"));
 					MarryParticipateEntity marryParticipate = new MarryParticipateEntity();
 					marryParticipate.setOpenid(openId);
 					marryParticipate.setWeddingid(Integer.parseInt(request.getParameter("id")));
@@ -534,15 +534,18 @@ public class WeixinMeController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}else{
+				return R.error("您未授权获取微信信息");
 			}
-			marryWedding.setId(Integer.parseInt(request.getParameter("id")));
 		}
 		EntityWrapper<MarryWeddingEntity> wrapper = new EntityWrapper<MarryWeddingEntity>(marryWedding);
 		marryWedding = this.marryWeddingService.selectOne(wrapper);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("marryWedding", marryWedding);
 		map.put("user", marriedUserService.queryObject(marryWedding==null?0:marryWedding.getUserId()));
 		map.put("type", type);
+		map.put("openId", openId);
 		return R.ok().put("data", map);
 	}
 
