@@ -229,11 +229,6 @@ public class MarryWeixinBlessingController {
                      resultState.setErrmsg("支付失败");
                      resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
             	}else{
-            		if(!marryBlessing.getContent().equals(json.getInt("total_fee")/100)){
-            			resultState.setErrcode(-1);// 支付失败
-                        resultState.setErrmsg("支付失败");
-                        resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[支付失败]]></return_msg>" + "</xml> ";
-            		}else{
             			marryBlessing.setStates(1);
                 		marryBlessingService.update(marryBlessing);
                 		
@@ -258,7 +253,6 @@ public class MarryWeixinBlessingController {
                         /**** 业务逻辑  保存openid之类的****/
                         // 通知微信.异步确认成功.必写.不然会一直通知后台.八次之后就认为交易失败了
                         resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>" + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
-            		}
             	}
             } else {
                 resultState.setErrcode(-1);// 支付失败
