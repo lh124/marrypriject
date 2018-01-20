@@ -23,13 +23,26 @@
 			          }
 			          $("#openId").val(result.data.openId);
 			     }else{
-			    	 alert(result.msg);
-			    	 window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/invite_card.html?id="+$("#weddingId").val()+"&response_type=code&scope=snsapi_base&state=2#wechat_redirect"; 
+			    	 if(result.msg.indexOf("您未授权获取微信信息") >= 0){
+			    		 $("#msg").html(result.msg);
+			    		 $("#msg1").hide();
+			    		 $("#iosDialog1").fadeIn(200);
+			    		 //window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/invite_card.html?id="+$("#weddingId").val()+"&response_type=code&scope=snsapi_base&state=2#wechat_redirect"; 
+			    	 }else{
+			    		 $("#msg").html(result.msg.substring(0,9));
+				    	 $("#msg1").html(result.msg.substring(10));
+				    	 $("#iosDialog1").fadeIn(200);
+			    	 }
 			     }
 			}
 	 	});
  	});
  	
+	function closeCk(){
+		wx.closeWindow();
+		$("#iosDialog1").fadeOut(200);
+	}
+	
  	function GetQueryString(name){
 		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
 		     var r = window.location.search.substr(1).match(reg);
