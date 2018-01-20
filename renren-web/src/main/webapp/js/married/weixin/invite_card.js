@@ -21,6 +21,10 @@
 						  $(".invite_con").find("p").css("color",result.data.marryWedding.bgcolor);
 						  $(".invite_con").find("h3").css("color",result.data.marryWedding.bgcolor);
 			          }
+			          $("#openId").val(result.data.openId);
+			     }else{
+			    	 alert(result.msg);
+			    	 window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/invite_card.html?id="+$("#weddingId").val()+"&response_type=code&scope=snsapi_base&state=2#wechat_redirect"; 
 			     }
 			}
 	 	});
@@ -34,10 +38,9 @@
  	
  	function update(states){
  	      var id = $("#weddingId").val();
- 	      var code = GetQueryString("code");
  	      $.ajax({
 				type: "POST",
-			    url: "../weixin/me/attendawedding?states="+states+"&id="+id+"&code="+code,
+			    url: "../weixin/me/attendawedding?states="+states+"&id="+id+"&openId="+$("#openId").val(),
 				dataType: "json",
 				success: function(result){
 				     if(result.status == 'ok'){

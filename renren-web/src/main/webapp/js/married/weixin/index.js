@@ -10,7 +10,8 @@ $(function(){
 		    dataType: "json",
 		    success: function(result){
 		        if(result.status == 'ok'){
-		             $("#total").html(result.total);
+		             $("#total").html(result.map.total);
+		             $("#userId").val(result.map.userId);
 		        }
 			}
 		});
@@ -49,7 +50,7 @@ $(function(){
 	});
 
 function tosession(type){
-	if(isNaN($("#userId").val())){//判断是否登录
+	if($("#userId").val() == 0 || $("#userId").val()=="0"){//判断是否登录
 		window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 	    return false;
 	}
