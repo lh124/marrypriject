@@ -162,7 +162,8 @@ public class WeixinMeController {
 			String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?mw.getId().toString():request.getParameter("id");
 			map.put("weddingId", weddingId);
 		}else{
-			map.put("weddingId", 0);
+			String weddingId = (request.getParameter("id")==null || "".equals(request.getParameter("id")))?"0":request.getParameter("id");
+			map.put("weddingId", weddingId);
 		}
 		return R.ok().put("list", marryPhotoService.queryList(map));
 	}
