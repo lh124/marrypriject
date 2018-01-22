@@ -24,13 +24,20 @@
 	    var websocket2 = null;
 		//判断当前浏览器是否支持WebSocket
 		if ('WebSocket' in window) {
-		    websocket2 = new WebSocket("ws://192.168.1.107/wrs/smart/chatwebsocket");
+		    websocket2 = new WebSocket("ws://rctest.guanyukj.com/smart/chatwebsocket");
 		}else {
 		     alert('当前浏览器 Not support websocket')
 		}
 	    websocket2.onmessage=function(ev){
 	    	var obj1 = eval(   '('+ev.data+')'   );
-	    	var node = '<dl style="height:0.8rem;"><dt style="float:left;width:0.8rem;height:0.8rem;"><img style="display;block;width:100%;height:100%;" src="'+obj1.pic+'"/></dt><dd style="float:left;text-indent:0.1rem;line-height:0.8rem;">'+obj1.content+'</dd></dl>';
+	    	var node = "";
+	    	if(obj1 != null){
+	    	   if(obj1.id==$("#id").val()){
+	    	     node = '<dl style="height:0.8rem;"><dt style="float:left;width:0.8rem;height:0.8rem;"><img style="display;block;width:100%;height:100%;" src="'+obj1.pic+'"/></dt><dd style="float:left;text-indent:0.1rem;line-height:0.8rem;color:#fe4567;">'+obj1.content+'</dd></dl>';
+		    	}else{
+		    	     node = '<dl style="height:0.8rem;"><dt style="float:left;width:0.8rem;height:0.8rem;"><img style="display;block;width:100%;height:100%;" src="'+obj1.pic+'"/></dt><dd style="float:left;text-indent:0.1rem;line-height:0.8rem;">'+obj1.content+'</dd></dl>';
+		    	}
+	    	}
 	    	if(obj1.weddingId == $("#weddingId").val())
 	    	$(".interact_mid").prepend(node);
 	    }
@@ -135,7 +142,7 @@
 		var websocket = null;
 	     //判断当前浏览器是否支持WebSocket
 	     if ('WebSocket' in window) {
-	         websocket = new WebSocket("ws://192.168.1.107/wrs/smart/websocket");
+	         websocket = new WebSocket("ws://rctest.guanyukj.com/smart/websocket");
 	     }
 	     else {
 	         alert('当前浏览器 Not support websocket')
