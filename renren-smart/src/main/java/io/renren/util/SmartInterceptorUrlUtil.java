@@ -9,6 +9,8 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/login.html",
 				".*/smart/demo1.html",
 				".*/smart/shouye/handler",
+				".*/smart/chatwebsocket",
+				".*/smart/websocket",
 				".*/smart/shouye/uploadMedio",
 				".*/smart/datainpution/getData",
 				".*/smart/interface_test.html",
