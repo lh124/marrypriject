@@ -5,17 +5,30 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>“码”上结婚</title>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/weui.min.css"/>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/reset.css"/>
     <link rel="stylesheet" href="${rc.contextPath}/statics/marry/css/marry.css"/>
     <script type="text/javascript" src="${rc.contextPath}/statics/marry/js/reset.js"></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript" src="${rc.contextPath}/js/married/weixin/shop_cart.js"></script>
+    <style type="text/css">
+    	.shop_empty{width:4rem;margin:0 auto;padding-top:40px;padding-bottom:40px;}
+    	.shop_empty img{display:block;margin:0 auto;}
+    	.shop_empty1{background:#fe4567;border-radius:6px; width:4rem;height:1.0rem;line-height: 1.0rem;text-align: center;font-size:14px;display:block;}
+    </style>
 </head>
-<body ontouchstart style="background:#efefef;" >
+<body class="body" ontouchstart style="background:#efefef;height:100%;" >
 	<div class="container" id="container">
 		<div class="page" id="pageContainer">
 			<div style="flex:1;margin-bottom:2.8rem;" id="list">
+				<div class="shop_empty">
+					<img src="http://static.gykjewm.com/married/imgurl/icon-cart.png" />
+					<p style="color:#999999;text-align:center;line-height:30px;">购物车空空如也</p>
+					<a href="theme.html" class="shop_empty1" style="color:white;">
+						去逛逛
+					</a>
+				</div> 
 			</div>
-			<div class="cart_total">
+			<div class="cart_total" style="display: none;">
 				<div class="cart_total_money">
 					<div class="weui-cells weui-cells_checkbox cart_total_money_con">
 			            <label class="weui-cell weui-check__label" for="ck_all">
