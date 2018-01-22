@@ -37,7 +37,7 @@ public class TombstoneUserController {
 	private TombstoneUserService tombstoneUserService;
 	
 	/**
-	 * 列表
+	 * 用户列表
 	 */
 	@RequestMapping("/list")
 	@RequiresPermissions("tombstoneuser:list")
@@ -55,7 +55,7 @@ public class TombstoneUserController {
 	
 	
 	/**
-	 * 信息
+	 * 用户信息
 	 */
 	@RequestMapping("/info/{id}")
 	@RequiresPermissions("tombstoneuser:info")
@@ -88,7 +88,7 @@ public class TombstoneUserController {
 	}
 	
 	/**
-	 * 修改
+	 * 用户修改
 	 */
 	@RequestMapping("/update")
 	@RequiresPermissions("tombstoneuser:update")
@@ -101,13 +101,12 @@ public class TombstoneUserController {
 	}
 	
 	/**
-	 * 删除
+	 * 用户删除
 	 */
 	@RequestMapping("/delete")
 	@RequiresPermissions("tombstoneuser:delete")
 	public R delete(@RequestBody Integer[] ids){
 		tombstoneUserService.deleteBatch(ids);
-		
 		return R.ok();
 	}
 	
