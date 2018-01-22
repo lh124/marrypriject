@@ -33,7 +33,7 @@
 										alert('支付成功');
 										var websocket = null;
 										if ('WebSocket' in window) {
-									         websocket = new WebSocket("ws://wrs.gykjewm.com/smart/websocket");
+									         websocket = new WebSocket("ws://rctest.guanyukj.com/smart/websocket");
 									     }
 									     else {
 									         alert('当前浏览器 Not support websocket')
