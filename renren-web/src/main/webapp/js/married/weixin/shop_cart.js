@@ -1,4 +1,7 @@
 $(function(){
+		  var w=document.documentElement?document.documentElement.clientHeight:document.body.clientHeight;
+		  $(".body").css("height",w);
+		  console.log(w)
           $.ajax({
 				type: "POST",
 				url: "../weixin/cart/list",
@@ -6,24 +9,29 @@ $(function(){
 				success: function(result){
 					if(result.status == 'ok'){
 						var content = "";
-						for(var i = 0; i < result.list.length;i++){
-						    content += '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
-						               '<div class="cart_tit"><p>'+result.list[i].username+'<span class="check_part">全选</span></p>'+
-						               '</div><div class="weui-panel__bd">'
-						               for(var j = 0; j < result.list[i].list.length;j++){
-						                     content += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
-										               '<div class="weui-media-box__hd">'+
-										               '<img style="display:block;width:60px;height:60px;" class="weui-media-box__thumb" src="'+result.list[i].list[j].pic+'"></div>'+
-										               '<div class="weui-media-box__bd"><h4 class="weui-media-box__title">'+result.list[i].list[j].title+'</h4>'+
-										               '<p class="weui-media-box__desc">'+result.list[i].list[j].author+'</p>'+
-										               '<p class="weui-media-box__desc">价格：￥<span class="sub">'+result.list[i].list[j].price+'</span></p>'+
-										               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
-										               '<div class="weui-cell__hd"><input value="'+result.list[i].list[j].cartId+'" type="checkbox" class="weui-check ck" name="checkbox1">'+
-										               '<i class="weui-icon-checked"></i></div></label></div></div></a>';
-						                }
-						               content += '</div></div>';
+						if(result.list.length > 0){
+							for(var i = 0; i < result.list.length;i++){
+							    content += '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
+							               '<div class="cart_tit"><p>'+result.list[i].username+'<span class="check_part">全选</span></p>'+
+							               '</div><div class="weui-panel__bd">'
+							               for(var j = 0; j < result.list[i].list.length;j++){
+							                     content += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
+											               '<div class="weui-media-box__hd">'+
+											               '<img style="display:block;width:60px;height:60px;" class="weui-media-box__thumb" src="'+result.list[i].list[j].pic+'"></div>'+
+											               '<div class="weui-media-box__bd"><h4 class="weui-media-box__title">'+result.list[i].list[j].title+'</h4>'+
+											               '<p class="weui-media-box__desc">'+result.list[i].list[j].author+'</p>'+
+											               '<p class="weui-media-box__desc">价格：￥<span class="sub">'+result.list[i].list[j].price+'</span></p>'+
+											               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
+											               '<div class="weui-cell__hd"><input value="'+result.list[i].list[j].cartId+'" type="checkbox" class="weui-check ck" name="checkbox1">'+
+											               '<i class="weui-icon-checked"></i></div></label></div></div></a>';
+							                }
+							               content += '</div></div>';
+							}
+							$(".cart_total").show();
+							$("#list").html(content);
+						}else{
+							
 						}
-						$("#list").html(content);
 						native();
 					}
 				}
