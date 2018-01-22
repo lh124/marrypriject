@@ -30,7 +30,7 @@ function toWeddingId(type){
 	}else if(type==2){//去好友回馈
 		window.location.href="feedback.html";
 	}else if(type==3){//去屏幕管理
-		window.location.href="screen_management.html";
+		window.location.href="screen_management.html?weddingId="+$("#weddingId").val();
 	}else if(type==4){//去数据统计
 		window.location.href="data_statistics.html";
 	}else if(type==5){//去资料上传
