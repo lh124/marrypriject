@@ -20,6 +20,7 @@
 </head>
 <body ontouchstart style="background:white;" >
 	<div class="container" id="container" style="padding:0;">
+	<input type="hidden" id="weddingId" value="${request.getParameter('weddingId')}">
 		<div class="page interact" id="pageContainer">
 			<div class="interact_top" style="margin:0;z-index:222;">
 				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="height:5.3rem;">
@@ -166,7 +167,8 @@
 				$(".screen_con dl").find('span').hide();
 				var id = $(this).attr("title");
 				var obj = JSON.stringify({
-		    		id:id
+		    		id:id,
+		    		weddingId:$("#weddingId").val()
 		    	});
 				websocket.send(obj);
 				$(this).find("span").show();

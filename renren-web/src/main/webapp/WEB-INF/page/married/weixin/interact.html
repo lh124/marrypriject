@@ -153,8 +153,10 @@
 	         alert('当前浏览器 Not support websocket')
 	     }
 	     var index;
+	     var weddingId = 0;
 	    websocket.onmessage=function(ev){
 	    	var obj = eval(   '('+ev.data+')'   );
+	    	weddingId = obj.weddingId;
 	    	for(var i = 0;i<title.length;i++){
 	    		if(obj.id == title[i]){
 	    			index = i;
@@ -166,16 +168,20 @@
 	    		window.location.href = "./hongbao.html?weddingId="+$("#weddingId").val();
 	    	}
 	    	if(index == 1){
-	    	    if(video.length >0){
-				    $("#theVedio2").attr("src",video[0]);
-				}
-	    		$("#theVedio").show();
-				$(".banner-number").html("");
-				//视频样式设置
-				video1.play();
+	    	    if(weddingId == $("#weddingId").val()){
+	    	        if(video.length >0){
+					    $("#theVedio2").attr("src",video[0]);
+					}
+		    		$("#theVedio").show();
+					$(".banner-number").html("");
+					//视频样式设置
+					video1.play();
+	    	    }
 	    	}
 	    	if(index == 2){
-	    	    sheying();
+	    	    if(weddingId == $("#weddingId").val()){
+	    	       sheying();
+	    	    }
 	    	}
 	    }
 		$('.carousel').carousel();
@@ -202,7 +208,7 @@
 		
 		$.ajax({
 				type: "POST",
-			    url: "../weixin/me/findAllWeddingPhoto",
+			    url: "../weixin/me/findAllWeddingPhoto?id="+$("#weddingId").val(),
 			    dataType: "json",
 			    success: function(result){
 			        if(result.status == 'ok'){
