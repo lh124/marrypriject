@@ -12,7 +12,7 @@ public class AppInterceptorUrlUtil {
 						  ".*/appInterface/main",
 						  ".*/appInterface/update",
 						  ".*/appInterface/list",
-						  ".*/appInterface/info",
+						  ".*/appInterface/info/.*",
 						  ".*/appInterface/save",
 						  ".*/appInterface/updatestates",
 						  ".*/appInterface/updateHandle",
