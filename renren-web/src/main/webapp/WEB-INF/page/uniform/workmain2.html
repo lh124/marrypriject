@@ -20,7 +20,9 @@
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
 			<a class="btn btn-primary" @click="addsondetail"><i class="fa fa-plus"></i>&nbsp;子任务管理</a>
+			#if($shiro.hasPermission("workmain:updateHandlestates"))
 			<a class="btn btn-primary" @click="updatehandlestates"><i class="fa fa-pencil-square-o"></i>&nbsp;任务处理</a>
+			#end
 			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>
