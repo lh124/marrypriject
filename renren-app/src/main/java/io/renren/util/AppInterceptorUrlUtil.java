@@ -8,6 +8,15 @@ public class AppInterceptorUrlUtil {
 		String[] annos = {".*/appInterface/main", 
 						  ".*/appInterface/teacher/main",
 						  ".*/appInterface/test/main",
+						  ".*/appInterface/callBack/msgPic",
+						  ".*/appInterface/main",
+						  ".*/appInterface/update",
+						  ".*/appInterface/list",
+						  ".*/appInterface/info",
+						  ".*/appInterface/save",
+						  ".*/appInterface/updatestates",
+						  ".*/appInterface/updateHandle",
+						  ".*/appInterface/delete",
 				          ".*/appInterface/student/main"		         
 		 };
 		boolean isMatch = false;
