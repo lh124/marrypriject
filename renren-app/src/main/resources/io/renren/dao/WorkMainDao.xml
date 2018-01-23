@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.app.WorkMainDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,img as img ,content as content ,user_id as userId ,user_name as userName ,states as states ,
+		gmt_modifiedtime as gmtModifiedtime ,end_time as endTime ,father_id as fatherId ,
+		estimate_time as estimateTime,handle_states as handleStates,handle_content as handleContent		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,img ,content ,user_id ,user_name ,states ,gmt_modifiedtime ,end_time ,father_id ,estimate_time,
+		handle_states,handle_content 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.app.WorkMainEntity" id="workMainMap">
+		        <result property="id" column="id"/>
+		        <result property="img" column="img"/>
+		        <result property="content" column="content"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="userName" column="user_name"/>
+		        <result property="states" column="states"/>
+		        <result property="gmtModifiedtime" column="gmt_modifiedtime"/>
+		        <result property="endTime" column="end_time"/>
+		        <result property="fatherId" column="father_id"/>
+		        <result property="estimateTime" column="estimate_time"/>
+		        <result property="handleContent" column="handle_content"/>
+		        <result property="handleStates" column="handle_states"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.app.WorkMainEntity">
+		select <include refid="allColumns"></include> from work_main where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.app.WorkMainEntity">
+		select <include refid="allColumns"></include> from work_main where 1=1
+		<if test="userId != null and userId != ''">
+		    and yearweek(date_format(gmt_modifiedtime,'%y-%m-%d')) = yearweek(now())
+			      and user_id=#{userId}
+		</if>
+		<if test="fatherId != null and fatherId != ''">
+			and father_id=#{fatherId}
+		</if> 
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from work_main where 1=1
+		<if test="userId != null and userId != ''">
+		    and yearweek(date_format(gmt_modifiedtime,'%y-%m-%d')) = yearweek(now())
+			      and user_id=#{userId}
+		</if>
+		<if test="fatherId != null and fatherId != ''">
+			and father_id=#{fatherId}
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.app.WorkMainEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into work_main
+		(
+			`img`, 
+			`content`, 
+			`user_id`, 
+			`user_name`, 
+			`states`, 
+			`gmt_modifiedtime`, 
+			`end_time`, 
+			`father_id`, 
+			`handle_content`,
+			`handle_states`,
+			`estimate_time`
+		)
+		values
+		(
+			#{img}, 
+			#{content}, 
+			#{userId}, 
+			#{userName}, 
+			#{states}, 
+			#{gmtModifiedtime}, 
+			#{endTime}, 
+			#{fatherId}, 
+			#{handleContent}, 
+			#{handleStates}, 
+			#{estimateTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.app.WorkMainEntity">
+		update work_main 
+		<set>
+			<if test="img != null">`img` = #{img}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="userName != null">`user_name` = #{userName}, </if>
+			<if test="states != null">`states` = #{states}, </if>
+			<if test="gmtModifiedtime != null">`gmt_modifiedtime` = #{gmtModifiedtime}, </if>
+			<if test="endTime != null">`end_time` = #{endTime}, </if>
+			<if test="fatherId != null">`father_id` = #{fatherId}, </if>
+			<if test="handleContent != null">`handle_content` = #{handleContent}, </if>
+			<if test="handleStates != null">`handle_states` = #{handleStates}, </if>
+			<if test="estimateTime != null">`estimate_time` = #{estimateTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from work_main where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from work_main where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
