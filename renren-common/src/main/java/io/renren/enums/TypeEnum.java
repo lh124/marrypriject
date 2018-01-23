@@ -60,7 +60,9 @@ public enum TypeEnum {
 	MARRIED_PHOTO_PIC(32, "married_photo_", "婚礼图片", "婚礼图片上传成功", "婚礼图片上传失败", 6, "married/photo/",
 			"http://wrs.gykjewm.com/married/callBack/msgPic" ),
 	SMART_APP_PATH(33, "smart_app_", "App软件上传", "App软件上传上传成功", "App软件上传传失败", 6, "APP/",
-					"http://wrs.gykjewm.com/smart/callBack/msgPic" );
+					"http://wrs.gykjewm.com/smart/callBack/msgPic" ),
+	WORK_MAIN_PIC(34, "work_main_", "工作图片上传", "工作图片上传成功", "工作图片上传失败", 6, "work/",
+							"http://wrs.gykjewm.com/appInterface/callBack/msgPic" );
 	private Integer type;
 	private String dirPrefix;
 	private String description;
