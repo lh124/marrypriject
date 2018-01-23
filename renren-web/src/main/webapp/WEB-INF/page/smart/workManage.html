@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>工作管理平台</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+<script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+</head>
+<script type="text/javascript">
+    function init(){
+        var url= "../appInterface/main?key="+'{'+
+                 '"type":"getAllUser","roleName":"工作管理平台"}';
+        $.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				success: function(result){
+				    if(result.status == 'ok'){
+				        var content= "";
+				        for(var i = 0; i < result.data.length; i++){
+				             content += '<a class="weui-cell weui-cell_access" href="./workManage2.html?id='+result.data[i].userId+'">'+
+				                        '<div class="weui-cell__bd"><p>'+result.data[i].name+'</p></div>'+
+				                        '<div class="weui-cell__ft"></div></a>';
+				        }
+				        $("#list").html(content);
+				    }
+				}
+		});
+    }
+</script>
+<body ontouchstart onload="init()">
+    <div class="container" id="container">
+		<div class="page slideIn" style="padding-top: 2%;padding-left: 3%;opacity:1;">
+		    <h3>用户列表</h3>
+		    <div class="page__bd">
+		        <div class="weui-cells__title">&nbsp;</div>
+		        <div class="weui-cells" id="list">
+		            
+		        </div>
+		    </div>
+		</div>
+		
+	</div>   
+</body>
+</html>
