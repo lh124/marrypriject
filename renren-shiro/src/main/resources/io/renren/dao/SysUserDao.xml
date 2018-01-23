@@ -6,6 +6,15 @@
 		select * from sys_user where user_id = #{value}
 	</select>
 	
+	<select id="queryListtongji" resultType="io.renren.entity.SysUserEntity">
+		select * from sys_user where user_id in(
+			select user_id from sys_user_role where 
+				role_id=(select role_id from sys_role where role_name=#{role_name})
+		)
+
+
+	</select>
+	
 	<select id="queryList" resultType="io.renren.entity.SysUserEntity">
 		select * from sys_user 
 		<where>
@@ -13,9 +22,9 @@
 				and `create_user_id` = #{createUserId} 
 			</if>
 			<if test="username != null and username.trim() != ''">
-				and `username` like concat('%',#{username},'%') 
+				and (`username` like concat('%',#{username},'%') or `name` like concat('%',#{username},'%') )
 			</if>
-		</where>
+		</where> 
 		<choose>
 			<when test="sidx != null and sidx.trim() != ''">
 				order by ${sidx} ${order}
@@ -36,7 +45,7 @@
 				and `create_user_id` = #{createUserId} 
 			</if>
 			<if test="username != null and username.trim() != ''">
-				and `username` like concat('%',#{username},'%') 
+				and (`username` like concat('%',#{username},'%') or `name` like concat('%',#{username},'%') )
 			</if>
 		</where>
 	</select>
@@ -57,7 +66,7 @@
 	</select>
 	
 	<select id="queryByUserName" resultType="io.renren.entity.SysUserEntity">
-		select * from sys_user where username = #{username}
+		select * from sys_user where username = #{username} or name= #{username}
 	</select>
 	
 	<insert id="save" parameterType="io.renren.entity.SysUserEntity" useGeneratedKeys="true" keyProperty="userId">
@@ -70,6 +79,7 @@
 			`mobile`, 
 			`status`, 
 			`create_user_id`,
+			`name`,
 			`create_time`
 		)
 		values
@@ -81,6 +91,7 @@
 			#{mobile}, 
 			#{status}, 
 			#{createUserId},
+			#{name},
 			#{createTime}
 		)
 	</insert>
@@ -92,6 +103,7 @@
 			<if test="password != null">`password` = #{password}, </if>
 			<if test="email != null">`email` = #{email}, </if>
 			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="name != null">`name` = #{name}, </if>
 			<if test="status != null">`status` = #{status}, </if>
 		</set>
 		where user_id = #{userId} 
