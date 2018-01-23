@@ -36,7 +36,7 @@ public class SysUserServiceImpl implements SysUserService {
 	private SysUserRoleService sysUserRoleService;
 	@Autowired
 	private SysRoleService sysRoleService;
-
+ 
 	@Override
 	public List<String> queryAllPerms(Long userId) {
 		return sysUserDao.queryAllPerms(userId);
@@ -130,5 +130,10 @@ public class SysUserServiceImpl implements SysUserService {
 		if(!roleIdList.containsAll(user.getRoleIdList())){
 			throw new RRException("新增用户所选角色，不是本人创建");
 		}
+	}
+
+	@Override
+	public List<SysUserEntity> queryListtongji(Map<String, Object> map) {
+		return sysUserDao.queryListtongji(map);
 	}
 }

@@ -21,7 +21,7 @@ public interface SysUserService {
 	 */
 	List<String> queryAllPerms(Long userId);
 	
-	/**
+	/** 
 	 * 查询用户的所有菜单ID
 	 */
 	List<Long> queryAllMenuId(Long userId);
@@ -42,6 +42,8 @@ public interface SysUserService {
 	 * 查询用户列表
 	 */
 	List<SysUserEntity> queryList(Map<String, Object> map);
+	
+	List<SysUserEntity> queryListtongji(Map<String, Object> map);
 	
 	/**
 	 * 查询总数
