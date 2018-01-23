@@ -23,7 +23,7 @@ public class SysUserEntity implements Serializable {
 	 * 用户ID
 	 */
 	private Long userId;
-
+ 
 	/**
 	 * 用户名
 	 */
@@ -47,12 +47,25 @@ public class SysUserEntity implements Serializable {
 	 * 手机号
 	 */
 	private String mobile;
+	
+	/**
+	 * 昵称
+	 */
+	private String name;
 
 	/**
 	 * 状态  0：禁用   1：正常
 	 */
 	private Integer status;
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/**
 	 * 角色ID列表
 	 */
