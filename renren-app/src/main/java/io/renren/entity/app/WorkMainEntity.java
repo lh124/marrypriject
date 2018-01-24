@@ -66,8 +66,18 @@ public class WorkMainEntity implements Serializable {
 	//处理意见
 	@TableField(value="handle_content")
 	private String handleContent;
+	
+	//备注说明
+	@TableField(value="beizhuContent")
+	private String beizhuContent;
 			
 
+	public String getBeizhuContent() {
+		return beizhuContent;
+	}
+	public void setBeizhuContent(String beizhuContent) {
+		this.beizhuContent = beizhuContent;
+	}
 	public Integer getHandleStates() {
 		return handleStates;
 	}
