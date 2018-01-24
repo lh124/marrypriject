@@ -174,6 +174,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get("../appInterface/info/"+id, function(r){
 				if(r.workMain.states == 1){
+					vm.showList = true;
 					alert("无法修改已完成的任务");
 					return false;
 				}
