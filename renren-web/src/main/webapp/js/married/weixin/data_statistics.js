@@ -19,3 +19,7 @@
 				}
 		 });
     }
+	
+	function tixian(){
+		window.location.href="get_money.html";
+	}
