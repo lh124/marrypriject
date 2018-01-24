@@ -9,6 +9,9 @@
 </head>
 <script type="text/javascript">
     function init(){
+	    if(isNaN($("#userId").val())){
+             window.location.href="worklogin.html";
+        }
         var url= "../appInterface/main?key="+'{'+
                  '"type":"getWorkList","userId":"'+$("#userId").val()+'"}';
         $.ajax({
@@ -40,6 +43,7 @@
     }
 </script>
 <body ontouchstart onload="init()">
+    <input type="hidden" id="userId" value="$session.getAttribute('workUser').id">
     <input type="hidden" id="userId" value="${request.getParameter('id')}">
     <div class="container" id="container">
 		<div class="page slideIn" style="padding-top: 2%;padding-left: 3%;opacity:1;">

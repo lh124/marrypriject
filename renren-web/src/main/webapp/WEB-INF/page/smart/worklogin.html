@@ -37,13 +37,13 @@
     }
     
     function init(){
-        if($("#type").val() == 1 || $("#type").val() == "1"){
+        if(!isNaN($("#userId").val())){
              window.location.href="workManage.html";
         }
     }
 </script>
 <body ontouchstart onload="init()">
-    <input type="hidden" id="type">
+    <input type="hidden" id="userId" value="$session.getAttribute('workUser').id">
     <div class="container" id="container">
 		<div class="page">
 			<div class="page__hd" style="padding-left: 15px;">
