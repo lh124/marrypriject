@@ -22,25 +22,25 @@
 				success: function(result){
 				    if(result.status == 'ok'){
 				        var content= "";
-				        $("#userName").html("任务人员："+result.data.obj.userName);
+				        $("#userName").html(result.data.obj.userName);
 				        var handleStates = (result.data.obj.handleStates==0?'<span style="color:red;">不合格</span>':(result.data.obj.handleStates==1?'<span style="color:green;">合格</span>':'<span style="color:blue;">待处理</span>'));
 				        
 						var s = (result.data.obj.states==0?'<span style="color:red;">未完成</span>':(result.data.obj.states==2)?'<span style="color:blue;">工作中</span>':'<span style="color:green;">已完成</span>');
-				        $("#states").html("当前状态："+s);
+				        $("#states").html(s);
 						if(result.data.obj.beizhuContent != null && result.data.obj.beizhuContent != ""){
-						   $("#beizhuContent").html("情况说明："+result.data.obj.beizhuContent);
+						   $("#beizhuContent").html(result.data.obj.beizhuContent);
 						}
-				        $("#gmtModifiedtime").html("开始时间："+result.data.obj.gmtModifiedtime);
-				        $("#endTime").html("结束时间："+(result.data.obj.endTime==null?"":result.data.obj.endTime));
-				        $("#estimateTime").html("预计时间："+result.data.obj.estimateTime);
-				        $("#handleStates").html("处理情况："+handleStates);
+				        $("#gmtModifiedtime").html(result.data.obj.gmtModifiedtime);
+				        $("#endTime").html((result.data.obj.endTime==null?"":result.data.obj.endTime));
+				        $("#estimateTime").html(result.data.obj.estimateTime);
+				        $("#handleStates").html(handleStates);
 				        $("#id").val(result.data.obj.id);
 				        if(result.data.obj.handleContent != null && result.data.obj.handleContent != ""){
-				            $("#handleContent").html("处理意见："+result.data.obj.handleContent);
+				            $("#handleContent").html(result.data.obj.handleContent);
 				        }
-				        $("#content").html("任务内容："+result.data.obj.content);
+				        $("#content").html(result.data.obj.content);
 				        if(result.data.obj.img != null && result.data.obj.img != ""){
-				           $("#img").html("任务图片：<a href="+result.data.obj.img+">单击查看</a>");
+				           $("#img").html("<a href="+result.data.obj.img+">单击查看</a>");
 				        }
 				        for(var i = 0; i < result.data.list.length; i++){
 				             var states = "";
@@ -88,16 +88,18 @@
 		    <h3>任务详情及子任务列表</h3>
 		    <div class="page__bd">
 		        <div class="weui-cells__title">&nbsp;</div>
-		        <div id="userName"></div>
-		        <div id="content"></div>
-		        <div id="img"></div>
-		        <div id="states"></div>
-				<div id="beizhuContent"></div>
-		        <div id="gmtModifiedtime"></div>
-		        <div id="estimateTime"></div>
-		        <div id="endTime"></div>
-		        <div id="handleStates"></div>
-		        <div id="handleContent"></div>
+				<table>
+				    <tr><td>任务人员：</td><td id="userName" text-align="left" width="70%"></td></tr>
+					<tr><td>工作内容：</td><td id="content"></td></tr>
+					<tr><td>任务图片：</td><td id="img"></td></tr>
+					<tr><td>当前状态：</td><td id="states"></td></tr>
+					<tr><td>备注说明：</td><td id="beizhuContent"></td></tr>
+					<tr><td>开始时间：</td><td id="gmtModifiedtime"></td></tr>
+					<tr><td>预计时间：</td><td id="estimateTime"></td></tr>
+					<tr><td>结束时间：</td><td id="endTime"></td></tr>
+					<tr><td>处理状态：</td><td id="handleStates"></td></tr>
+					<tr><td>处理意见：</td><td id="handleContent"></td></tr>
+				</table>
 		        <p>
 		           <select class="form-control" id="hadleStates">
 		               <option value="1" selected="selected">合格</option>
