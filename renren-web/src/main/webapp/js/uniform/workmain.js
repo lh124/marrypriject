@@ -30,7 +30,7 @@ $(function () {
 			} },
 			{ label: '处理意见', name: 'handleContent', index: 'handleContent', width: 80 },
 			{ label: '操作', name: 'id', index: 'id', width: 80,formatter :function(r){
-				 return '<button onclick="updatestates(' + r +')">点击完成任务</button>';
+				return '<button onclick="updatestates(' + r +')">点击完成任务</button>';
 			}  }
         ],
 		viewrecords: true,
@@ -62,8 +62,15 @@ $(function () {
 });
 
 function updatestates(id){
-	$("#workId").val(id);
-	$("#iosDialog2").fadeIn(200);
+	$.get("../appInterface/info/"+id, function(r){
+		if(r.workMain.states == 1){
+			alert("不要重复提交已完成的任务");
+			return false;
+		}else{
+			$("#workId").val(id);
+			$("#iosDialog2").fadeIn(200);
+		}
+    });
 }
 
 function updateworkstates(){

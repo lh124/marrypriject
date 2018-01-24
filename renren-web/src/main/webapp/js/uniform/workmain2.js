@@ -59,8 +59,15 @@ $(function () {
     });
 });
 function updatestates(id){
-	$("#workId").val(id);
-	$("#iosDialog2").fadeIn(200);
+	$.get("../appInterface/info/"+id, function(r){
+		if(r.workMain.states == 1){
+			alert("不要重复提交已完成的任务");
+			return false;
+		}else{
+			$("#workId").val(id);
+			$("#iosDialog2").fadeIn(200);
+		}
+    });
 }
 
 function updateworkstates(){
