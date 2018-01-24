@@ -2,8 +2,10 @@ package io.renren.controller.app;
 
 import io.renren.controller.AbstractController;
 import io.renren.entity.app.WorkMainEntity;
+import io.renren.entity.smart.StudentEntity;
 import io.renren.service.SysUserService;
 import io.renren.service.app.WorkMainService;
+import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
@@ -18,12 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
 /**
@@ -40,12 +45,13 @@ public class WorkMainController extends AbstractController{
 	private WorkMainService workMainService;
 	@Autowired
 	private SysUserService sysUserService;
+	@Autowired
+	private StudentService studentService;
 	
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request) throws Exception{
 		String key = request.getParameter("key").replace("&quot;", "\"");
 		JSONObject json = JSONObject.fromObject(key);
-		System.out.println(json);
 		String type = json.getString("type");
 		if("getAllUser".equals(type)){
 			//获取所有当前用户
@@ -79,6 +85,20 @@ public class WorkMainController extends AbstractController{
 			workMain.setHandleContent(hadleContent);
 			workMain.setHandleStates(hadleStates);
 			workMainService.update(workMain);
+			return R.ok();
+		}else if("login".equals(type)){
+			//用户登录
+			StudentEntity user = new StudentEntity();
+			user.setStudentNo(json.getString("userName"));
+			String password = new Sha256Hash(json.getString("password")).toString();
+			EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(user);
+			user = this.studentService.selectOne(wrapper);
+			if(user == null){
+				return R.error("用户不存在");
+			}
+			if(!user.getPasswordd().equals(password)){
+				return R.error("密码错误");
+			}
 			return R.ok();
 		}
 		return null;
