@@ -11,8 +11,11 @@ $(function () {
 					 return '<span style="color:red;">未完成</span>';
 				 }else if(r == 1 ){
 					 return '<span style="color:green;">已完成</span>';
+				 }else if(r == 2 ){
+					 return '<span style="color:blue;">工作中</span>';
 				 }
 			} }, 
+			{ label: '备注说明', name: 'beizhuContent', index: 'beizhuContent', width: 80 },
 			{ label: '任务开始时间', name: 'gmtModifiedtime', index: 'gmt_modifiedtime', width: 80 }, 			
 			{ label: '任务结束时间', name: 'endTime', index: 'end_time', width: 80 }, 			
 			{ label: '预计花费时间', name: 'estimateTime', index: 'estimate_time', width: 80 },
@@ -59,13 +62,20 @@ $(function () {
 });
 
 function updatestates(id){
-	confirm('确定该工作任务已经完成？', function(){
+	$("#workId").val(id);
+	$("#iosDialog2").fadeIn(200);
+}
+
+function updateworkstates(){
+	var id = $("#workId").val();
+	confirm('确定提交？', function(){
 		$.ajax({
 			type: "POST",
-		    url: "../appInterface/updatestates?id="+id,
+		    url: "../appInterface/updatestates?id="+id+"&states="+$("#states").val()+"&beizhuContent="+$("#beizhuContent").val(),
 		    data: JSON.stringify(vm.workMain),
 		    success: function(r){
 		    	if(r.code === 0){
+		    		$("#iosDialog2").fadeOut(200);
 		    		alert('操作成功', function(index){
 						vm.reload();
 					});
@@ -99,6 +109,7 @@ function updateHandleStates(){
 }
 function closeck(){
 	$("#iosDialog1").fadeOut(200);
+	$("#iosDialog2").fadeOut(200);
 }
 var vm = new Vue({
 	el:'#rrapp',
