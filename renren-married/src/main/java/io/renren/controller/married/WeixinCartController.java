@@ -52,7 +52,7 @@ public class WeixinCartController {
 			MarryMainEntity marryMainEntity = marryMainService.queryObject(marryCartEntity.getMainId());
 				SysUserEntity sysUser = sysUserService.queryObject(new Long(marryMainEntity.getUserId()));
 				MarryMain marryMain = new MarryMain();
-				marryMain.setUsername(sysUser.getUsername());
+				marryMain.setUsername(sysUser.getName());
 				map.put("user_id", sysUser.getUserId());
 				map.put("Id", marryCartEntity.getId());
 				marryMain.setList(marryMainService.queryListtongji(map));
@@ -94,7 +94,7 @@ public class WeixinCartController {
 				id = marryMainEntity.getUserId();
 				SysUserEntity sysUser = sysUserService.queryObject(new Long(marryMainEntity.getUserId()));
 				MarryMain marryMain = new MarryMain();
-				marryMain.setUsername(sysUser.getUsername());
+				marryMain.setUsername(sysUser.getName());
 				map.put("user_id", marryMainEntity.getUserId());
 				marryMain.setList(marryMainService.queryListtongji(map));
 				data.add(marryMain);

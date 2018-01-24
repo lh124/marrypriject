@@ -61,10 +61,10 @@ public class MarryWeixinOrderController {
 			Integer mainId = Integer.parseInt(request.getParameter("mainId"));
 			MarryMainEntity marryMain = marryMainService.queryObject(mainId);
 			SysUserEntity u = sysUserService.queryObject(new Long(marryMain.getUserId()));
-			marryOrders.setBusiness(u.getUsername());
+			marryOrders.setBusiness(u.getName());
 			marryOrders.setOrderType(1);
 			marryOrders.setMainPrice(marryMain.getPrice());
-			marryOrders.setMainDescribe(u.getUsername()+marryMain.getTitle());
+			marryOrders.setMainDescribe(u.getName()+marryMain.getTitle());
 			marryOrdersService.insert(marryOrders);
 			id = marryOrders.getId();
 			MarryOrderMainEntity marryOrderMainEntity = new MarryOrderMainEntity();
@@ -90,7 +90,6 @@ public class MarryWeixinOrderController {
 				marryCart.setStates(0);
 				marryCartService.update(marryCart);
 			}
-			System.out.println(request.getParameter("mainId"));
 		}
 		return R.ok().put("id", id);
 	}
