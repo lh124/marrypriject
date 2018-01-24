@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>工作管理平台</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+<script type="text/javascript" src="${rc.contextPath}/statics/marry/js/jquery-1.9.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.bootcss.com/weui/1.1.0/style/weui.min.css"/>
+</head>
+<script type="text/javascript">
+    function login(){
+        var userName = $("#userName").val();
+        var password = $("#password").val();
+        if(userName == null || userName == ""){
+            alert("用户名不能为空");
+            return false;
+        }
+        if(password == null || password == ""){
+            alert("密码不能为空");
+            return false;
+        }
+        var url= "../appInterface/main?key="+'{'+
+                 '"type":"login","userName":"'+userName+'","password":"'+password+'"}';
+        $.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				success: function(result){
+				    if(result.status == 'ok'){
+				        $("#type").val(1)
+				        window.location.href="workManage.html";
+				    }else{
+				        alert(result.msg);
+				    }
+				}
+		});
+    }
+    
+    function init(){
+        if($("#type").val() == 1 || $("#type").val() == "1"){
+             window.location.href="workManage.html";
+        }
+    }
+</script>
+<body ontouchstart onload="init()">
+    <input type="hidden" id="type">
+    <div class="container" id="container">
+		<div class="page">
+			<div class="page__hd" style="padding-left: 15px;">
+				<h2 class="page__title">用户登陆</h2>
+			</div>
+			<div class="page__bd">
+				<div class="weui-cells weui-cells_form">
+					<div class="weui-cell">
+						<div class="weui-cell__hd"><label class="weui-label">账号</label></div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" id="userName" type="text"   placeholder="请输入账号"/>
+						</div>
+						<div class="weui-cell__ft">
+							<i class="weui-icon-warn"></i>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" id="password" type="password"  placeholder="请输入密码"/>
+						</div>
+						<div class="weui-cell__ft">
+							<i class="weui-icon-warn"></i>
+						</div>
+					</div>
+				</div>
+				<div class="weui-btn-area">
+					<a class="weui-btn weui-btn_primary" href="javascript:login();">登陆</a>
+				</div>
+			</div>
+			
+		</div>
+	</div>  
+</body>
+</html>
