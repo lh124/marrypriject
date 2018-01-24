@@ -26,12 +26,12 @@
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryMainEntity">
-		select t1.id,t1.title,t1.author,t1.content,t1.pic,t1.price,t1.userId,t2.username from 
+		select t1.id,t1.title,t1.author,t1.content,t1.pic,t1.price,t1.userId,t2.name as username from 
 		marry_main t1,sys_user t2 where t1.userId=t2.user_id and t1.id = #{value}
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
-		select t4.*,t3.username from sys_user t3,(
+		select t4.*,t3.name as username from sys_user t3,(
 			select t2.id,t2.title,t2.author,t2.content,t2.pic,t2.price,t2.userId,t1.id as cartId from marry_cart t1,marry_main t2 where t1.main_id=t2.id 
 			and t1.states=1 and t1.userId=#{userId}
 			<if test="Id != null and Id != ''">
