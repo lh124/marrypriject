@@ -564,11 +564,13 @@ public class StudentAppInterfaceController{
 		map.put("classId", json.getString("classId"));
 		map.put("userId", json.getString("studentId"));
 		List<PhotoClassWorkMsgEntity> photoClassWorkMsgList = photoClassWorkMsgService.queryListtongji(map);
+		List<PhotoClassWorkMsgEntity> list = new ArrayList<PhotoClassWorkMsgEntity>();
 		for (PhotoClassWorkMsgEntity pcwm : photoClassWorkMsgList) {
 			StudentEntity studnet = studentService.selectById(pcwm.getUserId());
 			pcwm.setStudent(studnet);
+			list.add(pcwm);
 		}
-		return R.ok().put(DATA, photoClassWorkMsgList);
+		return R.ok().put(DATA, list);
 	}
 	
 	public R examinationlist(JSONObject json){

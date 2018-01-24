@@ -375,7 +375,15 @@ public class TeacherAppInterfaceController {
 	public R photoPicWorkMsg(JSONObject json){
 		Map<String, Object> map = getMap(json);
 		map.put("classId", json.getString("classId"));
-		return R.ok().put(DATA, photoClassWorkMsgService.queryList(map));
+		List<PhotoClassWorkMsgEntity> photoClassWorkMsgList = photoClassWorkMsgService.queryList(map);
+		List<PhotoClassWorkMsgEntity> list = new ArrayList<PhotoClassWorkMsgEntity>();
+		for (Iterator iterator = photoClassWorkMsgList.iterator(); iterator.hasNext();) {
+			PhotoClassWorkMsgEntity pcw = (PhotoClassWorkMsgEntity) iterator.next();
+			StudentEntity studnet = studentService.selectById(pcw.getUserId());
+			pcw.setStudent(studnet);
+			list.add(pcw);
+		}
+		return R.ok().put(DATA, list);
 	}
 	
 	public R updatesmartnewstates(JSONObject json){
