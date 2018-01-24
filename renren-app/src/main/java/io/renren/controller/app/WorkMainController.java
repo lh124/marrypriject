@@ -174,7 +174,6 @@ public class WorkMainController extends AbstractController{
 	@RequiresPermissions("workmain:delete")
 	public R delete(@RequestBody Integer[] ids){
 		workMainService.deleteBatch(ids);
-		
 		return R.ok();
 	}
 	
