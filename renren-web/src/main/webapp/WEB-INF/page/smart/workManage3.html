@@ -24,7 +24,8 @@
 				        var content= "";
 				        $("#userName").html("任务人员："+result.data.obj.userName);
 				        var handleStates = (result.data.obj.handleStates==0?'<span style="color:red;">不合格</span>':(result.data.obj.handleStates==1?'<span style="color:green;">合格</span>':'<span style="color:blue;">待处理</span>'));
-				        var s = (result.data.obj.states==0?'<span style="color:red;">未完成</span>':'<span style="color:green;">已完成</span>');
+				        
+						var s = (result.data.obj.states==0?'<span style="color:red;">未完成</span>':(result.data.obj.states==2)?'<span style="color:blue;">工作中</span>':'<span style="color:green;">已完成</span>');
 				        $("#states").html("当前状态："+s);
 				        $("#gmtModifiedtime").html("开始时间："+result.data.obj.gmtModifiedtime);
 				        $("#endTime").html("结束时间："+(result.data.obj.endTime==null?"":result.data.obj.endTime));
@@ -44,6 +45,8 @@
 				                 states = '<span style="color:red;">未</span>';
 				             }else if(result.data.list[i].states == 1){
 				                 states = '<span style="color:green;">已</span>';
+				             }else if(result.data.list[i].states == 2){
+				                 states = '<span style="color:blue;">中</span>';
 				             }
 				             content += '<a class="weui-cell weui-cell_access" href="./workManage3.html?id='+result.data.list[i].id+'">'+
 				                        '<div class="weui-cell__bd"><p>('+states+')'+result.data.list[i].content+'</p></div>'+
