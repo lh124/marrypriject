@@ -926,7 +926,7 @@ public class TeacherAppInterfaceController {
 			classappEntity.setStates(classInfoEntity.getType());
 			list.add(classappEntity);
 		}
-		return R.ok().put("list", list);
+		return R.ok().put(DATA, list);
 	}
 	
 	
