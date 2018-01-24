@@ -7,12 +7,12 @@
 	<sql id="allColumnsAlias">
 		id as id ,img as img ,content as content ,user_id as userId ,user_name as userName ,states as states ,
 		gmt_modifiedtime as gmtModifiedtime ,end_time as endTime ,father_id as fatherId ,
-		estimate_time as estimateTime,handle_states as handleStates,handle_content as handleContent		
+		estimate_time as estimateTime,handle_states as handleStates,handle_content as handleContent,beizhuContent as beizhuContent		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,img ,content ,user_id ,user_name ,states ,gmt_modifiedtime ,end_time ,father_id ,estimate_time,
-		handle_states,handle_content 		
+		handle_states,handle_content,beizhuContent 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.app.WorkMainEntity" id="workMainMap">
@@ -28,6 +28,7 @@
 		        <result property="estimateTime" column="estimate_time"/>
 		        <result property="handleContent" column="handle_content"/>
 		        <result property="handleStates" column="handle_states"/>
+		        <result property="beizhuContent" column="beizhuContent"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.app.WorkMainEntity">
@@ -111,6 +112,7 @@
 			<if test="fatherId != null">`father_id` = #{fatherId}, </if>
 			<if test="handleContent != null">`handle_content` = #{handleContent}, </if>
 			<if test="handleStates != null">`handle_states` = #{handleStates}, </if>
+			<if test="beizhuContent != null">`beizhuContent` = #{beizhuContent}, </if>
 			<if test="estimateTime != null">`estimate_time` = #{estimateTime}</if>
 		</set>
 		where id = #{id}
