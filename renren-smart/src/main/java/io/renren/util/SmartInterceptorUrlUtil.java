@@ -14,6 +14,12 @@ public class SmartInterceptorUrlUtil {
 				".*/smart/shouye/uploadMedio",
 				".*/smart/datainpution/getData",
 				".*/smart/interface_test.html",
+				//工作管理平台
+				".*/smart/worklogin.html", 
+				".*/smart/workManage.html",
+				".*/smart/workManage2.html",
+				".*/smart/workManage3.html",
+				
 				".*/smart/yinsishengming.html",
 				".*/sysweixinmsg/handler", 
 				".*/smart/captcha.jpg"};
