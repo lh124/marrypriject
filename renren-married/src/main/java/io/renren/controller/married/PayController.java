@@ -117,14 +117,14 @@ public class PayController {
 		String body = "";
 		Integer total_fee = 0;
 		if(marryOrders.getOrderType() == 1){//直接下单的情况
-			body = marryOrders.getMainDescribe();
-			attach = marryOrders.getBusiness();
+			body = new String(marryOrders.getMainDescribe().getBytes("UTF-8"));
+			attach = new String(marryOrders.getBusiness().getBytes("UTF-8"));
 			total_fee = (new  Double(Double.valueOf(marryOrders.getMainPrice())*100)).intValue();
 		}else{
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("orderId", marryOrders.getId());
-			body = "婚礼商品的购买";
-			attach = "商品购买";
+			body = new String("婚礼商品的购买".getBytes("UTF-8"));
+			attach = new String("商品购买".getBytes("UTF-8"));
 			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
 			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
 				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
