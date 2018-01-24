@@ -29,7 +29,11 @@
 				                        '<div class="weui-cell__bd"><p>('+states+')'+result.data[i].content+'</p></div>'+
 				                        '<div class="weui-cell__ft"></div></a>';
 				        }
-				        $("#list").html(content);
+				        if(result.data.length == 0){
+				            $("#list").html("本周暂无任何工作任务");
+				        }else{
+				            $("#list").html(content);
+				        }
 				    }
 				}
 		});
