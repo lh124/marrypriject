@@ -53,40 +53,7 @@ public class WorkMainController extends AbstractController{
 		String key = request.getParameter("key").replace("&quot;", "\"");
 		JSONObject json = JSONObject.fromObject(key);
 		String type = json.getString("type");
-		if("getAllUser".equals(type)){
-			//获取所有当前用户
-			String roleName = json.getString("roleName");
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("role_name", roleName);
-			return R.ok().put("data", sysUserService.queryListtongji(map));
-		}else if("getWorkList".equals(type)){
-			//根据用户id获取其本周的任务列表
-			Integer userId = json.getInt("userId");
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("userId", userId);
-			map.put("fatherId", "0");
-			return R.ok().put("data", workMainService.queryList(map));
-		}else if("getWorkDetail".equals(type)){
-			//根据任务id获取其任务详情和子任务列表
-			Integer id = json.getInt("id");
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("fatherId", id);
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("list", workMainService.queryList(map));
-			m.put("obj", workMainService.queryObject(id));
-			return R.ok().put("data", m);
-		}else if("updateHandleStates".equals(type)){
-			//处理任务
-			Integer id = json.getInt("id");
-			Integer hadleStates = json.getInt("hadleStates");
-			String hadleContent = json.getString("hadleContent");
-			WorkMainEntity workMain = new WorkMainEntity();
-			workMain.setId(id);
-			workMain.setHandleContent(hadleContent);
-			workMain.setHandleStates(hadleStates);
-			workMainService.update(workMain);
-			return R.ok();
-		}else if("login".equals(type)){
+		if("login".equals(type)){
 			//用户登录
 			StudentEntity user = new StudentEntity();
 			user.setStudentNo(json.getString("userName"));
@@ -99,7 +66,43 @@ public class WorkMainController extends AbstractController{
 			if(!user.getPasswordd().equals(password)){
 				return R.error("密码错误");
 			}
+			request.getSession().setAttribute("workUser", user);
 			return R.ok();
+		}else{
+			if("getAllUser".equals(type)){
+				//获取所有当前用户
+				String roleName = json.getString("roleName");
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("role_name", roleName);
+				return R.ok().put("data", sysUserService.queryListtongji(map));
+			}else if("getWorkList".equals(type)){
+				//根据用户id获取其本周的任务列表
+				Integer userId = json.getInt("userId");
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("userId", userId);
+				map.put("fatherId", "0");
+				return R.ok().put("data", workMainService.queryList(map));
+			}else if("getWorkDetail".equals(type)){
+				//根据任务id获取其任务详情和子任务列表
+				Integer id = json.getInt("id");
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("fatherId", id);
+				Map<String, Object> m = new HashMap<String, Object>();
+				m.put("list", workMainService.queryList(map));
+				m.put("obj", workMainService.queryObject(id));
+				return R.ok().put("data", m);
+			}else if("updateHandleStates".equals(type)){
+				//处理任务
+				Integer id = json.getInt("id");
+				Integer hadleStates = json.getInt("hadleStates");
+				String hadleContent = json.getString("hadleContent");
+				WorkMainEntity workMain = new WorkMainEntity();
+				workMain.setId(id);
+				workMain.setHandleContent(hadleContent);
+				workMain.setHandleStates(hadleStates);
+				workMainService.update(workMain);
+				return R.ok();
+			}
 		}
 		return null;
 	}
@@ -140,7 +143,7 @@ public class WorkMainController extends AbstractController{
 	public R save(@RequestBody WorkMainEntity workMain){
 		workMain.setUserId(Integer.parseInt(getUser().getUserId().toString()));
 		workMain.setUserName(getUser().getName());
-		workMain.setStates(0);
+		workMain.setStates(2);
 		workMain.setGmtModifiedtime(new Date());
 		workMain.setHandleStates(2);
 		workMainService.insert(workMain);
@@ -166,8 +169,9 @@ public class WorkMainController extends AbstractController{
 	public R updatestates(HttpServletRequest request){
 		WorkMainEntity workMain = new WorkMainEntity();
 		workMain.setId(Integer.parseInt(request.getParameter("id")));
-		workMain.setStates(1);
+		workMain.setStates(Integer.parseInt(request.getParameter("states")));
 		workMain.setEndTime(new Date());
+		workMain.setBeizhuContent(request.getParameter("beizhuContent"));
 		workMainService.update(workMain);
 		return R.ok();
 	}
