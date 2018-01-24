@@ -27,6 +27,9 @@
 				        
 						var s = (result.data.obj.states==0?'<span style="color:red;">未完成</span>':(result.data.obj.states==2)?'<span style="color:blue;">工作中</span>':'<span style="color:green;">已完成</span>');
 				        $("#states").html("当前状态："+s);
+						if(result.data.obj.beizhuContent != null && result.data.obj.beizhuContent != ""){
+						   $("#beizhuContent").html("情况说明："+result.data.obj.beizhuContent);
+						}
 				        $("#gmtModifiedtime").html("开始时间："+result.data.obj.gmtModifiedtime);
 				        $("#endTime").html("结束时间："+(result.data.obj.endTime==null?"":result.data.obj.endTime));
 				        $("#estimateTime").html("预计时间："+result.data.obj.estimateTime);
@@ -89,6 +92,7 @@
 		        <div id="content"></div>
 		        <div id="img"></div>
 		        <div id="states"></div>
+				<div id="beizhuContent"></div>
 		        <div id="gmtModifiedtime"></div>
 		        <div id="estimateTime"></div>
 		        <div id="endTime"></div>
