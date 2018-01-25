@@ -17,6 +17,7 @@ import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
+import io.renren.entity.smart.SmartProposalEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -39,6 +40,7 @@ import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartExceptionService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
+import io.renren.service.smart.SmartProposalService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -147,6 +149,8 @@ public class StudentAppInterfaceController{
 	private SmartAppService smartAppService;
 	@Autowired
 	private SmartExceptionService smartExceptionService;
+	@Autowired
+	private SmartProposalService smartProposalService;
 	
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
@@ -208,9 +212,12 @@ public class StudentAppInterfaceController{
 				//老师通知列表
 				return teacherNotice(json.getJSONObject("data"));
 			}else if(type.equals("smartWorkList")){
-				//作业列表
+				//作业列表（原）
 				return smartWord(json.getJSONObject("data"));
-			} else if(type.equals("classInfo")){
+			} else if(type.equals("smartClassWorkList")){
+				//作业列表（新）
+				return smartClassWorkList(json.getJSONObject("data"));
+			}else if(type.equals("classInfo")){
 				//班级信息
 				return classInfo(json.getJSONObject("data"));
 			}else if(type.equals("smartActivites")){
@@ -288,9 +295,21 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("exceptionSave")){
 				//异常日志
 				return exception(json.getJSONObject("data"));
+			}else if(type.equals("smartProposal")){
+				//意见反馈
+				return smartProposal(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R smartProposal(JSONObject json){
+		SmartProposalEntity proposalEntity = new SmartProposalEntity();
+		proposalEntity.setContent(json.getString("content"));
+		proposalEntity.setTitle(json.getString("title"));
+		proposalEntity.setSchoolId(json.getInt("schoolId"));
+		smartProposalService.save(proposalEntity);
+		return R.ok();
 	}
 	
 	private R exception(JSONObject json){
@@ -686,6 +705,24 @@ public class StudentAppInterfaceController{
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("list", classInfoList);
 		m.put("studenttotal", studenttotal);
+		return R.ok().put(DATA, m);
+	}
+	
+	public R smartClassWorkList(JSONObject json){
+		Map<String, Object> map = getMap(json);
+		map.put("classid", json.getString("classId"));
+		List<SmartWorkEntity> smartWorkList = smartWorkService.queryList(map);
+		List<SmartWorkEntity> list = new ArrayList<SmartWorkEntity>();
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
+		for (Iterator iterator = smartWorkList.iterator(); iterator.hasNext();) {
+			SmartWorkEntity smartWorkEntity = (SmartWorkEntity) iterator.next();
+			if(sdf.format(new Date()).equals(smartWorkEntity.getCreatetime())){
+				list.add(smartWorkEntity);
+			}
+		}
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("dayList", list);
+		m.put("list", smartWorkList);
 		return R.ok().put(DATA, m);
 	}
 	
