@@ -4,7 +4,6 @@ import io.renren.constant.ControllerConstant;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryBlessingEntity;
 import io.renren.entity.married.MarryHelpEntity;
-import io.renren.entity.married.MarryOrdersEntity;
 import io.renren.entity.married.MarryParticipateEntity;
 import io.renren.entity.married.MarryPhotoEntity;
 import io.renren.entity.married.MarrySignEntity;
@@ -80,12 +79,7 @@ public class WeixinMeController {
 		map.put("states", 1);
 		map.put("userId", user.getId());
 		int total = marryCartService.queryList(map).size();
-		map.put("userId", user.getId());
-		map.put("offset", 0);
-		map.put("limit", 10);
-		map.put("states", 1);
-		List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
-		if(list.size()==0){
+		if(marriedUserService.queryObject(user.getId()).getJurisdiction()==0){
 			request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
 		}else{
 			request.getSession().setAttribute("jurisdiction", 1);
@@ -482,12 +476,17 @@ public class WeixinMeController {
 	 */
 	@RequestMapping("/saveWedding")
 	public R saveWedding(HttpServletRequest request){
-		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
 		String bridename = request.getParameter("brideName");
+		System.out.println(bridename+"-----------------");
 		String content = request.getParameter("content");
 		String groomname = request.getParameter("groomName");
 		String weddingaddress = request.getParameter("weddingAddress");
+		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		MarryWeddingEntity marryWedding = new MarryWeddingEntity();
+//		String bridename = request.getParameter("brideName");
+//		String content = request.getParameter("content");
+//		String groomname = request.getParameter("groomName");
+//		String weddingaddress = request.getParameter("weddingAddress");
 		String url = request.getParameter("bg");
 		String color = "#"+request.getParameter("color");
 		Date weddingdate = new Date();
