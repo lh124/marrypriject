@@ -40,7 +40,37 @@ public class SmartWorkEntity implements Serializable {
 	//简要说明
 	@TableField(value="content")
 	private String content;
+	
+	//科目
+	@TableField(value="subject")
+	private String subject;
+	
+	//发布人id
+	@TableField(value="teacherId")
+	private Integer teacherId;
+	
+	//发布人名字
+	@TableField(value="teacherName")
+	private String teacherName;
 			
+	public Integer getTeacherId() {
+		return teacherId;
+	}
+	public void setTeacherId(Integer teacherId) {
+		this.teacherId = teacherId;
+	}
+	public String getTeacherName() {
+		return teacherName;
+	}
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 	//
 	@TableField(value="createTime")
 	private String createtime;
