@@ -34,6 +34,8 @@ public class MarriedWeixinUserController {
 	private MarryCartService marryCartService;
 	@Autowired
 	private MarryOrdersService marryOrdersService;
+	
+	
 	/**
 	 * 微信首页授权用户登录保存用户信息
 	 * @param request
@@ -63,9 +65,11 @@ public class MarriedWeixinUserController {
 					JSONObject jsonObject = WeixinUtil.getUserInfo(openId);
 					MarriedUserEntity user = new MarriedUserEntity();
 					user.setCreatetime(new Date());
-					user.setNickname(jsonObject.getString("nickname"));
-					user.setPic(jsonObject.getString("headimgurl"));
+					user.setNickname(jsonObject.get("nickname")==null?"昵称":jsonObject.getString("nickname"));
+					String pic = jsonObject.get("headimgurl")==null?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":jsonObject.getString("headimgurl");
+					user.setPic("".equals(pic)?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":pic);
 					user.setOpenid(openId);
+					user.setJurisdiction(0);
 					marriedUserService.insert(user);
 					request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, user);
 					map.put("userId", user.getId());
@@ -74,9 +78,7 @@ public class MarriedWeixinUserController {
 					map.put("userId", u.getId());
 					map.put("offset", 0);
 					map.put("limit", 10);
-					map.put("states", 1);
-					List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
-					if(list.size()==0){
+					if(u.getJurisdiction()==0){
 						request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
 					}else{
 						request.getSession().setAttribute("jurisdiction", 1);
@@ -97,11 +99,9 @@ public class MarriedWeixinUserController {
 				map.put("order", null);
 				map.put("offset", 0);
 				map.put("limit", 100);
-				map.put("states", 1);
 				map.put("userId", us.getId());
 				total = marryCartService.queryList(map).size();
-				List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
-				if(list.size()==0){
+				if(marriedUserService.queryObject(us.getId()).getJurisdiction()==0){
 					request.getSession().setAttribute("jurisdiction", 0);//无权限就不让其显示相关模块
 				}else{
 					request.getSession().setAttribute("jurisdiction", 1);
@@ -109,14 +109,14 @@ public class MarriedWeixinUserController {
 				userId=1;
 				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, us);
 			}
-			else{
-				String openId = "o7__rjj8Iq1k8Uu52TnNP2YIUa04";
-				MarriedUserEntity u = new MarriedUserEntity();
-				u.setOpenid(openId);
-				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
-				u = this.marriedUserService.selectOne(wrapper);
-				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
-			}
+//			else{
+//				String openId = "oZSiWxOxNIVH7s8wxiORTchfGxEo";
+//				MarriedUserEntity u = new MarriedUserEntity();
+//				u.setOpenid(openId);
+//				EntityWrapper<MarriedUserEntity> wrapper = new EntityWrapper<MarriedUserEntity>(u);
+//				u = this.marriedUserService.selectOne(wrapper);
+//				request.getSession().setAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY, u);
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
