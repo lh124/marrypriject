@@ -47,8 +47,7 @@ $(function(){
 
 
 
-wx.ready(function () {
-    document.querySelector('#chooseWXPay').onclick = function () {
+    function chooseWXPay(){
          $.ajax({
 				type: "POST",
 				url: "../weixin/pay?id="+$("#orderId").val(),
@@ -81,4 +80,3 @@ wx.ready(function () {
 				}
 		 });
     }
- });
