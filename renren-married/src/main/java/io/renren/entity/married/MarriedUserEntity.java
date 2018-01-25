@@ -41,7 +41,17 @@ public class MarriedUserEntity implements Serializable {
 	
 	//婚礼留言
 	private String content;		
+	
+	//权限0无权限，1有权限
+	@TableField(value="jurisdiction")
+	private Integer jurisdiction;	
 
+	public Integer getJurisdiction() {
+		return jurisdiction;
+	}
+	public void setJurisdiction(Integer jurisdiction) {
+		this.jurisdiction = jurisdiction;
+	}
 	public String getContent() {
 		return content;
 	}
