@@ -6,6 +6,7 @@ import io.renren.entity.married.MarryMainEntity;
 import io.renren.entity.married.MarryOrderMainEntity;
 import io.renren.entity.married.MarryOrdersEntity;
 import io.renren.entity.married.ResultState;
+import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryMainService;
 import io.renren.service.married.MarryOrderMainService;
 import io.renren.service.married.MarryOrdersService;
@@ -48,6 +49,8 @@ public class PayController {
 	private MarryOrderMainService marryOrderMainService;
 	@Autowired
 	private MarryMainService marryMainService;
+	@Autowired
+	private MarriedUserService marriedUserService;
 	
 	//支付接口
 	@RequestMapping("/pay")
@@ -73,7 +76,7 @@ public class PayController {
 		String appid = WeixinPayUtil.appid; 
 		//将map转为String
         String xml = WeixinPayUtil.mapToXml(paraMap); 
-        xml = new String(xml.toString().getBytes("UTF-8"));  
+//        xml = new String(xml.toString().getBytes("UTF-8"));  
         String xmlStr = post(WeixinPayUtil.createOrderURL, xml);
         // 预付商品id  
         String prepay_id = "";  
@@ -113,18 +116,12 @@ public class PayController {
 	public Map<String, String> getSign(Integer id,HttpServletRequest request) throws Exception{
 		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
-		String attach = "";
-		String body = "";
 		Integer total_fee = 0;
 		if(marryOrders.getOrderType() == 1){//直接下单的情况
-			body = new String(marryOrders.getMainDescribe().getBytes("UTF-8"));
-			attach = new String(marryOrders.getBusiness().getBytes("UTF-8"));
 			total_fee = (new  Double(Double.valueOf(marryOrders.getMainPrice())*100)).intValue();
 		}else{
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("orderId", marryOrders.getId());
-			body = new String("婚礼商品的购买".getBytes("UTF-8"));
-			attach = new String("商品购买".getBytes("UTF-8"));
 			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
 			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
 				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
@@ -135,8 +132,8 @@ public class PayController {
 		String appid = WeixinPayUtil.appid;  
         Map<String, String> paraMap = new HashMap<String, String>();  
         paraMap.put("appid", appid);  
-        paraMap.put("attach", attach);  
-        paraMap.put("body", body);  
+        paraMap.put("attach", marryOrders.getOrderNumber());  
+        paraMap.put("body", marryOrders.getOrderNumber());  
         paraMap.put("mch_id", WeixinPayUtil.partner);//商户号 
         paraMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数  
         paraMap.put("sign_type", "MD5"); 
@@ -223,6 +220,10 @@ public class PayController {
             	}else{
             			marryOrdersEntity.setStates(1);
                         marryOrdersService.update(marryOrdersEntity);
+                        MarriedUserEntity userEntity = new MarriedUserEntity();
+                        userEntity.setId(marryOrdersEntity.getUserId());
+                        userEntity.setJurisdiction(1);
+                        marriedUserService.update(userEntity);
                         request.getSession().setAttribute("jurisdiction", 1);
                         resultState.setErrcode(0);// 表示成功
                         resultState.setErrmsg("支付成功");
