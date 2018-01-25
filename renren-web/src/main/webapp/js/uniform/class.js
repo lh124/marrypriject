@@ -4,7 +4,8 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '班级名', name: 'className', index: 'class_name', width: 80 }, 			
+			{ label: '班级名', name: 'className', index: 'class_name', width: 80 }, 		
+			{ label: '主题图片', name: 'pic', index: 'pic', width: 80 },
 			{ label: '学校id', name: 'schoolId', index: 'school_id', width: 80 }			
         ],
 		viewrecords: true,
@@ -71,9 +72,15 @@ var vm = new Vue({
 			    data: JSON.stringify(vm.classe),
 			    success: function(r){
 			    	if(r.code === 0){
-						alert('操作成功', function(index){
-							vm.reload();
-						});
+			    		if(document.getElementById("fileimg").value != null && document.getElementById("fileimg").value != ""){
+			    			document.getElementById("myUserId").value = r.id;
+				    		getFile(document.getElementById("fileimg"));
+			    			vm.reload();
+			    		}else{
+			    			alert('操作成功', function(index){
+								vm.reload();
+							});
+			    		}
 					}else{
 						alert(r.msg);
 					}
