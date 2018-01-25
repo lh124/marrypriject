@@ -137,10 +137,9 @@ public class ClassController {
 	@RequiresPermissions("uniform_class:save")
 	public R save(@RequestBody ClassEntity classe){
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
-		classService.save(classe);
-		
+		classService.insert(classe);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok();
+		return R.ok().put("id", classe.getId());
 	}
 	
 	/**
@@ -151,9 +150,8 @@ public class ClassController {
 	public R update(@RequestBody ClassEntity classe){
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		classService.update(classe);
-		
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
-		return R.ok();
+		return R.ok().put("id", classe.getId());
 	}
 	
 	/**
