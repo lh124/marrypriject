@@ -171,6 +171,15 @@ var vm = new Vue({
 			var id = getSelectedRow();
 			window.location.href="smartteacher.html?schoolId="+ id;
 		},
+		smartproposal: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="smartproposal.html?schoolId="+ id;
+		},
 		weixinfunctionimg: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
