@@ -45,6 +45,9 @@
 			#if($shiro.hasPermission("smartteacher:list"))
 			<a class="btn btn-primary" @click="smartteacher"><i class="fa fa-plus"></i>&nbsp;学校老师管理</a>
 			#end
+			#if($shiro.hasPermission("smartproposal:list"))
+			<a class="btn btn-primary" @click="smartproposal"><i class="fa fa-plus"></i>&nbsp;意见反馈</a>
+			#end
 		</div>
 	    <table id="jqGrid"></table>
 	    <div id="jqGridPager"></div>
