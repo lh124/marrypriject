@@ -2,19 +2,24 @@ $(function(){
          getData();
     });
     
-    function deleteOrders(id){
-    	if(confirm("确定删除该订单吗？")){
+    function deleteOrders(id,obj){
+    	$("#iosDialog1").show();
+    	$(".quxiao").on("click",function(){
+    		$("#iosDialog1").hide();
+    	});
+    	$(".sure").on("click",function(){
     		$.ajax({
     			type: "POST",
     			url: "../weixin/order/deleteOrder?id="+id,
     			dataType: "json",
     			success: function(result){
     				if(result.status == 'ok'){
-    					getData();
+    					$("#iosDialog1").hide();
+    					$(obj).parents(".cart_con").remove();
     				}
     			}
         	});
-    	}
+    	});
     }
 
     function toPay(id){
@@ -36,7 +41,7 @@ $(function(){
 				        	 if(result.list[i].states == '1'){
 				        		 var list = '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
 		                          '<div class="cart_tit" ><p>订单号：<span>'+result.list[i].orderNumber+'</span>'+
-		                          '<span class="check_part" onclick="deleteOrders('+result.list[i].id+')">删除</span>'+
+		                          '<span class="check_part" onclick="deleteOrders('+result.list[i].id+',this)">删除</span>'+
 		                          '</p>'+'</div><div class="weui-panel__bd">'+
 		                          '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" style="font-size:0.4rem;color:rgb(255, 67, 103);">'+
 		                          result.list[i].business+'</a><a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
@@ -79,7 +84,7 @@ $(function(){
 				              if(result.list[i].states == '1'){
 				            	  var list =  '<div class="cart_con weui-panel weui-panel_access" style="margin-top:10px;">'+
 		                          '<div class="cart_tit" ><p>订单号：<span>'+result.list[i].orderNumber+'</span>'+
-		                          '<span class="check_part" onclick="deleteOrders('+result.list[i].id+')">删除</span>'+
+		                          '<span class="check_part" onclick="deleteOrders('+result.list[i].id+',this)">删除</span>'+
 		                          '</p>'+'</div><div class="weui-panel__bd">';
 		                          for(var j=0;j<result.list[i].marryMainList.length; j++){
 		                             priceTotal += parseFloat(result.list[i].marryMainList[j].price);
