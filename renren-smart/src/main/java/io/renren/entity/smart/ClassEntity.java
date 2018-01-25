@@ -29,8 +29,17 @@ public class ClassEntity implements Serializable {
 	//
 	@TableField(value="school_id")
 	private Integer schoolId;
+	
+	@TableField(value="pic")
+	private String pic;
 			
 
+	public String getPic() {
+		return pic;
+	}
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
 	/**
 	 * 设置：
 	 */
