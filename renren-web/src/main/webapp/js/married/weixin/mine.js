@@ -18,6 +18,7 @@ $(function(){
 
 function closeCk(){
 	$("#iosDialog1").fadeOut(200);
+	$("#iosDialog2").fadeOut(200);
 }
 
 function toWeddingId(type){
@@ -46,7 +47,7 @@ function hunlihudong(){
 				success: function(result){
 				     if(result.status == 'ok'){
 				         if(result.list.length == 0){
-				             alert("暂无");
+				             $("#iosDialog2").fadeIn(200);
 				         }else if(result.list.length == 1){
 				             window.location.href = "interact.html?weddingId="+result.list[0].id;
 				         }else{
