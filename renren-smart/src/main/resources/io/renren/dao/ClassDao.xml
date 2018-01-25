@@ -5,17 +5,18 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,class_name as className ,school_id as schoolId 		
+		id as id ,class_name as className ,school_id as schoolId,pic as pic 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,class_name ,school_id 		
+		id ,class_name ,school_id,pic 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.ClassEntity" id="classMap">
 		        <result property="id" column="id"/>
 		        <result property="className" column="class_name"/>
 		        <result property="schoolId" column="school_id"/>
+		        <result property="pic" column="pic"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.ClassEntity">
@@ -43,11 +44,13 @@
 		insert into class
 		(
 			`class_name`, 
+			`pic`,
 			`school_id`
 		)
 		values
 		(
 			#{className}, 
+			#{pic},
 			#{schoolId}
 		)
 	</insert>
@@ -56,6 +59,7 @@
 		update class 
 		<set>
 			<if test="className != null">`class_name` = #{className}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
 			<if test="schoolId != null">`school_id` = #{schoolId}</if>
 		</set>
 		where id = #{id}
