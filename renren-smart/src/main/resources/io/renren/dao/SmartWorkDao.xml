@@ -5,11 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name ,type as type ,pic as pic ,classid,content as content ,createTime as createtime 		
+		id as id ,name as name ,type as type ,pic as pic ,classid,content as content ,
+		createTime as createtime,subject as subject,teacherId as teacherId,teacherName as teacherName 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,type ,pic ,content ,createTime,classid 		
+		id ,name ,type ,pic ,content ,createTime,classid,subject,teacherId,teacherName 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartWorkEntity" id="smartWorkMap">
@@ -20,6 +21,9 @@
 		        <result property="content" column="content"/>
 		        <result property="classid" column="classid"/>
 		        <result property="createtime" column="createTime"/>
+		        <result property="teacherId" column="teacherId"/>
+		        <result property="teacherName" column="teacherName"/>
+		        <result property="subject" column="subject"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SmartWorkEntity">
@@ -53,6 +57,9 @@
 			`pic`, 
 			`content`, 
 			`classid`, 
+			`subject`, 
+			`teacherId`,
+			`teacherName`,
 			`createTime`
 		)
 		values
@@ -62,6 +69,9 @@
 			#{pic}, 
 			#{content}, 
 			#{classid}, 
+			#{subject}, 
+			#{teacherId},
+			#{teacherName},
 			#{createtime}
 		)
 	</insert>
@@ -73,6 +83,9 @@
 			<if test="type != null">`type` = #{type}, </if>
 			<if test="pic != null">`pic` = #{pic}, </if>
 			<if test="content != null">`content` = #{content}, </if>
+			<if test="subject != null">`subject` = #{subject}, </if>
+			<if test="teacherId != null">`teacherId` = #{teacherId}, </if>
+			<if test="teacherName != null">`teacherName` = #{teacherName}, </if>
 			<if test="createtime != null">`createTime` = #{createtime}</if>
 		</set>
 		where id = #{id}
