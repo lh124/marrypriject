@@ -58,17 +58,5 @@
         $(".side").hide();
         $(".side").eq(index).show();	
     });
-    /*删除*/
-    $(".check_part").on("click",function(){
-    	var node = $(this);
-    	$("#iosDialog1").show();
-    	$(".quxiao").on("click",function(){
-    		$("#iosDialog1").hide();
-    	});
-    	$(".sure").on("click",function(){
-    		node.parents(".cart_con").remove();
-    		$("#iosDialog1").hide();
-    	});
-    });
 </script>
 </html>
