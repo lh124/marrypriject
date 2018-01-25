@@ -3,6 +3,7 @@ package io.renren.controller.smart;
 import io.renren.annotation.IgnoreAuth;
 import io.renren.constant.ControllerConstant;
 import io.renren.entity.app.SmartAppEntity;
+import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
@@ -17,6 +18,7 @@ import io.renren.entity.smart.WeixinFunctionEntity;
 import io.renren.entity.smart.WeixinFunctionImgEntity;
 import io.renren.enums.TypeEnum;
 import io.renren.service.smart.ClassNoticeService;
+import io.renren.service.smart.ClassService;
 import io.renren.service.smart.FreshmanGuideService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PhotoPicWorkMsgService;
@@ -85,6 +87,8 @@ public class CallBackController {
 	private WeixinFunctionService weixinFunctionService;
 	@Autowired
 	private SmartAppService smartAppService;
+	@Autowired
+	private ClassService classService;
 	
 	@ResponseBody
 	@RequestMapping(value="/msgPic")
@@ -174,6 +178,11 @@ public class CallBackController {
 						smartAppUplown(jsona);
 						return json;
 					}
+					// 智能校服班级图片上传
+					if (type.equals(TypeEnum.SMART_CLASS_PIC.getType())){
+						classPic(jsona);
+						return json;
+					}
 				}
 				
 			} catch(Exception e){
@@ -187,6 +196,21 @@ public class CallBackController {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.addHeader("Content-Length", String.valueOf(json.toString().length()));
 			return json;
+		}
+	}
+	
+	/**
+	 * 智能校服班级图片上传
+	 * @param json
+	 */
+	private void classPic(JSONObject json){
+		Integer id = json.containsKey("id") ? json.getInt("id") : null;
+		if (id != null) {
+			ClassEntity classEntity = classService.queryObject(id);
+			if(classEntity != null){
+				classEntity.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
+				classService.update(classEntity);
+			}
 		}
 	}
 	
