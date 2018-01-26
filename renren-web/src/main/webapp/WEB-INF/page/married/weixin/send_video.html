@@ -51,7 +51,13 @@
             </div>
 		</div>
 	</div>
-	
+	<div id="loadingToast" style="display:none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-loading weui-icon_toast"></i>
+            <p class="weui-toast__content">上传中</p>
+        </div>
+    </div>
 <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
 <script type="text/javascript" src="${rc.contextPath}/js/married/htgl/upload1.js?_${date.systemTime}"></script>
 <script src="https://cdn.bootcss.com/Ladda/1.0.0/spin.min.js"></script>
@@ -68,6 +74,7 @@
 <script>
 
     function save(){
+         $("#loadingToast").fadeIn(200);
          var content = $("#content").val();
          $.ajax({
 				type: "POST",
@@ -86,8 +93,6 @@
 			    		  document.getElementById("bendi").value="";
 			    		  document.getElementById("luzhi").value="";
 			    		  $("#content").val("");
-			    		  alert("发送成功");
-			    		  window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 				     }
 				}
 		 });
