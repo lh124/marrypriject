@@ -81,8 +81,11 @@ public class MarryWeixinOrderController {
 			marryOrders.setOrderType(2);
 			marryOrdersService.insert(marryOrders);
 			id = marryOrders.getId();
+			Double totalFee = 0.00;
 			for (int i = 0; i < ids.length; i++) {
 				MarryCartEntity marryCart = marryCartService.queryObject(Integer.parseInt(ids[i]));
+				String price = marryMainService.queryObject(marryCart.getMainId()).getPrice();
+				totalFee += (new  Double(Double.valueOf(price))).intValue();
 				MarryOrderMainEntity marryOrderMainEntity = new MarryOrderMainEntity();
 				marryOrderMainEntity.setOrderId(id);
 				marryOrderMainEntity.setMainId(marryCart.getMainId());
@@ -90,6 +93,8 @@ public class MarryWeixinOrderController {
 				marryCart.setStates(0);
 				marryCartService.update(marryCart);
 			}
+			marryOrders.setMainPrice(totalFee.toString());
+			marryOrdersService.update(marryOrders);
 		}
 		return R.ok().put("id", id);
 	}
