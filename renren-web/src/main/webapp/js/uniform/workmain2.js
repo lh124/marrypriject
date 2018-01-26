@@ -4,7 +4,13 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: '提交人员', name: 'userName', index: 'user_name', width: 80 },
-			{ label: '图片', name: 'img', index: 'img', width: 80 }, 			
+			{ label: '任务图片', name: 'img', index: 'img', width: 80,formatter :function(r){
+				 if(r != null && r != ""){
+					 return '<a href="'+r+' "target="_blank"><img src="' + r + '" style="width:60px;height:60px;" /></a>';
+				 }else{
+					 return '';
+				 }
+			} },
 			{ label: '任务详情', name: 'content', index: 'content', width: 80 }, 			
 			{ label: '当前状态', name: 'states', index: 'states', width: 80,formatter :function(r){
 				 if(r == 0 ){
