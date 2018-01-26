@@ -9,6 +9,16 @@ public class ClassAppEntity {
 	private Integer states;
 	
 	private String pic;
+	
+	private Integer lock;
+
+	public Integer getLock() {
+		return lock;
+	}
+
+	public void setLock(Integer lock) {
+		this.lock = lock;
+	}
 
 	public String getPic() {
 		return pic;
