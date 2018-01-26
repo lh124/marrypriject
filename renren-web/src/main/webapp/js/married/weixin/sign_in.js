@@ -23,9 +23,10 @@
 				success: function(result){
 				     if(result.status == 'ok'){
 				         alert(result.msg);
-				         //window.location.href = "mine.html";
+				         window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 				     }else{
 				         alert(result.msg);
+				         window.location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb9072ff1ebcf745c&redirect_uri=http://wrs.gykjewm.com/married/weixin/index.html&response_type=code&scope=snsapi_base&state=2#wechat_redirect";
 				     }
 				}
 		 });
