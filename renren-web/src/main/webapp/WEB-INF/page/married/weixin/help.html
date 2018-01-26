@@ -47,8 +47,8 @@
 			<div class="weui-cell">帮助留言</div>
 	        <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
-                    <div class="weui-textarea-counter"><span>0</span>/80</div>
+                    <textarea oninput="toTotal()" class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
+                    <div class="weui-textarea-counter"><span id="total">0</span>/80</div>
                 </div>
 	        </div>
         </div>
@@ -58,6 +58,13 @@
     </div>
 </body>
 <script>
+     function toTotal(){
+          if($("#content").val().length > 80){
+               $("#content").val().substring(0,80);
+          }
+          $("#total").html($("#content").val().length);
+     }
+
      function saveHelp(){
             var content = $("#content").val();
             if(content == null || content == ""){
