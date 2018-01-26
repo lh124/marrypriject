@@ -30,7 +30,7 @@ public class SmallProgramController {
 	
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
-	private final static String FILEPATH = "http://static.gykjewm.com/";
+	private final static String FILEPATH = "http://static.gykjewm.com/";//
 	
 	@RequestMapping("/main")
 	public R main(HttpServletRequest request) throws Exception{
