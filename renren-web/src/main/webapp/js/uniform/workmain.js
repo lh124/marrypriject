@@ -31,7 +31,7 @@ $(function () {
 				 }else if(r == 1 ){
 					 return '<span style="color:green;">合格</span>';
 				 }else if(r == 2 ){
-					 return '<span style="color:blue;">待处理</span>';
+					 return '<span style="color:blue;">待核实（袁总）</span>';
 				 }
 			} },
 			{ label: '处理意见', name: 'handleContent', index: 'handleContent', width: 80 },
