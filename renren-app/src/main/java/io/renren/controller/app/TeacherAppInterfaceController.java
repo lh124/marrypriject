@@ -19,6 +19,7 @@ import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
+import io.renren.entity.smart.SmartProposalEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -33,6 +34,7 @@ import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.PhotoExaminationService;
 import io.renren.service.smart.PhotoPicWorkMsgService;
 import io.renren.service.smart.PhotoScoreService;
+import io.renren.service.smart.PhotoSubjectService;
 import io.renren.service.smart.PsychologicalCounselingService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
@@ -42,6 +44,7 @@ import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartExceptionService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
+import io.renren.service.smart.SmartProposalService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -143,6 +146,10 @@ public class TeacherAppInterfaceController {
 	private SmartNewsService smartNewsService;
 	@Autowired
 	private SmartExceptionService smartExceptionService;
+	@Autowired
+	private SmartProposalService smartProposalService;
+	@Autowired
+	private PhotoSubjectService photoSubjectService;
 	
 	
 	private final static String JEDISPATH = "127.0.0.1";
@@ -295,9 +302,28 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("exceptionSave")){
 				//异常日志
 				return exception(json.getJSONObject("data"));
+			}else if(type.equals("smartProposal")){
+				//意见反馈
+				return smartProposal(json.getJSONObject("data"));
+			}else if(type.equals("findAllsubject")){
+				//获取科目列表
+				return findAllsubject();
 			}
 		}
 		return null;
+	}
+	
+	private R findAllsubject(){
+		return R.ok().put(DATA, photoSubjectService.queryList(null));
+	}
+	
+	private R smartProposal(JSONObject json){
+		SmartProposalEntity proposalEntity = new SmartProposalEntity();
+		proposalEntity.setContent(json.getString("content"));
+		proposalEntity.setTitle(json.getString("title"));
+		proposalEntity.setSchoolId(json.getInt("schoolId"));
+		smartProposalService.save(proposalEntity);
+		return R.ok();
 	}
 	
 	private R exception(JSONObject json){
@@ -817,10 +843,20 @@ public class TeacherAppInterfaceController {
 			smartWork.setContent(json.getString("content"));
 			smartWork.setName(json.getString("title"));
 			smartWork.setType(1);
+			if(json.get("teacherId") != null){
+				smartWork.setTeacherId(json.getInt("teacherId"));
+				smartWork.setTeacherName(studentService.queryObject(json.getInt("teacherId")).getStudentName());
+			}else{
+				smartWork.setTeacherId(0);
+				smartWork.setTeacherName("老师");
+			}
+			smartWork.setSubject(json.get("subject")==null?"":json.getString("subject"));
 			smartWork.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
 				smartWork.setPic(FILEPATH+"smart_work_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_work_pic/"));
+			}else{
+				smartWork.setPic("");
 			}
 			smartWorkService.save(smartWork);
 		} catch (Exception e) {
@@ -932,6 +968,8 @@ public class TeacherAppInterfaceController {
 			classappEntity.setId(classEntity.getId());
 			classappEntity.setClassName(classEntity.getClassName());
 			classappEntity.setStates(classInfoEntity.getType());
+			classappEntity.setPic(classEntity.getPic()==null?"":classEntity.getPic());
+			classappEntity.setLock(getClassIdLeave(classEntity.getId(), teacherId).size() ==0?1:0);//1为全0为有学生未到
 			list.add(classappEntity);
 		}
 		return R.ok().put(DATA, list);
