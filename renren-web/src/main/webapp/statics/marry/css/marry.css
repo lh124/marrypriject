@@ -32,7 +32,7 @@
 .theme_con_a img{width: 0.56rem;height: 0.6rem;display: block;}
 
 /*invite*/
-.invite_con{height:14.6rem;background: url(../img/1.png) no-repeat center #ffffff;background-size: cover; padding:0 2.3rem;position: relative;}
+.invite_con{height:14.6rem;background-size: cover; padding:0 2.3rem;position: relative;}
 .invite_con img{display: block;margin:0 auto;width: 3.26rem;height: 3.26rem;border-radius: 50%;}
 .invite_con h3{padding-top: 0.1rem;text-align: center;color: white;font-size: 0.45rem;}
 .invite_con h4{padding-top: 0rem;text-align: center;color: white;font-size: 0.4rem;}
