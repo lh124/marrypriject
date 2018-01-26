@@ -47,7 +47,7 @@
 			<div class="weui-cell">帮助留言</div>
 	        <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea oninput="toTotal()" class="weui-textarea" id="content" placeholder="请输入文本" rows="3"></textarea>
+                    <textarea oninput="toTotal()" class="weui-textarea" id="content" placeholder="请输入文本" rows="5"></textarea>
                     <div class="weui-textarea-counter"><span id="total">0</span>/80</div>
                 </div>
 	        </div>
@@ -78,6 +78,7 @@
 			    success: function(result){
 			        if(result.status == 'ok'){
 			             $("#content").val("");
+			             $("#content").val().length = 0;
 			             alert("提交成功");
 			        }
 				}
