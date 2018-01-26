@@ -9,9 +9,15 @@
 				         var content2 = "";
 				         var content3 = "";
 				         for(var i = 0 ; i < result.list.list1.length; i++){
+				        	  var pic = "";
+			            	  if(result.list.list1[i].pic == null || result.list.list1[i].pic == ""){
+			            	      pic = "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png";
+			            	  }else{
+			            		  pic = result.list.list1[i].pic;
+			            	  }
 				              if(result.list.list1[i].content != null && result.list.list1[i].content != ""){
 				              		content1 += '<div class="friend_bless"><dl class="friend_bless_top">'+
-				                         '<dt><img src="'+result.list.list1[i].pic+'" /></dt>'+
+				                         '<dt><img src="'+pic+'" /></dt>'+
 				                         '<dd>'+result.list.list1[i].nickname+'</dd>'+
 				                         '</dl>'+
 				                         '<div class="friend_bless_con"><p>'+result.list.list1[i].content+'</p>'+
@@ -19,13 +25,13 @@
 				               }
 				              if(result.list.list1[i].videoblessing != null && result.list.list1[i].videoblessing != ""){
 				                   content2 += '<div class="friend_bless"><dl class="friend_bless_top">'+
-				                               '<dt><img src="'+result.list.list1[i].pic+'" /></dt>'+
+				                               '<dt><img src="'+pic+'" /></dt>'+
 				                               '<dd>'+result.list.list1[i].nickname+'</dd>'+
 				                               '<div class="weui-cells_checkbox"><label class="weui-check__label">'+
 				                               '<div class="weui-cell__hd"><input type="checkbox" class="weui-check ck" name="checkbox1">'+
 				                               '<i class="weui-icon-checked"></i></div></label></div></dl>'+
 				                               '<div class="friend_bless_con"><dl class="video">'+
-				                               '<dt><img class="videoSrc" title="'+result.list.list1[i].videoblessing+'" src="'+result.list.list1[i].pic+'"></dt>'+
+				                               '<dt><img class="videoSrc" title="'+result.list.list1[i].videoblessing+'" src="'+pic+'"></dt>'+
 				                               '<dd><p style="text-align:right;">'+result.list.list1[i].gmtModifiedtime+'</p></dd></dl></div></div>';
 				              }
 				         }
