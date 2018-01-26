@@ -85,7 +85,7 @@ public class MarryWeixinOrderController {
 			for (int i = 0; i < ids.length; i++) {
 				MarryCartEntity marryCart = marryCartService.queryObject(Integer.parseInt(ids[i]));
 				String price = marryMainService.queryObject(marryCart.getMainId()).getPrice();
-				totalFee += (new  Double(Double.valueOf(price))).intValue();
+				totalFee += (new  Double(Double.valueOf(price))).doubleValue();
 				MarryOrderMainEntity marryOrderMainEntity = new MarryOrderMainEntity();
 				marryOrderMainEntity.setOrderId(id);
 				marryOrderMainEntity.setMainId(marryCart.getMainId());
