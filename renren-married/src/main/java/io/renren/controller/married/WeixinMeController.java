@@ -411,13 +411,12 @@ public class WeixinMeController {
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			MarryParticipateEntity marryParticipateEntity = (MarryParticipateEntity) iterator.next();
 			JSONObject jsonObject = WeixinUtil.getUserInfo(marryParticipateEntity.getOpenid());
-			System.out.println(jsonObject);
 			MarriedUserEntity marrieduser = new MarriedUserEntity();
-			marrieduser.setNickname("随安");
-			marrieduser.setId(marryWedding.getId());
-			marrieduser.setPic("http://wx.qlogo.cn/mmopen/EAhblLib81gbHYCFz1icvPBZnAViaW7HtibHeTxqBRGp2kCOAsgKQsQzLaZmXNIMvjFNFwQUic8LxpN7dias4ZgRtOPDRIJIiaN8U3h/0");
+			marrieduser.setNickname(jsonObject.getString("nickname"));
+			String pic = jsonObject.get("headimgurl")==null?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":jsonObject.getString("headimgurl");
+			marrieduser.setPic("".equals(pic)?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":pic);
 			marrieduser.setOpenid(marryParticipateEntity.getOpenid());
-			list3.add(marrieduser);
+			list3.add(marrieduser); 
 			if(marryParticipateEntity.getStates() == 0){
 				list0.add(marrieduser);
 			}else if(marryParticipateEntity.getStates() == 1){
