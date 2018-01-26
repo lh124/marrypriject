@@ -37,12 +37,17 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/xianchang/index.html",
 						  ".*/married/xianchang/photoShow.html",
 						  
+						  ".*/married/weixin/me/saveWedding",
+						  
+						  //小程序端接口
+						  ".*/married/smallProgram/main",
+						  
 						  //后台端需要屏蔽掉
 						  ".*/married/callBack/msgPic",
 						  ".*/married/htgl/marrieduser.html",
 						  ".*/married/htgl/marrymain.html",
 						  ".*/married/htgl/marrywedding.html",
-						  ".*/married/htgl/marryhelp.html"		
+						  ".*/married/htgl/marryhelp.html"
 		};
 		boolean isMatch = false;
 		
