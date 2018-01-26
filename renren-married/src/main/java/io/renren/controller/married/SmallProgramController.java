@@ -1,6 +1,5 @@
 package io.renren.controller.married;
 
-import io.renren.entity.TokenEntity;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.service.married.MarriedUserService;
 import io.renren.util.WeixinUtil;
@@ -41,7 +40,7 @@ public class SmallProgramController {
 		}else{
 			String token = request.getParameter("token");
 			if(!getToken(token)){
-				return R.error("请重新登录");
+				return R.error(1000, "请重新登录");
 			}
 			
 			
@@ -73,7 +72,7 @@ public class SmallProgramController {
 			map.put("userId", id);
 			map.put("token", token);
 			map.put("list", null);//此处list为商品列表
-			return R.ok();
+			return R.ok().put(DATA, map);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
