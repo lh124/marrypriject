@@ -39,8 +39,6 @@ $(function(){
 		    	        $("#loadingToast").fadeIn(200);
 			            var k = 0;
 			            var kk = 0;
-	                    for(var i = 0; i < length; i++){
-	                    	kk = i;
 				            $.ajax({
 								type: "POST",
 							    url: "../weixin/me/getWeddingId",
@@ -48,6 +46,8 @@ $(function(){
 								    success: function(r){
 									    var json = r;
 									    if(json.code == '0'){
+									    	for(var i = 0; i < length; i++){
+						                    	kk = i;
 							                        wx.uploadImage({
 										        	localId: localId[i],
 										        	success: function (res) {
@@ -91,9 +91,9 @@ $(function(){
 												    }
 										        });
 									    }
+									   }
 									}
 							});
-	                    }
 				}
 		};
 	});
