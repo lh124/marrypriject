@@ -71,6 +71,16 @@ public class StudentEntity implements Serializable {
 	@TableField(value="bindingType")
 	private Integer bindingType;
 	
+	//请假状态1为待处理，2为同意，3为不同意
+	@TableField(value="states")
+	private Integer states;
+	
+	public Integer getStates() {
+		return states;
+	}
+	public void setStates(Integer states) {
+		this.states = states;
+	}
 	public Integer getBindingType() {
 		return bindingType;
 	}
