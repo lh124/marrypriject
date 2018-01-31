@@ -13,7 +13,9 @@
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,pic ,class_id ,passwordd , open_id,
+		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,
+		ifnull(pic,'http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png') pic ,
+		class_id ,passwordd , open_id,
 		longitude, latitude,school_id,phoen,newsType,newsId,bindingType,states	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
