@@ -22,7 +22,6 @@ import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartProposalEntity;
 import io.renren.entity.smart.SmartRankingEntity;
-import io.renren.entity.smart.SmartTeacherMessageEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -332,43 +331,21 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("teacherMessageSave")){
 				//通过成绩来编写学生寄语（老师操作）
 				return teacherMessage(json.getJSONObject("data"));
-			}else if(type.equals("findTeacherMessage")){
-				//如果有必要，老师也可以查询某一个同学的某一科老师寄语，此接口可能用不到
-				return findTeacherMessage(json.getJSONObject("data"));
 			}
 		}
 		return null;
 	}
 	
-	private R findTeacherMessage(JSONObject json){
-		Integer userId = json.getInt("userId");//学生id
-		Integer examinationId = json.getInt("examinationId");//考试主题id
-		Integer subjectId = json.getInt("subjectId");//考试科目id
-		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
-		messageEntity.setUserId(userId);
-		messageEntity.setExaminationId(examinationId);
-		messageEntity.setSubjectId(subjectId);
-		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
-		return R.ok().put(DATA, smartTeacherMessageService.selectOne(wrapper));
-	}
-	
 	private R teacherMessage(JSONObject json){
-		Integer userId = json.getInt("userId");//学生id
-		Integer examinationId = json.getInt("examinationId");//考试主题id
-		Integer subjectId = json.getInt("subjectId");//考试科目id
-		String content = json.getString("content");//寄语具体内容
-		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
-		messageEntity.setUserId(userId);
-		messageEntity.setExaminationId(examinationId);
-		messageEntity.setSubjectId(subjectId);
-		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
-		if(smartTeacherMessageService.selectOne(wrapper) != null){
-			return R.error("请勿重复提交老师寄语").put(DATA, smartTeacherMessageService.selectOne(wrapper).getContent());
-		}
-		messageEntity.setContent(content);
-		messageEntity.setCreateTime(new Date());
-		smartTeacherMessageService.save(messageEntity);
-		return R.ok();
+		Integer id = json.getInt("id");
+		Integer userId = json.getInt("teacherId");
+		PhotoScoreEntity photoScoreEntity = photoScoreService.queryObject(new Long(id));
+		photoScoreEntity.setTeacherComment(json.getString("content"));
+		StudentEntity student = studentService.queryObject(userId);
+		photoScoreEntity.setTeacherName(student.getStudentName());
+		photoScoreEntity.setTeacherPic(student.getPic()==null?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":("".equals(student.getPic())?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":student.getPic()));
+		photoScoreService.update(photoScoreEntity);
+		return R.ok().put(DATA, photoScoreEntity.getTeacherComment());
 	}
 	
 	private R examinationdetailnew(JSONObject json){
@@ -412,6 +389,11 @@ public class TeacherAppInterfaceController {
 				}else{
 					map.put("examinationId2", examinationlist.get(i+1).getId());
 				}
+			}
+		}
+		if(examinationId == 0 ){
+			if(examinationlist.size()!=0){
+				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
 			}
 		}
 		map.put("examinationId", examinationId);
@@ -954,9 +936,13 @@ public class TeacherAppInterfaceController {
 			if(json.get("teacherId") != null){
 				smartWork.setTeacherId(json.getInt("teacherId"));
 				smartWork.setTeacherName(studentService.queryObject(json.getInt("teacherId")).getStudentName());
+				String pic = studentService.queryObject(json.getInt("teacherId")).getPic();
+				pic = pic == null?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":("".equals(pic)?"http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":pic);
+				smartWork.setTeacherPic(pic);
 			}else{
 				smartWork.setTeacherId(0);
 				smartWork.setTeacherName("老师");
+				smartWork.setTeacherPic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png");
 			}
 			smartWork.setSubject(json.get("subject")==null?"":json.getString("subject"));
 			smartWork.setCreatetime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));

@@ -21,7 +21,6 @@ import io.renren.entity.smart.SmartGradeEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartProposalEntity;
 import io.renren.entity.smart.SmartRankingEntity;
-import io.renren.entity.smart.SmartTeacherMessageEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -320,24 +319,9 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("examinationdetailnew")){
 				//个人成绩详情（新）
 				return examinationdetailnew(json.getJSONObject("data"));
-			}else if(type.equals("findTeacherMessage")){
-				//查询老师对于成绩的寄语
-				return findTeacherMessage(json.getJSONObject("data"));
 			}
 		}
 		return null;
-	}
-	
-	private R findTeacherMessage(JSONObject json){
-		Integer userId = json.getInt("userId");//学生id
-		Integer examinationId = json.getInt("examinationId");//考试主题id
-		Integer subjectId = json.getInt("subjectId");//考试科目id
-		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
-		messageEntity.setUserId(userId);
-		messageEntity.setExaminationId(examinationId);
-		messageEntity.setSubjectId(subjectId);
-		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
-		return R.ok().put(DATA, smartTeacherMessageService.selectOne(wrapper)==null?"暂无老师寄语":smartTeacherMessageService.selectOne(wrapper).getContent());
 	}
 	
 	private R examinationdetailnew(JSONObject json){
@@ -353,7 +337,7 @@ public class StudentAppInterfaceController{
 		m.put("list", list);
 		map.put("classId", studentService.queryObject(userId).getClassId());
 		List<SmartRankingEntity> student = smartRankingService.queryList(map);
-		m.put("student", student.get(0));
+		m.put("student", student.size()==0?"":student.get(0));
 		return R.ok().put(DATA, m);
 	}
 	
@@ -381,6 +365,11 @@ public class StudentAppInterfaceController{
 				}else{
 					map.put("examinationId2", examinationlist.get(i+1).getId());
 				}
+			}
+		}
+		if(examinationId == 0 ){
+			if(examinationlist.size()!=0){
+				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
 			}
 		}
 		map.put("examinationId", examinationId);
