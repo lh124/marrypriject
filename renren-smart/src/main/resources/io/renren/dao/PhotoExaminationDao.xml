@@ -5,11 +5,12 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,name as name ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,class_id as classId 		
+		id as id ,name as name ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,
+		class_id as classId,grade_id as gradeId		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,gmt_modified ,gmt_create ,class_id 		
+		id ,name ,gmt_modified ,gmt_create ,class_id,grade_id 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.PhotoExaminationEntity" id="photoExaminationMap">
@@ -18,6 +19,7 @@
 		        <result property="gmtModified" column="gmt_modified"/>
 		        <result property="gmtCreate" column="gmt_create"/>
 		        <result property="classId" column="class_id"/>
+		        <result property="gradeId" column="grade_id"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.PhotoExaminationEntity">
@@ -26,9 +28,7 @@
 
 	<select id="queryList" resultType="io.renren.entity.smart.PhotoExaminationEntity">
 		select <include refid="allColumns"></include> from photo_examination 
-		<if test="classId != null">
-			where class_id = #{classId} 
-		</if>
+		where grade_id = #{gradeId} 
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -44,9 +44,7 @@
 	
  	<select id="queryTotal" resultType="int">
 		select count(*) from photo_examination 
-		<if test="classId != null">
-			where class_id = #{classId} 
-		</if>
+		where grade_id = #{gradeId} 
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.PhotoExaminationEntity" useGeneratedKeys="true" keyProperty="id">
@@ -55,6 +53,7 @@
 			`name`, 
 			`gmt_modified`, 
 			`gmt_create`, 
+			`grade_id`, 
 			`class_id`
 		)
 		values
@@ -62,6 +61,7 @@
 			#{name}, 
 			#{gmtModified}, 
 			#{gmtCreate}, 
+			#{gradeId},
 			#{classId}
 		)
 	</insert>
@@ -72,6 +72,7 @@
 			<if test="name != null">`name` = #{name}, </if>
 			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
 			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gradeId != null">`grade_id` = #{gradeId}, </if>
 			<if test="classId != null">`class_id` = #{classId}</if>
 		</set>
 		where id = #{id}

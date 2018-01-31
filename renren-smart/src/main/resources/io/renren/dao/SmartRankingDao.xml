@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SmartRankingDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,name as name ,user_id as userId ,fraction_total as fractionTotal ,subject_total as subjectTotal ,
+		fraction_average as fractionAverage ,grade_ranking as gradeRanking ,pic as pic,
+		class_ranking as classRanking,class_id as classId,examination_id as examinationId,
+		class_ranking_last,grade_ranking_last,fraction_total_last as fractionTotalLast
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,name ,user_id ,fraction_total ,subject_total ,fraction_average ,grade_ranking ,
+		class_ranking,class_id,examination_id,pic,class_ranking_last,grade_ranking_last,fraction_total_last 		
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SmartRankingEntity" id="smartRankingMap">
+		        <result property="id" column="id"/>
+		        <result property="name" column="name"/>
+		        <result property="userId" column="user_id"/>
+		        <result property="fractionTotal" column="fraction_total"/>
+		        <result property="subjectTotal" column="subject_total"/>
+		        <result property="fractionAverage" column="fraction_average"/>
+		        <result property="gradeRanking" column="grade_ranking"/>
+		        <result property="classRanking" column="class_ranking"/>
+		        <result property="classId" column="class_id"/>
+		        <result property="pic" column="pic"/>
+		        <result property="examinationId" column="examination_id"/>
+		        <result property="classRankingLast" column="class_ranking_last"/>
+		        <result property="gradeRankingLast" column="grade_ranking_last"/>
+		        <result property="fractionTotalLast" column="fraction_total_last"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SmartRankingEntity">
+		select <include refid="allColumns"></include> from smart_ranking where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SmartRankingEntity">
+	    select t4.id,t3.student_name as name,t4.user_id,t4.pic,t4.fraction_total,t4.subject_total,t4.fraction_average,t4.class_id,t4.examination_id,
+         <if test="examinationId2 != null">
+				(select count(s1.fraction_total)+1 from smart_ranking s1 where s1.fraction_total>t4.fraction_total_last and s1.examination_id = #{examinationId2}) grade_ranking_last,
+        		(select count(s2.fraction_total)+1 from smart_ranking s2 where s2.fraction_total>t4.fraction_total_last and s2.class_id=#{classId} and s2.examination_id = #{examinationId2}) class_ranking_last,
+		 </if>
+		 <if test="examinationId2 == null">
+				0 grade_ranking_last,0 class_ranking_last,
+		</if>
+        (select count(s3.fraction_total)+1 from smart_ranking s3 where s3.fraction_total>t4.fraction_total
+          and s3.examination_id=#{examinationId}
+        ) grade_ranking,
+        (select count(s4.fraction_total)+1 from smart_ranking s4 where s4.fraction_total>t4.fraction_total 
+            <if test="classId != null and classId != ''">
+				and s4.class_id=#{classId}
+			</if>
+			<if test="userId != null and userId != ''">
+				and s4.user_id=#{userId}
+			</if>
+			and  s4.examination_id=#{examinationId} 
+            
+        ) class_ranking
+        from student t3,smart_ranking t4 where t3.id=t4.user_id 
+        <if test="classId != null and classId != ''">
+			and t4.class_id=#{classId}
+		</if>
+		<if test="userId != null and userId != ''">
+			and t4.user_id=#{userId}
+		</if>
+            and t4.examination_id = #{examinationId}
+        order by fraction_total desc 
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+ 	    select count(*) from smart_ranking where class_id=#{classId} and examination_id = #{examinationId}
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SmartRankingEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into smart_ranking
+		(
+			`name`, 
+			`user_id`, 
+			`fraction_total`, 
+			`subject_total`, 
+			`fraction_average`, 
+			`grade_ranking`, 
+			`class_id`, 
+			`examination_id`, 
+			`pic`, 
+			`fraction_total_last`, 
+			`class_ranking`
+		)
+		values
+		(
+			#{name}, 
+			#{userId}, 
+			#{fractionTotal}, 
+			#{subjectTotal}, 
+			#{fractionAverage}, 
+			#{gradeRanking}, 
+			#{classId}, 
+			#{examinationId}, 
+			#{pic},
+			#{fractionTotalLast},
+			#{classRanking}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SmartRankingEntity">
+		update smart_ranking 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="fractionTotal != null">`fraction_total` = #{fractionTotal}, </if>
+			<if test="subjectTotal != null">`subject_total` = #{subjectTotal}, </if>
+			<if test="fractionAverage != null">`fraction_average` = #{fractionAverage}, </if>
+			<if test="gradeRanking != null">`grade_ranking` = #{gradeRanking}, </if>
+			<if test="classId != null">`class_id` = #{classId}, </if>
+			<if test="examinationId != null">`examination_id` = #{examinationId}, </if>
+			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="fractionTotalLast != null">`fraction_total_last` = #{fractionTotalLast}, </if>
+			<if test="classRanking != null">`class_ranking` = #{classRanking}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_ranking where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_ranking where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

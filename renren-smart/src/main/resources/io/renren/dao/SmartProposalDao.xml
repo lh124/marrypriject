@@ -5,18 +5,18 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,title as title ,content as content ,school_id as schoolId 		
+		id as id ,title as title ,content as content ,user_id as userId 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,title ,content ,school_id 		
+		id ,title ,content ,user_id 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartProposalEntity" id="smartProposalMap">
 		        <result property="id" column="id"/>
 		        <result property="title" column="title"/>
 		        <result property="content" column="content"/>
-		        <result property="schoolId" column="school_id"/>
+		        <result property="userId" column="user_id"/>
 	    </resultMap> 
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SmartProposalEntity">
@@ -48,13 +48,13 @@
 		(
 			`title`, 
 			`content`, 
-			`school_id`
+			`user_id`
 		)
 		values
 		(
 			#{title}, 
 			#{content}, 
-			#{schoolId}
+			#{userId}
 		)
 	</insert>
 	 
@@ -63,7 +63,7 @@
 		<set>
 			<if test="title != null">`title` = #{title}, </if>
 			<if test="content != null">`content` = #{content}, </if>
-			<if test="schoolId != null">`school_id` = #{schoolId}</if>
+			<if test="userId != null">`user_id` = #{userId}</if>
 		</set>
 		where id = #{id}
 	</update>

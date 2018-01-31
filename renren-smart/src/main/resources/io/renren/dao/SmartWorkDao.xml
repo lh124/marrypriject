@@ -6,11 +6,12 @@
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
 		id as id ,name as name ,type as type ,pic as pic ,classid,content as content ,
-		createTime as createtime,subject as subject,teacherId as teacherId,teacherName as teacherName 		
+		createTime as createtime,subject as subject,teacherId as teacherId,teacherName as teacherName,
+		newsType as newsType,newsId as newsId 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,type ,pic ,content ,createTime,classid,subject,teacherId,teacherName 		
+		id ,name ,type ,pic ,content ,createTime,classid,subject,teacherId,teacherName,newsType,newsId 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartWorkEntity" id="smartWorkMap">
@@ -24,10 +25,19 @@
 		        <result property="teacherId" column="teacherId"/>
 		        <result property="teacherName" column="teacherName"/>
 		        <result property="subject" column="subject"/>
+		        <result property="newsType" column="newsType"/>
+		        <result property="newsId" column="newsId"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SmartWorkEntity">
 		select <include refid="allColumns"></include> from smart_work where id = #{value}
+	</select>
+	
+	<select id="queryListtongji" resultType="io.renren.entity.smart.SmartWorkEntity">
+		select t1.id,t1.name,t1.content,t1.pic,t1.classid,t1.createTime,t1.subject,t1.teacherName,
+		t2.newsType,t2.id newsId
+        from smart_work t1,smart_news t2 where t1.id=t2.newsId and t2.states=7 and t2.userId=#{userId} order by t1.createTime desc
+		limit #{offset}, #{limit}
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.SmartWorkEntity">

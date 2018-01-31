@@ -5,17 +5,18 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,class_name as className ,school_id as schoolId,pic as pic 		
+		id as id ,class_name as className ,school_id as schoolId,pic as pic,grade_id as gradeId 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,class_name ,school_id,pic 		
+		id ,class_name ,school_id,pic,grade_id 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.ClassEntity" id="classMap">
 		        <result property="id" column="id"/>
 		        <result property="className" column="class_name"/>
 		        <result property="schoolId" column="school_id"/>
+		        <result property="gradeId" column="grade_id"/>
 		        <result property="pic" column="pic"/>
 	    </resultMap>
 
@@ -24,7 +25,8 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassEntity">
-		select <include refid="allColumns"></include> from class where school_id = ${schoolId} 
+		select <include refid="allColumns"></include> from class where 
+		     grade_id = ${gradeId}
 			 <choose>
 		            <when test="sidx != null and sidx.trim() != ''">
 		                order by ${sidx} ${order}
@@ -37,7 +39,7 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from class where school_id = ${schoolId}
+		select count(*) from class where grade_id = ${gradeId}
 	</select>
 	 
 	<insert id="save" parameterType="io.renren.entity.smart.ClassEntity">
@@ -45,12 +47,14 @@
 		(
 			`class_name`, 
 			`pic`,
+			`grade_id`,
 			`school_id`
 		)
 		values
 		(
 			#{className}, 
 			#{pic},
+			#{gradeId},
 			#{schoolId}
 		)
 	</insert>
@@ -60,6 +64,7 @@
 		<set>
 			<if test="className != null">`class_name` = #{className}, </if>
 			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="gradeId != null">`grade_id` = #{gradeId}, </if>
 			<if test="schoolId != null">`school_id` = #{schoolId}</if>
 		</set>
 		where id = #{id}
