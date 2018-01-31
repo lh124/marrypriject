@@ -5,19 +5,15 @@
 #parse("sys/header.html")
 </head>
 <body>
+<input type="hidden" id="classId" value="$request.getParameter('classId')">
 <input type="hidden" id="gradeId" value="$request.getParameter('gradeId')">
 <div id="rrapp" v-cloak>
 	<div v-show="showList">
 		<div class="grid-btn">
-			#if($shiro.hasPermission("photoexamination:save"))
-			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			#if($shiro.hasPermission("photofrontuser:list"))
+			<a class="btn btn-primary" @click="forFrontUserList"><i class="fa fa-pencil-square-o"></i>&nbsp;成绩查询</a>
 			#end
-			#if($shiro.hasPermission("photoexamination:update"))
-			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
-			#end
-			#if($shiro.hasPermission("photoexamination:delete"))
-			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
-			#end
+			<a class="btn btn-primary" @click="querysmartranking"><i class="fa fa-plus"></i>&nbsp;成绩排名</a>
 			<a class="btn btn-primary"  href="javascript:history.go(-1)">返回上一级</a>
 		</div>
 	    <table id="jqGrid"></table>

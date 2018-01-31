@@ -5,6 +5,7 @@
 #parse("sys/header.html")
 </head>
 <body>
+<input type="hidden" id="gradeId" value="${request.getParameter('gradeId')}">
 <input type="hidden" id="myClassId" value="${request.getParameter('classId')}">
 <input type="hidden" id="examinationId" value="${request.getParameter('examinationId')}">
 <div id="rrapp" v-cloak>
