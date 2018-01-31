@@ -5,14 +5,14 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '主题名', name: 'name', index: 'name', width: 80 }, 			
-			{ label: '修改时间', name: 'gmtModified', index: 'gmt_modified', width: 80 }, 			
-			{ label: '创建时间', name: 'gmtCreate', index: 'gmt_create', width: 80 }, 			
-			{ label: '班级id', name: 'classId', index: 'class_id', width: 80 }			
+			{ label: '创建时间', name: 'gmtCreate', index: 'gmt_create', width: 80 },
+			{ label: '修改时间', name: 'gmtModified', index: 'gmt_modified', width: 80 }, 
+			{ label: '年级id', name: 'gradeId', index: 'grade_id', width: 80 }			
         ],
 		viewrecords: true,
 		multiboxonly: true,
         height: 385,
-        rowNum: 10,
+        rowNum: 10, 
 		rowList : [10,30,50],
         rownumbers: true, 
         rownumWidth: 25, 
@@ -31,7 +31,7 @@ $(function () {
             order: "order"
         },
         postData : {
-        	'classId': $('#classId').val()
+        	'gradeId': $('#gradeId').val()
         },
         gridComplete:function(){
         	//隐藏grid底部滚动条
@@ -68,7 +68,7 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 			var url = vm.photoExamination.id == null ? "../photoexamination/save" : "../photoexamination/update";
-			vm.photoExamination.classId = $('#classId').val();
+			vm.photoExamination.gradeId = $('#gradeId').val();
 			$.ajax({
 				type: "POST",
 			    url: url,
@@ -128,7 +128,20 @@ var vm = new Vue({
 			
 			var id = getSelectedRow();
 			
-			window.location.href = './photofrontuser.html?classId=' + $('#classId').val() + "&examinationId=" + id;
+			window.location.href = './photofrontuser.html?classId=' + $('#classId').val() + "&examinationId=" + id+
+			                       '&gradeId='+$("#gradeId").val();
+		},
+		querysmartranking: function(){
+			var ids = getSelectedRows();
+			if(ids.length > 1){
+				alert("请勿多选");
+				return ;
+			}
+			
+			var id = getSelectedRow();
+			
+			window.location.href = '../uniform/smartranking.html?classId=' + $('#classId').val() + "&examinationId=" + id+
+			"&gradeId="+$("#gradeId").val();
 		}
 	}
 });

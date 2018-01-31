@@ -13,7 +13,7 @@ $(function () {
 			{ label: '性别', name: 'sex', index: 'sex', width: 80 }			
         ],
 		viewrecords: true,
-        height: 385,
+        height: 650,
         rowNum: 10,
 		rowList : [10,30,50],
         rownumbers: true, 
@@ -197,36 +197,64 @@ function allSubject(){
 }
 
 function forSubmit(){
-	
 	var dataJson = new Array();
-	
-	
+	var smartRanking = new Object();
+	smartRanking.fractionTotal = 0;
+	smartRanking.subjectTotal = length;
+	smartRanking.userId = userId;
+	smartRanking.classId = $("#myClassId").val();
+	smartRanking.examinationId = $("#examinationId").val();
+	var length = 0;
 	for(var i = 0; i < $('#bodyContainer tr').length; i++){
 		var id = $('#bodyContainer tr:eq(' + i+ ')').find('td:eq(0)').text();
 		var name = $('#bodyContainer tr:eq(' + i+ ')').find('td:eq(1)').text();
 		var point = $('#bodyContainer tr:eq(' + i+ ')').find('td:eq(2) input').val();
 		var comment = $('#bodyContainer tr:eq(' + i+ ')').find('td:eq(3) input').val();
-		
-		var data = {};
-		data.subjectId = id;
-		data.subjectName = name;
-		data.subjectPoint = point;
-		data.teacherComment = comment;
-		data.frontUserId = userId;
-		data.examinationId = $('#examinationId').val();
-		dataJson[i] = data;
+		if(point != null && point != "" && point != "null"){
+			length++;
+			smartRanking.fractionTotal += parseFloat(point);
+			var data = {};
+			data.subjectId = id;//科目id
+			data.subjectName = name;//科目名称
+			data.subjectPoint = point;//分数
+			data.teacherComment = comment;//老师评语
+			data.frontUserId = userId;//学生id
+			data.examinationId = $('#examinationId').val();//考试主题id
+			dataJson[i] = data;
+		}
 	}
-	
+	smartRanking.subjectTotal = length;
 	$.ajax({
 		type: "POST",
-	    url: "../photoscore/saveBatch",
+	    url: "../smartranking/fractionTotalLast?gradeId="+$("#gradeId").val()+"&userId="+userId+"&examinationId="+$('#examinationId').val(),
 	    datatype: "json",
-	    data: JSON.stringify(dataJson),
+	    data: JSON.stringify(smartRanking),
 	    success: function(r){
 			if(r.code == 0){
-				alert('添加成功');
-			}else{
-				alert(r.msg);
+				smartRanking.fractionTotalLast = r.fractionTotalLast;
+				$.ajax({
+					type: "POST",
+				    url: "../smartranking/save",
+				    datatype: "json",
+				    data: JSON.stringify(smartRanking),
+				    success: function(r){
+						if(r.code == 0){
+							$.ajax({
+								type: "POST",
+							    url: "../photoscore/saveBatch",
+							    datatype: "json",
+							    data: JSON.stringify(dataJson),
+							    success: function(r){
+									if(r.code == 0){
+										alert('添加成功');
+									}else{
+										alert(r.msg);
+									}
+								}
+							});
+						}
+					}
+				});
 			}
 		}
 	});
