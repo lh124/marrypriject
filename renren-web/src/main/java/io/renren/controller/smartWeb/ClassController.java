@@ -77,7 +77,7 @@ public class ClassController {
        
         
         Long adminId = ShiroUtils.getUserId();
-        Long schoolId = Long.parseLong(params.get("schoolId").toString());
+        Long schoolId = Long.parseLong(params.get("gradeId").toString());
         
         if(schoolId == null)
         	throw new RRException("参数错误");

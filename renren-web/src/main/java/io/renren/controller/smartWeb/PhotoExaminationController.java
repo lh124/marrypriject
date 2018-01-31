@@ -8,6 +8,7 @@ import io.renren.utils.R;
 import io.renren.validator.ValidatorUtils;
 import io.renren.validator.group.UniformGroup;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,10 +73,10 @@ public class PhotoExaminationController {
 	@RequestMapping("/photoexamination/save")
 	@RequiresPermissions("photoexamination:save")
 	public R save(@RequestBody PhotoExaminationEntity photoExamination){
+		photoExamination.setGmtCreate(new Date());
+		photoExamination.setGmtModified(new Date());
 		ValidatorUtils.validateEntity(photoExamination, UniformGroup.class);
-		
 		photoExaminationService.save(photoExamination);
-		
 		return R.ok();
 	}
 	
@@ -85,8 +86,8 @@ public class PhotoExaminationController {
 	@RequestMapping("/photoexamination/update")
 	@RequiresPermissions("photoexamination:update")
 	public R update(@RequestBody PhotoExaminationEntity photoExamination){
+		photoExamination.setGmtModified(new Date());
 		photoExaminationService.update(photoExamination);
-		
 		return R.ok();
 	}
 	
