@@ -31,8 +31,8 @@ public class SmartProposalEntity implements Serializable {
 	private String content;
 			
 	//
-	@TableField(value="school_id")
-	private Integer schoolId;
+	@TableField(value="user_id")
+	private Integer userId;
 			
 
 	/**
@@ -71,16 +71,10 @@ public class SmartProposalEntity implements Serializable {
 	public String getContent() {
 		return content;
 	}
-	/**
-	 * 设置：
-	 */
-	public void setSchoolId(Integer schoolId) {
-		this.schoolId = schoolId;
+	public Integer getUserId() {
+		return userId;
 	}
-	/**
-	 * 获取：
-	 */
-	public Integer getSchoolId() {
-		return schoolId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 }

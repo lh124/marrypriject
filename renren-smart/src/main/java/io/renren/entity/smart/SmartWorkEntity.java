@@ -52,7 +52,25 @@ public class SmartWorkEntity implements Serializable {
 	//发布人名字
 	@TableField(value="teacherName")
 	private String teacherName;
+	//消息状态（0为未读，1为已读)
+	@TableField(value="newsType")
+	private Integer newsType;
+	
+	@TableField(value="newsId")
+	private Integer newsId;
 			
+	public Integer getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(Integer newsId) {
+		this.newsId = newsId;
+	}
+	public Integer getNewsType() {
+		return newsType;
+	}
+	public void setNewsType(Integer newsType) {
+		this.newsType = newsType;
+	}
 	public Integer getTeacherId() {
 		return teacherId;
 	}

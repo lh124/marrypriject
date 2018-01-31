@@ -12,74 +12,57 @@ import com.baomidou.mybatisplus.enums.IdType;
  * 
  * @author yuanbichang
  * @email 673290684@qq.com
- * @date 2017-08-28 11:52:18
+ * @date 2018-01-27 10:26:32
  */
- @TableName("class")
-public class ClassEntity implements Serializable {
+ @TableName("smart_grade")
+public class SmartGradeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-		//
+		//主键id
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
 		
-	//
-	@TableField(value="class_name")
-	private String className;
+	//年级名字
+	@TableField(value="name")
+	private String name;
 			
-	//
+	//所在学校id
 	@TableField(value="school_id")
 	private Integer schoolId;
-	
-	@TableField(value="pic")
-	private String pic;
-	
-	@TableField(value="grade_id")
-	private Integer gradeId;
+			
 
-	public Integer getGradeId() {
-		return gradeId;
-	}
-	public void setGradeId(Integer gradeId) {
-		this.gradeId = gradeId;
-	}
-	public String getPic() {
-		return pic;
-	}
-	public void setPic(String pic) {
-		this.pic = pic;
-	}
 	/**
-	 * 设置：
+	 * 设置：主键id
 	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}
 	/**
-	 * 获取：
+	 * 获取：主键id
 	 */
 	public Integer getId() {
 		return id;
 	}
 	/**
-	 * 设置：
+	 * 设置：年级名字
 	 */
-	public void setClassName(String className) {
-		this.className = className;
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
-	 * 获取：
+	 * 获取：年级名字
 	 */
-	public String getClassName() {
-		return className;
+	public String getName() {
+		return name;
 	}
 	/**
-	 * 设置：
+	 * 设置：所在学校id
 	 */
 	public void setSchoolId(Integer schoolId) {
 		this.schoolId = schoolId;
 	}
 	/**
-	 * 获取：
+	 * 获取：所在学校id
 	 */
 	public Integer getSchoolId() {
 		return schoolId;

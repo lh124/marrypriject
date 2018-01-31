@@ -45,6 +45,15 @@ public class PhotoExaminationEntity implements Serializable {
 	private Long classId;
 			
 
+	@TableField(value="grade_id")
+	private Long gradeId;
+	
+	public Long getGradeId() {
+		return gradeId;
+	}
+	public void setGradeId(Long gradeId) {
+		this.gradeId = gradeId;
+	}
 	/**
 	 * 设置：
 	 */
