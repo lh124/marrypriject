@@ -311,6 +311,9 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("smartProposal")){
 				//意见反馈
 				return smartProposal(json.getJSONObject("data"));
+			}else if(type.equals("listexamination")){
+				//考试主题列表
+				return listexamination(json.getJSONObject("data"));
 			}else if(type.equals("examinationlistnew")){
 				//成绩列表（新）
 				return examinationlistnew(json.getJSONObject("data"));
@@ -354,31 +357,31 @@ public class StudentAppInterfaceController{
 		return R.ok().put(DATA, m);
 	}
 	
+	private R listexamination(JSONObject json){
+		Integer classId = json.getInt("classId");//班级id
+		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", gradeId);
+		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
+		return R.ok().put(DATA, examinationlist);
+	}
+	
 	private R examinationlistnew(JSONObject json){
 		Integer studentId = json.getInt("studentId");//学生id
 		Integer classId = json.getInt("classId");//班级id
 		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
-		Integer examinationId = 0;
+		Integer examinationId = json.getInt("examinationId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("gradeId", gradeId);
 		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
-		if(examinationlist.size() != 0){
-			if(json.get("examinationId") != null){
-				examinationId = json.getInt("examinationId");
-			}else{
-				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
-			}
-			for(int i = 0; i < examinationlist.size(); i++){
-				if(Integer.parseInt(examinationId.toString()) == examinationlist.get(i).getId()){
-					if((i+1)==examinationlist.size()){
-						map.put("examinationId2", null);
-					}else{
-						map.put("examinationId2", examinationlist.get(i+1).getId());
-					}
+		for(int i = 0; i < examinationlist.size(); i++){
+			if(json.getInt("examinationId") == examinationlist.get(i).getId()){
+				if((i+1)==examinationlist.size()){
+					map.put("examinationId2", null);
+				}else{
+					map.put("examinationId2", examinationlist.get(i+1).getId());
 				}
 			}
-		}else{
-			map.put("examinationId2", null);
 		}
 		map.put("examinationId", examinationId);
 		map.put("classId", classId);
@@ -386,7 +389,6 @@ public class StudentAppInterfaceController{
 		map.put("userId", studentId);
 		List<SmartRankingEntity> student = smartRankingService.queryList(map);
 		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("examinationlist", examinationlist);//考试主题列表
 		m.put("student", student.size() == 0 ? "":student.get(0));//学生个人成绩
 		m.put("smartRankinglist", smartRankinglist);
 		return R.ok().put(DATA, m);

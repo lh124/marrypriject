@@ -320,6 +320,9 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("findAllsubject")){
 				//获取科目列表
 				return findAllsubject();
+			}else if(type.equals("listexamination")){
+				//考试主题列表
+				return listexamination(json.getJSONObject("data"));
 			}else if(type.equals("examinationlistnew")){
 				//成绩列表（新）
 				return examinationlistnew(json.getJSONObject("data"));
@@ -386,38 +389,35 @@ public class TeacherAppInterfaceController {
 		return R.ok().put(DATA, m);
 	}
 	
-	private R examinationlistnew(JSONObject json){
+	private R listexamination(JSONObject json){
 		Integer classId = json.getInt("classId");//班级id
 		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
-		Integer examinationId = 0;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("gradeId", gradeId);
 		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
-		if(examinationlist.size() != 0){
-			if(json.get("examinationId") != null){
-				examinationId = json.getInt("examinationId");
-			}else{
-				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
-			}
-			for(int i = 0; i < examinationlist.size(); i++){
-				if(Integer.parseInt(examinationId.toString()) == examinationlist.get(i).getId()){
-					if((i+1)==examinationlist.size()){
-						map.put("examinationId2", null);
-					}else{
-						map.put("examinationId2", examinationlist.get(i+1).getId());
-					}
+		return R.ok().put(DATA, examinationlist);
+	}
+	
+	private R examinationlistnew(JSONObject json){
+		Integer classId = json.getInt("classId");//班级id
+		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
+		Integer examinationId = json.getInt("examinationId");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", gradeId);
+		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
+		for(int i = 0; i < examinationlist.size(); i++){
+			if(json.getInt("examinationId") == examinationlist.get(i).getId()){
+				if((i+1)==examinationlist.size()){
+					map.put("examinationId2", null);
+				}else{
+					map.put("examinationId2", examinationlist.get(i+1).getId());
 				}
 			}
-		}else{
-			map.put("examinationId2", null);
 		}
 		map.put("examinationId", examinationId);
 		map.put("classId", classId);
 		List<SmartRankingEntity> smartRankinglist = smartRankingService.queryList(map);//班级学生成绩及其排名
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("examinationlist", examinationlist);//考试主题列表
-		m.put("smartRankinglist", smartRankinglist);
-		return R.ok().put(DATA, m);
+		return R.ok().put(DATA, smartRankinglist);
 	}
 	
 	private R findAllsubject(){
@@ -1093,7 +1093,7 @@ public class TeacherAppInterfaceController {
 			classappEntity.setId(classEntity.getId());
 			classappEntity.setClassName(classEntity.getClassName());
 			classappEntity.setStates(classInfoEntity.getType());
-			classappEntity.setPic(classEntity.getPic()==null?"":classEntity.getPic());
+			classappEntity.setPic(classEntity.getPic()==null?"http://static.gykjewm.com/tubiao/class.jpg":classEntity.getPic());
 			classappEntity.setLock(getClassIdLeave(classEntity.getId(), teacherId).size() ==0?1:0);//1为全0为有学生未到
 			list.add(classappEntity);
 		}
