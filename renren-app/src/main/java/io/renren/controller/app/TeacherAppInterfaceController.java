@@ -331,9 +331,30 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("teacherMessageSave")){
 				//通过成绩来编写学生寄语（老师操作）
 				return teacherMessage(json.getJSONObject("data"));
+			}else if(type.equals("findAllPerson")){
+				//通过班级id查询所有班级成绩（包含老师学生）
+				return findAllPerson(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R findAllPerson(JSONObject json){
+		Integer classId = json.getInt("classId");//班级id
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("classId", classId);
+		map.put("userType", 1);
+		map.put("begin", 0);
+		map.put("limit", 150);
+		List<StudentEntity> list = studentService.queryList(map);
+		map.put("classid", classId);
+		map.put("offset", 0);
+		List<ClassInfoEntity> infoList = classInfoService.queryList(map);
+		for (Iterator iterator = infoList.iterator(); iterator.hasNext();) {
+			ClassInfoEntity classInfoEntity = (ClassInfoEntity) iterator.next();
+			list.add(studentService.queryObject(classInfoEntity.getUserId()));
+		}
+		return R.ok().put(DATA, list);
 	}
 	
 	private R teacherMessage(JSONObject json){
