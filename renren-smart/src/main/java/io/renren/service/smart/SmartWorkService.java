@@ -20,6 +20,8 @@ public interface SmartWorkService extends IService<SmartWorkEntity>{
 	
 	List<SmartWorkEntity> queryList(Map<String, Object> map);
 	
+	List<SmartWorkEntity> queryListtongji(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(SmartWorkEntity smartWork);
