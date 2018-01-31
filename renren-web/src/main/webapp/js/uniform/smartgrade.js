@@ -1,15 +1,14 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: '../sys/uniform/class/list',
+        url: '../smartgrade/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '班级名', name: 'className', index: 'class_name', width: 80 }, 		
-			{ label: '主题图片', name: 'pic', index: 'pic', width: 80 },
-			{ label: '年级id', name: 'gradeId', index: 'grade_id', width: 80 }			
+			{ label: '年级名称', name: 'name', index: 'name', width: 80 }, 			
+			{ label: '所在学校id', name: 'schoolId', index: 'school_id', width: 80 }			
         ],
 		viewrecords: true,
-        height: 650,
+        height: 385,
         rowNum: 10,
 		rowList : [10,30,50],
         rownumbers: true, 
@@ -29,7 +28,7 @@ $(function () {
             order: "order"
         },
         postData:{
-        	"gradeId": $("#gradeId").val()
+        	"schoolId": $("#schoolId").val()
         },
         gridComplete:function(){
         	//隐藏grid底部滚动条
@@ -37,12 +36,13 @@ $(function () {
         }
     });
 });
+
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
 		showList: true,
 		title: null,
-		classe: {}
+		smartGrade: {}
 	},
 	methods: {
 		query: function () {
@@ -51,7 +51,7 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.class = {};
+			vm.smartGrade = {};
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -64,23 +64,17 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
-			var url = vm.classe.id == null ? "../sys/uniform/class/save" : "../sys/uniform/class/update";
-			vm.classe.gradeId = $("#gradeId").val();
+			vm.smartGrade.schoolId = $("#schoolId").val();
+			var url = vm.smartGrade.id == null ? "../smartgrade/save" : "../smartgrade/update";
 			$.ajax({
 				type: "POST",
 			    url: url,
-			    data: JSON.stringify(vm.classe),
+			    data: JSON.stringify(vm.smartGrade),
 			    success: function(r){
 			    	if(r.code === 0){
-			    		if(document.getElementById("fileimg").value != null && document.getElementById("fileimg").value != ""){
-			    			document.getElementById("myUserId").value = r.id;
-				    		getFile(document.getElementById("fileimg"));
-			    			vm.reload();
-			    		}else{
-			    			alert('操作成功', function(index){
-								vm.reload();
-							});
-			    		}
+						alert('操作成功', function(index){
+							vm.reload();
+						});
 					}else{
 						alert(r.msg);
 					}
@@ -96,7 +90,7 @@ var vm = new Vue({
 			confirm('确定要删除选中的记录？', function(){
 				$.ajax({
 					type: "POST",
-				    url: "../sys/uniform/class/delete",
+				    url: "../smartgrade/delete",
 				    data: JSON.stringify(ids),
 				    success: function(r){
 						if(r.code == 0){
@@ -111,72 +105,27 @@ var vm = new Vue({
 			});
 		},
 		getInfo: function(id){
-			$.get("../sys/uniform/class/info/"+id, function(r){
-                vm.classe = r.classe;
+			$.get("../smartgrade/info/"+id, function(r){
+                vm.smartGrade = r.smartGrade;
             });
 		},
-		datatongji: function(id){
+		addClass: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
 				alert("请勿多选");
 				return ;
 			}
 			var id = getSelectedRow();
-			window.location.href="datatongji.html?classId="+ id;
+			window.location.href="class.html?gradeId="+ id;
 		},
-		addClassInfo: function(id){
+		addExaminate: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
 				alert("请勿多选");
 				return ;
 			}
 			var id = getSelectedRow();
-			window.location.href="classinfo.html?classId="+ id+"&schoolId="+$("#schoolId").val();
-		},
-		addCourseware: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="smartcourseware.html?classId="+ id;
-		},
-		addWork: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="smartwork.html?classId="+ id;
-		},
-		addClassNotice: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="classnotice.html?classId="+ id;
-		},
-		addStudent: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="student.html?classId="+ id;
-		},
-		forFrontUserList: function(id){
-			var ids = getSelectedRows();
-			if(ids.length >1){
-				alert("请勿多选");
-				return ;
-			}
-			var id = getSelectedRow();
-			window.location.href="../school/photoexamination2.html?classId="+ id+"&gradeId="+$("#gradeId").val();
+			window.location.href="../school/photoexamination.html?gradeId="+ id;
 		},
 		reload: function (event) {
 			vm.showList = true;

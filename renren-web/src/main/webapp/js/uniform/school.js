@@ -162,6 +162,15 @@ var vm = new Vue({
 			var id = getSelectedRow();
 			window.location.href="smartvideodevice.html?schoolId="+ id;
 		},
+		addGrade: function(id){
+			var ids = getSelectedRows();
+			if(ids.length >1){
+				alert("请勿多选");
+				return ;
+			}
+			var id = getSelectedRow();
+			window.location.href="smartgrade.html?schoolId="+ id;
+		},
 		smartteacher: function(id){
 			var ids = getSelectedRows();
 			if(ids.length >1){
