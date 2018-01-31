@@ -84,9 +84,9 @@ public class PhotoScoreController {
 	@RequestMapping("/photoscore/save")
 	@RequiresPermissions("photoscore:save")
 	public R save(@RequestBody PhotoScoreEntity photoScore){
-		
+		photoScore.setTeacherName("老师");
+		photoScore.setTeacherPic("http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png");
 		photoScoreService.save(photoScore);
-		
 		return R.ok();
 	}
 	
