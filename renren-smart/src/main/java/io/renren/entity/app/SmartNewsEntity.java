@@ -22,7 +22,7 @@ public class SmartNewsEntity implements Serializable {
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
 		
-	//消息类型（1学校通知，2老师通知，3，班内消息，4，请假申请，5申请回复，6进出校通知）
+	//消息类型（1学校通知，2老师通知，3，班内消息，4，请假申请，5申请回复，6进出校通知,7作业通知）
 	@TableField(value="states")
 	private Integer states;
 			
