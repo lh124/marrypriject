@@ -17,7 +17,10 @@
 			#if($shiro.hasPermission("uniform_school:delete"))
 			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			#end
+			<a class="btn btn-primary" @click="addGrade"><i class="fa fa-plus"></i>&nbsp;年级管理</a>
+			<!--
 			<a class="btn btn-primary" @click="addClass"><i class="fa fa-plus"></i>&nbsp;班级管理</a>
+			-->
 			#if($shiro.hasPermission("schoolnotice:list"))
 			<a class="btn btn-primary" @click="addSchoolNotice"><i class="fa fa-plus"></i>&nbsp;学校通知</a>
 			#end
@@ -44,9 +47,6 @@
 			#end
 			#if($shiro.hasPermission("smartteacher:list"))
 			<a class="btn btn-primary" @click="smartteacher"><i class="fa fa-plus"></i>&nbsp;学校老师管理</a>
-			#end
-			#if($shiro.hasPermission("smartproposal:list"))
-			<a class="btn btn-primary" @click="smartproposal"><i class="fa fa-plus"></i>&nbsp;意见反馈</a>
 			#end
 		</div>
 	    <table id="jqGrid"></table>

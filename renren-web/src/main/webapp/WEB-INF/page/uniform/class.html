@@ -5,7 +5,7 @@
 #parse("sys/header.html")
 </head>
 <body>
-<input type="hidden" id="schoolId" value="${request.getParameter('schoolId')}">
+<input type="hidden" id="gradeId" value="${request.getParameter('gradeId')}">
 <div id="rrapp" v-cloak>
 	<div v-show="showList">
 		<div class="grid-btn">
@@ -21,8 +21,8 @@
 			#if($shiro.hasPermission("uniform_class:save"))
 			<a class="btn btn-primary" @click="addStudent"><i class="fa fa-plus"></i>&nbsp;学生管理</a>
 			#end
-			#if($shiro.hasPermission("uniform_class:save"))
-			<a class="btn btn-primary" @click="addExaminate"><i class="fa fa-plus"></i>&nbsp;学生成绩管理</a>
+			#if($shiro.hasPermission("photofrontuser:list"))
+			<a class="btn btn-primary" @click="forFrontUserList"><i class="fa fa-pencil-square-o"></i>&nbsp;成绩管理</a>
 			#end
 			#if($shiro.hasPermission("classnotice:list"))
 			<a class="btn btn-primary" @click="addClassNotice"><i class="fa fa-plus"></i>&nbsp;老师通知</a>
