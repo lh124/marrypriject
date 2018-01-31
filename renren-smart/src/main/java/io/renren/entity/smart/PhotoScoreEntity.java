@@ -51,10 +51,28 @@ public class PhotoScoreEntity implements Serializable {
 	@TableField(value="teacher_comment")
 	private String teacherComment;
 	
-	//老师评论
+	@TableField(value="teacherName")
+	private String teacherName;
+	
+	@TableField(value="teacherPic")
+	private String teacherPic;
+	
+	//考试主题id
 	@TableField(value="examination_id")
 	private Long examinationId;
 	
+	public String getTeacherName() {
+		return teacherName;
+	}
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
+	public String getTeacherPic() {
+		return teacherPic;
+	}
+	public void setTeacherPic(String teacherPic) {
+		this.teacherPic = teacherPic;
+	}
 	/**
 	 * 设置：
 	 */

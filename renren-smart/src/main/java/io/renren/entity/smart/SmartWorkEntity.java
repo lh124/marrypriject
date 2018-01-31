@@ -56,6 +56,16 @@ public class SmartWorkEntity implements Serializable {
 	@TableField(value="newsType")
 	private Integer newsType;
 	
+	//发布人头像
+	@TableField(value="teacherPic")
+	private String teacherPic;
+	
+	public String getTeacherPic() {
+		return teacherPic;
+	}
+	public void setTeacherPic(String teacherPic) {
+		this.teacherPic = teacherPic;
+	}
 	@TableField(value="newsId")
 	private Integer newsId;
 			
