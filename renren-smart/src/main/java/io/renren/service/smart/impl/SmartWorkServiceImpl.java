@@ -52,5 +52,10 @@ public class SmartWorkServiceImpl extends ServiceImpl<SmartWorkDao, SmartWorkEnt
 	public void deleteBatch(Integer[] ids){
 		smartWorkDao.deleteBatch(ids);
 	}
+
+	@Override
+	public List<SmartWorkEntity> queryListtongji(Map<String, Object> map) {
+		return smartWorkDao.queryListtongji(map);
+	}
 	
 }
