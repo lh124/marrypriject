@@ -5,11 +5,14 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,subject_id as subjectId ,examination_id as examinationId,subject_name as subjectName ,subject_point as subjectPoint ,front_user_id as frontUserId ,gmt_modified as gmtModified ,gmt_create as gmtCreate ,teacher_comment as teacherComment 		
+		id as id ,subject_id as subjectId ,examination_id as examinationId,subject_name as subjectName ,
+		subject_point as subjectPoint ,front_user_id as frontUserId ,gmt_modified as gmtModified ,
+		gmt_create as gmtCreate ,teacher_comment as teacherComment,teacherName as teacherName,teacherPic as teacherPic 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,subject_id ,subject_name ,subject_point,examination_id ,front_user_id ,gmt_modified ,gmt_create ,teacher_comment 		
+		id ,subject_id ,subject_name ,subject_point,examination_id ,front_user_id ,gmt_modified ,gmt_create ,
+		teacher_comment,teacherName,teacherPic 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.PhotoScoreEntity" id="photoScoreMap">
@@ -22,6 +25,8 @@
 		        <result property="gmtCreate" column="gmt_create"/>
 		        <result property="teacherComment" column="teacher_comment"/>
 		        <result property="examinationId" column="examination_id"/>
+		        <result property="teacherPic" column="teacherPic"/>
+		        <result property="teacherName" column="teacherName"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.PhotoScoreEntity">
@@ -65,6 +70,8 @@
 			`gmt_modified`, 
 			`gmt_create`, 
 			`teacher_comment`,
+			`teacherName`,
+			`teacherPic`,
 			`examination_id`
 		)
 		values
@@ -76,6 +83,8 @@
 			#{gmtModified}, 
 			#{gmtCreate}, 
 			#{teacherComment},
+			#{teacherName},
+			#{teacherPic},
 			#{examinationId}
 		)
 	</insert>
@@ -90,6 +99,8 @@
 			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
 			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
 			<if test="teacherComment != null">`teacher_comment` = #{teacherComment},</if>
+			<if test="teacherName != null">`teacherName` = #{teacherName},</if>
+			<if test="teacherPic != null">`teacherPic` = #{teacherPic},</if>
 			<if test="examinationId != null">`examination_id` = #{examinationId}</if>
 		</set>
 		where id = #{id}
