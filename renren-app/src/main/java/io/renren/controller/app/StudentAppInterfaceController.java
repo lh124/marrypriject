@@ -10,14 +10,18 @@ import io.renren.entity.smart.FreshmanGuideEntity;
 import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoExaminationEntity;
+import io.renren.entity.smart.PhotoScoreEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
 import io.renren.entity.smart.SmartActivitiesEntity;
 import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
+import io.renren.entity.smart.SmartGradeEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartProposalEntity;
+import io.renren.entity.smart.SmartRankingEntity;
+import io.renren.entity.smart.SmartTeacherMessageEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -38,9 +42,12 @@ import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartAppService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartExceptionService;
+import io.renren.service.smart.SmartGradeService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartProposalService;
+import io.renren.service.smart.SmartRankingService;
+import io.renren.service.smart.SmartTeacherMessageService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -151,6 +158,12 @@ public class StudentAppInterfaceController{
 	private SmartExceptionService smartExceptionService;
 	@Autowired
 	private SmartProposalService smartProposalService;
+	@Autowired
+	private SmartGradeService smartGradeService;
+	@Autowired
+	private SmartRankingService smartRankingService;
+	@Autowired
+	private SmartTeacherMessageService smartTeacherMessageService;
 	
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
@@ -298,16 +311,92 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("smartProposal")){
 				//意见反馈
 				return smartProposal(json.getJSONObject("data"));
+			}else if(type.equals("examinationlistnew")){
+				//成绩列表（新）
+				return examinationlistnew(json.getJSONObject("data"));
+			}else if(type.equals("examinationdetailnew")){
+				//个人成绩详情（新）
+				return examinationdetailnew(json.getJSONObject("data"));
+			}else if(type.equals("findTeacherMessage")){
+				//查询老师对于成绩的寄语
+				return findTeacherMessage(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R findTeacherMessage(JSONObject json){
+		Integer userId = json.getInt("userId");//学生id
+		Integer examinationId = json.getInt("examinationId");//考试主题id
+		Integer subjectId = json.getInt("subjectId");//考试科目id
+		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
+		messageEntity.setUserId(userId);
+		messageEntity.setExaminationId(examinationId);
+		messageEntity.setSubjectId(subjectId);
+		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
+		return R.ok().put(DATA, smartTeacherMessageService.selectOne(wrapper)==null?"暂无老师寄语":smartTeacherMessageService.selectOne(wrapper).getContent());
+	}
+	
+	private R examinationdetailnew(JSONObject json){
+		Integer userId = json.getInt("userId");//学生id
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sidx", null);
+		map.put("offset", 0);
+		map.put("limit", 100);
+		map.put("examinationId", json.getString("examinationId"));
+		map.put("userId", userId);
+		List<PhotoScoreEntity> list = photoScoreService.queryList(map);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("list", list);
+		map.put("classId", studentService.queryObject(userId).getClassId());
+		List<SmartRankingEntity> student = smartRankingService.queryList(map);
+		m.put("student", student.get(0));
+		return R.ok().put(DATA, m);
+	}
+	
+	private R examinationlistnew(JSONObject json){
+		Integer studentId = json.getInt("studentId");//学生id
+		Integer classId = json.getInt("classId");//班级id
+		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
+		Integer examinationId = 0;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", gradeId);
+		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
+		if(examinationlist.size() != 0){
+			if(json.get("examinationId") != null){
+				examinationId = json.getInt("examinationId");
+			}else{
+				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
+			}
+			for(int i = 0; i < examinationlist.size(); i++){
+				if(Integer.parseInt(examinationId.toString()) == examinationlist.get(i).getId()){
+					if((i+1)==examinationlist.size()){
+						map.put("examinationId2", null);
+					}else{
+						map.put("examinationId2", examinationlist.get(i+1).getId());
+					}
+				}
+			}
+		}else{
+			map.put("examinationId2", null);
+		}
+		map.put("examinationId", examinationId);
+		map.put("classId", classId);
+		List<SmartRankingEntity> smartRankinglist = smartRankingService.queryList(map);//班级学生成绩及其排名
+		map.put("userId", studentId);
+		List<SmartRankingEntity> student = smartRankingService.queryList(map);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("examinationlist", examinationlist);//考试主题列表
+		m.put("student", student.size() == 0 ? "":student.get(0));//学生个人成绩
+		m.put("smartRankinglist", smartRankinglist);
+		return R.ok().put(DATA, m);
 	}
 	
 	private R smartProposal(JSONObject json){
 		SmartProposalEntity proposalEntity = new SmartProposalEntity();
 		proposalEntity.setContent(json.getString("content"));
 		proposalEntity.setTitle(json.getString("title"));
-		proposalEntity.setSchoolId(json.getInt("schoolId"));
+		proposalEntity.setUserId(json.getInt("userId"));
 		smartProposalService.save(proposalEntity);
 		return R.ok();
 	}
@@ -709,21 +798,23 @@ public class StudentAppInterfaceController{
 	}
 	
 	public R smartClassWorkList(JSONObject json){
+		Integer workType = json.getInt("workType");//类型0为今日作业，1为历史作业记录
 		Map<String, Object> map = getMap(json);
-		map.put("classid", json.getString("classId"));
-		List<SmartWorkEntity> smartWorkList = smartWorkService.queryList(map);
-		List<SmartWorkEntity> list = new ArrayList<SmartWorkEntity>();
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
-		for (Iterator iterator = smartWorkList.iterator(); iterator.hasNext();) {
-			SmartWorkEntity smartWorkEntity = (SmartWorkEntity) iterator.next();
-			if(sdf.format(new Date()).equals(smartWorkEntity.getCreatetime())){
-				list.add(smartWorkEntity);
+		map.put("userId", json.getString("userId"));
+		List<SmartWorkEntity> smartWorkList = smartWorkService.queryListtongji(map);
+		if(workType == 0){
+			List<SmartWorkEntity> list = new ArrayList<SmartWorkEntity>();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
+			for (Iterator iterator = smartWorkList.iterator(); iterator.hasNext();) {
+				SmartWorkEntity smartWorkEntity = (SmartWorkEntity) iterator.next();
+				if(sdf.format(new Date()).equals(smartWorkEntity.getCreatetime())){
+					list.add(smartWorkEntity);
+				}
 			}
+			return R.ok().put(DATA, list);
+		}else{
+			return R.ok().put(DATA, smartWorkList);
 		}
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("dayList", list);
-		m.put("list", smartWorkList);
-		return R.ok().put(DATA, m);
 	}
 	
 	public R smartWord(JSONObject json){
@@ -937,12 +1028,15 @@ public class StudentAppInterfaceController{
 				}
 				Jedis jedis =  new Jedis(JEDISPATH,6379,10000);
 				jedis.set(tokening, tokening);
+				ClassEntity classEntity = classService.queryObject(user.getClassId());//通过学生中的班级id获取班级信息
+				SmartGradeEntity smartGradeEntity = smartGradeService.queryObject(classEntity.getGradeId());//通过班级信息中的年级id获取年级信息
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);
-				map.put("pic", (user.getPic()== null || "".equals(user.getPic()))  ? "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png":user.getPic());
+				map.put("pic", (user.getPic()== null || "".equals(user.getPic()))  ? "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":user.getPic());
 				map.put("classId", user.getClassId());
-				map.put("schoolId", classService.queryObject(user.getClassId()).getSchoolId());
+				map.put("gradeId", smartGradeEntity.getId());
+				map.put("schoolId", smartGradeEntity.getSchoolId());
 				map.put("studentName", user.getStudentName());
 				map.put("studentNo", user.getStudentNo());
 				map.put("phone", user.getPhoen());

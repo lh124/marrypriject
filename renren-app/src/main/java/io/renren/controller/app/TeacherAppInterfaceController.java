@@ -12,6 +12,7 @@ import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.PhotoExaminationEntity;
 import io.renren.entity.smart.PhotoPicWorkMsgEntity;
+import io.renren.entity.smart.PhotoScoreEntity;
 import io.renren.entity.smart.PsychologicalCounselingEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
@@ -20,6 +21,8 @@ import io.renren.entity.smart.SmartCoursewareEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartProposalEntity;
+import io.renren.entity.smart.SmartRankingEntity;
+import io.renren.entity.smart.SmartTeacherMessageEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -42,9 +45,12 @@ import io.renren.service.smart.SmartActivitiesService;
 import io.renren.service.smart.SmartAppService;
 import io.renren.service.smart.SmartCoursewareService;
 import io.renren.service.smart.SmartExceptionService;
+import io.renren.service.smart.SmartGradeService;
 import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartProposalService;
+import io.renren.service.smart.SmartRankingService;
+import io.renren.service.smart.SmartTeacherMessageService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
@@ -150,6 +156,12 @@ public class TeacherAppInterfaceController {
 	private SmartProposalService smartProposalService;
 	@Autowired
 	private PhotoSubjectService photoSubjectService;
+	@Autowired
+	private SmartGradeService smartGradeService;
+	@Autowired
+	private SmartRankingService smartRankingService;
+	@Autowired
+	private SmartTeacherMessageService smartTeacherMessageService;
 	
 	
 	private final static String JEDISPATH = "127.0.0.1";
@@ -308,9 +320,104 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("findAllsubject")){
 				//获取科目列表
 				return findAllsubject();
+			}else if(type.equals("examinationlistnew")){
+				//成绩列表（新）
+				return examinationlistnew(json.getJSONObject("data"));
+			}else if(type.equals("examinationdetailnew")){
+				//个人成绩详情（新）
+				return examinationdetailnew(json.getJSONObject("data"));
+			}else if(type.equals("teacherMessageSave")){
+				//通过成绩来编写学生寄语（老师操作）
+				return teacherMessage(json.getJSONObject("data"));
+			}else if(type.equals("findTeacherMessage")){
+				//如果有必要，老师也可以查询某一个同学的某一科老师寄语，此接口可能用不到
+				return findTeacherMessage(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R findTeacherMessage(JSONObject json){
+		Integer userId = json.getInt("userId");//学生id
+		Integer examinationId = json.getInt("examinationId");//考试主题id
+		Integer subjectId = json.getInt("subjectId");//考试科目id
+		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
+		messageEntity.setUserId(userId);
+		messageEntity.setExaminationId(examinationId);
+		messageEntity.setSubjectId(subjectId);
+		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
+		return R.ok().put(DATA, smartTeacherMessageService.selectOne(wrapper));
+	}
+	
+	private R teacherMessage(JSONObject json){
+		Integer userId = json.getInt("userId");//学生id
+		Integer examinationId = json.getInt("examinationId");//考试主题id
+		Integer subjectId = json.getInt("subjectId");//考试科目id
+		String content = json.getString("content");//寄语具体内容
+		SmartTeacherMessageEntity messageEntity = new SmartTeacherMessageEntity();
+		messageEntity.setUserId(userId);
+		messageEntity.setExaminationId(examinationId);
+		messageEntity.setSubjectId(subjectId);
+		EntityWrapper<SmartTeacherMessageEntity> wrapper = new EntityWrapper<SmartTeacherMessageEntity>(messageEntity);
+		if(smartTeacherMessageService.selectOne(wrapper) != null){
+			return R.error("请勿重复提交老师寄语").put(DATA, smartTeacherMessageService.selectOne(wrapper).getContent());
+		}
+		messageEntity.setContent(content);
+		messageEntity.setCreateTime(new Date());
+		smartTeacherMessageService.save(messageEntity);
+		return R.ok();
+	}
+	
+	private R examinationdetailnew(JSONObject json){
+		Integer userId = json.getInt("userId");//学生id
+		Integer classId = studentService.queryObject(userId).getClassId();//班级id
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sidx", null);
+		map.put("offset", 0);
+		map.put("limit", 100);
+		map.put("examinationId", json.getString("examinationId"));
+		map.put("userId", userId);
+		List<PhotoScoreEntity> list = photoScoreService.queryList(map);
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("list", list);
+		map.put("classId", classId);
+		List<SmartRankingEntity> student = smartRankingService.queryList(map);
+		m.put("student", student.get(0));
+		return R.ok().put(DATA, m);
+	}
+	
+	private R examinationlistnew(JSONObject json){
+		Integer classId = json.getInt("classId");//班级id
+		Integer gradeId = classService.queryObject(classId).getGradeId();//年级id
+		Integer examinationId = 0;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", gradeId);
+		List<PhotoExaminationEntity> examinationlist = photoExaminationService.queryList(map);//年级下面的所有考试主题列表
+		if(examinationlist.size() != 0){
+			if(json.get("examinationId") != null){
+				examinationId = json.getInt("examinationId");
+			}else{
+				examinationId = Integer.parseInt(examinationlist.get(0).getId().toString());
+			}
+			for(int i = 0; i < examinationlist.size(); i++){
+				if(Integer.parseInt(examinationId.toString()) == examinationlist.get(i).getId()){
+					if((i+1)==examinationlist.size()){
+						map.put("examinationId2", null);
+					}else{
+						map.put("examinationId2", examinationlist.get(i+1).getId());
+					}
+				}
+			}
+		}else{
+			map.put("examinationId2", null);
+		}
+		map.put("examinationId", examinationId);
+		map.put("classId", classId);
+		List<SmartRankingEntity> smartRankinglist = smartRankingService.queryList(map);//班级学生成绩及其排名
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("examinationlist", examinationlist);//考试主题列表
+		m.put("smartRankinglist", smartRankinglist);
+		return R.ok().put(DATA, m);
 	}
 	
 	private R findAllsubject(){
@@ -321,7 +428,7 @@ public class TeacherAppInterfaceController {
 		SmartProposalEntity proposalEntity = new SmartProposalEntity();
 		proposalEntity.setContent(json.getString("content"));
 		proposalEntity.setTitle(json.getString("title"));
-		proposalEntity.setSchoolId(json.getInt("schoolId"));
+		proposalEntity.setUserId(json.getInt("userId"));
 		smartProposalService.save(proposalEntity);
 		return R.ok();
 	}
@@ -592,6 +699,7 @@ public class TeacherAppInterfaceController {
 			student.setId(smartLeaveEntity.getId());//将请假条的id设置给学生id便于后面查询请假条详情
 			student.setNewsId(smartLeaveEntity.getNewsId());
 			student.setNewsType(smartLeaveEntity.getNewsType());
+			student.setStates(Integer.parseInt(smartLeaveEntity.getStates()));
 			list.add(student);
 		}
 		return list;
@@ -858,7 +966,25 @@ public class TeacherAppInterfaceController {
 			}else{
 				smartWork.setPic("");
 			}
-			smartWorkService.save(smartWork);
+			smartWorkService.insert(smartWork);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("classId", json.getString("classId"));
+			map.put("schoolId", null);
+			map.put("userType", 1);
+			map.put("begin", 0);
+			map.put("limit", 100);
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("type", 3);
+			List<StudentEntity> studentlist = studentService.queryList(map);
+			for (Iterator iterator2 = studentlist.iterator(); iterator2.hasNext();) {
+				StudentEntity studentEntity = (StudentEntity) iterator2.next();
+				SmartNewsEntity sne = new SmartNewsEntity();
+				sne.setNewsid(Integer.parseInt(smartWork.getId().toString()));
+				sne.setStates(7);
+				sne.setNewstype(0);
+				sne.setUserId(studentEntity.getId());
+				smartNewsService.insert(sne);
+			}
 		} catch (Exception e) {
 			return R.error("失败");
 		}
@@ -871,7 +997,6 @@ public class TeacherAppInterfaceController {
 		List<SmartWorkEntity> smartWorkList = smartWorkService.queryList(map);
 		return R.ok().put(DATA, smartWorkList);
 	}
-	
 	
 	public R teacherNoticeSave(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
 		try {
@@ -1155,7 +1280,7 @@ public class TeacherAppInterfaceController {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", user.getId());
 				map.put("token", tokening);
-				map.put("pic", (user.getPic()== null || "".equals(user.getPic())) ? "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/business_card_pic/%5D_YEAN74E%5DC5QYA%7DEI%7BQBG5.png":user.getPic());
+				map.put("pic", (user.getPic()== null || "".equals(user.getPic())) ? "http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png":user.getPic());
 				map.put("schoolId",user.getSchoolId());
 				map.put("studentName", user.getStudentName());
 				map.put("studentNo", user.getStudentNo());
