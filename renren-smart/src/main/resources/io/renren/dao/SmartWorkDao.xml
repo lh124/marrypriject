@@ -7,11 +7,11 @@
 	<sql id="allColumnsAlias">
 		id as id ,name as name ,type as type ,pic as pic ,classid,content as content ,
 		createTime as createtime,subject as subject,teacherId as teacherId,teacherName as teacherName,
-		newsType as newsType,newsId as newsId 		
+		newsType as newsType,newsId as newsId,teacherPic as teacherPic 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,name ,type ,pic ,content ,createTime,classid,subject,teacherId,teacherName,newsType,newsId 		
+		id ,name ,type ,pic ,content ,createTime,classid,subject,teacherId,teacherName,newsType,newsId,teacherPic 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.SmartWorkEntity" id="smartWorkMap">
@@ -27,6 +27,7 @@
 		        <result property="subject" column="subject"/>
 		        <result property="newsType" column="newsType"/>
 		        <result property="newsId" column="newsId"/>
+		        <result property="teacherPic" column="teacherPic"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.SmartWorkEntity">
@@ -34,7 +35,7 @@
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.smart.SmartWorkEntity">
-		select t1.id,t1.name,t1.content,t1.pic,t1.classid,t1.createTime,t1.subject,t1.teacherName,
+		select t1.id,t1.teacherPic,t1.name,t1.content,t1.pic,t1.classid,t1.createTime,t1.subject,t1.teacherName,
 		t2.newsType,t2.id newsId
         from smart_work t1,smart_news t2 where t1.id=t2.newsId and t2.states=7 and t2.userId=#{userId} order by t1.createTime desc
 		limit #{offset}, #{limit}
@@ -70,6 +71,7 @@
 			`subject`, 
 			`teacherId`,
 			`teacherName`,
+			`teacherPic`,
 			`createTime`
 		)
 		values
@@ -82,6 +84,7 @@
 			#{subject}, 
 			#{teacherId},
 			#{teacherName},
+			#{teacherPic},
 			#{createtime}
 		)
 	</insert>
@@ -96,6 +99,7 @@
 			<if test="subject != null">`subject` = #{subject}, </if>
 			<if test="teacherId != null">`teacherId` = #{teacherId}, </if>
 			<if test="teacherName != null">`teacherName` = #{teacherName}, </if>
+			<if test="teacherPic != null">`teacherPic` = #{teacherPic}, </if>
 			<if test="createtime != null">`createTime` = #{createtime}</if>
 		</set>
 		where id = #{id}
