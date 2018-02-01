@@ -42,7 +42,6 @@
 	    <property name="filterChainDefinitions">  
 	        <value>
 	        	/statics/**=anon
-	        	/.well-known/pki-validation/**=anon
 	        	/MP_verify_3UBHAqwhdxR6HC11.txt=anon
 	        	/weiChatTocken.jsp=anon
 	        	/js/**=anon
