@@ -6,6 +6,7 @@ import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +57,6 @@ public class SmartActivitiesController {
 	@RequiresPermissions("smartactivities:info")
 	public R info(@PathVariable("id") Integer id){
 		SmartActivitiesEntity smartActivities = smartActivitiesService.queryObject(id);
-		
 		return R.ok().put("smartActivities", smartActivities);
 	}
 	
@@ -66,6 +66,7 @@ public class SmartActivitiesController {
 	@RequestMapping("/save")
 	@RequiresPermissions("smartactivities:save")
 	public R save(@RequestBody SmartActivitiesEntity smartActivities){
+		smartActivities.setCreateTime(new Date());
 		smartActivitiesService.save(smartActivities);
 		
 		return R.ok();
