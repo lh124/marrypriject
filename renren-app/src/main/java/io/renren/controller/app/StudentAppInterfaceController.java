@@ -1,5 +1,8 @@
 package io.renren.controller.app;
 
+import io.renren.chart.CloudSignHelper;
+import io.renren.chart.TXCloudHelper;
+import io.renren.chart.TXCloudUtils;
 import io.renren.entity.TokenEntity;
 import io.renren.entity.app.SmartAppEntity;
 import io.renren.entity.app.SmartNewsEntity;
@@ -21,6 +24,7 @@ import io.renren.entity.smart.SmartGradeEntity;
 import io.renren.entity.smart.SmartLeaveEntity;
 import io.renren.entity.smart.SmartProposalEntity;
 import io.renren.entity.smart.SmartRankingEntity;
+import io.renren.entity.smart.SmartSendMessageEntity;
 import io.renren.entity.smart.SmartWorkEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.WeixinFunctionEntity;
@@ -46,6 +50,7 @@ import io.renren.service.smart.SmartLeaveService;
 import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.SmartProposalService;
 import io.renren.service.smart.SmartRankingService;
+import io.renren.service.smart.SmartSendMessageService;
 import io.renren.service.smart.SmartTeacherMessageService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.SmartWorkService;
@@ -72,6 +77,7 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,6 +88,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import jiguangtuisong.JpushClientUtil;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -93,6 +100,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import redis.clients.jedis.Jedis;
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
+import cn.jmessage.api.JMessageClient;
+import cn.jmessage.api.common.model.RegisterInfo;
+import cn.jmessage.api.common.model.RegisterInfo.Builder;
+import cn.jmessage.api.group.CreateGroupResult;
+import cn.jmessage.api.user.UserInfoResult;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -105,6 +119,8 @@ public class StudentAppInterfaceController{
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
 	private final static String FILEPATH = "http://static.gykjewm.com/";
+	public final static String APPKEY = "aecc535fc376fcb112949ee6";
+	public final static String MASTERSECRET = "436824de608a150e7e4105ce";
 	@Autowired
 	private StudentService studentService;
 	@Autowired
@@ -163,6 +179,8 @@ public class StudentAppInterfaceController{
 	private SmartRankingService smartRankingService;
 	@Autowired
 	private SmartTeacherMessageService smartTeacherMessageService;
+	@Autowired
+	private SmartSendMessageService smartSendMessageService;
 	
 	@SuppressWarnings("resource")
 	@RequestMapping("/main")
@@ -322,9 +340,490 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("findAllPerson")){
 				//通过班级id查询所有班级成绩（包含老师学生）
 				return findAllPerson(json.getJSONObject("data"));
+			}else if(type.equals("tencentCloudSaveUser")){
+				//聊天开始时判断在腾讯云通信是否有账号注册
+				return tencentCloudSaveUser(json.getJSONObject("data"));
+			}else if(type.equals("getGroupInfo")){
+				//获取群信息（若无群就创建群）
+				return getGroupInfo(json.getJSONObject("data"));
+			}else if(type.equals("addFriend")){
+				//云通信添加好友
+				return addFriend(json.getJSONObject("data"));
+			}else if(type.equals("deleteFriend")){
+				//云通信删除好友
+				return deleteFriend(json.getJSONObject("data"));
+			}else if(type.equals("getAllFriend")){
+				//云通信获取所有好友列表
+				return getAllFriend(json.getJSONObject("data"));
+			}else if(type.equals("checkFriend")){
+				//云通信检验好友
+				return checkFriend(json.getJSONObject("data"));
+			}else if(type.equals("getOneFriend")){
+				//云通信获取单个好友信息
+				return getOneFriend(json.getJSONObject("data"));
+			}else if(type.equals("registerUsers")){
+				//极光用户注册
+				return registerUsers(json.getJSONObject("data"));
+			}else if(type.equals("getGroupMembers")){
+				//极光获取群成员列表
+				return getGroupMembers(json.getJSONObject("data"));
+			}else if(type.equals("sendMessageSave")){
+				//保存聊天记录列表
+				CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+				return sendMessage(json.getJSONObject("data"),multipartResolver,request);
+			}else if(type.equals("findSendMessageList")){
+				//查询聊天记录
+				return findSendMessageList(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R findSendMessageList(JSONObject json){
+		if(json.get("messageType") == null){
+			return R.error("请将参数messageType传至服务器");
+		}
+		if(json.get("sendUserId") == null){
+			return R.error("请将参数sendUserId传至服务器");
+		}
+		if(json.get("receiveId") == null){
+			return R.error("请将参数receiveId传至服务器");
+		}
+		if(json.get("receiveId") == null){
+			return R.error("请将参数receiveId传至服务器");
+		}
+		if(json.get("limit") == null){
+			return R.error("请将参数limit传至服务器");
+		}
+		if(json.get("offset") == null){
+			return R.error("请将参数offset传至服务器");
+		}
+		Integer messageType = json.getInt("messageType");//1为班级群聊消息，2为点对点的私聊消息
+		Integer sendUserId = json.getInt("sendUserId");//发送用户id
+		Integer receiveId = json.getInt("receiveId");//接收消息id（可以是班级id，可以是用户id）
+		Map<String, Object> map = getMap(json);
+		map.put("messageType", messageType);
+		map.put("receiveId", receiveId);
+		map.put("sendUserId", sendUserId);
+		return R.ok().put(DATA, smartSendMessageService.queryList(map));
+	}
+	
+	private R sendMessage(JSONObject json,CommonsMultipartResolver multipartResolver,HttpServletRequest request){
+		if(json.get("sendUserId") == null){
+			return R.error("请将参数sendUserId传至服务器");
+		}
+		if(json.get("receiveId") == null){
+			return R.error("请将参数receiveId传至服务器");
+		}
+		if(json.get("messageType") == null){
+			return R.error("请将参数messageType传至服务器");
+		}
+		Integer sendUserId = json.getInt("sendUserId");//发送用户id
+		Integer receiveId = json.getInt("receiveId");//接收消息id（可以是班级id，可以是用户id）
+		Integer messageType = json.getInt("messageType");//1为班级群聊消息，2为点对点的私聊消息
+		try {
+			InputStream[] is = uploadfile(multipartResolver, request);
+			if(is != null){
+				for (int i = 0; i < is.length; i++) {
+					String path = FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/");
+					SmartSendMessageEntity smartSendMessage = new SmartSendMessageEntity();
+					smartSendMessage.setSendUserId(sendUserId);
+					smartSendMessage.setReceiveId(receiveId);
+					smartSendMessage.setContent(path);
+					smartSendMessage.setMessageType(messageType);
+					smartSendMessage.setCreatetime(new Date());
+					smartSendMessageService.save(smartSendMessage);
+				}
+			}else{
+				if(json.get("content") == null){
+					return R.error("请将参数content传至服务器");
+				}
+				String content = json.getString("content");
+				SmartSendMessageEntity smartSendMessage = new SmartSendMessageEntity();
+				smartSendMessage.setSendUserId(sendUserId);
+				smartSendMessage.setReceiveId(receiveId);
+				smartSendMessage.setContent(content);
+				smartSendMessage.setMessageType(messageType);
+				smartSendMessage.setCreatetime(new Date());
+				smartSendMessageService.save(smartSendMessage);
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return R.ok("发送成功");
+	}
+	
+	private R getGroupMembers(JSONObject json){
+	    if(json.get("classId")==null){
+	    	return R.error("请将参数classId上传至服务器");
+	    }
+	    if(json.get("userId")==null){
+	    	return R.error("请将参数userId上传至服务器");
+	    }
+	    Integer classId = json.getInt("classId");
+	    Integer userId = json.getInt("userId");
+	    ClassEntity classEntity = classService.queryObject(classId);
+	    JMessageClient client = new JMessageClient(APPKEY, MASTERSECRET);
+	    if(classEntity.getGid() == 0){
+	    	StudentEntity student = studentService.queryObject(userId);
+	    	try {
+	    		String[] users = new String[1];
+	        	users[0] = student.getGusername();
+				CreateGroupResult s = client.createGroup(student.getStudentNo(), classEntity.getClassName(),
+						              classEntity.getClassName(), classEntity.getPic(), 2,users );
+				classEntity.setGid(s.getGid());
+				classService.update(classEntity);
+				Map<String, Object> map = new HashMap<String, Object>();
+	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()));
+	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
+				return R.ok().put(DATA, map);
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+	    }else{
+	    	try {
+	    		Map<String, Object> map = new HashMap<String, Object>();
+	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()).getOriginalContent());
+	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
+				return R.ok().put(DATA, map);
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+	    }
+		return R.error("请重新获取群成员列表");
+	}
+	
+	private R registerUsers(JSONObject json){
+		if(json.get("userId")==null){
+			return R.error("请将参数userId传至服务器");
+		}
+		if(json.get("classId")==null){
+			return R.error("请将参数classId传至服务器");
+		}
+		StudentEntity student = studentService.queryObject(json.getInt("userId"));
+		JMessageClient client = new JMessageClient(APPKEY, MASTERSECRET);
+		if(student.getGusername() == null || "".equals(student.getGusername())){
+			RegisterInfo[] users = new RegisterInfo[1];
+        	Builder builder = RegisterInfo.newBuilder();
+        	builder.setUsername(student.getStudentNo());
+        	builder.setNickname(student.getStudentName());
+        	builder.setPassword("000000");
+        	builder.setAvatar(student.getPic());
+        	users[0] = builder.build();
+            try {
+				client.registerUsers(users);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("username", student.getStudentNo());
+				map.put("nickname", student.getStudentName());
+				map.put("avatar", student.getPic());
+				student.setGusername(student.getStudentNo());
+				studentService.update(student);
+				long gid = 0;
+				ClassEntity classEntity = classService.queryObject(json.getInt("classId"));
+				String[] u = new String[1];
+	        	u[0] = student.getGusername();
+				if(classEntity.getGid() == 0){
+					CreateGroupResult s = client.createGroup(student.getStudentNo(), classEntity.getClassName(),
+				              classEntity.getClassName(), classEntity.getPic(), 2,u);
+					classEntity.setGid(s.getGid());
+					classService.update(classEntity);
+				}else{
+					client.addOrRemoveMembers(gid, u, null);
+				}
+				String d = JSONArray.fromObject(map).toString();
+				return R.ok().put(DATA, d.substring(1,d.length()-1));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}else{
+			try {
+				UserInfoResult user = client.getUserInfo(student.getStudentNo());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("username", user.getUsername());
+				map.put("nickname", user.getNickname());
+				map.put("avatar", user.getAvatar());
+				String d = JSONArray.fromObject(map).toString();
+				return R.ok().put(DATA, d.substring(1,d.length()-1));
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.error("请重新获取用户信息");
+	}
+	
+	private R getOneFriend(JSONObject json){
+		if(json.get("uStudentNo")==null){
+			return R.error("请先上传自己的账号字段uStudentNo");
+		}
+		if(json.get("fStudentNo")==null){
+			return R.error("请先上传好友的账号字段fStudentNo");
+		}
+		String uid = json.getString("uStudentNo");//自己的账号
+		String fuid = json.getString("fStudentNo");//好友账号
+		String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+		String result = TXCloudUtils.getOneFriend(uid, fuid,sign);
+		if(result == null){
+			return R.error("您们不是好友，无法获取他的资料信息");
+		}
+		return R.ok().put(DATA, result.substring(1, result.length()-1));
+	}
+	
+	private R checkFriend(JSONObject json){
+		if(json.get("uStudentNo")==null){
+			return R.error("请先上传自己的账号字段uStudentNo");
+		}
+		if(json.get("fStudentNo")==null){
+			return R.error("请先上传好友的账号字段fStudentNo");
+		}
+		String uid = json.getString("uStudentNo");//自己的账号
+		String fuid = json.getString("fStudentNo");//好友账号
+		String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+		byte result = TXCloudUtils.checkFriend(uid, fuid,sign);
+		if(result == 1){
+			return R.ok("您们是好友关系");
+		}else if(result == 2){
+			return R.ok("您们不是好友关系");
+		}
+		return R.error("检验失败，请重新检验");
+	}
+	
+	private R getAllFriend(JSONObject json){
+		if(json.get("uStudentNo")==null){
+			return R.error("请先上传自己的账号字段uStudentNo");
+		}
+		String uid = json.getString("uStudentNo");//自己的账号
+		String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+		String result = TXCloudUtils.getAllFriend(uid, 0,sign);
+		return R.ok().put(DATA, result.substring(1, result.length()-1));
+	}
+	
+	private R deleteFriend(JSONObject json){
+		if(json.get("uStudentNo")==null){
+			return R.error("请先上传自己的账号字段uStudentNo");
+		}
+		if(json.get("fStudentNo")==null){
+			return R.error("请先上传好友的账号字段fStudentNo");
+		}
+		String uid = json.getString("uStudentNo");//自己的账号
+		String fuid = json.getString("fStudentNo");//好友账号
+		String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+		byte result = TXCloudUtils.deleteFriend(uid, fuid,sign);
+		if(result == 1){
+			return R.ok("删除好友成功");
+		}
+		return R.error("删除好友失败");
+	}
+	
+	private R addFriend(JSONObject json){
+		if(json.get("uStudentNo")==null){
+			return R.error("请先上传自己的账号字段uStudentNo");
+		}
+		if(json.get("fStudentNo")==null){
+			return R.error("请先上传好友的账号字段fStudentNo");
+		}
+		if(json.get("addSource")==null){
+			return R.error("请先上传好友来源字段addSource");
+		}
+		String uid = json.getString("uStudentNo");//自己的账号
+		String fuid = json.getString("fStudentNo");//好友账号
+		String addSource=json.getString("addSource");//添加好友来源Android ，IOS
+		String remark = "";
+		String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+		String u = TXCloudUtils.getPortrait(fuid,sign);
+		if(u == null || "".equals(u) || u == ""){
+			return R.error("您所加的账号在云通信平台暂未注册");
+		}
+		if(json.get("remark") == null){
+			StudentEntity st = new StudentEntity();
+			st.setStudentNo(json.getString("fStudentNo"));
+			EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(st);
+			remark = studentService.selectOne(wrapper).getStudentNo();
+		}else{
+			remark = json.getString("remark");
+		}
+		byte result = TXCloudUtils.addFriend(uid, fuid, remark, addSource, sign);
+		if(result == 1){
+			return R.ok("好友添加成功");
+		}else if(result == 2){
+			return R.error("已经是好友了，请勿重复添加");
+		}
+		return R.error("添加好友失败，请重新添加");
+	}
+	
+	private R getGroupInfo(JSONObject json){
+		if(json.get("classId")==null){
+			return R.error("请上传参数classId");
+		}
+		ClassEntity classEntity = classService.queryObject(json.getInt("classId"));
+		if(classEntity.getGroupId() == null || "".equals(classEntity.getGroupId())){//判断该班级是否在腾讯云通信创群
+			String sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+			String s = TXCloudUtils.CreateGRoup(classEntity.getClassName(), classEntity.getPic(), sign);
+			JSONObject j = JSONObject.fromObject(s);
+			if(j.get("ActionStatus").toString().equals("OK")){
+				classEntity.setGroupId(j.getString("GroupId"));
+				classEntity.setExpireTime(getDate());
+				classEntity.setSign(sign);
+				classService.update(classEntity);
+				String groupInfo = TXCloudUtils.getGroupInfo(j.getString("GroupId"),sign);
+				JSONObject js = JSONObject.fromObject(groupInfo);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("FaceUrl", classEntity.getPic());
+				map.put("Appid", js.getLong("Appid"));
+				map.put("Name", classEntity.getClassName());
+				map.put("sign", sign);
+				map.put("GroupId", js.getString("GroupId"));
+				map.put("OnlineMemberNum", js.getString("OnlineMemberNum"));
+				map.put("MaxMemberNum", js.getInt("MaxMemberNum"));
+				JSONArray array = j.getJSONArray("MemberList");
+				List<StudentEntity> list = new ArrayList<StudentEntity>();
+				for (Iterator iterator = array.iterator(); iterator.hasNext();) {
+					JSONObject object = (JSONObject) iterator.next();
+					StudentEntity st = new StudentEntity();
+					st.setStudentNo(object.getString("Member_Account"));
+					EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(st);
+					list.add(studentService.selectOne(wrapper));
+				}
+				map.put("list", list);
+				return R.ok().put(DATA, JSONObject.fromObject(map)); 
+			}
+		}else{
+			String sign = "";
+			if(classEntity.getExpireTime().getTime() < new Date().getTime()){
+				sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+				classEntity.setExpireTime(getDate());
+				classEntity.setSign(sign);
+				classService.update(classEntity);
+			}else{
+				sign = classEntity.getSign();
+			}
+			String groupInfo = TXCloudUtils.getGroupInfo(classEntity.getGroupId(),sign);
+			groupInfo = groupInfo.substring(1, groupInfo.length()-1);
+			JSONObject j = JSONObject.fromObject(groupInfo);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("FaceUrl", classEntity.getPic());
+			map.put("Appid", j.getLong("Appid"));
+			map.put("Name", classEntity.getClassName());
+			map.put("sign", sign);
+			map.put("GroupId", j.getString("GroupId"));
+			map.put("OnlineMemberNum", j.getString("OnlineMemberNum"));
+			map.put("MaxMemberNum", j.getInt("MaxMemberNum"));
+			map.put("LastMsgTime", j.getString("LastMsgTime"));
+			map.put("MemberNum", j.getString("MemberNum"));
+			JSONArray array = j.getJSONArray("MemberList");
+			List<StudentEntity> list = new ArrayList<StudentEntity>();
+			for (Iterator iterator = array.iterator(); iterator.hasNext();) {
+				JSONObject object = (JSONObject) iterator.next();
+				StudentEntity st = new StudentEntity();
+				st.setStudentNo(object.getString("Member_Account"));
+				EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(st);
+				list.add(studentService.selectOne(wrapper));
+			}
+			map.put("list", list);
+			return R.ok().put(DATA, JSONObject.fromObject(map)); 
+		}
+		return null;
+	}
+	
+	private Date getDate(){
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, +179);//+179今天的时间加179天
+		return calendar.getTime();
+	}
+	
+	private R tencentCloudSaveUser(JSONObject json){
+		if(json.get("userId")==null){
+			return R.error("请上传参数userId");
+		}
+		StudentEntity student = studentService.queryObject(json.getInt("userId"));
+		ClassEntity classEntity = classService.queryObject(student.getClassId());
+		String sign = "";
+		String groupId = "";
+		if(classEntity.getGroupId() == null || "".equals(classEntity.getGroupId())){
+			sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+			String s = TXCloudUtils.CreateGRoup(classEntity.getClassName(), classEntity.getPic(), sign);
+			JSONObject j = JSONObject.fromObject(s);
+			if(j.get("ActionStatus").toString().equals("OK")){
+				classEntity.setGroupId(j.getString("GroupId"));
+				classEntity.setExpireTime(getDate());
+				classEntity.setSign(sign);
+				classService.update(classEntity);
+				groupId = j.getString("GroupId");
+			}
+		}else{
+			if(classEntity.getExpireTime().getTime() < new Date().getTime()){
+				sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+				classEntity.setExpireTime(getDate());
+				classEntity.setSign(sign);
+				classService.update(classEntity);
+			}else{
+				sign = classEntity.getSign();
+			}
+		}
+		if(student.getExpireTime() == null){
+			sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+			student.setExpireTime(getDate());
+			student.setSign(sign);
+			studentService.update(student);
+		}else{
+			if(student.getExpireTime().getTime() < new Date().getTime()){
+				sign = CloudSignHelper.GetSign(TXCloudHelper.identifier);
+				student.setExpireTime(getDate());
+				student.setSign(sign);
+				studentService.update(student);
+			}else{
+				sign = student.getSign();
+			}
+			String groupInfo = TXCloudUtils.getGroupInfo(classEntity.getGroupId(),sign);
+			groupInfo = groupInfo.substring(1, groupInfo.length()-1);
+			JSONObject j = JSONObject.fromObject(groupInfo);
+			groupId = j.getString("GroupId");
+		}
+		String u = TXCloudUtils.getPortrait(student.getStudentNo(),sign);
+		if(u == null || "".equals(u) || u == ""){
+			byte result = TXCloudUtils.AccountImport(student.getStudentNo(), student.getStudentName(),
+				       student.getPic(),sign);
+			if(result==1){
+				JSONObject js = JSONObject.fromObject(TXCloudUtils.getPortrait(student.getStudentNo(),sign));
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("image", student.getPic());
+				map.put("name", js.getString("name"));
+				map.put("nickname", student.getStudentName());
+				map.put("sign", sign);
+				TXCloudUtils.addGroupInfo(JSONObject.fromObject(mapToJson(groupId, js.getString("name"))).toString(), sign);
+				return R.ok().put(DATA, JSONObject.fromObject(map));
+			}
+		}else{
+			JSONObject js = JSONObject.fromObject(TXCloudUtils.getPortrait(student.getStudentNo(),sign));
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("image", student.getPic());
+			map.put("name", js.getString("name"));
+			map.put("nickname", student.getStudentName());
+			map.put("sign", sign);
+			TXCloudUtils.addGroupInfo(JSONObject.fromObject(mapToJson(groupId, js.getString("name"))).toString(), sign);
+			return R.ok().put(DATA, JSONObject.fromObject(map));
+		}
+		return null;
+	}
+	
+	private Map<String, Object> mapToJson(String GroupId,String memberAccount){
+		Map<String, Object> m = new HashMap<String, Object>();
+        m.put("Member_Account", memberAccount);
+		Map<String,Object> map = new HashMap<String, Object>();
+        String[] s = new String[1];
+        s[0] = JSONObject.fromObject(m).toString();
+        map.put("GroupId", GroupId);// 群组类型：Private/Public/ChatRoom/AVChatRoom/BChatRoom（必填）
+        map.put("Silence", 1);// 群名称（必填）
+        map.put("MemberList", s);//// 最大群成员数量（选填）
+        return map;
 	}
 	
 	private R findAllPerson(JSONObject json){
@@ -696,8 +1195,8 @@ public class StudentAppInterfaceController{
 	public R examinationlist(JSONObject json){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sidx", null);
-		map.put("offset", 0);
-		map.put("limit", 100);
+		map.put("offset", json.get("offset")==null?0:json.getInt("offset"));
+		map.put("limit", json.get("limit")==null?100:json.getInt("limit"));
 		map.put("classId", json.getString("classId"));
 		List<PhotoExaminationEntity> freshmanGuideList = photoExaminationService.queryList(map);
 		return R.ok().put(DATA, freshmanGuideList);
@@ -819,7 +1318,7 @@ public class StudentAppInterfaceController{
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
 			for (Iterator iterator = smartWorkList.iterator(); iterator.hasNext();) {
 				SmartWorkEntity smartWorkEntity = (SmartWorkEntity) iterator.next();
-				if(sdf.format(new Date()).equals(smartWorkEntity.getCreatetime())){
+				if(sdf.format(new Date()).equals(smartWorkEntity.getCreatetime().subSequence(0, 10))){
 					list.add(smartWorkEntity);
 				}
 			}
