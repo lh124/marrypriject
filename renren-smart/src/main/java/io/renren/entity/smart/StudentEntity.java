@@ -1,6 +1,7 @@
 package io.renren.entity.smart;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -75,6 +76,33 @@ public class StudentEntity implements Serializable {
 	@TableField(value="states")
 	private Integer states;
 	
+	@TableField(value="expireTime")
+	private Date expireTime;
+	
+	@TableField(value="sign")
+	private String sign;
+	
+	@TableField(value="gusername")
+	private String gusername;
+	
+	public String getGusername() {
+		return gusername;
+	}
+	public void setGusername(String gusername) {
+		this.gusername = gusername;
+	}
+	public Date getExpireTime() {
+		return expireTime;
+	}
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
+	}
+	public String getSign() {
+		return sign;
+	}
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
 	public Integer getStates() {
 		return states;
 	}
