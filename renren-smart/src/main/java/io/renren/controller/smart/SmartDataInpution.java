@@ -5,6 +5,7 @@ import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.IoEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SmartExceptionEntity;
+import io.renren.entity.smart.SmartGradeEntity;
 import io.renren.entity.smart.SmartVideoDeviceEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
@@ -13,6 +14,7 @@ import io.renren.service.smart.ClassService;
 import io.renren.service.smart.IoService;
 import io.renren.service.smart.SchoolService;
 import io.renren.service.smart.SmartExceptionService;
+import io.renren.service.smart.SmartGradeService;
 import io.renren.service.smart.SmartVideoDeviceService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
@@ -68,6 +70,8 @@ public class SmartDataInpution {
 	private SmartVideoDeviceService smartVideoDeviceService;
 	@Autowired
 	private TokenService tokenService;
+	@Autowired
+	private SmartGradeService smartGradeService;
 	
 	private static final String DATA = "data";
 	//路径前缀
@@ -131,11 +135,40 @@ public class SmartDataInpution {
 			}else if(type.equals("getVideoDevice")){
 				//获取学校设备列表
 				return getAccessToken(json);
+			}else if(type.equals("getAllGrade")){
+				//根据学校名字获取年级列表
+				return getAllGrade(json);
+			}else if(type.equals("gradeIdGetallclass")){
+				//通过年级id查询所有班级
+				obj = gradeIdGetallclass(json);
 			}
 			return (R)obj ;
 		}else{
 			return R.error("token错误");
 		}
+	}
+	
+	private R gradeIdGetallclass(JSONObject json){
+		if(json.get("gradeId") == null){
+			return R.error("请求参数gradeId未至服务器");
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gradeId", json.getInt("gradeId"));
+		map.put("begin", 0);
+		map.put("limit", 50);
+		return R.ok().put(DATA, classService.queryList(map));
+	}
+	
+	private R getAllGrade(JSONObject json){
+		if(json.get("schoolName") == null){
+			return R.error("请求参数schoolName未至服务器");
+		}
+		SchoolEntity schoolEntity = schoolService.queryObjectName(json.getString("schoolName"));
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("schoolId", schoolEntity.getId());
+		map.put("offset", 0);
+		map.put("limit", 30);
+		return R.ok().put(DATA, smartGradeService.queryList(map));
 	}
 	
 	private R getAccessToken(JSONObject json){
@@ -285,18 +318,25 @@ public class SmartDataInpution {
 	}
 	
 	public Object getallclass(JSONObject json){
-		Object obj = null;
-		String schoolName = json.getString("schoolName");
-		SchoolEntity schoolEntity = schoolService.queryObjectName(schoolName);
+		if(json.get("schoolName") == null){
+			return R.error("请求参数schoolName未至服务器");
+		}
+		SchoolEntity schoolEntity = schoolService.queryObjectName(json.getString("schoolName"));
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("schoolId", schoolEntity.getId());
-		map.put("order", "");
-		map.put("sidx", "");
-		map.put("begin", 0);
-		map.put("limit", 100);
-		List<ClassEntity> list = classService.queryList(map);
-		obj = R.ok().put(DATA, list);
-		return obj;
+		map.put("offset", 0);
+		map.put("limit", 30);
+		List<ClassEntity> classlist = new ArrayList<ClassEntity>();
+		List<SmartGradeEntity> list = smartGradeService.queryList(map);
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			SmartGradeEntity smartGradeEntity = (SmartGradeEntity) iterator.next();
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("gradeId", smartGradeEntity.getId());
+			m.put("begin", 0);
+			m.put("limit", 50);
+			classlist.addAll(classService.queryList(m));
+		}
+		return R.ok().put(DATA, list);
 	}
 	
 	public Object getallstudent(JSONObject json){
