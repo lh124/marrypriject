@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.smart.SmartSendMessageDao">
+
+	<!-- 可根据自己需要-->
+	<sql id="allColumnsAlias">
+		id as id ,send_user_id as sendUserId ,receive_id as receiveId ,content as content ,message_type as messageType ,
+		createTime as createtime ,send_user_name as sendUserName,send_user_pic as sendUserPic		
+	</sql>
+	<!-- 可根据自己需要-->
+	<sql id="allColumns">
+		id ,send_user_id ,receive_id ,content ,message_type ,createTime,send_user_name,send_user_pic 		
+	</sql> 
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.smart.SmartSendMessageEntity" id="smartSendMessageMap">
+		        <result property="id" column="id"/>
+		        <result property="sendUserId" column="send_user_id"/>
+		        <result property="receiveId" column="receive_id"/>
+		        <result property="content" column="content"/>
+		        <result property="messageType" column="message_type"/>
+		        <result property="createtime" column="createTime"/>
+		        <result property="createtime" column="createTime"/>
+		        <result property="sendUserName" column="send_user_name"/>
+		        <result property="sendUserPic" column="send_user_pic"/>
+	    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.smart.SmartSendMessageEntity">
+		select <include refid="allColumns"></include> from smart_send_message where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.smart.SmartSendMessageEntity">
+		select t1.id,t2.student_name send_user_name,t1.send_user_id,t1.receive_id,t1.message_type,t1.createTime,
+		 IFNULL(t2.pic,'http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png') send_user_pic,t1.content
+		 from smart_send_message t1,student t2 where t1.send_user_id=t2.id 
+		 <if test="messageType != 1">
+			and receive_id=#{receiveId} and message_type=#{messageType}
+		 </if>
+		 <if test="messageType != 2">
+			and receive_id=#{receiveId} and send_user_id=#{sendUserId} and message_type=#{messageType}
+		 </if>
+		 order by t1.createTime
+		 limit #{offset}, #{limit}
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from smart_send_message 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.smart.SmartSendMessageEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into smart_send_message
+		(
+			`send_user_id`, 
+			`receive_id`, 
+			`content`, 
+			`message_type`, 
+			`createTime`
+		)
+		values
+		(
+			#{sendUserId}, 
+			#{receiveId}, 
+			#{content}, 
+			#{messageType}, 
+			#{createtime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.smart.SmartSendMessageEntity">
+		update smart_send_message 
+		<set>
+			<if test="sendUserId != null">`send_user_id` = #{sendUserId}, </if>
+			<if test="receiveId != null">`receive_id` = #{receiveId}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="messageType != null">`message_type` = #{messageType}, </if>
+			<if test="createtime != null">`createTime` = #{createtime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from smart_send_message where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from smart_send_message where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
