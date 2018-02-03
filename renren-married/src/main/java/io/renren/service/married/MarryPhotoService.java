@@ -20,6 +20,8 @@ public interface MarryPhotoService extends IService<MarryPhotoEntity>{
 	
 	List<MarryPhotoEntity> queryList(Map<String, Object> map);
 	
+	List<MarryPhotoEntity> queryList1(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryPhotoEntity marryPhoto);

@@ -18,6 +18,8 @@ public interface MarriedUserService extends IService<MarriedUserEntity>{
 	
 	MarriedUserEntity queryObject(Integer id);
 	
+	MarriedUserEntity findByOpenIdLike(String openid);
+	
 	List<MarriedUserEntity> queryList(Map<String, Object> map);
 	
 	List<MarriedUserEntity> queryListtongji(Map<String, Object> map);

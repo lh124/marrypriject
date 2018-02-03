@@ -20,6 +20,8 @@ public interface MarryBlessingService extends IService<MarryBlessingEntity>{
 	
 	List<MarryBlessingEntity> queryList(Map<String, Object> map);
 	
+	List<MarryBlessingEntity> queryList1(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryBlessingEntity marryBlessing);

@@ -20,6 +20,10 @@ public interface MarryOrdersService extends IService<MarryOrdersEntity>{
 	
 	List<MarryOrdersEntity> queryList(Map<String, Object> map);
 	
+	List<MarryOrdersEntity> queryList1(Map<String, Object> map);
+	
+	List<MarryOrdersEntity> queryListorder(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryOrdersEntity marryOrders);

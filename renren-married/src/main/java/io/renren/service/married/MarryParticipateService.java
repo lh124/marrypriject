@@ -20,6 +20,8 @@ public interface MarryParticipateService extends IService<MarryParticipateEntity
 	
 	List<MarryParticipateEntity> queryList(Map<String, Object> map);
 	
+	List<MarryParticipateEntity> queryList1(Map<String, Object> map);
+	
 	List<MarryParticipateEntity> queryListtongji(Map<String, Object> map);
 	
 	int queryTotal(Map<String, Object> map);

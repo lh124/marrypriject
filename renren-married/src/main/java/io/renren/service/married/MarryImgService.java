@@ -20,6 +20,8 @@ public interface MarryImgService extends IService<MarryImgEntity>{
 	
 	List<MarryImgEntity> queryList(Map<String, Object> map);
 	
+	List<MarryImgEntity> queryList1(Map<String, Object> map);
+	
 	int queryTotal(Map<String, Object> map);
 	
 	void save(MarryImgEntity marryImg);
