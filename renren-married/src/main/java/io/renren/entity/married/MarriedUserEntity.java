@@ -118,4 +118,12 @@ public class MarriedUserEntity implements Serializable {
 	public String getOpenid() {
 		return openid;
 	}
+	@Override
+	public String toString() {
+		return "MarriedUserEntity [id=" + id + ", nickname=" + nickname
+				+ ", pic=" + pic + ", createtime=" + createtime + ", openid="
+				+ openid + ", content=" + content + "]";
+	}
+	
+	
 }

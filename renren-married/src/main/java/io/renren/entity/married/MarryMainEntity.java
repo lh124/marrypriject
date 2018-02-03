@@ -1,6 +1,7 @@
 package io.renren.entity.married;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -18,10 +19,16 @@ import com.baomidou.mybatisplus.enums.IdType;
 public class MarryMainEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-		//
+	private List<OrderAndMain> orderandmain;
+		public List<OrderAndMain> getOrderandmain() {
+		return orderandmain;
+	}
+	public void setOrderandmain(List<OrderAndMain> orderandmain) {
+		this.orderandmain = orderandmain;
+	}
+	//
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
-		
 	//标题
 	@TableField(value="title")
 	private String title;
@@ -136,4 +143,13 @@ public class MarryMainEntity implements Serializable {
 	public String getPic() {
 		return pic;
 	}
+	@Override
+	public String toString() {
+		return "MarryMainEntity [id=" + id + ", title=" + title + ", author="
+				+ author + ", content=" + content + ", pic=" + pic + ", price="
+				+ price + ", userId=" + userId + ", username=" + username
+				+ ", cartId=" + cartId + "]";
+	}
+	
+	
 }

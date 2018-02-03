@@ -6,6 +6,8 @@ public class MarryMain {
 	
 	private String username;
 	
+	private String sysId;
+	
 	private List<MarryMainEntity> list;
 
 	public String getUsername() {
@@ -24,4 +26,13 @@ public class MarryMain {
 		this.list = list;
 	}
 
+	public String getSysId() {
+		return sysId;
+	}
+
+	public void setSysId(String sysId) {
+		this.sysId = sysId;
+	}
+
+	
 }

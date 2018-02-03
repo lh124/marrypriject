@@ -1,6 +1,7 @@
 package io.renren.entity.married;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  * 
@@ -24,6 +26,7 @@ public class MarryOrdersEntity implements Serializable {
 	@TableId(value="id",type=IdType.AUTO)
 	private Integer id;	
 		
+	
 	//订单号
 	@TableField(value="order_number")
 	private String orderNumber;
@@ -59,8 +62,17 @@ public class MarryOrdersEntity implements Serializable {
 	//订单描述
 	@TableField(value="main_describe")
 	private String mainDescribe;
+	//订单描述
+	@TableField(value="count")
+	private Integer count;
 	
-	private List<MarryMainEntity> marryMainList;
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+	private List<OrderAndMain> marryMainList;
 	
 	public Integer getOrderType() {
 		return orderType;
@@ -75,10 +87,10 @@ public class MarryOrdersEntity implements Serializable {
 		this.mainDescribe = mainDescribe;
 	}
 
-	public List<MarryMainEntity> getMarryMainList() {
+	public List<OrderAndMain> getMarryMainList() {
 		return marryMainList;
 	}
-	public void setMarryMainList(List<MarryMainEntity> marryMainList) {
+	public void setMarryMainList(List<OrderAndMain> marryMainList) {
 		this.marryMainList = marryMainList;
 	}
 	/**
@@ -177,4 +189,16 @@ public class MarryOrdersEntity implements Serializable {
 	public String getContent() {
 		return content;
 	}
+	@Override
+	public String toString() {
+		return "MarryOrdersEntity [id=" + id + ", orderNumber=" + orderNumber
+				+ ", business=" + business + ", mainPrice=" + mainPrice
+				+ ", gmtModifiedtime=" + gmtModifiedtime + ", states=" + states
+				+ ", userId=" + userId + ", orderType=" + orderType
+				+ ", content=" + content + ", mainDescribe=" + mainDescribe
+				+ ", marryMainList=" + marryMainList + "]";
+	}
+	
+	
+	
 }

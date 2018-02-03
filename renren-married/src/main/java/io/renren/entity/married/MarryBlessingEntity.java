@@ -60,8 +60,17 @@ public class MarryBlessingEntity implements Serializable {
 	
 	@TableField(value="gmt_modifiedtime")
 	private Date gmtModifiedtime;
-			
+	//请求模式（1.公众号，2.小程序）
+	@TableField(value="type")		
+	private Integer type;
 
+	
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
 	public Date getGmtModifiedtime() {
 		return gmtModifiedtime;
 	}
@@ -164,4 +173,16 @@ public class MarryBlessingEntity implements Serializable {
 	public String getOpenid() {
 		return openid;
 	}
+	@Override
+	public String toString() {
+		return "MarryBlessingEntity [id=" + id + ", content=" + content
+				+ ", videoblessing=" + videoblessing + ", blessingtype="
+				+ blessingtype + ", weddingid=" + weddingid + ", openid="
+				+ openid + ", nickname=" + nickname + ", pic=" + pic
+				+ ", ordernumber=" + ordernumber + ", states=" + states
+				+ ", gmtModifiedtime=" + gmtModifiedtime + ", type=" + type
+				+ "]";
+	}
+	
+	
 }

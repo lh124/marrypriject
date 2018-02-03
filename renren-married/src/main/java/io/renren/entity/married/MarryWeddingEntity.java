@@ -152,4 +152,14 @@ public class MarryWeddingEntity implements Serializable {
 	public String getContent() {
 		return content;
 	}
+	@Override
+	public String toString() {
+		return "MarryWeddingEntity [id=" + id + ", userId=" + userId
+				+ ", groomname=" + groomname + ", bridename=" + bridename
+				+ ", weddingdate=" + weddingdate + ", weddingaddress="
+				+ weddingaddress + ", content=" + content + ", url=" + url
+				+ ", bgcolor=" + bgcolor + ", photo=" + photo + "]";
+	}
+	
+	
 }
