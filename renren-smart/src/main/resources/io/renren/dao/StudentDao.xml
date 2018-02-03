@@ -9,13 +9,13 @@
 		student_name as studentName ,sex as sex ,student_type as studentType ,
 		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,school_id as schoolId
 		longitude, latitude,phoen as phoen,newsType as newsType,newsId as newsId,bindingType as bindingType,
-		states as states		
+		states as states,expireTime as expireTime,sign as sign,gusername as gusername		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,
 		ifnull(pic,'http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png') pic ,
-		class_id ,passwordd , open_id,
+		class_id ,passwordd , open_id,expireTime,sign,gusername,
 		longitude, latitude,school_id,phoen,newsType,newsId,bindingType,states	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
@@ -39,6 +39,9 @@
 		        <result property="latitude" column="latitude"/>
 		        <result property="bindingType" column="bindingType"/>
 		        <result property="states" column="states"/>
+		        <result property="expireTime" column="expireTime"/>
+		        <result property="sign" column="sign"/>
+		        <result property="gusername" column="gusername"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEntity">
@@ -60,7 +63,7 @@
 		     where class_id=${classId} 
 		 </if>
 		 <if test="schoolId != null and schoolId != ''">
-		     where school_id=${schoolId}  
+		     where school_id=${schoolId}   
 		 </if>
 		 <if test="userType != null and userType != ''">
 		     and user_type=#{userType}
@@ -154,9 +157,12 @@
 			<if test="pic != null">pic = #{pic}, </if>
 			<if test="classId != null">class_id = #{classId}, </if>
 			<if test="phoen != null">phoen = #{phoen}, </if>
+			<if test="gusername != null">gusername = #{gusername}, </if>
 			<if test="passwordd != null  and passwordd.trim() != ''">passwordd = #{passwordd},</if>
 			<if test="openId != null  and openId.trim() != ''">open_id = #{openId},</if>
 			<if test="latitude != null  and latitude.trim() != ''">latitude = #{latitude},</if>
+			<if test="sign != null">`sign` = #{sign}, </if>
+			<if test="expireTime != null">`expireTime` = #{expireTime}, </if>
 			<if test="longitude != null  and longitude.trim() != ''">longitude = #{longitude}</if>
 		</set> 
 		where id = #{id}
