@@ -1,6 +1,7 @@
 package io.renren.entity.smart;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -37,8 +38,17 @@ public class SmartActivitiesEntity implements Serializable {
 	//
 	@TableField(value="content")
 	private String content;
+	
+	@TableField(value="createTime")
+	private Date createTime;
 			
 
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 	/**
 	 * 设置：主键id
 	 */
