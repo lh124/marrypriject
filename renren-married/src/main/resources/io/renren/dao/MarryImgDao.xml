@@ -22,6 +22,10 @@
 		select <include refid="allColumns"></include> from marry_img where id = #{value}
 	</select>
 
+	<select id="queryList1" resultType="io.renren.entity.married.MarryImgEntity">
+		select <include refid="allColumns"></include> from marry_img
+	</select>
+	
 	<select id="queryList" resultType="io.renren.entity.married.MarryImgEntity">
 		select <include refid="allColumns"></include> from marry_img
 		where img_type=#{imgType}

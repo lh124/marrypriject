@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.married.MarryScreenDao">
+
+	<!-- 可根据自己需要 -->
+	<sql id="allColumnsAlias">
+		id as id ,userId as userid ,weddingId as weddingid
+		,screenCount as screencount , createTime as createTime
+	</sql>
+	<!-- 可根据自己需要 -->
+	<sql id="allColumns">
+		id ,userId ,weddingId ,screenCount ,createTime 
+	</sql>
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="io.renren.entity.married.MarryScreenEntity"
+		id="marryScreenMap">
+		<result property="id" column="id" />
+		<result property="userid" column="userId" />
+		<result property="weddingid" column="weddingId" />
+		<result property="screencount" column="screenCount" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+	<select id="queryObject" resultType="io.renren.entity.married.MarryScreenEntity">
+		select
+		<include refid="allColumns"></include>
+		from marry_screen where id = #{value}
+	</select>
+	<select id="queryObjectScreen" resultType="io.renren.entity.married.MarryScreenEntity">
+		select
+		<include refid="allColumns"></include>
+		from marry_screen where screenCount = #{screenCount}
+	</select>
+	<select id="queryList1" resultType="io.renren.entity.married.MarryScreenEntity">
+		select
+		<include refid="allColumns"></include>
+		from marry_screen where userId = #{userId} and weddingId = #{weddingId}  
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.married.MarryScreenEntity">
+		select
+		<include refid="allColumns"></include>
+		from marry_screen
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		marry_screen
+	</select>
+
+	<insert id="save" parameterType="io.renren.entity.married.MarryScreenEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into marry_screen
+		(
+		`userId`,
+		`weddingId`,
+		`screenCount`,
+		`createTime`
+		
+		)
+		values
+		(
+		#{userid},
+		#{weddingid},
+		#{screencount},
+		#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.renren.entity.married.MarryScreenEntity">
+		update marry_screen
+		<set>
+			<if test="userid != null">`userId` = #{userid}, </if>
+			<if test="weddingid != null">`weddingId` = #{weddingid}, </if>
+			<if test="screencount != null">`screenCount` = #{screencount}</if>
+			<if test="createTime != null">`createTime` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from marry_screen where id = #{value}
+	</delete>
+
+	<delete id="deleteBatch">
+		delete from marry_screen where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

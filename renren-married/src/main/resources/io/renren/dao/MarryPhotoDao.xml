@@ -27,6 +27,10 @@
 		select <include refid="allColumns"></include> from marry_photo where weddingId=#{weddingId}
 	</select>
 	
+	<select id="queryList1" resultType="io.renren.entity.married.MarryPhotoEntity">
+		select <include refid="allColumns"></include> from marry_photo 
+	</select>
+	
  	<select id="queryTotal" resultType="int">
 		select count(*) from marry_photo 
 	</select>

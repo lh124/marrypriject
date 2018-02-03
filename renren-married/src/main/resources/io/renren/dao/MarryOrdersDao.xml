@@ -5,7 +5,7 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,order_number as orderNumber ,order_type as orderType,main_describe as mainDescribe,business as business ,main_price as mainPrice ,gmt_modifiedtime as gmtModifiedtime ,states as states ,user_id as userId ,content as content 		
+		id as id ,order_number as orderNumber ,order_type as orderType,main_describe as mainDescribe,business as business ,main_price as mainPrice ,gmt_modifiedtime as gmtModifiedtime ,states as states ,user_id as userId ,content as content,count as count 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
@@ -23,12 +23,30 @@
 		        <result property="mainDescribe" column="main_describe"/>
 		        <result property="content" column="content"/>
 		        <result property="orderType" column="order_type"/>
+		        <result property="count" column="count"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryOrdersEntity">
-		select <include refid="allColumns"></include> from marry_orders where id = #{value}
+		select <include refid="allColumns"></include> from marry_orders where id = #{id}
 	</select>
-
+	
+		<select id="queryList1" resultType="io.renren.entity.married.MarryOrdersEntity">
+		select <include refid="allColumns"></include> from marry_orders 
+		
+	</select>
+	
+		
+	<select id="queryListorder" resultType="io.renren.entity.married.MarryOrdersEntity">
+		select <include refid="allColumns"></include> from marry_orders where id=#{id}
+		<if test="states != null and states != ''">
+			and states=#{states}
+		</if>
+        order by id desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
 	<select id="queryList" resultType="io.renren.entity.married.MarryOrdersEntity">
 		select <include refid="allColumns"></include> from marry_orders where user_id=#{userId}
 		<if test="states != null and states != ''">
@@ -54,7 +72,8 @@
 			`states`, 
 			`user_id`, 
 			`order_type`, 
-			`content`
+			`content`,
+			count
 		)
 		values
 		(
@@ -65,7 +84,8 @@
 			#{states}, 
 			#{userId}, 
 			#{orderType}, 
-			#{content}
+			#{content},
+			#{count}
 		)
 	</insert>
 	 
@@ -79,6 +99,7 @@
 			<if test="states != null">`states` = #{states}, </if>
 			<if test="userId != null">`user_id` = #{userId}, </if>
 			<if test="content != null">`content` = #{content}</if>
+			<if test="count != null">`count` = #{count}</if>
 		</set>
 		where id = #{id}
 	</update>

@@ -3,75 +3,89 @@
 
 <mapper namespace="io.renren.dao.married.MarriedUserDao">
 
-	<!-- 可根据自己需要-->
+	<!-- 可根据自己需要 -->
 	<sql id="allColumnsAlias">
-		id as id ,nickname as nickname ,pic as pic ,createTime as createtime ,openId as openid,jurisdiction as jurisdiction 		
+		id as id ,nickname as nickname ,pic as pic ,createTime as
+		createtime ,openId as openid,jurisdiction as jurisdiction
 	</sql>
-	<!-- 可根据自己需要-->
+	<!-- 可根据自己需要 -->
 	<sql id="allColumns">
-		id ,nickname ,pic ,createTime ,openId,jurisdiction 		
+		id ,nickname ,pic ,createTime ,openId,jurisdiction
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="io.renren.entity.married.MarriedUserEntity" id="marriedUserMap">
-		        <result property="id" column="id"/>
-		        <result property="nickname" column="nickname"/>
-		        <result property="pic" column="pic"/>
-		        <result property="createtime" column="createTime"/>
-		        <result property="openid" column="openId"/>
-		        <result property="jurisdiction" column="jurisdiction"/>
-	    </resultMap>
+	<resultMap type="io.renren.entity.married.MarriedUserEntity"
+		id="marriedUserMap">
+		<result property="id" column="id" />
+		<result property="nickname" column="nickname" />
+		<result property="pic" column="pic" />
+		<result property="createtime" column="createTime" />
+		<result property="openid" column="openId" />
+		<result property="jurisdiction" column="jurisdiction" />
+	</resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarriedUserEntity">
-		select <include refid="allColumns"></include> from married_user where id = #{value}
+		select
+		<include refid="allColumns"></include>
+		from married_user where id = #{value}
 	</select>
-
+	<select id="findByOpenIdLike" resultType="io.renren.entity.married.MarriedUserEntity">
+		select
+		<include refid="allColumns"></include>
+		from married_user where openId = #{openId}
+	</select>
 	<select id="queryList" resultType="io.renren.entity.married.MarriedUserEntity">
-		select <include refid="allColumns"></include> from married_user
+		select
+		<include refid="allColumns"></include>
+		from married_user
 		<if test="openId != null">
 			where openId = #{openId}
 		</if>
-        <choose>
-            <when test="sidx != null and sidx.trim() != ''">
-                order by ${sidx} ${order}
-            </when>
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
 			<otherwise>
-                order by id desc
+				order by id desc
 			</otherwise>
-        </choose>
+		</choose>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
+
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarriedUserEntity">
-		select t2.* from marry_sign t1,married_user t2 where t2.id = t1.userId and t1.weddingId=#{weddingId}
+		select t2.* from
+		marry_sign t1,married_user t2 where t2.id = t1.userId and
+		t1.weddingId=#{weddingId}
 	</select>
-	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from married_user 
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		married_user
 	</select>
-	 
-	<insert id="save" parameterType="io.renren.entity.married.MarriedUserEntity" useGeneratedKeys="true" keyProperty="id">
+
+	<insert id="save" parameterType="io.renren.entity.married.MarriedUserEntity"
+		useGeneratedKeys="true" keyProperty="id">
 		insert into married_user
 		(
-			`nickname`, 
-			`pic`, 
-			`createTime`, 
-			`jurisdiction`, 
-			`openId`
+		`nickname`,
+		`pic`,
+		`createTime`,
+		`jurisdiction`,
+		`openId`
 		)
 		values
 		(
-			#{nickname}, 
-			#{pic}, 
-			#{createtime}, 
-			#{jurisdiction}, 
-			#{openid}
+		#{nickname},
+		#{pic},
+		#{createtime},
+		#{jurisdiction},
+		#{openid}
 		)
 	</insert>
-	 
+
 	<update id="update" parameterType="io.renren.entity.married.MarriedUserEntity">
-		update married_user 
+		update married_user
 		<set>
 			<if test="nickname != null">`nickname` = #{nickname}, </if>
 			<if test="pic != null">`pic` = #{pic}, </if>
@@ -81,14 +95,15 @@
 		</set>
 		where id = #{id}
 	</update>
-	
+
 	<delete id="delete">
 		delete from married_user where id = #{value}
 	</delete>
-	
+
 	<delete id="deleteBatch">
-		delete from married_user where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
+		delete from married_user where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
 			#{id}
 		</foreach>
 	</delete>

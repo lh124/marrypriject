@@ -22,7 +22,7 @@
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryCartEntity">
-		select <include refid="allColumns"></include> from marry_cart where id = #{value}
+		select <include refid="allColumns"></include> from marry_cart where id = #{id}
 	</select>
 	
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryMainEntity">
@@ -87,7 +87,7 @@
 	</update>
 	
 	<delete id="delete">
-		delete from marry_cart where id = #{value}
+		delete from marry_cart where id = #{id}
 	</delete>
 	
 	<delete id="deleteBatch">

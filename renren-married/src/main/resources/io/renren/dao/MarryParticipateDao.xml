@@ -3,65 +3,81 @@
 
 <mapper namespace="io.renren.dao.married.MarryParticipateDao">
 
-	<!-- 可根据自己需要-->
+	<!-- 可根据自己需要 -->
 	<sql id="allColumnsAlias">
-		id as id ,openId as openid ,weddingId as weddingid ,states as states 		
+		id as id ,openId as openid ,weddingId as weddingid ,states
+		as states
 	</sql>
-	<!-- 可根据自己需要-->
+	<!-- 可根据自己需要 -->
 	<sql id="allColumns">
-		id ,openId ,weddingId ,states 		
+		id ,openId ,weddingId ,states
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="io.renren.entity.married.MarryParticipateEntity" id="marryParticipateMap">
-		        <result property="id" column="id"/>
-		        <result property="openid" column="openId"/>
-		        <result property="weddingid" column="weddingId"/>
-		        <result property="states" column="states"/>
-	    </resultMap>
+	<resultMap type="io.renren.entity.married.MarryParticipateEntity"
+		id="marryParticipateMap">
+		<result property="id" column="id" />
+		<result property="openid" column="openId" />
+		<result property="weddingid" column="weddingId" />
+		<result property="states" column="states" />
+	</resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.married.MarryParticipateEntity">
-		select <include refid="allColumns"></include> from marry_participate where id = #{value}
+		select
+		<include refid="allColumns"></include>
+		from marry_participate where id = #{value}
+	</select>
+
+	<select id="queryList1" resultType="io.renren.entity.married.MarryParticipateEntity">
+		select
+		<include refid="allColumns"></include>
+		from marry_participate
+
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.married.MarryParticipateEntity">
-		select <include refid="allColumns"></include> from marry_participate
-        where weddingId=#{weddingId}
-        <if test="states != null and states != ''">
+		select
+		<include refid="allColumns"></include>
+		from marry_participate
+		where weddingId=#{weddingId}
+		<if test="states != null and states != ''">
 			and states=#{states}
 		</if>
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
 	</select>
-	
+
 	<select id="queryListtongji" resultType="io.renren.entity.married.MarryParticipateEntityDo">
-         select t4.*,t3.nickname,t3.pic from married_user t3,( 
-		select t2.id,t1.states,t2.userId,t2.content,t2.weddingDate as createTime from marry_participate t1,marry_wedding t2 where t1.weddingId = t2.id
+		select t4.*,t3.nickname,t3.pic from married_user t3,(
+		select t2.id,t1.states,t2.userId,t2.content,t2.weddingDate as createTime
+		from marry_participate t1,marry_wedding t2 where t1.weddingId = t2.id
 		and t1.openId=#{userId}
-		)t4 where t3.id = t4.userId  
+		)t4 where t3.id = t4.userId
 	</select>
-	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from marry_participate 
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from
+		marry_participate
 	</select>
-	 
-	<insert id="save" parameterType="io.renren.entity.married.MarryParticipateEntity" useGeneratedKeys="true" keyProperty="id">
+
+	<insert id="save" parameterType="io.renren.entity.married.MarryParticipateEntity"
+		useGeneratedKeys="true" keyProperty="id">
 		insert into marry_participate
 		(
-			`openId`, 
-			`weddingId`, 
-			`states`
+		`openId`,
+		`weddingId`,
+		`states`
 		)
 		values
 		(
-			#{openid}, 
-			#{weddingid}, 
-			#{states}
+		#{openid},
+		#{weddingid},
+		#{states}
 		)
 	</insert>
-	 
+
 	<update id="update" parameterType="io.renren.entity.married.MarryParticipateEntity">
-		update marry_participate 
+		update marry_participate
 		<set>
 			<if test="openid != null">`openId` = #{openid}, </if>
 			<if test="weddingid != null">`weddingId` = #{weddingid}, </if>
@@ -69,14 +85,15 @@
 		</set>
 		where id = #{id}
 	</update>
-	
+
 	<delete id="delete">
 		delete from marry_participate where id = #{value}
 	</delete>
-	
+
 	<delete id="deleteBatch">
-		delete from marry_participate where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
+		delete from marry_participate where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
 			#{id}
 		</foreach>
 	</delete>

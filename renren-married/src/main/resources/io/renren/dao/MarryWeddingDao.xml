@@ -85,6 +85,8 @@
 			<if test="bridename != null">`brideName` = #{bridename}, </if>
 			<if test="weddingdate != null">`weddingDate` = #{weddingdate}, </if>
 			<if test="weddingaddress != null">`weddingAddress` = #{weddingaddress}, </if>
+			<if test="url != null">`url` = #{url}, </if>
+			<if test="bgcolor != null">`bgcolor` = #{bgcolor}, </if>
 			<if test="photo != null">`photo` = #{photo}, </if>
 			<if test="content != null">`content` = #{content}</if>
 		</set>
