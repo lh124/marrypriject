@@ -42,6 +42,7 @@
 	    <property name="filterChainDefinitions">  
 	        <value>
 	        	/statics/**=anon
+	        	/.well-known/**=anon
 	        	/MP_verify_3UBHAqwhdxR6HC11.txt=anon
 	        	/weiChatTocken.jsp=anon
 	        	/js/**=anon
@@ -59,6 +60,7 @@
 				/homepage/ClassPhotoLook=anon
 				<!-- 兼容以前老系统的 结束 -->
 	        	/login.html=anon
+	        	/fileauth.txt=anon
 	        	/phoneLogin.html=anon
 	        	/regist.html=anon
 	        	/sys/login=anon
