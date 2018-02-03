@@ -6,6 +6,7 @@ import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,7 @@ public class PsychologicalCounselingController {
 	@RequestMapping("/save")
 	@RequiresPermissions("psychologicalcounseling:save")
 	public R save(@RequestBody PsychologicalCounselingEntity psychologicalCounseling){
+		psychologicalCounseling.setCreateTime(new Date());
 		psychologicalCounselingService.save(psychologicalCounseling);
 		
 		return R.ok();
