@@ -47,7 +47,45 @@ public class MarriedInterceptorUrlUtil {
 						  ".*/married/htgl/marrieduser.html",
 						  ".*/married/htgl/marrymain.html",
 						  ".*/married/htgl/marrywedding.html",
-						  ".*/married/htgl/marryhelp.html"
+						  ".*/married/htgl/marryhelp.html"	,
+						  
+						  //测试
+						  ".*/married/weixin/me/allSign",//保存签到记录接口
+						  ".*/married/weixin/me/saveHelp",//保存签到记录接口
+						  ".*/married/weixin/me/getUserPhoto",//保存签到记录接口
+						  ".*/married/weixin/me/allweddingImg",
+						  ".*/married/weixin/me/findAllWeddingPhoto",
+						  ".*/married/weixin/me/getWeddingId",
+						  ".*/married/weixin/me/fileupload",
+						  ".*/married/weixin/me/blessManage",
+						  ".*/married/weixin/me/saveBlessing",
+						  ".*/married/weixin/me/filevideo",
+						  ".*/married/weixin/me/allSign",
+						  ".*/married/weixin/me/allMeSign",
+						  ".*/married/weixin/me/saveSign",
+						  ".*/married/weixin/me/alljieshouattendawedding",
+						  ".*/married/weixin/me/allattendawedding",
+						  ".*/married/weixin/me/attendawedding",
+						  ".*/married/weixin/me/fileweddingphoto",
+						  ".*/married/weixin/me/saveScreen",
+						  ".*/married/weixin/me/getScreen",
+						  ".*/married/weixin/me/picture",
+						  ".*/married/weixin/cart/submitCart",
+						  ".*/married/weixin/cart/deletemarrycart",
+						  ".*/married/weixin/cart/list",
+						  ".*/married/weixin/cart/save",
+						  ".*/married/weixin/order/findOrderdemo",
+						  ".*/married/weixin/pay",
+						  ".*/married/weixin/notify",
+						  ".*/married/weixin/user/userinfo",
+						  ".*/married/weixin/user/getUserInfo",
+						  ".*/married/smallProgram/main/blessManage",
+						  
+						  ".*/married/htgl/marryhelp.html",
+						  ".*/smart/chatwebsocket",
+						  ".*/smart/websocket",
+						  ".*/websocket",
+						  ".*/married/weixin/samll/findredmoneydetail",
 		};
 		boolean isMatch = false;
 		
