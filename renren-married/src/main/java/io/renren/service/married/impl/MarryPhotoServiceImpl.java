@@ -29,6 +29,11 @@ public class MarryPhotoServiceImpl extends ServiceImpl<MarryPhotoDao, MarryPhoto
 	}
 	
 	@Override
+	public List<MarryPhotoEntity> queryList1(Map<String, Object> map){
+		return marryPhotoDao.queryList1(map);
+	}
+	
+	@Override
 	public int queryTotal(Map<String, Object> map){
 		return marryPhotoDao.queryTotal(map);
 	}

@@ -29,6 +29,11 @@ public class MarryParticipateServiceImpl extends ServiceImpl<MarryParticipateDao
 	}
 	
 	@Override
+	public List<MarryParticipateEntity> queryList1(Map<String, Object> map){
+		return marryParticipateDao.queryList1(map);
+	}
+	
+	@Override
 	public int queryTotal(Map<String, Object> map){
 		return marryParticipateDao.queryTotal(map);
 	}

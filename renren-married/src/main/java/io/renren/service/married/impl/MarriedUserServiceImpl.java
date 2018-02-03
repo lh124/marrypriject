@@ -24,6 +24,12 @@ public class MarriedUserServiceImpl extends ServiceImpl<MarriedUserDao, MarriedU
 	}
 	
 	@Override
+	public MarriedUserEntity findByOpenIdLike(String openid){
+		
+		return marriedUserDao.findByOpenIdLike(openid);
+	}
+	
+	@Override
 	public List<MarriedUserEntity> queryList(Map<String, Object> map){
 		return marriedUserDao.queryList(map);
 	}

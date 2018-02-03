@@ -27,6 +27,11 @@ public class MarryBlessingServiceImpl extends ServiceImpl<MarryBlessingDao, Marr
 	public List<MarryBlessingEntity> queryList(Map<String, Object> map){
 		return marryBlessingDao.queryList(map);
 	}
+	@Override
+	public List<MarryBlessingEntity> queryList1(Map<String, Object> map){
+		System.out.println("----->"+marryBlessingDao.queryList1(map));
+		return marryBlessingDao.queryList1(map);
+	}
 	
 	@Override
 	public int queryTotal(Map<String, Object> map){

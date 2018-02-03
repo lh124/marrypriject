@@ -29,6 +29,16 @@ public class MarryOrdersServiceImpl extends ServiceImpl<MarryOrdersDao, MarryOrd
 	}
 	
 	@Override
+	public List<MarryOrdersEntity> queryList1(Map<String, Object> map){
+		return marryOrdersDao.queryList1(map);
+	}
+	
+	@Override
+	public List<MarryOrdersEntity> queryListorder(Map<String, Object> map){
+		return marryOrdersDao.queryListorder(map);
+	}
+	
+	@Override
 	public int queryTotal(Map<String, Object> map){
 		return marryOrdersDao.queryTotal(map);
 	}
