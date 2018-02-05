@@ -1,18 +1,20 @@
 package io.renren.controller.married;
 
-import io.renren.constant.ControllerConstant;
 import io.renren.entity.SysUserEntity;
 import io.renren.entity.married.MarriedUserEntity;
 import io.renren.entity.married.MarryCartEntity;
 import io.renren.entity.married.MarryMainEntity;
 import io.renren.entity.married.MarryOrderMainEntity;
 import io.renren.entity.married.MarryOrdersEntity;
+import io.renren.entity.married.OrderAndMain;
 import io.renren.service.SysUserService;
+import io.renren.service.married.MarriedUserService;
 import io.renren.service.married.MarryCartService;
 import io.renren.service.married.MarryMainService;
 import io.renren.service.married.MarryOrderMainService;
 import io.renren.service.married.MarryOrdersService;
 import io.renren.utils.R;
+import io.renren.utils.RRException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("married/weixin/order")
 public class MarryWeixinOrderController {
-	
+
 	@Autowired
 	private MarryOrdersService marryOrdersService;
 	@Autowired
@@ -40,6 +42,19 @@ public class MarryWeixinOrderController {
 	private SysUserService sysUserService;
 	@Autowired
 	private MarryCartService marryCartService;
+
+	@SuppressWarnings("unused")
+	private  String checkDate(String str)throws Exception{
+		if(str != null || !"".equals(str)){
+			return str;
+		}else{
+			if(str==null||str.equals("")){
+				throw new RRException(str + "值不存在，请检查参数是否正确");
+			}else{
+				throw new RRException(str + "参数不存在，请检查参数是否正确");
+			}
+		}
+	}
 	
 	/**
 	 * 用户保存订单
@@ -48,7 +63,11 @@ public class MarryWeixinOrderController {
 	 */
 	@RequestMapping("/saveOrder")
 	public R saveOrder(HttpServletRequest request){
-		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		String userId=request.getParameter("userId");
+		MarriedUserEntity user=marryUserService.queryObject(Integer.parseInt(userId));
+		if(user==null){
+			R.error("还没有该用户的商品，去首页添加");
+		}
 		Integer type = Integer.parseInt(request.getParameter("type"));
 		String orderNumber = "494955"+new Date().getTime();
 		Integer id = 0;
@@ -98,7 +117,7 @@ public class MarryWeixinOrderController {
 		}
 		return R.ok().put("id", id);
 	}
-	
+
 	/**
 	 * 通过订单id查询订单
 	 * @param request
@@ -106,31 +125,59 @@ public class MarryWeixinOrderController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/findOrder")
-	public R findOrder(HttpServletRequest request){
+	public R findOrder(HttpServletRequest request)throws Exception{
 		Integer id = Integer.parseInt(request.getParameter("id"));
-		MarryOrdersEntity marryOrders = marryOrdersService.queryObject(id);
-		Integer type = marryOrders.getOrderType();
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(type==1){//直接下单
-			MarryOrderMainEntity marryOrderMain = marryOrderMainService.queryObject(id);
-			MarryMainEntity marryMain = marryMainService.queryObject(marryOrderMain.getMainId());
-			map.put("marryMain", marryMain);
-		}else{
-			List<MarryMainEntity> marryMainList = new ArrayList<MarryMainEntity>();
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("orderId", marryOrders.getId());
-			List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
-			for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
+		map.put("id", id);
+		List<MarryOrdersEntity> list = marryOrdersService.queryListorder(map);
+		List<MarryOrdersEntity> listtotal = new ArrayList<MarryOrdersEntity>();
+		Map<String, List<MarryMainEntity>> marryMainMap = new HashMap<String, List<MarryMainEntity>>();
+		List<MarryMainEntity> marryMainList = null;
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			MarryOrdersEntity marryOrdersEntity = (MarryOrdersEntity) iterator.next();
+			Map<String, Object> orderMainMap = new HashMap<String, Object>();
+			orderMainMap.put("orderId", marryOrdersEntity.getId());
+			List<MarryOrderMainEntity> orderMainList = marryOrderMainService.queryList(orderMainMap);
+			Double sumprice=0.0;
+			for (Iterator iterator2 = orderMainList.iterator(); iterator2.hasNext();) {
 				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
-				marryMainList.add(marryMainService.queryObject(marryOrderMainEntity.getMainId()));
+				MarryMainEntity marryMain = marryMainService.queryObject(marryOrderMainEntity.getMainId());
+				SysUserEntity u = sysUserService.queryObject(new Long(marryMain.getUserId()));
+				marryOrdersEntity.setBusiness(u.getName());
+				marryOrdersEntity.setMainDescribe(u.getName()+marryMain.getTitle());
+				Double price = Double.parseDouble(marryMain.getPrice());
+				sumprice+=price;
+				if(marryMainMap.get(marryMain.getUserId()) == null){
+					marryMainList = new ArrayList<MarryMainEntity>();
+				}
+				marryMainList.add(marryMain);
+				marryMainMap.put(marryMain.getUserId()+","+marryOrderMainEntity.getOrderId(), marryMainList);
 			}
-			marryOrders.setMarryMainList(marryMainList);
+			marryOrdersEntity.setMainPrice(String.valueOf(sumprice));
+			marryOrdersEntity.setCount(orderMainList.size());
 		}
-		map.put("marryOrders", marryOrders);
-		map.put("type", type);
-		return R.ok().put("map", map);
+
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			MarryOrdersEntity marryOrdersEntity = (MarryOrdersEntity) iterator.next();
+			List<OrderAndMain> orderAndMainList = new ArrayList<OrderAndMain>();
+			for(String entry : marryMainMap.keySet()){
+				String[] entrys = entry.split(",");
+				if(Integer.parseInt(entrys[1]) == marryOrdersEntity.getId()){
+					OrderAndMain andMain = new OrderAndMain();
+					andMain.setUserId(Integer.parseInt(entrys[0]));
+					andMain.setUserName(sysUserService.queryObject(new Long(entrys[0])).getName());
+					andMain.setMainList(marryMainMap.get(entry));
+					orderAndMainList.add(andMain);
+				}
+			}
+			marryOrdersEntity.setMarryMainList(orderAndMainList);
+			listtotal.add(marryOrdersEntity);
+
+		}
+		return R.ok().put("data", listtotal);
 	}
-	
+
+
 	/**
 	 * 用户删除订单
 	 * @param request
@@ -143,44 +190,77 @@ public class MarryWeixinOrderController {
 		marryOrdersService.delete(id);
 		return R.ok();
 	}
-	
+
 	/**
 	 * 查询当前用户的所有订单
 	 * @param request
 	 * @return
 	 */
+	@Autowired
+	private MarriedUserService marryUserService;
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/findOrderlist")
 	public R findOrderlist(HttpServletRequest request){
-		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
+		//System.out.println(request.getParameter("userId"));
+		Integer userid=Integer.parseInt(request.getParameter("userId"));
+		System.out.println("========"+userid);
+		MarriedUserEntity queryObject = marryUserService.queryObject(userid);
+		if(queryObject==null){
+			R.error("还没有订单，赶快去下单吧");
+		}
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("userId", user.getId());
+		map.put("userId", queryObject.getId());
 		map.put("offset", 0);
 		map.put("limit", 10);
 		List<MarryOrdersEntity> list = marryOrdersService.queryList(map);
 		List<MarryOrdersEntity> listtotal = new ArrayList<MarryOrdersEntity>();
+		Map<String, List<MarryMainEntity>> marryMainMap = new HashMap<String, List<MarryMainEntity>>();
+		List<MarryMainEntity> marryMainList = null;
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			MarryOrdersEntity marryOrdersEntity = (MarryOrdersEntity) iterator.next();
-			if(marryOrdersEntity.getOrderType()==1){//直接下单
-				List<MarryMainEntity> marryMainList = new ArrayList<MarryMainEntity>();
-				MarryOrderMainEntity marryOrderMain = marryOrderMainService.queryObject(marryOrdersEntity.getId());
-				marryMainList.add(marryMainService.queryObject(marryOrderMain.getMainId()));
-				marryOrdersEntity.setMarryMainList(marryMainList);
-				listtotal.add(marryOrdersEntity);
-			}else if(marryOrdersEntity.getOrderType() == 2){//通过购物车下单
-				List<MarryMainEntity> marryMainList = new ArrayList<MarryMainEntity>();
-				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("orderId", marryOrdersEntity.getId());
-				List<MarryOrderMainEntity> marryOrderMainList = marryOrderMainService.queryList(m);
-				for (Iterator iterator2 = marryOrderMainList.iterator(); iterator2.hasNext();) {
-					MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
-					marryMainList.add(marryMainService.queryObject(marryOrderMainEntity.getMainId()));
+			
+			Map<String, Object> orderMainMap = new HashMap<String, Object>();
+			orderMainMap.put("orderId", marryOrdersEntity.getId());
+			List<MarryOrderMainEntity> orderMainList = marryOrderMainService.queryList(orderMainMap);
+			Double sumprice=0.0;
+			for (Iterator iterator2 = orderMainList.iterator(); iterator2.hasNext();) {
+				MarryOrderMainEntity marryOrderMainEntity = (MarryOrderMainEntity) iterator2.next();
+				MarryMainEntity marryMain = marryMainService.queryObject(marryOrderMainEntity.getMainId());
+				SysUserEntity u = sysUserService.queryObject(new Long(marryMain.getUserId()));
+				marryOrdersEntity.setBusiness(u.getName());
+				marryOrdersEntity.setMainDescribe(u.getName()+marryMain.getTitle());
+				Double price = Double.parseDouble(marryMain.getPrice());
+				sumprice+=price;
+				if(marryMainMap.get(marryMain.getUserId()) == null){
+					marryMainList = new ArrayList<MarryMainEntity>();
 				}
-				marryOrdersEntity.setMarryMainList(marryMainList);
-				listtotal.add(marryOrdersEntity);
+				marryMainList.add(marryMain);
+				marryMainMap.put(marryMain.getUserId()+","+marryOrderMainEntity.getOrderId(), marryMainList);
 			}
+			marryOrdersEntity.setMainPrice(String.valueOf(sumprice));
+			marryOrdersEntity.setCount(orderMainList.size());
+//			marryOrdersService.update(marryOrdersEntity);
 		}
+
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			MarryOrdersEntity marryOrdersEntity = (MarryOrdersEntity) iterator.next();
+			List<OrderAndMain> orderAndMainList = new ArrayList<OrderAndMain>();
+			for(String entry : marryMainMap.keySet()){
+				String[] entrys = entry.split(",");
+				if(Integer.parseInt(entrys[1]) == marryOrdersEntity.getId()){
+					OrderAndMain andMain = new OrderAndMain();
+					andMain.setUserId(Integer.parseInt(entrys[0]));
+					andMain.setUserName(sysUserService.queryObject(new Long(entrys[0])).getName());
+					andMain.setMainList(marryMainMap.get(entry));
+					orderAndMainList.add(andMain);
+				}
+			}
+			marryOrdersEntity.setMarryMainList(orderAndMainList);
+			listtotal.add(marryOrdersEntity);
+
+		}
+
+		System.out.println("-----------"+listtotal);
 		return R.ok().put("list", listtotal);
 	}
-
 }

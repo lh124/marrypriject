@@ -13,7 +13,7 @@ import io.renren.service.married.MarryGetmoneyService;
 import io.renren.service.married.MarryRedmoneyDetailService;
 import io.renren.service.married.MarryRedmoneyMainService;
 import io.renren.service.married.MarryWeddingService;
-import io.renren.util.WeixinPayUtil;
+import io.renren.util.WeixinSmallPayUtil;
 import io.renren.utils.R;
 
 import java.io.BufferedOutputStream;
@@ -73,6 +73,7 @@ public class MarryWeixinMoneyController {
 	@Autowired
 	private MarryBlessingService marryBlessingService;
 	
+	
 	/**
 	 * 将自己账号余额提现
 	 * @param request
@@ -83,9 +84,9 @@ public class MarryWeixinMoneyController {
 		Integer id = Integer.parseInt(request.getParameter("id"));
 		MarryGetmoneyEntity mg = marryGetmoneyService.queryObject(id);
 		try {
-			String xml = WeixinPayUtil.mapToXml(pay(mg));
+			String xml = WeixinSmallPayUtil.mapToXml(pay(mg));
 			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
-			JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(result.replace(">/n", ">")));
+			JSONObject json = JSONObject.fromObject(WeixinSmallPayUtil.xmlToMap(result.replace(">/n", ">")));
 			if("SUCCESS".equals(json.getString("result_code"))){
 				mg.setTotalFee(0.00);
 				marryGetmoneyService.update(mg);
@@ -101,7 +102,7 @@ public class MarryWeixinMoneyController {
 		mg.setOpenid("oZSiWxOxNIVH7s8wxiORTchfGxEo");
 		mg.setTotalFee(0.01);
 		try {
-			String xml = WeixinPayUtil.mapToXml(pay(mg));
+			String xml = WeixinSmallPayUtil.mapToXml(pay(mg));
 			String result = creaCa("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers", xml);
 			
 			System.out.println(result);
@@ -109,6 +110,8 @@ public class MarryWeixinMoneyController {
 			e.printStackTrace();
 		}
 	}
+	
+
 	
 	/**
 	 * 获取当前婚礼下的所有红包记录
@@ -168,12 +171,12 @@ public class MarryWeixinMoneyController {
         KeyStore keyStore  = KeyStore.getInstance("PKCS12");
         FileInputStream instream = new FileInputStream(new File("E:/web/webroot/wrs/statics/marry/apiclient_cert.p12"));
         try {
-            keyStore.load(instream, WeixinPayUtil.partner.toCharArray());
+            keyStore.load(instream, WeixinSmallPayUtil.partner.toCharArray());
         } finally {
             instream.close();
         }
         SSLContext sslcontext = SSLContexts.custom()
-                .loadKeyMaterial(keyStore, WeixinPayUtil.partner.toCharArray())
+                .loadKeyMaterial(keyStore, WeixinSmallPayUtil.partner.toCharArray())
                 .build();
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                 sslcontext,
@@ -212,8 +215,8 @@ public class MarryWeixinMoneyController {
 	
 	public static Map<String, String> pay(MarryGetmoneyEntity marryGetmoney) throws Exception{ 
 		 Map<String, String> payMap = new HashMap<String, String>(); 
-		 payMap.put("mch_appid", WeixinPayUtil.appid);
-		 payMap.put("mchid", WeixinPayUtil.partner);
+		 payMap.put("mch_appid", WeixinSmallPayUtil.appid);
+		 payMap.put("mchid", WeixinSmallPayUtil.partner);
 		 payMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数
 		 payMap.put("partner_trade_no", "494955"+new Date().getTime());//商户订单号
 		 payMap.put("openid", marryGetmoney.getOpenid());
@@ -221,7 +224,7 @@ public class MarryWeixinMoneyController {
 		 payMap.put("amount", (new  Double(Double.valueOf(marryGetmoney.getTotalFee())*100)).intValue()+"");//金额
 		 payMap.put("desc", "红包提现");
 		 payMap.put("spbill_create_ip", "47.92.117.143");
-		 String sign = WeixinPayUtil.generateSignature(payMap, WeixinPayUtil.partnerkey);
+		 String sign = WeixinSmallPayUtil.generateSignature(payMap, WeixinSmallPayUtil.partnerkey);
 		 payMap.put("sign", sign);
 		return payMap;
 	}
@@ -292,17 +295,17 @@ public class MarryWeixinMoneyController {
 	 * @throws Exception 
 	 */
 	public Map<String, Object> getPayData(Integer id,Map<String, String> paraMap) throws Exception{
-		String appid = WeixinPayUtil.appid; 
+		String appid = WeixinSmallPayUtil.appid; 
 		//将map转为String
-        String xml = WeixinPayUtil.mapToXml(paraMap); 
+        String xml = WeixinSmallPayUtil.mapToXml(paraMap); 
         xml = new String(xml.toString().getBytes("UTF-8"));  
-        String xmlStr = post(WeixinPayUtil.createOrderURL, xml);
+        String xmlStr = post(WeixinSmallPayUtil.createOrderURL, xml);
         System.out.println(xmlStr);
         // 预付商品id  
         String prepay_id = "";  
         xmlStr = new String(xmlStr.toString().getBytes("GBK"));
         if (xmlStr.indexOf("SUCCESS") != -1) {  
-            Map<String, String> map = WeixinPayUtil.xmlToMap(xmlStr);  
+            Map<String, String> map = WeixinSmallPayUtil.xmlToMap(xmlStr);  
             prepay_id = (String) map.get("prepay_id");  
         }  
         String timeStamp = System.currentTimeMillis()/1000+"";  
@@ -313,7 +316,7 @@ public class MarryWeixinMoneyController {
         payMap.put("nonceStr", nonceStr);  
         payMap.put("signType", "MD5");  
         payMap.put("package", "prepay_id=" + prepay_id);  
-        String paySign = WeixinPayUtil.generateSignature(payMap, WeixinPayUtil.partnerkey);  
+        String paySign = WeixinSmallPayUtil.generateSignature(payMap, WeixinSmallPayUtil.partnerkey);  
         payMap.put("pg", prepay_id);  
         payMap.put("paySign", paySign);  
         // 拼接并返回json  
@@ -385,12 +388,12 @@ public class MarryWeixinMoneyController {
 	public Map<String, String> getSign(HttpServletRequest request,Integer id,String content) throws Exception{
 		MarriedUserEntity user = (MarriedUserEntity)request.getSession().getAttribute(ControllerConstant.SESSION_MARRIED_USER_KEY);
 		MarryRedmoneyMainEntity marryRedmoneyMain = marryRedmoneyMainService.queryObject(id);
-		String appid = WeixinPayUtil.appid;  
+		String appid = WeixinSmallPayUtil.appid;  
         Map<String, String> paraMap = new HashMap<String, String>();  
         paraMap.put("appid", appid);  
         paraMap.put("attach", URLEncoder.encode("微信红包", "UTF-8"));  
         paraMap.put("body", URLEncoder.encode((content==null||"".equals(content))?"恭喜发财，大吉大利":content, "UTF-8"));  
-        paraMap.put("mch_id", WeixinPayUtil.partner);//商户号 
+        paraMap.put("mch_id", WeixinSmallPayUtil.partner);//商户号 
         paraMap.put("nonce_str", UUID.randomUUID().toString().replace("-", ""));//随机数  
         paraMap.put("sign_type", "MD5"); 
         paraMap.put("openid", user.getOpenid()); 
@@ -399,7 +402,7 @@ public class MarryWeixinMoneyController {
         paraMap.put("total_fee", (new  Double(Double.valueOf(marryRedmoneyMain.getTotalFee())*100)).intValue()+"");  //订单价格
         paraMap.put("trade_type", "JSAPI");  //交易类型取值如下：JSAPI，NATIVE，APP等，说明详见参数规定
         paraMap.put("notify_url", "http://wrs.gykjewm.com/married/weixin/moneyNotify");// 此路径是微信服务器调用支付结果通知路径  
-        String sign = WeixinPayUtil.generateSignature(paraMap, WeixinPayUtil.partnerkey);  
+        String sign = WeixinSmallPayUtil.generateSignature(paraMap, WeixinSmallPayUtil.partnerkey);  
         paraMap.put("sign", sign);
         request.getSession().setAttribute("sign", sign);
 		return paraMap;
@@ -412,7 +415,7 @@ public class MarryWeixinMoneyController {
         String resXml = ""; // 反馈给微信服务器
         String notifyXml = convertStreamToString(request.getInputStream());// 微信支付系统发送的数据（<![CDATA[product_001]]>格式）
         // 验证签名
-        JSONObject json = JSONObject.fromObject(WeixinPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
+        JSONObject json = JSONObject.fromObject(WeixinSmallPayUtil.xmlToMap(notifyXml.replace(">/n", ">")));
         if ("SUCCESS".equals(json.getString("result_code"))) {
         	String out_trade_no = json.getString("out_trade_no");
         	MarryRedmoneyMainEntity marryRedmoneyMain = new MarryRedmoneyMainEntity();
