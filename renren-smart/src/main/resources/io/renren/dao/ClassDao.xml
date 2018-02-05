@@ -5,11 +5,13 @@
 
 	<!-- 可根据自己需要-->
 	<sql id="allColumnsAlias">
-		id as id ,class_name as className ,school_id as schoolId,pic as pic,grade_id as gradeId 		
+		id as id ,class_name as className ,school_id as schoolId,pic as pic,grade_id as gradeId,
+		group_id as groupId,expireTime as expireTime,sign as sign,gid as gid 		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
-		id ,class_name ,school_id,pic,grade_id 		
+		id ,class_name ,school_id,grade_id,group_id,
+		ifnull(pic,'http://static.gykjewm.com/tubiao/class.jpg') pic,expireTime,sign,gid 		
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.entity.smart.ClassEntity" id="classMap">
@@ -18,6 +20,11 @@
 		        <result property="schoolId" column="school_id"/>
 		        <result property="gradeId" column="grade_id"/>
 		        <result property="pic" column="pic"/>
+		        <result property="pic" column="pic"/>
+		        <result property="groupId" column="group_id"/>
+		        <result property="expireTime" column="expireTime"/>
+		        <result property="sign" column="sign"/>
+		        <result property="gid" column="gid"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.ClassEntity">
@@ -26,7 +33,12 @@
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassEntity">
 		select <include refid="allColumns"></include> from class where 
-		     grade_id = ${gradeId}
+		     <if test="schoolId != null and schoolId != ''">
+			     school_id=${schoolId}   
+			 </if>
+			 <if test="gradeId != null and gradeId != ''">
+			     grade_id = ${gradeId}  
+			 </if>
 			 <choose>
 		            <when test="sidx != null and sidx.trim() != ''">
 		                order by ${sidx} ${order}
@@ -34,7 +46,7 @@
 					<otherwise>
 		                order by id desc
 					</otherwise>
-		     </choose>
+		     </choose> 
 		limit ${begin},${limit}
 	</select>
 	
@@ -48,6 +60,7 @@
 			`class_name`, 
 			`pic`,
 			`grade_id`,
+			`gid`,
 			`school_id`
 		)
 		values
@@ -55,6 +68,7 @@
 			#{className}, 
 			#{pic},
 			#{gradeId},
+			0,
 			#{schoolId}
 		)
 	</insert>
@@ -64,7 +78,11 @@
 		<set>
 			<if test="className != null">`class_name` = #{className}, </if>
 			<if test="pic != null">`pic` = #{pic}, </if>
+			<if test="gid != null">`gid` = #{gid}, </if>
 			<if test="gradeId != null">`grade_id` = #{gradeId}, </if>
+			<if test="groupId != null">`group_id` = #{groupId}, </if>
+			<if test="sign != null">`sign` = #{sign}, </if>
+			<if test="expireTime != null">`expireTime` = #{expireTime}, </if>
 			<if test="schoolId != null">`school_id` = #{schoolId}</if>
 		</set>
 		where id = #{id}
