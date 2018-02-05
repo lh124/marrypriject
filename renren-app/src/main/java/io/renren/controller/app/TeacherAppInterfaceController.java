@@ -385,9 +385,89 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("findSendMessageList")){
 				//查询聊天记录
 				return findSendMessageList(json.getJSONObject("data"));
+			}else if(type.equals("addFriends")){
+				//极光添加好友
+				return addFriends(json.getJSONObject("data"));
+			}else if(type.equals("deleteFriends")){
+				//极光删除好友
+				return deleteFriends(json.getJSONObject("data"));
+			}else if(type.equals("getFriendsInfo")){
+				//极光查询好友列表
+				return getFriendsInfo(json.getJSONObject("data"));
 			}
 		}
 		return null;
+	}
+	
+	private R addFriends(JSONObject json){
+		if(json.get("ownUserName") == null){//自己的账号
+			return R.error("请将参数ownUserName传至服务器");
+		}
+		if(json.get("friendUserName") == null){//好友的账号
+			return R.error("请将参数friendUserName传至服务器");
+		}
+		String[] users = new String[1];
+    	users[0] = json.getString("friendUserName");
+    	List<UserInfoResult> list = new ArrayList<UserInfoResult>();
+    	JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+    	try {
+			client.addFriends(json.getString("ownUserName"), users);
+			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
+			for (int i = 0; i < userlist.length; i++) {
+				list.add(userlist[i]);
+			}
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			if(JSONObject.fromObject(e.getMessage()).getJSONObject("error").getLong("code") == 899070){
+				return R.error("请勿重复添加该账号为您的好友");
+			}
+		}
+		return R.ok("添加好友成功").put(DATA, list);
+	}
+	
+	private R deleteFriends(JSONObject json){
+		if(json.get("ownUserName") == null){//自己的账号
+			return R.error("请将参数ownUserName传至服务器");
+		}
+		if(json.get("friendUserName") == null){//好友的账号
+			return R.error("请将参数friendUserName传至服务器");
+		}
+		String[] users = new String[1];
+    	users[0] = json.getString("friendUserName");
+    	List<UserInfoResult> list = new ArrayList<UserInfoResult>();
+    	JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+    	try {
+			client.deleteFriends(json.getString("ownUserName"), users);
+			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
+			for (int i = 0; i < userlist.length; i++) {
+				list.add(userlist[i]);
+			}
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			e.printStackTrace();
+		}
+		return R.ok("删除好友成功").put(DATA, list);
+	}
+
+	private R getFriendsInfo(JSONObject json){
+		if(json.get("ownUserName") == null){//自己的账号
+			return R.error("请将参数ownUserName传至服务器");
+		}
+		List<UserInfoResult> list = new ArrayList<UserInfoResult>();
+		JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+		try {
+			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
+			for (int i = 0; i < userlist.length; i++) {
+				list.add(userlist[i]);
+			}
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			e.printStackTrace();
+		}
+		return R.ok().put(DATA, list);
 	}
 	
 	private R findSendMessageList(JSONObject json){
