@@ -1007,7 +1007,8 @@ public class SmallProgramController {
 		if(user==null){
 			R.error("还没有该用户的商品，去首页添加");
 		}
-		Integer type = Integer.parseInt(request.getParameter("type"));
+//		System.out.println(request.getParameter("type"));
+		Integer type = Integer.parseInt(request.getParameter("types"));
 		String orderNumber = "494955"+new Date().getTime();
 		Integer id = 0;
 		if(type == 1){//直接下单
@@ -1722,7 +1723,7 @@ public class SmallProgramController {
 		mbe.setContent(request.getParameter("content"));
 		mbe.setWeddingid(Integer.parseInt(request.getParameter("weddingId")));
 		
-		mbe.setBlessingtype(Integer.parseInt(request.getParameter("type")));
+		mbe.setBlessingtype(Integer.parseInt(request.getParameter("types")));
 		mbe.setGmtModifiedtime(new Date());
 		marryBlessingService.save(mbe);
 		return R.ok().put("id", mbe.getId());
