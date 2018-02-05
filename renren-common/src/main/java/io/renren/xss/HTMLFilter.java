@@ -156,7 +156,8 @@ public final class HTMLFilter {
      *
      * @param conf map containing configuration. keys match field names.
      */
-    public HTMLFilter(final Map<String,Object> conf) {
+    @SuppressWarnings("unchecked")
+	public HTMLFilter(final Map<String,Object> conf) {
 
         assert conf.containsKey("vAllowed") : "configuration requires vAllowed";
         assert conf.containsKey("vSelfClosingTags") : "configuration requires vSelfClosingTags";
@@ -167,7 +168,7 @@ public final class HTMLFilter {
         assert conf.containsKey("vRemoveBlanks") : "configuration requires vRemoveBlanks";
         assert conf.containsKey("vAllowedEntities") : "configuration requires vAllowedEntities";
 
-        vAllowed = Collections.unmodifiableMap((HashMap<String, List<String>>) conf.get("vAllowed"));
+        vAllowed = Collections.unmodifiableMap(((HashMap<String, List<String>>) conf.get("vAllowed")));
         vSelfClosingTags = (String[]) conf.get("vSelfClosingTags");
         vNeedClosingTags = (String[]) conf.get("vNeedClosingTags");
         vDisallowed = (String[]) conf.get("vDisallowed");
