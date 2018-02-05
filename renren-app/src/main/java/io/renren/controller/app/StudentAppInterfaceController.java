@@ -119,8 +119,12 @@ public class StudentAppInterfaceController{
 	private final static String JEDISPATH = "127.0.0.1";
 	private final static String DATA = "data";
 	private final static String FILEPATH = "http://static.gykjewm.com/";
+	//测试服务器
 	public final static String APPKEY = "aecc535fc376fcb112949ee6";
 	public final static String MASTERSECRET = "436824de608a150e7e4105ce";
+	//正式服务器
+//	public final static String APPKEY = "a1086030bcfba327bb428b50";
+//	public final static String MASTERSECRET = "7add2102266c90ee985e5ce1";
 	@Autowired
 	private StudentService studentService;
 	@Autowired
