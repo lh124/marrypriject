@@ -32,11 +32,19 @@ public interface BaseDao<T> {
 
 	T queryObject(Object id);
 	
+	T findByOpenIdLike(Object openid);
+	
 	T queryObjectIdEpc(Map<String, Object> map);
 	
 	T queryObjectName(Object name);
 	
 	List<T> queryList(Map<String, Object> map);
+	
+	List<T> queryList1(Map<String, Object> map);
+	
+	T queryObjectScreen(Object id);
+	
+	List<T> queryListorder(Map<String, Object> map);
 	
 	List<T> queryListtongji(Map<String, Object> map);
 	 
