@@ -507,8 +507,8 @@ public class TeacherAppInterfaceController {
 	    			for (int i = 0; i < groups.length; i++) {
 		    			groupid += groups[i].getGid()+",";
 					}
-		    		String gid = "";
-		    		if(gid.indexOf(groupid) == -1){
+	    			String gid = classEntity.getGid()+"";
+		    		if(groupid.indexOf(gid) == -1){
 		    			String[] u = new String[1];
 			        	u[0] = student.getGusername();
 		    			client.addOrRemoveMembers(classEntity.getGid(), u, null);
