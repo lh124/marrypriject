@@ -60,6 +60,7 @@ import io.renren.service.smart.SmartWorkService;
 import io.renren.service.smart.StudentService;
 import io.renren.service.smart.WeixinFunctionImgService;
 import io.renren.service.smart.WeixinFunctionService;
+import io.renren.util.JiguanUtil;
 import io.renren.util.MsgUtil;
 import io.renren.util.OssUploadUtil;
 import io.renren.utils.Query;
@@ -409,7 +410,7 @@ public class TeacherAppInterfaceController {
 		String[] users = new String[1];
     	users[0] = json.getString("friendUserName");
     	List<UserInfoResult> list = new ArrayList<UserInfoResult>();
-    	JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+    	JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
     	try {
 			client.addFriends(json.getString("ownUserName"), users);
 			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
@@ -436,7 +437,7 @@ public class TeacherAppInterfaceController {
 		String[] users = new String[1];
     	users[0] = json.getString("friendUserName");
     	List<UserInfoResult> list = new ArrayList<UserInfoResult>();
-    	JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+    	JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
     	try {
 			client.deleteFriends(json.getString("ownUserName"), users);
 			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
@@ -456,7 +457,7 @@ public class TeacherAppInterfaceController {
 			return R.error("请将参数ownUserName传至服务器");
 		}
 		List<UserInfoResult> list = new ArrayList<UserInfoResult>();
-		JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
 		try {
 			UserInfoResult[] userlist = client.getFriendsInfo(json.getString("ownUserName"));
 			for (int i = 0; i < userlist.length; i++) {
@@ -557,7 +558,7 @@ public class TeacherAppInterfaceController {
 	    Integer userId = json.getInt("userId");
 	    ClassEntity classEntity = classService.queryObject(classId);
 	    StudentEntity student = studentService.queryObject(userId);
-	    JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+	    JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
 	    if(classEntity.getGid() == 0){
 	    	try {
 	    		String[] users = new String[1];
@@ -612,7 +613,7 @@ public class TeacherAppInterfaceController {
 			return R.error("请将参数userId传至服务器");
 		}
 		StudentEntity student = studentService.queryObject(json.getInt("userId"));
-		JMessageClient client = new JMessageClient(StudentAppInterfaceController.APPKEY, StudentAppInterfaceController.MASTERSECRET);
+		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
 		if(student.getGusername() == null || "".equals(student.getGusername())){
 			RegisterInfo[] users = new RegisterInfo[1];
         	Builder builder = RegisterInfo.newBuilder();
