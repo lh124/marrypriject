@@ -603,7 +603,6 @@ public class StudentAppInterfaceController{
 				map.put("avatar", student.getPic());
 				student.setGusername(student.getStudentNo());
 				studentService.update(student);
-				long gid = 0;
 				ClassEntity classEntity = classService.queryObject(json.getInt("classId"));
 				String[] u = new String[1];
 	        	u[0] = student.getGusername();
@@ -613,7 +612,7 @@ public class StudentAppInterfaceController{
 					classEntity.setGid(s.getGid());
 					classService.update(classEntity);
 				}else{
-					client.addOrRemoveMembers(gid, u, null);
+					client.addOrRemoveMembers(classEntity.getGid(), u, null);
 				}
 				String d = JSONArray.fromObject(map).toString();
 				return R.ok().put(DATA, d.substring(1,d.length()-1));
