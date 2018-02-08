@@ -1,5 +1,7 @@
 package io.renren.util;
 
+import io.renren.weixin.util.CommonUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,6 +9,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -82,13 +86,57 @@ public class OssUploadUtil {
 		 * @param folder 模拟文件夹名 如"qj_nanjing/"
 		 * @return String 返回的唯一MD5数字签名
 		 * */
+		public static  String uploadObject2OSS2(MultipartFile is, String folder) {
+			OSSClient ossClient = new OSSClient(ENDPOINT, ACCESS_KEY_ID,ACCESS_KEY_SECRET);
+			String bucketName = BACKET_NAME;
+			String fileName = null;
+			try {
+				//文件名
+				String fileExt = CommonUtil.getFileExt(is.getContentType());
+				fileName = "smart_app_chat_"+UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) 
+						   + fileExt;
+				//文件大小
+//	            Long fileSize = file.length(); 
+	            //创建上传Object的Metadata  
+				ObjectMetadata metadata = new ObjectMetadata();
+				//上传的文件的长度
+	            metadata.setContentLength(is.getInputStream().available());  
+	            //指定该Object被下载时的网页的缓存行为
+	            metadata.setCacheControl("no-cache"); 
+	            //指定该Object下设置Header
+	            metadata.setHeader("Pragma", "no-cache");  
+	            //指定该Object被下载时的内容编码格式
+	            metadata.setContentEncoding("utf-8");  
+	            //文件的MIME，定义文件的类型及网页编码，决定浏览器将以什么形式、什么编码读取文件。如果用户没有指定则根据Key或文件名的扩展名生成，
+	            //如果没有扩展名则填默认值application/octet-stream
+	            metadata.setContentType(fileExt); 
+	            //指定该Object被下载时的名称（指示MINME用户代理如何显示附加的文件，打开或下载，及文件名称）
+//	            metadata.setContentDisposition("filename/filesize=" + fileName + "/" + fileSize + "Byte.");  
+	            //上传文件   (上传文件流的形式)
+//	            PutObjectResult putResult = ossClient.putObject(bucketName, folder + fileName, is, metadata);  
+	            ossClient.putObject(bucketName, folder + fileName, is.getInputStream(), metadata);  
+				//解析结果
+//				resultStr = putResult.getETag();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return fileName;
+		}
+		
+		/**
+		 * 上传图片至OSS
+		 * @param ossClient  oss连接
+		 * @param folder 模拟文件夹名 如"qj_nanjing/"
+		 * @return String 返回的唯一MD5数字签名
+		 * */
 		public static  String uploadObject2OSS(InputStream is, String folder) {
 			OSSClient ossClient = new OSSClient(ENDPOINT, ACCESS_KEY_ID,ACCESS_KEY_SECRET);
 			String bucketName = BACKET_NAME;
 			String fileName = null;
 			try {
 				//文件名
-				fileName = "smart_head_pic_"+UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".jpg";
+				fileName = "smart_head_pic_"+UUID.randomUUID().toString().replace("-", "") + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) 
+						   + ".jpg";
 				//文件大小
 //	            Long fileSize = file.length(); 
 	            //创建上传Object的Metadata  
