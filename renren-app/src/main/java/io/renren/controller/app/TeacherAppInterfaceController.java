@@ -646,7 +646,7 @@ public class TeacherAppInterfaceController {
 						              classEntity.getClassName(), classEntity.getPic(), 2,users );
 				classEntity.setGid(s.getGid());
 				classService.update(classEntity);
-				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupMembers(classEntity.getGid()).getMembers()));
+				return R.ok().put(DATA, client.getGroupMembers(classEntity.getGid()).getMembers());
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -671,7 +671,7 @@ public class TeacherAppInterfaceController {
 		    			client.addOrRemoveMembers(classEntity.getGid(), u, null);
 		    		}
 	    		}
-				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupMembers(classEntity.getGid()).getMembers()));
+				return R.ok().put(DATA, client.getGroupMembers(classEntity.getGid()).getMembers());
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
