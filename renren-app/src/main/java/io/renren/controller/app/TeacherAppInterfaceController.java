@@ -108,6 +108,7 @@ import cn.jmessage.api.common.model.RegisterInfo;
 import cn.jmessage.api.common.model.RegisterInfo.Builder;
 import cn.jmessage.api.group.CreateGroupResult;
 import cn.jmessage.api.group.GroupInfoResult;
+import cn.jmessage.api.group.MemberResult;
 import cn.jmessage.api.user.UserInfoResult;
 
 import com.aliyuncs.exceptions.ClientException;
@@ -376,6 +377,9 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("registerUsers")){
 				//极光用户注册
 				return registerUsers(json.getJSONObject("data"));
+			}else if(type.equals("createGroup")){
+				//极光获创建群
+				return createGroup(json.getJSONObject("data"));
 			}else if(type.equals("getGroupMembers")){
 				//极光获取群成员列表
 				return getGroupMembers(json.getJSONObject("data"));
@@ -395,9 +399,39 @@ public class TeacherAppInterfaceController {
 			}else if(type.equals("getFriendsInfo")){
 				//极光查询好友列表
 				return getFriendsInfo(json.getJSONObject("data"));
+			}else if(type.equals("addGroup")){
+				//老师端通过群id和用户在极光的账号将用户加群
+				return addGroup(json.getJSONObject("data"));
 			}
 		}
-		return null;
+		return R.error("暂无此接口");
+	}
+	
+	private R addGroup(JSONObject json){
+		if(json.get("gid")==null){
+			return R.error("参数gid未到服务器");
+		}
+		if(json.get("userName")==null){
+			return R.error("参数userName未到服务器");
+		}
+		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+		String[] users = new String[1];
+    	users[0] = json.getString("userName");
+    	MemberResult[] list = null;
+		try {
+			client.addOrRemoveMembers(json.getLong("gid"), users, null);
+			list = client.getGroupMembers(json.getLong("gid")).getMembers();
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			if(JSONObject.fromObject(e.getMessage()).getJSONObject("error").getLong("code") == 899011){
+				return R.error("请勿重复添加群成员");
+			}
+			if(JSONObject.fromObject(e.getMessage()).getJSONObject("error").getLong("code") == 899002){
+				return R.error("该账号未注册到极光");
+			}
+		}
+		return R.ok().put(DATA, JSONObject.fromObject(list));
 	}
 	
 	private R addFriends(JSONObject json){
@@ -547,6 +581,45 @@ public class TeacherAppInterfaceController {
 		return R.ok("发送成功");
 	}
 	
+	private R createGroup(JSONObject json){
+		Integer classId = json.getInt("classId");
+	    Integer userId = json.getInt("userId");
+		if(json.get("classId")==null){
+	    	return R.error("请将参数classId上传至服务器");
+	    }
+		if(json.get("userId")==null){
+	    	return R.error("请将参数userId上传至服务器");
+	    }
+		ClassEntity classEntity = classService.queryObject(classId);
+		StudentEntity student = studentService.queryObject(userId);
+		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+		if(classEntity.getGid() == 0){
+			String[] users = new String[1];
+        	users[0] = student.getGusername();
+			try {
+				CreateGroupResult s = client.createGroup(student.getStudentNo(), classEntity.getClassName(),
+						              classEntity.getClassName(), classEntity.getPic(), 2,users );
+				classEntity.setGid(s.getGid());
+				classService.update(classEntity);
+				client.addOrRemoveMembers(s.getGid(), users, null);
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupInfo(s.getGid()).getOriginalContent()));
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupInfo(classEntity.getGid()).getOriginalContent()));
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.ok();
+	}
+	
 	private R getGroupMembers(JSONObject json){
 	    if(json.get("classId")==null){
 	    	return R.error("请将参数classId上传至服务器");
@@ -558,6 +631,12 @@ public class TeacherAppInterfaceController {
 	    Integer userId = json.getInt("userId");
 	    ClassEntity classEntity = classService.queryObject(classId);
 	    StudentEntity student = studentService.queryObject(userId);
+	    if(classEntity == null){
+	    	return R.error("查不到该班级信息，保证classId正确");
+	    }
+	    if(student == null){
+	    	return R.error("查不到该老师信息，保证userId正确");
+	    }
 	    JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
 	    if(classEntity.getGid() == 0){
 	    	try {
@@ -567,10 +646,7 @@ public class TeacherAppInterfaceController {
 						              classEntity.getClassName(), classEntity.getPic(), 2,users );
 				classEntity.setGid(s.getGid());
 				classService.update(classEntity);
-				Map<String, Object> map = new HashMap<String, Object>();
-	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()));
-	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
-				return R.ok().put(DATA, map);
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupMembers(classEntity.getGid()).getMembers()));
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -595,10 +671,7 @@ public class TeacherAppInterfaceController {
 		    			client.addOrRemoveMembers(classEntity.getGid(), u, null);
 		    		}
 	    		}
-	    		Map<String, Object> map = new HashMap<String, Object>();
-	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()).getOriginalContent());
-	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
-				return R.ok().put(DATA, map);
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupMembers(classEntity.getGid()).getMembers()));
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -631,7 +704,7 @@ public class TeacherAppInterfaceController {
 				student.setGusername(student.getStudentNo());
 				studentService.update(student);
 				String d = JSONArray.fromObject(map).toString();
-				return R.ok().put(DATA, d.substring(1,d.length()-1));
+				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -643,7 +716,7 @@ public class TeacherAppInterfaceController {
 				map.put("nickname", user.getNickname());
 				map.put("avatar", user.getAvatar());
 				String d = JSONArray.fromObject(map).toString();
-				return R.ok().put(DATA, d.substring(1,d.length()-1));
+				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -1659,6 +1732,7 @@ public class TeacherAppInterfaceController {
 			classappEntity.setStates(classInfoEntity.getType());
 			classappEntity.setPic(classEntity.getPic()==null?"http://static.gykjewm.com/tubiao/class.jpg":classEntity.getPic());
 			classappEntity.setLock(getClassIdLeave(classEntity.getId(), teacherId).size() ==0?1:0);//1为全0为有学生未到
+			classappEntity.setGid(classEntity.getGid());
 			list.add(classappEntity);
 		}
 		return R.ok().put(DATA, list);

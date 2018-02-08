@@ -107,6 +107,7 @@ import cn.jmessage.api.JMessageClient;
 import cn.jmessage.api.common.model.RegisterInfo;
 import cn.jmessage.api.common.model.RegisterInfo.Builder;
 import cn.jmessage.api.group.CreateGroupResult;
+import cn.jmessage.api.group.GroupInfoResult;
 import cn.jmessage.api.user.UserInfoResult;
 
 import com.aliyuncs.exceptions.ClientException;
@@ -363,6 +364,9 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("registerUsers")){
 				//极光用户注册
 				return registerUsers(json.getJSONObject("data"));
+			}else if(type.equals("createGroup")){
+				//极光创建群
+				return createGroup(json.getJSONObject("data"));
 			}else if(type.equals("getGroupMembers")){
 				//极光获取群成员列表
 				return getGroupMembers(json.getJSONObject("data"));
@@ -382,9 +386,20 @@ public class StudentAppInterfaceController{
 			}else if(type.equals("getFriendsInfo")){
 				//极光查询好友列表
 				return getFriendsInfo(json.getJSONObject("data"));
+			}else if(type.equals("getClassIdInfo")){
+				//学生端获取班级信息
+				return getClassIdInfo(json.getJSONObject("data"));
 			}
 		}
-		return null;
+		return R.error("暂无此接口");
+	}
+	
+	private R getClassIdInfo(JSONObject json){
+		if(json.get("classId") == null){
+			return R.error("班级id未上传至服务器");
+		}
+		Integer classId = json.getInt("classId");
+		return R.ok().put(DATA, classService.queryObject(classId));
 	}
 	
 	private R addFriends(JSONObject json){
@@ -534,6 +549,45 @@ public class StudentAppInterfaceController{
 		return R.ok("发送成功");
 	}
 	
+	private R createGroup(JSONObject json){
+		Integer classId = json.getInt("classId");
+	    Integer userId = json.getInt("userId");
+		if(json.get("classId")==null){
+	    	return R.error("请将参数classId上传至服务器");
+	    }
+		if(json.get("userId")==null){
+	    	return R.error("请将参数userId上传至服务器");
+	    }
+		ClassEntity classEntity = classService.queryObject(classId);
+		StudentEntity student = studentService.queryObject(userId);
+		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+		if(classEntity.getGid() == 0){
+			String[] users = new String[1];
+        	users[0] = student.getGusername();
+			try {
+				CreateGroupResult s = client.createGroup(student.getStudentNo(), classEntity.getClassName(),
+						              classEntity.getClassName(), classEntity.getPic(), 2,users );
+				classEntity.setGid(s.getGid());
+				classService.update(classEntity);
+				client.addOrRemoveMembers(s.getGid(), users, null);
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupInfo(s.getGid()).getOriginalContent()));
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				return R.ok().put(DATA, JSONObject.fromObject(client.getGroupInfo(classEntity.getGid()).getOriginalContent()));
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.ok();
+	}
+	
 	private R getGroupMembers(JSONObject json){
 	    if(json.get("classId")==null){
 	    	return R.error("请将参数classId上传至服务器");
@@ -544,9 +598,15 @@ public class StudentAppInterfaceController{
 	    Integer classId = json.getInt("classId");
 	    Integer userId = json.getInt("userId");
 	    ClassEntity classEntity = classService.queryObject(classId);
+	    StudentEntity student = studentService.queryObject(userId);
+	    if(classEntity == null){
+	    	return R.error("查不到该班级信息，保证classId正确");
+	    }
+	    if(student == null){
+	    	return R.error("查不到该学生信息，保证userId正确");
+	    }
 	    JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
 	    if(classEntity.getGid() == 0){
-	    	StudentEntity student = studentService.queryObject(userId);
 	    	try {
 	    		String[] users = new String[1];
 	        	users[0] = student.getGusername();
@@ -554,10 +614,7 @@ public class StudentAppInterfaceController{
 						              classEntity.getClassName(), classEntity.getPic(), 2,users );
 				classEntity.setGid(s.getGid());
 				classService.update(classEntity);
-				Map<String, Object> map = new HashMap<String, Object>();
-	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()));
-	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
-				return R.ok().put(DATA, map);
+				return R.ok().put(DATA, client.getGroupMembers(classEntity.getGid()).getMembers());
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -565,10 +622,19 @@ public class StudentAppInterfaceController{
 			}
 	    }else{
 	    	try {
-	    		Map<String, Object> map = new HashMap<String, Object>();
-	    		map.put("groupInfo", client.getGroupInfo(classEntity.getGid()).getOriginalContent());
-	    		map.put("list", client.getGroupMembers(classEntity.getGid()).getMembers());
-				return R.ok().put(DATA, map);
+	    		GroupInfoResult[] groups = client.getGroupListByUser(student.getGusername()).getGroups();
+	    		if(groups.length == 0){
+	    			String[] u = new String[1];
+		        	u[0] = student.getGusername();
+	    			client.addOrRemoveMembers(classEntity.getGid(), u, null);
+	    		}else if(groups.length > 1){
+	    			return R.error("学生端只能加入一个群");
+	    		}else if(groups[0].getGid() != classEntity.getGid()){
+	    			String[] u = new String[1];
+		        	u[0] = student.getGusername();
+	    			client.addOrRemoveMembers(classEntity.getGid(), u, null);
+	    		}
+				return R.ok().put(DATA, client.getGroupMembers(classEntity.getGid()).getMembers());
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -581,9 +647,6 @@ public class StudentAppInterfaceController{
 	private R registerUsers(JSONObject json){
 		if(json.get("userId")==null){
 			return R.error("请将参数userId传至服务器");
-		}
-		if(json.get("classId")==null){
-			return R.error("请将参数classId传至服务器");
 		}
 		StudentEntity student = studentService.queryObject(json.getInt("userId"));
 		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
@@ -603,19 +666,10 @@ public class StudentAppInterfaceController{
 				map.put("avatar", student.getPic());
 				student.setGusername(student.getStudentNo());
 				studentService.update(student);
-				ClassEntity classEntity = classService.queryObject(json.getInt("classId"));
 				String[] u = new String[1];
 	        	u[0] = student.getGusername();
-				if(classEntity.getGid() == 0){
-					CreateGroupResult s = client.createGroup(student.getStudentNo(), classEntity.getClassName(),
-				              classEntity.getClassName(), classEntity.getPic(), 2,u);
-					classEntity.setGid(s.getGid());
-					classService.update(classEntity);
-				}else{
-					client.addOrRemoveMembers(classEntity.getGid(), u, null);
-				}
 				String d = JSONArray.fromObject(map).toString();
-				return R.ok().put(DATA, d.substring(1,d.length()-1));
+				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -627,7 +681,7 @@ public class StudentAppInterfaceController{
 				map.put("nickname", user.getNickname());
 				map.put("avatar", user.getAvatar());
 				String d = JSONArray.fromObject(map).toString();
-				return R.ok().put(DATA, d.substring(1,d.length()-1));
+				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
 			} catch (APIConnectionException e) {
 				e.printStackTrace();
 			} catch (APIRequestException e) {
@@ -1633,6 +1687,13 @@ public class StudentAppInterfaceController{
 				map.put("updateType", updateType);
 				map.put("updateIf", updateIf);
 				map.put("appPath", appPath);
+				if(classEntity.getGid() == 0){
+					map.put("gid", 0);
+					map.put("groupName", "");
+				}else{
+					map.put("gid", classEntity.getGid());
+					map.put("groupName", classEntity.getClassName());
+				}
 				map.put("bindingType", schoolService.queryObject(classService.queryObject(user.getClassId()).getSchoolId()).getBindingType());
 				return R.ok().put(DATA, map);
 			}else{
