@@ -105,6 +105,7 @@ import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
 import cn.jmessage.api.JMessageClient;
 import cn.jmessage.api.common.model.RegisterInfo;
+import cn.jmessage.api.common.model.UserPayload;
 import cn.jmessage.api.common.model.RegisterInfo.Builder;
 import cn.jmessage.api.group.CreateGroupResult;
 import cn.jmessage.api.group.GroupInfoResult;
@@ -415,10 +416,20 @@ public class TeacherAppInterfaceController {
 			return R.error("参数userName未到服务器");
 		}
 		JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+		StudentEntity student = new StudentEntity();
+		student.setStudentNo(json.getString("userName"));
+		EntityWrapper<StudentEntity> wrapper = new EntityWrapper<StudentEntity>(student);
+		student = this.studentService.selectOne(wrapper);
 		String[] users = new String[1];
     	users[0] = json.getString("userName");
     	MemberResult[] list = null;
 		try {
+			if("1".equals(student.getUserType())){
+				GroupInfoResult[] groups = client.getGroupListByUser(student.getGusername()).getGroups();
+				if(groups.length > 0){
+					return R.error("学生账号不能添加多个群");
+				}
+			}
 			client.addOrRemoveMembers(json.getLong("gid"), users, null);
 			list = client.getGroupMembers(json.getLong("gid")).getMembers();
 		} catch (APIConnectionException e) {
@@ -431,7 +442,7 @@ public class TeacherAppInterfaceController {
 				return R.error("该账号未注册到极光");
 			}
 		}
-		return R.ok().put(DATA, JSONObject.fromObject(list));
+		return R.ok().put(DATA, list);
 	}
 	
 	private R addFriends(JSONObject json){
@@ -548,10 +559,10 @@ public class TeacherAppInterfaceController {
 		Integer receiveId = json.getInt("receiveId");//接收消息id（可以是班级id，可以是用户id）
 		Integer messageType = json.getInt("messageType");//1为班级群聊消息，2为点对点的私聊消息
 		try {
-			InputStream[] is = uploadfile(multipartResolver, request);
+			MultipartFile[] is = uploadfile2(multipartResolver, request);
 			if(is != null){
 				for (int i = 0; i < is.length; i++) {
-					String path = FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/");
+					String path = FILEPATH+"smart_app_chat/"+OssUploadUtil.uploadObject2OSS2(is[i], "smart_app_chat/");
 					SmartSendMessageEntity smartSendMessage = new SmartSendMessageEntity();
 					smartSendMessage.setSendUserId(sendUserId);
 					smartSendMessage.setReceiveId(receiveId);
@@ -692,7 +703,7 @@ public class TeacherAppInterfaceController {
         	Builder builder = RegisterInfo.newBuilder();
         	builder.setUsername(student.getStudentNo());
         	builder.setNickname(student.getStudentName());
-        	builder.setPassword("000000");
+        	builder.setPassword(student.getPasswordd());
         	builder.setAvatar(student.getPic());
         	users[0] = builder.build();
             try {
@@ -701,6 +712,7 @@ public class TeacherAppInterfaceController {
 				map.put("username", student.getStudentNo());
 				map.put("nickname", student.getStudentName());
 				map.put("avatar", student.getPic());
+				map.put("password", student.getPasswordd());
 				student.setGusername(student.getStudentNo());
 				studentService.update(student);
 				String d = JSONArray.fromObject(map).toString();
@@ -715,6 +727,7 @@ public class TeacherAppInterfaceController {
 				map.put("username", user.getUsername());
 				map.put("nickname", user.getNickname());
 				map.put("avatar", user.getAvatar());
+				map.put("password", student.getPasswordd());
 				String d = JSONArray.fromObject(map).toString();
 				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
 			} catch (APIConnectionException e) {
@@ -1209,6 +1222,19 @@ public class TeacherAppInterfaceController {
 			if(is != null){
 				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
 				studentService.update(student);
+				try {
+					if(student.getGusername() != null && !"".equals(student.getGusername())){
+						JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
+						builder.setAvatar(student.getPic());
+						UserPayload user = builder.build();
+						client.updateUserInfo(student.getGusername(), user);
+					}
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					e.printStackTrace();
+				}
 				return R.ok().put(DATA, studentService.queryObject(student.getId()));
 			}else{
 				return R.ok().put(DATA, studentService.queryObject(student.getId()));
@@ -1226,6 +1252,16 @@ public class TeacherAppInterfaceController {
 			}else{
 				student.setPasswordd(new Sha256Hash(json.getString("newPassword")).toString());
 				studentService.update(student);
+				try {
+					if(student.getGusername() != null && !"".equals(student.getGusername())){
+						JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+						client.updateUserPassword(student.getGusername(), student.getPasswordd());
+					}
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return R.ok("密码修改成功");
@@ -1238,6 +1274,19 @@ public class TeacherAppInterfaceController {
 			studentService.update(studnet);
 		}
 		StudentEntity student = studentService.queryObject(studnet.getId());
+		try {
+			if(studnet.getGusername() != null && !"".equals(studnet.getGusername())){
+				JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+				cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
+				builder.setNickname(studnet.getStudentName());
+				UserPayload user = builder.build();
+				client.updateUserInfo(studnet.getGusername(), user);
+			}
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			e.printStackTrace();
+		}
 		return R.ok().put(DATA, student);
 	}
 	
@@ -1678,6 +1727,26 @@ public class TeacherAppInterfaceController {
 			return R.error("失败");
 		}
 		return R.ok();
+	}
+	
+	//图片文件上传
+	public MultipartFile[] uploadfile2(CommonsMultipartResolver multipartResolver,HttpServletRequest request) throws IllegalStateException, IOException{
+		   MultipartFile[] is = null;
+				//判断 request 是否有文件上传,即多部分请求  
+			    if(multipartResolver.isMultipart(request)){
+			        MultipartHttpServletRequest m= (MultipartHttpServletRequest)request;
+			        List<MultipartFile> detail = new ArrayList<MultipartFile>();
+			        if(m.getFiles("files").size() != 0){
+			        	detail = m.getFiles("files");
+			        	is = new MultipartFile[detail.size()];
+			        	for (int i = 0; i < detail.size(); i++) {
+			        		if(!detail.get(i).isEmpty()){
+			        			is[i] = detail.get(i);
+			        		}
+			        	}
+			        }
+			     }
+		 return is;
 	}
 	
 	//图片文件上传

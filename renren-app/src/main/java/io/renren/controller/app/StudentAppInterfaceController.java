@@ -106,6 +106,7 @@ import cn.jiguang.common.resp.APIRequestException;
 import cn.jmessage.api.JMessageClient;
 import cn.jmessage.api.common.model.RegisterInfo;
 import cn.jmessage.api.common.model.RegisterInfo.Builder;
+import cn.jmessage.api.common.model.UserPayload;
 import cn.jmessage.api.group.CreateGroupResult;
 import cn.jmessage.api.group.GroupInfoResult;
 import cn.jmessage.api.user.UserInfoResult;
@@ -655,7 +656,7 @@ public class StudentAppInterfaceController{
         	Builder builder = RegisterInfo.newBuilder();
         	builder.setUsername(student.getStudentNo());
         	builder.setNickname(student.getStudentName());
-        	builder.setPassword("000000");
+        	builder.setPassword(student.getPasswordd());
         	builder.setAvatar(student.getPic());
         	users[0] = builder.build();
             try {
@@ -664,6 +665,7 @@ public class StudentAppInterfaceController{
 				map.put("username", student.getStudentNo());
 				map.put("nickname", student.getStudentName());
 				map.put("avatar", student.getPic());
+				map.put("password", student.getPasswordd());
 				student.setGusername(student.getStudentNo());
 				studentService.update(student);
 				String[] u = new String[1];
@@ -679,6 +681,7 @@ public class StudentAppInterfaceController{
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("username", user.getUsername());
 				map.put("nickname", user.getNickname());
+				map.put("password", student.getPasswordd());
 				map.put("avatar", user.getAvatar());
 				String d = JSONArray.fromObject(map).toString();
 				return R.ok().put(DATA, JSONObject.fromObject(d.substring(1,d.length()-1)));
@@ -1168,6 +1171,19 @@ public class StudentAppInterfaceController{
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
 				Integer id = studentEntity.getClassId();
 				studentEntity.setSchoolId(classService.queryObject(id).getSchoolId());
+				try {
+					if(student.getGusername() != null && !"".equals(student.getGusername())){
+						JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
+						builder.setAvatar(student.getPic());
+						UserPayload user = builder.build();
+						client.updateUserInfo(student.getGusername(), user);
+					}
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					e.printStackTrace();
+				}
 				return R.ok().put(DATA, studentEntity);
 			}else{
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
@@ -1205,6 +1221,19 @@ public class StudentAppInterfaceController{
 		if(studnet != null){
 			studnet.setStudentName(json.getString("studentName"));
 			studentService.update(studnet);
+			try {
+				if(studnet.getGusername() != null && !"".equals(studnet.getGusername())){
+					JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+					cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
+					builder.setNickname(studnet.getStudentName());
+					UserPayload user = builder.build();
+					client.updateUserInfo(studnet.getGusername(), user);
+				}
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
 		}
 		StudentEntity student = studentService.queryObject(studnet.getId());
 		return R.ok().put(DATA, student);
@@ -1218,6 +1247,16 @@ public class StudentAppInterfaceController{
 			}else{
 				student.setPasswordd(new Sha256Hash(json.getString("newPassword")).toString());
 				studentService.update(student);
+				try {
+					if(student.getGusername() != null && !"".equals(student.getGusername())){
+						JMessageClient client = new JMessageClient(JiguanUtil.APPKEY, JiguanUtil.MASTERSECRET);
+						client.updateUserPassword(student.getGusername(), student.getPasswordd());
+					}
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return R.ok("密码修改成功");
