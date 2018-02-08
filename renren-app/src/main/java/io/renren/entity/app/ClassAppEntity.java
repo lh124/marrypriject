@@ -11,6 +11,16 @@ public class ClassAppEntity {
 	private String pic;
 	
 	private Integer lock;
+	
+	private Long gid;
+
+	public Long getGid() {
+		return gid;
+	}
+
+	public void setGid(Long gid) {
+		this.gid = gid;
+	}
 
 	public Integer getLock() {
 		return lock;
