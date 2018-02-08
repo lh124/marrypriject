@@ -145,16 +145,19 @@ public class CommonUtil {
 	 */
 	public static String getFileExt(String contentType) {
 		String fileExt = "";
-		if ("image/jpeg".equals(contentType))
+		if ("image/jpeg".equals(contentType)){
 			fileExt = ".jpg";
-		else if ("audio/mpeg".equals(contentType))
+		}else if ("audio/mpeg".equals(contentType)){
 			fileExt = ".mp3";
-		else if ("audio/amr".equals(contentType))
+		}else if ("audio/amr".equals(contentType)){
 			fileExt = ".mp3";
-		else if ("video/mp4".equals(contentType))
+		}else if ("video/mp4".equals(contentType)){
 			fileExt = ".mp4";
-		else if ("video/mpeg4".equals(contentType))
+		}else if ("video/mpeg4".equals(contentType)){
 			fileExt = ".mp4";
+		}else{
+			fileExt = ".jpg";
+		}
 		return fileExt;
 	}
 }
