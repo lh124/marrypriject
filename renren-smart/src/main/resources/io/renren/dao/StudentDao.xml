@@ -9,13 +9,13 @@
 		student_name as studentName ,sex as sex ,student_type as studentType ,
 		pic as pic ,class_id as classId ,passwordd as passwordd, open_id as openId ,school_id as schoolId
 		longitude, latitude,phoen as phoen,newsType as newsType,newsId as newsId,bindingType as bindingType,
-		states as states,expireTime as expireTime,sign as sign,gusername as gusername		
+		states as states,expireTime as expireTime,sign as sign,gusername as gusername,gid as gid		
 	</sql>
 	<!-- 可根据自己需要-->
 	<sql id="allColumns">
 		id ,student_code ,student_no ,student_name ,sex ,user_type,student_type ,
 		ifnull(pic,'http://guanyukeji-static.oss-cn-hangzhou.aliyuncs.com/1.png') pic ,
-		class_id ,passwordd , open_id,expireTime,sign,gusername,
+		class_id ,passwordd , open_id,expireTime,sign,gusername,gid,
 		longitude, latitude,school_id,phoen,newsType,newsId,bindingType,states	
 	</sql>
 	<!-- 可根据自己的需求，是否要使用 -->
@@ -42,6 +42,7 @@
 		        <result property="expireTime" column="expireTime"/>
 		        <result property="sign" column="sign"/>
 		        <result property="gusername" column="gusername"/>
+		        <result property="gid" column="gid"/>
 	    </resultMap>
 
 	<select id="queryObject" resultType="io.renren.entity.smart.StudentEntity">
@@ -117,6 +118,7 @@
 			`latitude`,
 			`bindingType`,
 			`user_type`,
+			`gid`,
 			`longitude`
 		)
 		values
@@ -134,6 +136,7 @@
 			#{latitude},
 			#{bindingType},
 			#{userType},
+			#{gid},
 			#{longitude}
 			
 		)
@@ -163,6 +166,7 @@
 			<if test="latitude != null  and latitude.trim() != ''">latitude = #{latitude},</if>
 			<if test="sign != null">`sign` = #{sign}, </if>
 			<if test="expireTime != null">`expireTime` = #{expireTime}, </if>
+			<if test="gid != null">`gid` = #{gid}, </if>
 			<if test="longitude != null  and longitude.trim() != ''">longitude = #{longitude}</if>
 		</set> 
 		where id = #{id}
