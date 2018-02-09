@@ -999,7 +999,7 @@ public class StudentAppInterfaceController{
 		}else{
 			smartRanking = student.get(0);
 		}
-		m.put("student", student.size() == 0 ? "":student.get(0));//学生个人成绩
+		m.put("student", smartRanking);//学生个人成绩
 		m.put("smartRankinglist", smartRankinglist);
 		return R.ok().put(DATA, m);
 	}
