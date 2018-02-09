@@ -1,7 +1,10 @@
 package io.renren.controller.smart;
 
+import io.renren.entity.smart.ClassEntity;
 import io.renren.entity.smart.ClassInfoEntity;
+import io.renren.entity.smart.StudentEntity;
 import io.renren.service.smart.ClassInfoService;
+import io.renren.service.smart.ClassService;
 import io.renren.service.smart.StudentService;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
@@ -18,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
+import cn.jmessage.api.JMessageClient;
+
 
 /**
  * 
@@ -33,6 +40,10 @@ public class ClassInfoController {
 	private ClassInfoService classInfoService;
 	@Autowired
 	private StudentService studentService;
+	@Autowired
+	private ClassService classService;
+	public final static String TEACHERAPPKEY = "aecc535fc376fcb112949ee6";
+	public final static String TEACHERMASTERSECRET = "436824de608a150e7e4105ce";
 	
 	/**
 	 * 列表
@@ -56,8 +67,25 @@ public class ClassInfoController {
 	@RequiresPermissions("classinfo:info")
 	public R info(@PathVariable("id") Integer id){
 		ClassInfoEntity classInfo = classInfoService.queryObject(id);
-		
 		return R.ok().put("classInfo", classInfo);
+	}
+	
+	public void touserJiguangs(Integer id){
+		ClassInfoEntity classInfo = classInfoService.queryObject(id);
+		if(classInfo.getType() == 1 || classInfo.getType() == 2){
+			StudentEntity studentEntity = studentService.queryObject(classInfo.getUserId());
+			ClassEntity classEntity = classService.queryObject(classInfo.getClassid());
+			try {
+				JMessageClient client = new JMessageClient(TEACHERAPPKEY, TEACHERMASTERSECRET);
+				String[] addList = new String[1];
+				addList[0] = studentEntity.getGusername();
+				client.addOrRemoveMembers(classEntity.getGid(), addList, null);
+			} catch (APIConnectionException e) {
+				e.printStackTrace();
+			} catch (APIRequestException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
@@ -66,10 +94,11 @@ public class ClassInfoController {
 	@RequestMapping("/save")
 	@RequiresPermissions("classinfo:save")
 	public R save(@RequestBody ClassInfoEntity classInfo){
-		classInfoService.save(classInfo);
+		classInfoService.insert(classInfo);
+		touserJiguangs(classInfo.getId());
 		return R.ok();
 	}
-	
+	 
 	/**
 	 * 修改
 	 */
