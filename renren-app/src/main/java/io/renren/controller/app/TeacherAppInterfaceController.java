@@ -440,23 +440,23 @@ public class TeacherAppInterfaceController {
 		if(classEntity==null){
 			return R.error("无此班级");
 		}
+		JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
 		if(classInfo.size()==0){
-//			map.put("classId", classEntity.getId());
-//			if(studentService.queryList(map).size() > 0){
-//				CreateGroupResult s;
-//				try {
-//					s = client.createGroup("111111", classEntity.getClassName(),
-//					          classEntity.getClassName(), classEntity.getPic(), 2,"" );
-//					classEntity.setGid(s.getGid());
-//					classService.update(classEntity);
-//				} catch (APIConnectionException e) {
-//					e.printStackTrace();
-//				} catch (APIRequestException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			map.put("classId", classEntity.getId());
+			if(studentService.queryList(map).size() > 0){
+				CreateGroupResult s;
+				try {
+					s = client.createGroup("teacher", classEntity.getClassName(),
+					          classEntity.getClassName(), classEntity.getPic(), 2,"" );
+					classEntity.setGid(s.getGid());
+					classService.update(classEntity);
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					e.printStackTrace();
+				}
+			}
 		}else{
-			JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
 			String[] user = new String[classInfo.size()];
 			int k = 0;
 			for(int i = 0; i < classInfo.size(); i++){
