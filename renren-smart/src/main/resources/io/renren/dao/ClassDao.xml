@@ -32,12 +32,12 @@
 	</select>
 
 	<select id="queryList" resultType="io.renren.entity.smart.ClassEntity">
-		select <include refid="allColumns"></include> from class where 
+		select <include refid="allColumns"></include> from class 
 		     <if test="schoolId != null and schoolId != ''">
-			     school_id=${schoolId}   
+			     where school_id=${schoolId}   
 			 </if>
 			 <if test="gradeId != null and gradeId != ''">
-			     grade_id = ${gradeId}  
+			     where grade_id = ${gradeId}  
 			 </if>
 			 <choose>
 		            <when test="sidx != null and sidx.trim() != ''">
