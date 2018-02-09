@@ -85,6 +85,15 @@ public class StudentEntity implements Serializable {
 	@TableField(value="gusername")
 	private String gusername;
 	
+	@TableField(value="gid")
+	private String gid;
+	
+	public String getGid() {
+		return gid;
+	}
+	public void setGid(String gid) {
+		this.gid = gid;
+	}
 	public String getGusername() {
 		return gusername;
 	}
