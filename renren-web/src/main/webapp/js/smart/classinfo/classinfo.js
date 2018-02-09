@@ -41,11 +41,11 @@ $(function () {
 document.getElementById("calssInfocontent").style.display = "none";
 function getcontent(type){
 	if(type == "1"){
-		getData($("#schoolId").val(),2);
+		getData($("#gradeId").val(),2);
 		document.getElementById("calssInfocontent").style.display = "block";
 	}else{
 		if(type == "2"){
-			getData($("#schoolId").val(),2);
+			getData($("#gradeId").val(),2);
 		}else{
 			getData2($("#classId").val(),1);
 		}
@@ -80,7 +80,7 @@ function getData2(id,type){
 function getData(id,type){
 	$.ajax({
 		type: "POST",
-	    url: "../sys/uniform/student/list?schoolId="+id+"&userType="+type+"&page=1&limit=200&order=&sidx=",
+	    url: "../sys/uniform/student/list?gradeId="+id+"&userType="+type+"&page=1&limit=200&order=&sidx=",
 	    success: function(r){
 	    	if(r.code === 0){
 	    		var list = r.page.list;
@@ -178,11 +178,11 @@ var vm = new Vue({
                 vm.classInfo = r.classInfo;
                 $("#userType").val(vm.classInfo.userId);
                 if(vm.classInfo.type == "1"){
-                	getData($("#schoolId").val(),2);
+                	getData($("#gradeId").val(),2);
                 	document.getElementById("calssInfocontent").style.display = "block";
                 }else{
                 	if(vm.classInfo.type == "2"){
-            			getData($("#schoolId").val(),2);
+            			getData($("#gradeId").val(),2);
             		}else{
             			getData2($("#classId").val(),1);
             		}
