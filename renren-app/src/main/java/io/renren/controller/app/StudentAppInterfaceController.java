@@ -987,6 +987,18 @@ public class StudentAppInterfaceController{
 		map.put("userId", studentId);
 		List<SmartRankingEntity> student = smartRankingService.queryList(map);
 		Map<String, Object> m = new HashMap<String, Object>();
+		SmartRankingEntity smartRanking = null;
+		if(student.size() == 0){
+			smartRanking = new SmartRankingEntity();
+			smartRanking.setFractionTotal("0");
+			smartRanking.setFractionAverage(new Double(0));
+			smartRanking.setClassRanking(0);
+			smartRanking.setGradeRanking(0);
+			smartRanking.setClassRankingLast(0);
+			smartRanking.setGradeRankingLast(0);
+		}else{
+			smartRanking = student.get(0);
+		}
 		m.put("student", student.size() == 0 ? "":student.get(0));//学生个人成绩
 		m.put("smartRankinglist", smartRankinglist);
 		return R.ok().put(DATA, m);
