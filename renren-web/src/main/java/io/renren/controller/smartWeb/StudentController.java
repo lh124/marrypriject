@@ -6,6 +6,7 @@ import io.renren.entity.smart.ClassNoticeEntity;
 import io.renren.entity.smart.PhotoClassWorkMsgEntity;
 import io.renren.entity.smart.SchoolEntity;
 import io.renren.entity.smart.SchoolNoticeEntity;
+import io.renren.entity.smart.SmartGradeEntity;
 import io.renren.entity.smart.StudentEntity;
 import io.renren.entity.smart.StudentEpcEntity;
 import io.renren.entity.smart.Studenttongji;
@@ -16,9 +17,11 @@ import io.renren.service.smart.ClassService;
 import io.renren.service.smart.PhotoClassWorkMsgService;
 import io.renren.service.smart.SchoolNoticeService;
 import io.renren.service.smart.SchoolService;
+import io.renren.service.smart.SmartGradeService;
 import io.renren.service.smart.SmartNewsService;
 import io.renren.service.smart.StudentEpcService;
 import io.renren.service.smart.StudentService;
+import io.renren.util.JiguanUtil;
 import io.renren.utils.POIMvcUtil;
 import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
@@ -47,6 +50,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
+import cn.jmessage.api.JMessageClient;
+import cn.jmessage.api.common.model.RegisterInfo;
+import cn.jmessage.api.common.model.RegisterInfo.Builder;
+import cn.jmessage.api.common.model.cross.CrossGroup;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
@@ -77,6 +87,8 @@ public class StudentController {
 	private SchoolNoticeService schoolNoticeService;
 	@Autowired
 	private PhotoClassWorkMsgService photoClassWorkMsgService;
+	@Autowired
+	private SmartGradeService smartGradeService;
 	
 	//老师
 	public final static String USER_TYPE_TEACHER = "2";
@@ -210,14 +222,19 @@ public class StudentController {
 	 */
 	@RequestMapping("/list")
 	@RequiresPermissions("uniform_student:list")
-	public R list(@RequestParam Map<String, Object> params){
+	public R list(@RequestParam Map<String, Object> params,HttpServletRequest request){
+		if(request.getParameter("gradeId") != null && !"".equals(request.getParameter("gradeId"))){
+			String id = request.getParameter("gradeId");
+			params.put("schoolId", smartGradeService.queryObject(Integer.parseInt(id)).getSchoolId());
+		}
+		if(request.getParameter("userType") != null && !"".equals(request.getParameter("userType"))){
+			params.put("userType", request.getParameter("userType"));
+		}
 		//查询列表数据
         Query query = new Query(params);
-        
         int page = Integer.parseInt(params.get("page").toString());
         int limit = Integer.parseInt(params.get("limit").toString());
         query.put("begin", (page-1)*limit);
-        
         DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		List<StudentEntity> studentList = studentService.queryList(query);
 		int total = studentService.queryTotal(query);
@@ -248,7 +265,6 @@ public class StudentController {
 	@RequestMapping("/save")
 	@RequiresPermissions("uniform_student:save")
 	public R save(@RequestBody StudentEntity student){
-		
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		EntityWrapper<StudentEntity> wrraper = new EntityWrapper<StudentEntity>(student);
 		StudentEntity st = this.studentService.selectOne(wrraper);
@@ -258,6 +274,7 @@ public class StudentController {
 		String newPassword = new Sha256Hash("000000").toHex();
 		student.setPasswordd(newPassword);
 		studentService.insert(student);
+		userJiguang(student.getId());
 		if(student.getUserType().equals("1")){
 			ClassEntity classEntity = classService.queryObject(student.getClassId());//通过学生id获取班级信息
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -288,8 +305,8 @@ public class StudentController {
 				smartNewsService.save(sne);
 			}
 			
-			SchoolEntity schoolEntity = schoolService.queryObject(classEntity.getSchoolId());//通过班级id获取学校信息
-			map.put("schoolid", schoolEntity.getId());
+			SmartGradeEntity gradeEntity = smartGradeService.queryObject(classEntity.getGradeId());
+			map.put("schoolid", gradeEntity.getSchoolId());
 			List<SchoolNoticeEntity> schoolNoticeList = schoolNoticeService.queryList(map);
 			for (Iterator iterator = schoolNoticeList.iterator(); iterator.hasNext();) {
 				SchoolNoticeEntity schoolNoticeEntity = (SchoolNoticeEntity) iterator.next();
@@ -409,10 +426,85 @@ public class StudentController {
 			}
 			student.setPasswordd(newPassword);
 		}
-		
 		studentService.update(student);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		userJiguang(student.getId());
 		return R.ok();
+	}
+	
+	public void userJiguang(Integer id){
+		StudentEntity studentEntity = studentService.queryObject(id);
+		JMessageClient client = null;
+		if(studentEntity.getGusername() == null || "".equals(studentEntity.getGusername())){
+			if("1".equals(studentEntity.getUserType())){
+				client = new JMessageClient(JiguanUtil.STUDENTAPPKEY, JiguanUtil.STUDENTMASTERSECRET);
+				try {
+					ClassEntity classEntity = classService.queryObject(studentEntity.getClassId());
+					RegisterInfo[] users = new RegisterInfo[1];
+					Builder builder = RegisterInfo.newBuilder();
+		        	builder.setUsername(studentEntity.getStudentNo());
+		        	builder.setNickname(studentEntity.getStudentName());
+		        	builder.setPassword(studentEntity.getPasswordd().substring(0, 15));
+		        	builder.setAvatar(studentEntity.getPic());
+		        	users[0] = builder.build();
+					client.registerUsers(users);
+					String[] add_users = new String[1];
+					CrossGroup[] groups = new CrossGroup[1];
+					add_users[0] = studentEntity.getStudentNo();
+					CrossGroup.Builder gb = new CrossGroup.Builder();
+			    	gb.setAppKey(JiguanUtil.STUDENTAPPKEY);
+			    	gb.setAddUsers(add_users);
+			    	groups[0] = gb.build();
+			    	client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
+					client.addOrRemoveCrossGroupMember(classEntity.getGid(), groups);
+					studentEntity.setGusername(studentEntity.getStudentNo());
+					studentEntity.setGid(classEntity.getGid()+"");
+					studentService.update(studentEntity);
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+					 
+				}
+			}else if("2".equals(studentEntity.getUserType())){
+				try {
+					client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
+					RegisterInfo[] users = new RegisterInfo[1];
+					Builder builder = RegisterInfo.newBuilder();
+		        	builder.setUsername(studentEntity.getStudentNo());
+		        	builder.setNickname(studentEntity.getStudentName());
+		        	builder.setPassword(studentEntity.getPasswordd().substring(0, 15));
+		        	builder.setAvatar(studentEntity.getPic());
+		        	users[0] = builder.build();
+					client.registerUsers(users);
+					studentEntity.setGusername(studentEntity.getStudentNo());
+					studentService.update(studentEntity);
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+				}
+			}
+		}else{
+			if("1".equals(studentEntity.getUserType()) && ("".equals(studentEntity.getGid()) || studentEntity.getGid()==null)){
+				try {
+					client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
+					ClassEntity classEntity = classService.queryObject(studentEntity.getClassId());
+					String[] add_users = new String[1];
+					CrossGroup[] groups = new CrossGroup[1];
+					add_users[0] = studentEntity.getGusername();
+					CrossGroup.Builder gb = new CrossGroup.Builder();
+			    	gb.setAppKey(JiguanUtil.STUDENTAPPKEY);
+			    	gb.setAddUsers(add_users);
+			    	groups[0] = gb.build();
+					client.addOrRemoveCrossGroupMember(classEntity.getGid(), groups);
+					studentEntity.setGusername(studentEntity.getStudentNo());
+					studentEntity.setGid(classEntity.getGid()+"");
+					studentService.update(studentEntity);
+				} catch (APIConnectionException e) {
+					e.printStackTrace();
+				} catch (APIRequestException e) {
+				}
+			}
+		}
 	}
 	
 	/**
@@ -450,7 +542,8 @@ public class StudentController {
 				} else {
 					String newPassword = new Sha256Hash("000000").toHex();
 					student.setPasswordd(newPassword);
-					this.studentService.save(student);
+					this.studentService.insert(student);
+					userJiguang(student.getId());
 //					newUserList.add(student);
 				}
 				

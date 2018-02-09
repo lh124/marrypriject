@@ -1,5 +1,18 @@
 package io.renren.controller.smartWeb;
 
+import io.renren.entity.SysAdminSchoolEntity;
+import io.renren.entity.smart.ClassEntity;
+import io.renren.service.SysAdminSchoolService;
+import io.renren.service.smart.ClassService;
+import io.renren.util.JiguanUtil;
+import io.renren.utils.PageUtils;
+import io.renren.utils.Query;
+import io.renren.utils.R;
+import io.renren.utils.RRException;
+import io.renren.utils.ShiroUtils;
+import io.renren.utils.dataSource.DBTypeEnum;
+import io.renren.utils.dataSource.DbContextHolder;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
+import cn.jmessage.api.JMessageClient;
+import cn.jmessage.api.group.CreateGroupResult;
 
-import io.renren.entity.SysAdminSchoolEntity;
-import io.renren.entity.smart.ClassEntity;
-import io.renren.service.SysAdminSchoolService;
-import io.renren.service.smart.ClassService;
-import io.renren.utils.PageUtils;
-import io.renren.utils.Query;
-import io.renren.utils.R;
-import io.renren.utils.RRException;
-import io.renren.utils.ShiroUtils;
-import io.renren.utils.dataSource.DBTypeEnum;
-import io.renren.utils.dataSource.DbContextHolder;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 
 
 /**
@@ -139,7 +145,28 @@ public class ClassController {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		classService.insert(classe);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		group(classe.getId());
 		return R.ok().put("id", classe.getId());
+	}
+	
+	public void group(Integer id){
+		ClassEntity classe = classService.queryObject(id);
+		JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
+		try {
+			if(classe.getGid() == 0){ 
+				CreateGroupResult s = client.createGroup("teacher", classe.getClassName(),
+						classe.getClassName(), classe.getPic(), 2,null );
+				classe.setGid(s.getGid());
+				classService.update(classe);
+			}else{
+				client.updateGroupInfo(classe.getGid(), classe.getClassName(), classe.getClassName(),
+						classe.getPic());
+			}
+		} catch (APIConnectionException e) { 
+			e.printStackTrace();
+		} catch (APIRequestException e) {
+			
+		}
 	}
 	
 	/**
@@ -151,6 +178,7 @@ public class ClassController {
 		DbContextHolder.setDbType(DBTypeEnum.SQLSERVER);
 		classService.update(classe);
 		DbContextHolder.setDbType(DBTypeEnum.MYSQL);
+		group(classe.getId());
 		return R.ok().put("id", classe.getId());
 	}
 	
