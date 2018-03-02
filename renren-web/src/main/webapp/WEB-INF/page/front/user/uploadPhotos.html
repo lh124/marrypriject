@@ -6,7 +6,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
   <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body ontouchstart style="background-color: #f8f8f8;" onload="getWeChatSign()">
 	<input type="hidden" value="" id="selectedId">
@@ -93,7 +93,8 @@
 </body>
 
 <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}plupload.full.min.js"></script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
+<!--  <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>-->
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script type="text/javascript" src="${fieldTool.STATIC_SOURCE_JS}zepto.min.js"></script> 
 <script src="${fieldTool.STATIC_SOURCE_JS}weui.min.js"></script>
 <script src="${rc.contextPath}/js/front/user/uploadPhotos.js?"></script><!-- _${date.systemTime} -->
@@ -208,7 +209,6 @@
 						}
 					});
 			     }
-			     alert("上传成功");
 	        }else{
 	            $("#iosDialog2").fadeIn(200);
 	        }
