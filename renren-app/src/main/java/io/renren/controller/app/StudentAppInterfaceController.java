@@ -1132,7 +1132,8 @@ public class StudentAppInterfaceController{
 			student.setId(Integer.parseInt(json.getString("studentId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
-				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
+				String pic = FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/");
+				student.setPic(pic);
 				studentService.update(student);
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
 				Integer id = studentEntity.getClassId();
@@ -1141,7 +1142,7 @@ public class StudentAppInterfaceController{
 					if(student.getGusername() != null && !"".equals(student.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.STUDENTAPPKEY, JiguanUtil.STUDENTMASTERSECRET);
 						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
-						builder.setAvatar(student.getPic());
+						builder.setAvatar(pic);
 						UserPayload user = builder.build();
 						client.updateUserInfo(student.getGusername(), user);
 					}
@@ -1191,7 +1192,7 @@ public class StudentAppInterfaceController{
 				if(studnet.getGusername() != null && !"".equals(studnet.getGusername())){
 					JMessageClient client = new JMessageClient(JiguanUtil.STUDENTAPPKEY, JiguanUtil.STUDENTMASTERSECRET);
 					cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
-					builder.setNickname(studnet.getStudentName());
+					builder.setNickname(json.getString("studentName"));
 					UserPayload user = builder.build();
 					client.updateUserInfo(studnet.getGusername(), user);
 				}
@@ -1216,7 +1217,7 @@ public class StudentAppInterfaceController{
 				try {
 					if(student.getGusername() != null && !"".equals(student.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.STUDENTAPPKEY, JiguanUtil.STUDENTMASTERSECRET);
-						client.updateUserPassword(student.getGusername(), student.getPasswordd().substring(0, 15));
+						client.updateUserPassword(student.getGusername(), json.getString("newPassword").substring(0, 15));
 					}
 				} catch (APIConnectionException e) {
 					e.printStackTrace();

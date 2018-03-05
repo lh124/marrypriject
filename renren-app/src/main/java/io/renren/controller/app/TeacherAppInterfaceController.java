@@ -1589,13 +1589,14 @@ public class TeacherAppInterfaceController {
 			student.setId(Integer.parseInt(json.getString("teacherId")));
 			InputStream[] is = uploadfile(multipartResolver, request);
 			if(is != null){
-				student.setPic(FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/"));
+				String pic = FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/");
+				student.setPic(pic);
 				studentService.update(student);
 				try {
 					if(student.getGusername() != null && !"".equals(student.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
 						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
-						builder.setAvatar(student.getPic());
+						builder.setAvatar(pic);
 						UserPayload user = builder.build();
 						client.updateUserInfo(student.getGusername(), user);
 					}
@@ -1624,7 +1625,7 @@ public class TeacherAppInterfaceController {
 				try {
 					if(student.getGusername() != null && !"".equals(student.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
-						client.updateUserPassword(student.getGusername(), student.getPasswordd().substring(0, 15));
+						client.updateUserPassword(student.getGusername(), json.getString("newPassword").substring(0, 15));
 					}
 				} catch (APIConnectionException e) {
 					e.printStackTrace();
@@ -1642,12 +1643,11 @@ public class TeacherAppInterfaceController {
 			studnet.setStudentName(json.getString("teacherName"));
 			studentService.update(studnet);
 		}
-		StudentEntity student = studentService.queryObject(studnet.getId());
 		try {
 			if(studnet.getGusername() != null && !"".equals(studnet.getGusername())){
 				JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
 				cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
-				builder.setNickname(studnet.getStudentName());
+				builder.setNickname(json.getString("teacherName"));
 				UserPayload user = builder.build();
 				client.updateUserInfo(studnet.getGusername(), user);
 			}
@@ -1656,6 +1656,7 @@ public class TeacherAppInterfaceController {
 		} catch (APIRequestException e) {
 			e.printStackTrace();
 		}
+		StudentEntity student = studentService.queryObject(studnet.getId());
 		return R.ok().put(DATA, student);
 	}
 	
