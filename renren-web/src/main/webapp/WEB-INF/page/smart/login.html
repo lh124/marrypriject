@@ -3,98 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>冠宇科技</title>
+    <title>智慧校园温馨提示</title>
     <link rel="stylesheet" href="http://cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
     <link rel="stylesheet" href="${fieldTool.STATIC_SOURCE_JS}example.css"/>
 </head>
-<body ontouchstart>
-	<div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
-	<div class="container" id="container">
-		<div class="page">
-			<div class="page__hd">
-				<h1 class="page__title">用户登陆</h1>
-			</div>
-			<div class="page__bd">
-				<div class="weui-cells weui-cells_form">
-					<div class="weui-cell">
-						<div class="weui-cell__hd"><label class="weui-label">账号</label></div>
-						<div class="weui-cell__bd">
-							<input class="weui-input" id="userName" type="text"   placeholder="请输入账号"/>
-						</div>
-						<div class="weui-cell__ft">
-							<i class="weui-icon-warn"></i>
-						</div>
-					</div>
-					<div class="weui-cell">
-						<div class="weui-cell__hd"><label class="weui-label">密码</label></div>
-						<div class="weui-cell__bd">
-							<input class="weui-input" id="password" type="password"  placeholder="请输入密码"/>
-						</div>
-						<div class="weui-cell__ft">
-							<i class="weui-icon-warn"></i>
-						</div>
-					</div>
-					<div class="weui-cell weui-cell_vcode" id="yanzhengma">
-						<div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
-						<div class="weui-cell__bd">
-							<input class="weui-input" type="text" id="code" placeholder="请输入验证码"/>
-						</div>
-						<div class="weui-cell__ft" style="width:32.5%;">
-							<a href="javascript:reflushCode();"><img id="checkCode" class="weui-vcode-img" style="width:100%;" src="captcha.jpg" /></a>
-						</div>
-					</div>
-				</div>
-				
-				<div class="page__hd">
-				</div>
-
-				<div class="weui-btn-area">
-					<a class="weui-btn weui-btn_primary" href="javascript:login();" id="showTooltips">登陆</a>
-				</div>
-			</div>
-			
-		</div>
+<body>
+	<div style="padding-left: 5%;padding-right: 5%;padding-top: 8%;">
+	    &nbsp;&nbsp;&nbsp;&nbsp;
+	    智慧校园已经暂停微信端的所有服务，请点击下面相关版本的软件下载安装，由此给您带来不便，敬请谅解。
 	</div>
-	<!--BEGIN dialog1-->
-        <div class="js_dialog" id="iosDialog1" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <div class="weui-dialog__hd"><strong class="weui-dialog__title">微信账号绑定</strong></div>
-                <div class="weui-dialog__bd">与此登录的微信账号绑定，绑定后无需输入账号和密码登录，绑定后可个人中心取消！</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:cancelBinding();" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
-                    <a href="javascript:weChatBinding();" class="weui-dialog__btn weui-dialog__btn_primary">绑定</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog1-->
-        <!--BEGIN dialog2-->
-        <div class="js_dialog" id="iosDialog2" style="display: none;">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <div class="weui-dialog__bd">弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
-                </div>
-            </div>
-        </div>
-        <!--END dialog2-->
-        <!-- loading toast -->
-	    <div id="loadingToast" style="display:none;">
-	        <div class="weui-mask_transparent"></div>
-	        <div class="weui-toast">
-	            <i class="weui-loading weui-icon_toast"></i>
-	            <p class="weui-toast__content">绑定中</p>
-	        </div>
-	    </div>
-    <script src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
-    <script src="${rc.contextPath}/js/smart/common/loadHtml.js?_${date.systemTime}"></script>
-    <script src="${rc.contextPath}/js/smart/login.js?_${date.systemTime}"></script>
-	<script>
-		#if ($session.getAttribute('user_smart'))
-			var codef = GetQueryString("state");
-			window.location.href = 'index.html?state=' + state;	
-		#end
-	</script>
+	<hr>
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_primary" href="http://static.gykjewm.com/APP/IntelliCampusT.apk" >安卓教师版下载</a>
+	</div>
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_primary" href="http://static.gykjewm.com/APP/IntelliCampus.apk" >安卓家长版下载</a>
+	</div>
+	<br>
+	<hr>
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_primary" href="https://itunes.apple.com/us/app/云上智慧校园教师版/id1324954434?l=zh&ls=1&mt=8" >苹果教师版下载</a>
+	</div>
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_primary" href="https://itunes.apple.com/us/app/云上智慧校园家长版/id1332552085?l=zh&ls=1&mt=8" >苹果家长版下载</a>
+	</div>
 </body>
 </html>
