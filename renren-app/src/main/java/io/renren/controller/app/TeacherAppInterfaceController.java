@@ -1593,12 +1593,13 @@ public class TeacherAppInterfaceController {
 				student.setPic(pic);
 				studentService.update(student);
 				try {
-					if(student.getGusername() != null && !"".equals(student.getGusername())){
+					StudentEntity studentEntity = studentService.queryObject(student.getId());
+					if(studentEntity.getGusername() != null && !"".equals(studentEntity.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.TEACHERAPPKEY, JiguanUtil.TEACHERMASTERSECRET);
 						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
 						builder.setAvatar(pic);
 						UserPayload user = builder.build();
-						client.updateUserInfo(student.getGusername(), user);
+						client.updateUserInfo(studentEntity.getGusername(), user);
 					}
 				} catch (APIConnectionException e) {
 					e.printStackTrace();

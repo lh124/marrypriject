@@ -1135,23 +1135,21 @@ public class StudentAppInterfaceController{
 				String pic = FILEPATH+"smart_head_pic/"+OssUploadUtil.uploadObject2OSS(is[0], "smart_head_pic/");
 				student.setPic(pic);
 				studentService.update(student);
-				StudentEntity studentEntity = studentService.queryObject(student.getId());
-				Integer id = studentEntity.getClassId();
-				studentEntity.setSchoolId(classService.queryObject(id).getSchoolId());
 				try {
-					if(student.getGusername() != null && !"".equals(student.getGusername())){
+					StudentEntity studentEntity = studentService.queryObject(student.getId());
+					if(studentEntity.getGusername() != null && !"".equals(studentEntity.getGusername())){
 						JMessageClient client = new JMessageClient(JiguanUtil.STUDENTAPPKEY, JiguanUtil.STUDENTMASTERSECRET);
 						cn.jmessage.api.common.model.UserPayload.Builder builder = UserPayload.newBuilder();
 						builder.setAvatar(pic);
 						UserPayload user = builder.build();
-						client.updateUserInfo(student.getGusername(), user);
+						client.updateUserInfo(studentEntity.getGusername(), user);
 					}
 				} catch (APIConnectionException e) {
 					e.printStackTrace();
 				} catch (APIRequestException e) {
 					e.printStackTrace();
 				}
-				return R.ok().put(DATA, studentEntity);
+				return R.ok().put(DATA, studentService.queryObject(student.getId()));
 			}else{
 				StudentEntity studentEntity = studentService.queryObject(student.getId());
 				Integer id = studentEntity.getClassId();
