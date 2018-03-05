@@ -8,20 +8,6 @@ $(function () {
 			{ label: '学号', name: 'studentNo', index: 'student_no', width: 120 }, 			
 			{ label: '姓名', name: 'studentName', index: 'student_name', width: 80 }, 			
 			{ label: '性别', name: 'sex', index: 'sex', width: 80 },
-			{ label: '类别', name: 'userType', index: 'sex', width: 80,formatter :function(r){
-				 if(r == 1 ){
-					 return '学生';
-				 }else{
-					 return '老师';
-				 }
-			} }, 
-			{ label: '是否强制绑定手机号', name: 'bindingType', index: 'bindingType', width: 80,formatter :function(r){
-				 if(r == 0 ){
-					 return '否';
-				 }else{
-					 return '是';
-				 }
-			} },
 			{ label: '类型', name: 'studentType', index: 'student_type', width: 80 }, 			
 			{ label: '头像', name: 'pic', index: 'pic', width: 80,formatter :function(r){
 				 if(r != null && r != ""){
