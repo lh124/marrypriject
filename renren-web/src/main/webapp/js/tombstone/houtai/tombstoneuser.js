@@ -3,7 +3,11 @@ function shipin(id){
 	document.getElementById("myUserId").value = id;
 	document.getElementById("type2").value = 2;
 }
-
+function bgmusic(id){
+	$('#shipin').modal('show');
+	document.getElementById("myUserId").value = id;
+	document.getElementById("type2").value = 3;
+}
 $(function () {
     $("#jqGrid").jqGrid({
         url: '../tombstoneuser/list',
@@ -21,7 +25,8 @@ $(function () {
 			} },
 			{ label: '时间', name: 'createtime', index: 'createtime', width: 80 },
 			{ label: '操作', name: 'id', index: 'id', width: 80,formatter :function(r){
-				 return '<button onclick="shipin(' + r +')">视频上传</button>';
+				 return '<button onclick="shipin(' + r +')">视频上传</button><br>'+
+				         '<button onclick="bgmusic(' + r +')">音乐上传</button>';
 			    }
 			}
         ],
