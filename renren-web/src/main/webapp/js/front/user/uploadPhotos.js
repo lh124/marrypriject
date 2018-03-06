@@ -163,10 +163,7 @@ var uploader = new plupload.Uploader({
 	init: {
 		PostInit: function() {
 			//document.getElementById('ossfile').innerHTML = '';
-			document.getElementById('postfiles').onclick = function() {
-            set_upload_param(uploader, '', false);
-            return false;
-			};
+			
 		},
 
 		FilesAdded: function(up, files) {
