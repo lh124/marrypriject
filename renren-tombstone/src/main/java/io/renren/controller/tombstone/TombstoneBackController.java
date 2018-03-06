@@ -158,21 +158,19 @@ public class TombstoneBackController {
 	 */
 	private void updateUserImage(JSONObject json){
 		//信息图片
-    	Long id = json.containsKey("id") ? json.getLong("id") : null;
+    	Integer id = json.containsKey("id") ? json.getInt("id") : null;
     	Long type2 = json.containsKey("type2") ? json.getLong("type2") : null;
+    	TombstoneUserEntity smartCourseware = new TombstoneUserEntity();
 		if (id != null) {
-			TombstoneUserEntity smartCourseware = this.tombstoneUserService.selectById(id);
-			if (smartCourseware != null) {
-				if(type2==2){
-					smartCourseware.setShipin(ControllerConstant.CDN_URL + json.getString("filename"));
-				}else{
-					smartCourseware.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
-				}
-				this.tombstoneUserService.update(smartCourseware);
-			} else {
-				logger.error("智能校服随堂课件回调关联数据不存在");
-				logger.error(json.toString());
+			smartCourseware.setId(id);
+			if(type2==2){
+				smartCourseware.setShipin(ControllerConstant.CDN_URL + json.getString("filename"));
+			}else if(type2==3){
+				smartCourseware.setBgmusic(ControllerConstant.CDN_URL + json.getString("filename"));
+			}else{
+				smartCourseware.setPic(ControllerConstant.CDN_URL + json.getString("filename"));
 			}
+			this.tombstoneUserService.update(smartCourseware);
 		}
 	}
 	
