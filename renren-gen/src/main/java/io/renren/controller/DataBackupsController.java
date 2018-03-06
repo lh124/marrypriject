@@ -159,7 +159,8 @@ public class DataBackupsController {
             if(process.waitFor() == 0){//0 表示线程正常终止。
             	File file = new File(savePath+fileName);
             	uploadObject2OSS(new OSSClient(ENDPOINT,ACCESS_KEY_ID, ACCESS_KEY_SECRET), file, BACKET_NAME, "data_backup/");
-                return R.ok("数据库成功备份！！！");  
+            	file.delete();
+            	return R.ok("数据库成功备份！！！");  
             }  
         }catch (IOException e) {  
             e.printStackTrace();  
