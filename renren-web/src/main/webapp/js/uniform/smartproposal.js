@@ -5,8 +5,7 @@ $(function () {
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '标题', name: 'title', index: 'title', width: 80 }, 			
-			{ label: '建议反馈具体内容', name: 'content', index: 'content', width: 80 }, 			
-			{ label: '学校id', name: 'schoolId', index: 'school_id', width: 80 }			
+			{ label: '建议反馈具体内容', name: 'content', index: 'content', width: 80 }		
         ],
 		viewrecords: true,
         height: 385,
